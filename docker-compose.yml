@@ -1,0 +1,16 @@
+version: "3.7"
+
+volumes:
+  postgres:
+    driver: local
+
+services:
+  postgres:
+    image: "postgres:12"
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./scripts/postgres/1-create-database.sql:/docker-entrypoint-initdb.d/1-create-database.sql
+    ports:
+      - 5432:5432
