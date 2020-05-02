@@ -20,6 +20,9 @@ services:
       - 5432:5432
   ipfs:
     image: ipfs/go-ipfs
+    command:
+      - daemon
+      - "--enable-pubsub-experiment"
     volumes:
       - ipfs_staging:/export
       - ipfs_data:/data/ipfs
