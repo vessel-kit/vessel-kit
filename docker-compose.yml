@@ -3,10 +3,14 @@ version: "3.7"
 volumes:
   postgres:
     driver: local
-  ipfs_staging:
+  ipfs_staging_a:
     driver: local
-  ipfs_data:
+  ipfs_data_a:
     driver: local
+  ipfs_staging_b:
+    driver: local
+  ipfs_data_b:
+      driver: local
 
 services:
   postgres:
@@ -18,18 +22,30 @@ services:
       - ./scripts/postgres/1-create-database.sql:/docker-entrypoint-initdb.d/1-create-database.sql
     ports:
       - 5432:5432
-  ipfs:
+  ipfs_a:
     image: ipfs/go-ipfs
     command:
       - daemon
       - "--enable-pubsub-experiment"
     volumes:
-      - ipfs_staging:/export
-      - ipfs_data:/data/ipfs
+      - ipfs_staging_a:/export
+      - ipfs_data_a:/data/ipfs
     ports:
       - 4001:4001
       - 8080:8080
       - 5001:5001
+  ipfs_b:
+    image: ipfs/go-ipfs
+    command:
+      - daemon
+      - "--enable-pubsub-experiment"
+    volumes:
+      - ipfs_staging_b:/export
+      - ipfs_data_b:/data/ipfs
+    ports:
+      - 4002:4001
+      - 8082:8080
+      - 5002:5001
   ganache:
     image: trufflesuite/ganache-cli
     ports:
