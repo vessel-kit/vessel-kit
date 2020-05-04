@@ -19,6 +19,7 @@ declare module 'ipfs' {
       handler: (message: any) => void,
       options?: any,
     ): Promise<void>;
+    publish(topic: string, content: string): Promise<void>
   }
 
   export class Ipfs extends EventEmitter {
