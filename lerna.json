@@ -1,7 +1,8 @@
 {
   "packages": [
     "apps/*",
-    "libs/*"
+    "libs/*",
+    "studio"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,

@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "libs/*"
+    "libs/*",
+    "studio"
   ],
   "devDependencies": {
     "lerna": "^3.20.2"
