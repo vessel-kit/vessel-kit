@@ -1,0 +1,19 @@
+{
+  "name": "@potter/anchoring-ui",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "9.4.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "theme-ui": "^0.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.35"
+  }
+}
