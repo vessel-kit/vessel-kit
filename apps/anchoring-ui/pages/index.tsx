@@ -1,7 +1,5 @@
-import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { Grid, Box } from "@theme-ui/components";
-import { Tile } from "../styling/tile";
 import { Stat } from "../styling/stat";
 import { TimeoutStat } from "../styling/timeout-stat";
 import { DateTime } from "luxon";
