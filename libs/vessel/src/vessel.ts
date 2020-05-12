@@ -1,0 +1,106 @@
+import type Ipfs from 'ipfs'
+import type DoctypeHandler from './doctypes/doctypeHandler'
+import { Dispatcher } from '@potter/wheel'
+import { AnchorService } from '@potter/anchor'
+import DocumentHandler from './doctypes/documentHandler'
+import RulesetHandler from './doctypes/rulesetHandler'
+import User from './user'
+import { InitOpts } from './document'
+import { Document } from '@potter/wheel'
+import ThreeIdHandler from './doctypes/threeIdHandler'
+import TileHandler from './doctypes/tileHandler'
+import AccountLinkHandler from './doctypes/accountLinkHandler'
+import { AnchorServiceFactory } from "@potter/anchor";
+
+
+// This is temporary until we handle DIDs and in particular 3IDs better
+const gen3IDgenesis = (pubkeys: any): any => {
+  return {
+    owners: [pubkeys.managementKey],
+    content: {
+      publicKeys: {
+        signing: pubkeys.signingKey,
+        encryption: pubkeys.asymEncryptionKey
+      }
+    }
+  }
+}
+
+export interface CeramicConfig {
+  ethereumRpcUrl?: string;
+  anchorServiceUrl?: string;
+  didProvider?: any;
+}
+
+class Vessel {
+  private _docmap: Record<string, Document>
+  private _doctypeHandlers: Record<string, DoctypeHandler>
+  private _anchorService: AnchorService
+  public user: User
+
+  constructor (public dispatcher: Dispatcher) {
+    this._docmap = {}
+    this._doctypeHandlers = {
+      '3id': new ThreeIdHandler(),
+      'tile': new TileHandler(this),
+      'account-link': new AccountLinkHandler(),
+      'ruleset': new RulesetHandler(this),
+      'document': new DocumentHandler(this)
+    }
+  }
+
+  async _init (config: CeramicConfig): Promise<void> {
+    const promises = []
+    if (config.didProvider) {
+      promises.push(this.setDIDProvider(config.didProvider))
+    }
+
+    const anchorServiceFactory = new AnchorServiceFactory(this.dispatcher, config);
+    this._anchorService = anchorServiceFactory.get();
+    await Promise.all(promises);
+    return null
+  }
+
+  static async create(ipfs: Ipfs.Ipfs, config: CeramicConfig = {}): Promise<Vessel> {
+    const dispatcher = new Dispatcher(ipfs)
+    const ceramic = new Vessel(dispatcher)
+    await ceramic._init(config)
+    return ceramic
+  }
+
+  async createDocument (content: any, doctype: string, opts: InitOpts = {}): Promise<Document> {
+    const doctypeHandler = this._doctypeHandlers[doctype]
+    const doc = await (Document as any).create(content, doctypeHandler, this._anchorService, this.dispatcher, opts)
+    if (!this._docmap[doc.id]) {
+      this._docmap[doc.id] = doc
+    }
+    return this._docmap[doc.id]
+  }
+
+  async loadDocument (id: string, opts: InitOpts = {}): Promise<Document> {
+    if (!this._docmap[id]) {
+      this._docmap[id] = await (Document as any).load(id, this._doctypeHandlers, this._anchorService, this.dispatcher, opts)
+    }
+    return this._docmap[id]
+  }
+
+  async setDIDProvider (provider: any): Promise<void> {
+    this.user = new User(provider)
+    await this.user.auth()
+    for (const doctype in this._doctypeHandlers) {
+      this._doctypeHandlers[doctype].user = this.user
+    }
+    if (!this.user.DID) {
+      // patch create did document for now
+      const { owners, content } = gen3IDgenesis(this.user.publicKeys)
+      const doc: any = await this.createDocument(content, '3id', { owners })
+      this.user.DID = 'did:3:' + doc.id.split('/')[2]
+    }
+  }
+
+  async close (): Promise<void> {
+    return this.dispatcher.close()
+  }
+}
+
+export default Vessel

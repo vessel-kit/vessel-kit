@@ -19,7 +19,7 @@ Contains machine-executable rules for document validation
 ### Genesis Record
 
 `owners` field contains 1+ document owners, as DID. `content` field contains the following fields:
-- `type` - string, MIME-like-type of the executable code, mandatory,
+- `language` - string, MIME-like-type of the executable code, mandatory,
 - `main` - CID of the IPLD-string that contains executable code, mandatory,
 - `schema` - CID of the governed document JSON-schema, optional,
 - `name` - string, name of the ruleset (TBD format), optional

@@ -1,0 +1,22 @@
+{
+  "name": "@potter/anchor",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "build": "tsc -p ."
+  },
+  "main": "dist/index.js",
+  "dependencies": {
+    "@potter/vessel": "*",
+    "@potter/wheel": "*",
+    "3id-blockchain-utils": "^0.3.3",
+    "identity-wallet": "^1.2.0",
+    "ipfs": "^0.43.3",
+    "axios": "^0.19.2"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.4",
+    "ts-node": "^8.10.1",
+    "@types/node": "^13.9.1"
+  }
+}
