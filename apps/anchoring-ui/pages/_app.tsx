@@ -1,17 +1,14 @@
 import * as React from "react";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import { THEME } from "../styling/theme";
 import { ThemeProvider } from "theme-ui";
-import { CSSReset } from "../styling/css-reset";
-import { FontFace } from "../styling/font-face";
-import { Shell } from "../styling/shell";
 import {
   Header,
   HeaderMenuItem,
   HeaderName,
   HeaderNavigation
 } from "../styling/header";
+import { CSSReset, FontFace, Shell, THEME } from '@potter/ui-shared';
 
 function App({ Component, pageProps }: AppProps) {
   return (

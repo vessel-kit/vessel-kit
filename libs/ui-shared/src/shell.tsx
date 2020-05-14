@@ -2,7 +2,6 @@ import React from "react";
 import { Flex } from "@theme-ui/components";
 import styled from "@emotion/styled";
 import { css } from "theme-ui";
-import { PALETTE } from './theme';
 
 function Container(props: React.PropsWithChildren<{}>) {
   return (

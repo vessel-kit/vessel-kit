@@ -1,17 +1,15 @@
 {
-  "name": "@potter/anchoring-ui",
+  "name": "@potter/ui-shared",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8000",
-    "build": "next build",
-    "start": "next start"
+    "build": "tsc -p ."
   },
+  "main": "./src/index.ts",
   "dependencies": {
     "@carbon/icons-react": "^10.10.2",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
-    "@potter/ui-shared": "*",
     "@theme-ui/core": "^0.3.1",
     "carbon-components": "^10.11.2",
     "carbon-components-react": "^7.11.3",
@@ -26,7 +24,6 @@
   "devDependencies": {
     "@types/carbon-components-react": "^7.10.3",
     "@types/luxon": "^1.24.0",
-    "@types/react": "^16.9.35",
-    "next-transpile-modules": "^3.3.0"
+    "@types/react": "^16.9.35"
   }
 }
