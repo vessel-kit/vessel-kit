@@ -29,8 +29,8 @@ function App({ Component, pageProps }: AppProps) {
               Wheel
             </HeaderName>
             <HeaderNavigation>
-              <HeaderMenuItem href={"/requests"}>Requests</HeaderMenuItem>
-              <HeaderMenuItem href={"/anchors"}>Anchors</HeaderMenuItem>
+              <HeaderMenuItem href={"/documents"}>Documents</HeaderMenuItem>
+              <HeaderMenuItem href={"/updates"}>Updates</HeaderMenuItem>
             </HeaderNavigation>
           </Header>
         </Shell.Header>

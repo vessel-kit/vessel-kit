@@ -1,6 +1,6 @@
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
-import { Grid, Box } from "@theme-ui/components";
+import { Box } from "@theme-ui/components";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'carbon-components-react';
 
 interface RequestRecord {

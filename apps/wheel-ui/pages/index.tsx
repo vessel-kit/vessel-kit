@@ -18,11 +18,11 @@ export default function Home() {
 
   useEffect(() => {
     if (Object.keys(stats).length === 0) {
-      const endpoint = `${process.env.ANCHORING_URL}/api/v0/stats`;
+      const endpoint = `${process.env.WHEEL_URL}/api/v0/stats`;
+      console.log('endp', endpoint)
       fetch(endpoint)
         .then(async response => {
           const data = await response.json();
-          data.nextAnchoring = DateTime.fromISO(data.nextAnchoring);
           setStats(data);
         })
         .catch(error => {
@@ -31,37 +31,25 @@ export default function Home() {
     }
   });
 
-  const timeoutStat = () => {
-    if (stats.nextAnchoring) {
-      return (
-        <TimeoutStat title={"Next Anchoring"} timeout={stats.nextAnchoring} />
-      );
-    } else {
-      return (
-        <Stat title={"Next Anchoring"} subtitle={<>&nbsp;</>} value={"N/A"} />
-      );
-    }
-  };
-
   return (
     <Box sx={{ flexGrow: 1, padding: 6 }}>
       <Grid columns={[2, null, 4]} sx={{ gridAutoRows: "1fr" }}>
         <Stat
-          title={"Requests"}
+          title={"Documents"}
           subtitle={"Total"}
-          value={zeroOrNa(load, stats.requestsTotalCount)}
+          value={zeroOrNa(load, stats.totalDocuments)}
         />
-        <Stat
-          title={"Anchors"}
-          subtitle={"Total"}
-          value={zeroOrNa(load, stats.anchorsTotalCount)}
-        />
-        <Stat
-          title={"Requests"}
-          subtitle={"Pending"}
-          value={zeroOrNa(load, stats.pendingRequests)}
-        />
-        {timeoutStat()}
+        {/*<Stat*/}
+        {/*  title={"Anchors"}*/}
+        {/*  subtitle={"Total"}*/}
+        {/*  value={zeroOrNa(load, stats.anchorsTotalCount)}*/}
+        {/*/>*/}
+        {/*<Stat*/}
+        {/*  title={"Requests"}*/}
+        {/*  subtitle={"Pending"}*/}
+        {/*  value={zeroOrNa(load, stats.pendingRequests)}*/}
+        {/*/>*/}
+        {/*{timeoutStat()}*/}
       </Grid>
     </Box>
   );
