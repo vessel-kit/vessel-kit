@@ -63,9 +63,6 @@ export default function Requests() {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 6 }}>
-      <Head>
-        <title>Requests - Ceramic Anchoring</title>
-      </Head>
       <h1>Requests</h1>
       <RequestsTable requests={requests} />
     </Box>

@@ -57,9 +57,6 @@ export default function Anchors() {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 6 }}>
-      <Head>
-        <title>Anchors - Ceramic Anchoring</title>
-      </Head>
       <h1>Anchors</h1>
       <AnchorsTable anchors={anchors} />
     </Box>
