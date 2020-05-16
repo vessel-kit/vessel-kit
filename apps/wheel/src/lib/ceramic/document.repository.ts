@@ -29,6 +29,13 @@ export class DocumentRepository {
       .set(Doctype.RULESET_0_0_1, new Ruleset001Handler());
   }
 
+  async stats() {
+    const documentsCount = await this.store.count();
+    return {
+      documentsCount: documentsCount,
+    };
+  }
+
   async create(genesisRecord: any): Promise<Document> {
     await createSchema.validateAsync(genesisRecord, { allowUnknown: true });
     const cid = await this.fileStore.put(genesisRecord);

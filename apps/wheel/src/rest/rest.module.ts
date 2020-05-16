@@ -4,10 +4,11 @@ import { CommonsModule } from '../commons/commons.module';
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthController } from './health.controller';
 import { ceramicProvider } from './ceramic.provider';
+import { StatsController } from './stats.controller';
 
 @Module({
   imports: [CommonsModule, TerminusModule],
   providers: [ceramicProvider],
-  controllers: [DocumentController, HealthController],
+  controllers: [DocumentController, HealthController, StatsController],
 })
 export class RestModule {}

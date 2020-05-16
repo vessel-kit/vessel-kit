@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from './commons/config.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {cors: true});
   const config = app.get(ConfigService)
   const port = config.current.PORT;
   const host = config.current.HOST;

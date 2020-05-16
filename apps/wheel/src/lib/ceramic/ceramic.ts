@@ -21,6 +21,10 @@ export class Ceramic {
     return new Ceramic(repository, anchoringService);
   }
 
+  async stats() {
+    return this.repository.stats()
+  }
+
   async create(record: any): Promise<Document> {
     const document = await this.repository.create(record);
     await this.anchoringService.requestAnchor(document.cid);

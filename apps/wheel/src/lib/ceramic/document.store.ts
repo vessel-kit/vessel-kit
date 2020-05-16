@@ -10,6 +10,10 @@ export class DocumentStore {
     }
   }
 
+  async count() {
+    return this.store.size
+  }
+
   set(docId: CID, document: Document) {
     this.store.set(docId.toString(), document);
   }

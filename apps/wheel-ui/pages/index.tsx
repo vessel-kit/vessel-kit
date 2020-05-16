@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Box } from "@theme-ui/components";
 import { Stat } from "../styling/stat";
-import { TimeoutStat } from "../styling/timeout-stat";
-import { DateTime } from "luxon";
 
 function zeroOrNa(load: boolean, s: number | undefined) {
   if (typeof s === "undefined") {
@@ -19,7 +17,6 @@ export default function Home() {
   useEffect(() => {
     if (Object.keys(stats).length === 0) {
       const endpoint = `${process.env.WHEEL_URL}/api/v0/stats`;
-      console.log('endp', endpoint)
       fetch(endpoint)
         .then(async response => {
           const data = await response.json();
@@ -39,17 +36,6 @@ export default function Home() {
           subtitle={"Total"}
           value={zeroOrNa(load, stats.totalDocuments)}
         />
-        {/*<Stat*/}
-        {/*  title={"Anchors"}*/}
-        {/*  subtitle={"Total"}*/}
-        {/*  value={zeroOrNa(load, stats.anchorsTotalCount)}*/}
-        {/*/>*/}
-        {/*<Stat*/}
-        {/*  title={"Requests"}*/}
-        {/*  subtitle={"Pending"}*/}
-        {/*  value={zeroOrNa(load, stats.pendingRequests)}*/}
-        {/*/>*/}
-        {/*{timeoutStat()}*/}
       </Grid>
     </Box>
   );

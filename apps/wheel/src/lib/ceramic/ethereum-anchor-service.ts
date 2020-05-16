@@ -6,6 +6,7 @@ export class EthereumAnchorService {
   }
 
   async requestAnchor(cid: CID) {
+    console.log('calling anchor', this.anchoringEndpoint)
     const request = await axios.post(this.anchoringEndpoint, {
       docId: cid.toString(),
       cid: cid.toString()
