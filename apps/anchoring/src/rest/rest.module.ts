@@ -8,9 +8,10 @@ import { HealthController } from './health.controller';
 import { TerminusModule } from '@nestjs/terminus';
 import { StorageModule } from '../storage/storage.module';
 import { StatsController } from './stats.controller';
+import { TransactionController } from './transaction.controller';
 
 @Module({
   imports: [CommonsModule, ScenariosModule, AnchoringModule, TerminusModule, StorageModule],
-  controllers: [AnchorController, RequestController, HealthController, StatsController],
+  controllers: [AnchorController, RequestController, HealthController, StatsController, TransactionController],
 })
 export class RestModule {}

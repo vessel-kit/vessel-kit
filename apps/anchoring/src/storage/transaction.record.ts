@@ -1,35 +1,26 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { UuidValue } from './uuid.value';
 import { uuidTransformer } from './uuid.transformer';
-import CID from 'cids';
-import { cidTransformer } from './cid.transformer';
-import { RequestRecord } from './request.record';
 
-@Entity('anchors')
-export class AnchorRecord {
+@Entity('transactions')
+export class TransactionRecord {
   @PrimaryColumn({ generated: 'uuid', transformer: uuidTransformer })
   id: UuidValue;
 
-  @Column('uuid', { transformer: uuidTransformer })
-  requestId: UuidValue;
-
-  @Column('varchar', { transformer: cidTransformer })
-  cid: CID;
+  @Column()
+  txHash: string;
 
   @Column()
-  path: string;
+  chainId: string;
 
-  @Column('varchar', { transformer: cidTransformer })
-  proofCid: CID;
+  @Column()
+  blockNumber: number;
 
   @Column()
   createdAt: Date;
 
   @Column()
   updatedAt: Date;
-
-  @Column('uuid', { transformer: uuidTransformer })
-  transactionId: UuidValue;
 
   @BeforeInsert()
   private beforeInsert() {

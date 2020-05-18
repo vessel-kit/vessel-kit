@@ -10,6 +10,8 @@ import { EthereumService } from './ethereum.service';
 import { BlockchainTransaction } from './blockchain-transaction';
 import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
+import { TransactionStorage } from '../storage/transaction.storage';
+import { TransactionRecord } from '../storage/transaction.record';
 
 @Injectable()
 export class AnchoringService {
@@ -20,6 +22,7 @@ export class AnchoringService {
     private readonly anchorStorage: AnchorStorage,
     ipfsService: IpfsService,
     private readonly ethereum: EthereumService,
+    private readonly transactionStorage: TransactionStorage,
   ) {
     this.ipfs = ipfsService.client;
   }
@@ -37,6 +40,12 @@ export class AnchoringService {
 
     const merkleTree = await this.merkleTree(latest);
     const transaction = await this.ethereum.createAnchor(merkleTree.root.id);
+    const transactionRecord = new TransactionRecord();
+    transactionRecord.blockNumber = transaction.blockNumber;
+    transactionRecord.chainId = transaction.chain;
+    transactionRecord.txHash = transaction.txHash;
+    transactionRecord.createdAt = new Date(transaction.blockTimestamp * 1000);
+    const savedTransactionRecord = await this.transactionStorage.save(transactionRecord);
     const proofCid = await this.putAnchorProof(transaction, merkleTree.root.id);
     for (const request of latest) {
       const anchorRecord = new AnchorRecord();
@@ -49,6 +58,7 @@ export class AnchoringService {
         path: anchorRecord.path,
       };
       anchorRecord.cid = await this.ipfs.dag.put(ipfsAnchorRecord);
+      anchorRecord.transactionId = savedTransactionRecord.id;
       await this.anchorStorage.save(anchorRecord);
       request.status = RequestStatus.COMPLETED;
       await this.requestStorage.save(request); // TODO Subscription for state

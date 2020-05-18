@@ -48,16 +48,20 @@ export class RequestController {
     const presentations = await Promise.all(
       requests.map(async r => {
         const anchor = await this.anchorStorage.byRequestId(r.id);
-        const proofDag = await ipfs.dag.get(new CID(anchor.proofCid));
-        const merkleRootMultihash = proofDag.value.root.multihash;
-        const digest = multihash.decode(merkleRootMultihash).digest;
+        if (anchor) {
+          const proofDag = await ipfs.dag.get(new CID(anchor.proofCid));
+          const merkleRootMultihash = proofDag.value.root.multihash;
+          const digest = multihash.decode(merkleRootMultihash).digest;
 
-        const txHashCid = proofDag.value.txHash;
-        const txHashDigest = multihash.decode(txHashCid.multihash);
-        const ethereumTxHash = '0x' + txHashDigest.digest.toString('hex');
-        const chainId = proofDag.value.chainId;
+          const txHashCid = proofDag.value.txHash;
+          const txHashDigest = multihash.decode(txHashCid.multihash);
+          const ethereumTxHash = '0x' + txHashDigest.digest.toString('hex');
+          const chainId = proofDag.value.chainId;
 
-        return new RequestPresentation(r, anchor, digest, ethereumTxHash, chainId);
+          return new RequestPresentation(r, anchor, digest, ethereumTxHash, chainId);
+        } else {
+          return new RequestPresentation(r)
+        }
       }),
     );
     return {

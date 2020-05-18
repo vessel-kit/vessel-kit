@@ -11,10 +11,10 @@ export class RequestPresentation {
 
   constructor(
     private readonly request: RequestRecord,
-    private readonly anchor: AnchorRecord,
-    private readonly root: Buffer,
-    private readonly ethereumTxHash: string,
-    private readonly chainId: string,
+    private readonly anchor?: AnchorRecord,
+    private readonly root?: Buffer,
+    private readonly ethereumTxHash?: string,
+    private readonly chainId?: string,
   ) {}
 
   toJSON() {

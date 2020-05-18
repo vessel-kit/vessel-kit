@@ -52,7 +52,7 @@ export default function Home() {
           value={zeroOrNa(load, stats.requestsTotalCount)}
         />
         <Stat
-          title={"Anchors"}
+          title={"Transactions"}
           subtitle={"Total"}
           value={zeroOrNa(load, stats.anchorsTotalCount)}
         />
