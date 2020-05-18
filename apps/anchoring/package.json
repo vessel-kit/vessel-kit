@@ -22,7 +22,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@potter/vessel": "*",
     "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
@@ -31,6 +30,7 @@
     "@nestjs/swagger": "^4.5.7",
     "@nestjs/terminus": "^7.0.1",
     "@nestjs/typeorm": "^7.0.0",
+    "@potter/vessel": "*",
     "@types/dotenv": "^8.2.0",
     "cids": "^0.8.0",
     "class-transformer": "^0.2.3",
@@ -39,6 +39,7 @@
     "dotenv": "^8.2.0",
     "ethers": "^4.0.47",
     "ipfs-http-client": "^44.0.0",
+    "multihashes": "^0.4.19",
     "nestjs-i18n": "^8.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

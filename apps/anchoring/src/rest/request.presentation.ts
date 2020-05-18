@@ -9,10 +9,16 @@ export class RequestPresentation {
   readonly updatedAt = this.request.updatedAt.toISOString();
   readonly cid = this.request.cid.toString();
 
-  constructor(private readonly request: RequestRecord, private readonly anchor?: AnchorRecord) {}
+  constructor(
+    private readonly request: RequestRecord,
+    private readonly anchor: AnchorRecord,
+    private readonly root: Buffer,
+    private readonly ethereumTxHash: string,
+    private readonly chainId: string,
+  ) {}
 
   toJSON() {
-    const json: any =  {
+    const json: any = {
       id: this.id,
       status: this.status,
       docId: this.docId,
@@ -22,10 +28,13 @@ export class RequestPresentation {
     };
     if (this.anchor) {
       json.anchor = {
-        proof: this.anchor.proofCid.toString(),
-        path: this.anchor.path
-      }
+        merkleRoot: this.root.toString('hex'),
+        proofCid: this.anchor.proofCid.toString(),
+        path: this.anchor.path,
+        ethereumTxHash: this.ethereumTxHash,
+        chainId: this.chainId,
+      };
     }
-    return json
+    return json;
   }
 }

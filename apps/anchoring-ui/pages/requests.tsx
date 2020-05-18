@@ -5,7 +5,7 @@ import { Modal, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, T
 import { DateTime } from 'luxon';
 import styled from '@emotion/styled';
 import { css } from 'theme-ui';
-import { Stamp16, Stamp24, Stamp32 } from '@carbon/icons-react';
+import { Stamp16 } from '@carbon/icons-react';
 import { PALETTE } from '@potter/ui-shared';
 
 interface RequestRecord {
@@ -53,7 +53,6 @@ function RequestsTable(props: { requests: RequestRecord[] }) {
   };
 
   const row = (request: RequestRecord) => {
-    console.log('row', request)
     const stamp = () => {
       if (request.status.toUpperCase() === 'COMPLETED') {
         return (
@@ -98,12 +97,35 @@ function RequestsTable(props: { requests: RequestRecord[] }) {
         </TableHead>
         <TableBody>{rows()}</TableBody>
       </Table>
-      <Modal modalHeading={"Proof"} passiveModal={true} open={Boolean(modal)} onRequestClose={() => setModal(undefined)}>
+      <Modal
+        modalHeading={'Proof'}
+        passiveModal={true}
+        open={Boolean(modal)}
+        onRequestClose={() => setModal(undefined)}
+      >
         <dl>
-          <dt><strong>Update</strong></dt>
+          <dt>
+            <strong>Update</strong>
+          </dt>
           <dd>{modal?.cid}</dd>
-          <dt><strong>Merkle Root</strong></dt>
-          <dd>{}</dd>
+          <dt>
+            <strong>Merkle Root</strong>
+          </dt>
+          <dd>{modal?.anchor?.merkleRoot}</dd>
+          <dt>
+            <strong>Path</strong>
+          </dt>
+          <dd>{modal?.anchor?.path || 'Empty'}</dd>
+          <dt>
+            <strong>Blockchain Transaction</strong>
+          </dt>
+          <dd>
+            {modal?.anchor?.ethereumTxHash} on {modal?.anchor?.chainId}
+          </dd>
+          <dt>
+            <strong>Proof CID</strong>
+          </dt>
+          <dd>{modal?.anchor?.proofCid}</dd>
         </dl>
       </Modal>
     </>
