@@ -1,9 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from './commons/config.service';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {cors: true});
+
+  const options = new DocumentBuilder()
+    .setTitle('Potter Anchoring')
+    .setDescription('Implementation of Ceramic protocol Anchoring service')
+    .setVersion('0.0.1')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api/swagger', app, document);
+
   const config = app.get(ConfigService)
   const port = config.current.PORT;
   const host = config.current.HOST;

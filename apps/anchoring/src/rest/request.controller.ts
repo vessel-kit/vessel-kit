@@ -6,9 +6,16 @@ import { RequestCreatedPresentation } from './request-created.presentation';
 import { RequestGetScenario } from '../scenarios/request-get.scenario';
 import { RequestStorage } from '../storage/request.storage';
 import { RequestPresentation } from './request.presentation';
+import { ApiProperty } from '@nestjs/swagger';
+import { CeramicDocumentId } from '@potter/vessel';
+import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
+import { AnchorStorage } from '../storage/anchor.storage';
 
-interface CreateRequestPayload {
+class CreateRequestPayload {
+  @ApiProperty()
   cid: string;
+
+  @ApiProperty()
   docId: string;
 }
 
@@ -25,14 +32,22 @@ export class RequestController {
     private readonly requestCreateScenario: RequestCreateScenario,
     private readonly requestGetScenario: RequestGetScenario,
     private readonly requestStorage: RequestStorage,
+    private readonly anchoringSchedule: AnchoringScheduleService,
+    private readonly anchorStorage: AnchorStorage,
   ) {}
 
   @Get('/')
   async index(@Query('page') pageIndex = 1) {
     const requests = await this.requestStorage.page(pageIndex, PAGE_SIZE);
     const totalCount = await this.requestStorage.count();
+    const presentations = await Promise.all(
+      requests.map(async r => {
+        const anchor = await this.anchorStorage.byRequestId(r.id);
+        return new RequestPresentation(r, anchor);
+      }),
+    );
     return {
-      requests: requests.map(r => new RequestPresentation(r)),
+      requests: presentations,
       totalCount: totalCount,
       pageSize: PAGE_SIZE,
     };
@@ -50,7 +65,8 @@ export class RequestController {
       throw new Error(`Validation error: ${validationResult.error.message}`);
     }
     const cid = new CID(body.cid);
-    const result = await this.requestCreateScenario.execute(cid, body.docId);
+    const docId = CeramicDocumentId.fromString(body.docId).toString();
+    const result = await this.requestCreateScenario.execute(cid, docId);
     return new RequestCreatedPresentation(result.record, result.nextAnchoring);
   }
 }

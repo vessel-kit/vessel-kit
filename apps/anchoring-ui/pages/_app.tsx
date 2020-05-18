@@ -30,7 +30,7 @@ function App({ Component, pageProps }: AppProps) {
             </HeaderName>
             <HeaderNavigation>
               <HeaderMenuItem href={"/requests"}>Requests</HeaderMenuItem>
-              <HeaderMenuItem href={"/anchors"}>Anchors</HeaderMenuItem>
+              {/*<HeaderMenuItem href={"/anchors"}>Anchors</HeaderMenuItem>*/}
             </HeaderNavigation>
           </Header>
         </Shell.Header>
