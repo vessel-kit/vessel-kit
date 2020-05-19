@@ -25,7 +25,12 @@ export class RequestCreateScenario {
 
   async save(record: RequestRecord) {
     try {
-      return await this.requestStorage.save(record);
+      const found = await this.requestStorage.find(record.cid, record.docId)
+      if (found) {
+        return found
+      } else {
+        return await this.requestStorage.save(record);
+      }
     } catch (error) {
       const detail = (error as any).detail;
       const message = detail ? detail : error.message;

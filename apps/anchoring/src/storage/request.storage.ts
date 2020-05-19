@@ -55,6 +55,13 @@ export class RequestStorage {
     return this.repository.save(records);
   }
 
+  find(cid: CID, docId: string) {
+    return this.repository.findOne({
+      cid: cid,
+      docId: docId,
+    });
+  }
+
   save(record: RequestRecord): Promise<RequestRecord> {
     return this.repository.save(record);
   }

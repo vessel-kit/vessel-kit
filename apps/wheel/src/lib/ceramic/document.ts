@@ -1,5 +1,4 @@
 import CID from 'cids';
-import { IHandler } from './handlers/handler.interface';
 import { DocumentState } from './document.state';
 import { MessageBus } from './message-bus';
 import { FileStore } from './file-store';

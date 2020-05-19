@@ -34,7 +34,7 @@ export default function Home() {
         <Stat
           title={"Documents"}
           subtitle={"Total"}
-          value={zeroOrNa(load, stats.totalDocuments)}
+          value={zeroOrNa(load, stats.documentsCount)}
         />
       </Grid>
     </Box>

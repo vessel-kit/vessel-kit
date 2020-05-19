@@ -6,12 +6,12 @@ export class DocumentStore {
 
   put(document: Document) {
     if (!this.store.has(document.cid.toString())) {
-      this.store.set(document.cid.toString(), document)
+      this.store.set(document.cid.toString(), document);
     }
   }
 
   async count() {
-    return this.store.size
+    return this.store.size;
   }
 
   set(docId: CID, document: Document) {
