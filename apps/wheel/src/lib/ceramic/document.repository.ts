@@ -1,3 +1,5 @@
+import { AccountLinkHandler } from './handlers/account-link.handler'
+import { TileHandler } from './handlers/tile.handler'
 import { MessageBus } from './message-bus';
 import { FileStore } from './file-store';
 import { Doctype, doctypeFromString } from './doctype';
@@ -26,7 +28,9 @@ export class DocumentRepository {
   ) {
     this.handlers = this.handlers
       .set(Doctype.THREE_ID, new ThreeIdHandler())
-      .set(Doctype.RULESET_0_0_1, new Ruleset001Handler());
+      .set(Doctype.TILE, new TileHandler())
+      .set(Doctype.ACCOUNT_LINK, new AccountLinkHandler())
+      .set(Doctype.RULESET_0_0_1, new Ruleset001Handler())
   }
 
   async create(genesisRecord: any): Promise<Document> {
