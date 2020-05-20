@@ -14,4 +14,4 @@ import { TransactionController } from './transaction.controller';
   imports: [CommonsModule, ScenariosModule, AnchoringModule, TerminusModule, StorageModule],
   controllers: [AnchorController, RequestController, HealthController, StatsController, TransactionController],
 })
-export class RestModule {}
+export class ApiModule {}

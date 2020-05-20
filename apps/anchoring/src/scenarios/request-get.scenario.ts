@@ -6,7 +6,7 @@ import { AnchorStorage } from '../storage/anchor.storage';
 import { RequestStatus } from '../storage/request-status';
 import { UnreachableCaseError } from '../unreachable-case.error';
 import { AnchorRecord } from '../storage/anchor.record';
-import { dateAsTimestamp } from '../rest/date-as-timestamp';
+import { dateAsTimestamp } from '../api/date-as-timestamp';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 
 export class RequestPresentation {

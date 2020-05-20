@@ -38,6 +38,7 @@ export const appProviders = [
   ScheduleModule.forRoot(),
   GraphQLModule.forRoot({
     path: "/api/graphql",
+    installSubscriptionHandlers: true,
     debug: true,
     playground: true,
     typePaths: [path.resolve(__dirname, '..', 'anchoring.graphql')]
