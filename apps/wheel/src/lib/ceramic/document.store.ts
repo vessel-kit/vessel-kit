@@ -1,32 +1,32 @@
 import { Document } from './document';
 import CID from 'cids';
+import { DocumentStorage } from '../../storage/document.storage';
+import { DocumentRecord } from '../../storage/document.record';
 
 export class DocumentStore {
-  private readonly store = new Map<string, Document>();
+  constructor(private readonly storage: DocumentStorage) {}
 
-  put(document: Document) {
-    if (!this.store.has(document.cid.toString())) {
-      this.store.set(document.cid.toString(), document);
+  async put(document: Document): Promise<void> {
+    const found = await this.storage.byId(document.cid);
+    if (!found) {
+      const documentRecord = new DocumentRecord();
+      documentRecord.cid = document.cid;
+      documentRecord.payload = document.body;
+      documentRecord.doctype = document.body.doctype;
+      await this.storage.save(documentRecord);
     }
   }
 
   async count() {
-    return this.store.size;
+    return this.storage.count();
   }
 
-  set(docId: CID, document: Document) {
-    this.store.set(docId.toString(), document);
+  async get(docId: CID): Promise<DocumentRecord | undefined> {
+    return this.storage.byId(docId);
   }
 
-  get(docId: CID) {
-    return this.store.get(docId.toString());
-  }
-
-  has(docId: CID) {
-    return this.store.has(docId.toString());
-  }
-
-  delete(docId: CID) {
-    return this.store.delete(docId.toString());
+  async has(docId: CID) {
+    const record = await this.storage.byId(docId);
+    return !!record;
   }
 }
