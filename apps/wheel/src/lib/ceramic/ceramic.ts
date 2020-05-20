@@ -5,6 +5,7 @@ import { FileStore } from './file-store';
 import { DocumentRepository } from './document.repository';
 import { Document } from './document';
 import { EthereumAnchorService } from './ethereum-anchor-service';
+import { ContentStorage } from '../../storage/content.storage';
 
 export class Ceramic {
   constructor(
@@ -12,17 +13,21 @@ export class Ceramic {
     private readonly anchoringService: EthereumAnchorService,
   ) {}
 
-  static async build(ipfsUrl: string, anchoringUrl: string) {
+  static async build(
+    ipfsUrl: string,
+    anchoringUrl: string,
+    contentStorage: ContentStorage,
+  ) {
     const ipfs = ipfsClient(ipfsUrl);
     const bus = await MessageBus.build(ipfs);
-    const fileStore = new FileStore(ipfs);
+    const fileStore = new FileStore(ipfs, contentStorage);
     const repository = new DocumentRepository(bus, fileStore);
     const anchoringService = new EthereumAnchorService(anchoringUrl);
     return new Ceramic(repository, anchoringService);
   }
 
   async stats() {
-    return this.repository.stats()
+    return this.repository.stats();
   }
 
   async create(record: any): Promise<Document> {

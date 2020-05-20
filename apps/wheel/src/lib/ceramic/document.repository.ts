@@ -1,6 +1,6 @@
 import { MessageBus } from './message-bus';
 import { FileStore } from './file-store';
-import { Doctype, doctypeFromString } from './doctype';
+import { Doctype } from './doctype';
 import { DocumentStore } from './document.store';
 import { ThreeIdHandler } from './handlers/three-id.handler';
 import { HandlerContainer } from './handler-container';
