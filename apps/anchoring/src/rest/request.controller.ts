@@ -29,7 +29,7 @@ const createRequestSchema = Joi.object<CreateRequestPayload>({
 
 const PAGE_SIZE = 25;
 
-@Controller('/api/v0/requests')
+@Controller('/v0/requests')
 export class RequestController {
   constructor(
     private readonly requestCreateScenario: RequestCreateScenario,

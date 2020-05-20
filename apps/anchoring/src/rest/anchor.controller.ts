@@ -4,7 +4,7 @@ import { AnchorPresentation } from './anchor.presentation';
 
 const PAGE_SIZE = 25;
 
-@Controller('/api/v0/anchors')
+@Controller('/v0/anchors')
 export class AnchorController {
   constructor(private readonly anchorStorage: AnchorStorage) {}
 

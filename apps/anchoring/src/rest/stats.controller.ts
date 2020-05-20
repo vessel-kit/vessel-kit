@@ -4,7 +4,7 @@ import { AnchorStorage } from '../storage/anchor.storage';
 import { RequestStatus } from '../storage/request-status';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 
-@Controller('/api/v0/stats')
+@Controller('/v0/stats')
 export class StatsController {
   constructor(
     private readonly requestStorage: RequestStorage,

@@ -11,6 +11,7 @@ import path from 'path';
 import { FallbackLanguageResolver } from './commons/fallback-language-resolver';
 import { CommonsModule } from './commons/commons.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { GraphQLModule } from '@nestjs/graphql';
 
 export const appProviders = [
   I18nModule.forRootAsync({
@@ -35,4 +36,10 @@ export const appProviders = [
     imports: [CommonsModule],
   }),
   ScheduleModule.forRoot(),
+  GraphQLModule.forRoot({
+    path: "/api/graphql",
+    debug: true,
+    playground: true,
+    typePaths: [path.resolve(__dirname, '..', 'anchoring.graphql')]
+  }),
 ];

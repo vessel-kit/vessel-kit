@@ -6,7 +6,7 @@ const MEGABYTE = 1024 * 1024;
 const MEMORY_HEAP_THRESHOLD = 200 * MEGABYTE;
 const MEMORY_RSS_THRESHOLD = 3000 * MEGABYTE;
 
-@Controller('/api/v0/health')
+@Controller('/v0/health')
 export class HealthController {
   constructor(private health: HealthCheckService, private db: TypeOrmHealthIndicator, private mem: MemoryHealthIndicator) {}
 

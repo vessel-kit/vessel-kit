@@ -4,7 +4,7 @@ import { TransactionPresentation } from './transaction.presentation';
 
 const PAGE_SIZE = 25;
 
-@Controller('/api/v0/transactions')
+@Controller('/v0/transactions')
 export class TransactionController {
   constructor(private readonly transactionStorage: TransactionStorage) {}
 
