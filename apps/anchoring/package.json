@@ -41,6 +41,7 @@
     "dotenv": "^8.2.0",
     "ethers": "^4.0.47",
     "graphql": "^15.0.0",
+    "graphql-subscriptions": "^1.1.0",
     "graphql-tools": "^5.0.0",
     "ipfs-http-client": "^44.0.0",
     "multihashes": "^0.4.19",
