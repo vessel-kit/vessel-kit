@@ -16,8 +16,8 @@ export class DocumentRecord {
   @Column()
   doctype: string;
 
-  @Column()
-  payload: string;
+  @Column('simple-json')
+  payload: any;
 
   @Column()
   createdAt: Date;

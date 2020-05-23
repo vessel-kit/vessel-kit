@@ -61,7 +61,7 @@ export class AnchoringService {
       anchorRecord.cid = await this.ipfs.dag.put(ipfsAnchorRecord);
       anchorRecord.transactionId = savedTransactionRecord.id;
       await this.anchorStorage.save(anchorRecord);
-      request.status = RequestStatus.COMPLETED;
+      request.status = RequestStatus.ANCHORED;
       await this.requestStorage.save(request); // TODO Subscription for state
     }
   }

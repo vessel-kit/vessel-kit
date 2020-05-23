@@ -2,19 +2,28 @@ import CID from 'cids';
 import { DocumentState } from './document.state';
 import { MessageBus } from './message-bus';
 import { FileStore } from './file-store';
-import { lockdown, Compartment } from 'ses';
+import { Compartment, lockdown } from 'ses';
+import { AnchorStatus } from './anchor-status';
+import { Observable } from 'rxjs';
 
 export class Document {
+  #anchorStatus: AnchorStatus = AnchorStatus.NOT_REQUESTED
+
   constructor(
     readonly cid: CID,
     public state: DocumentState,
     private log: CID[],
     readonly fileStore: FileStore,
     readonly bus: MessageBus,
-  ) {}
+    private readonly anchoring$: Observable<AnchorStatus>
+  ) {
+    this.anchoring$.subscribe(a => {
+      this.#anchorStatus = a
+    })
+  }
 
   get body() {
-    return this.state;
+    return this.state
   }
 
   get doctype() {
@@ -23,6 +32,10 @@ export class Document {
 
   get docId() {
     return this.cid.toString();
+  }
+
+  get anchorStatus() {
+    return this.#anchorStatus
   }
 
   get head() {

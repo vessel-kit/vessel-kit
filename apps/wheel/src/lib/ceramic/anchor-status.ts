@@ -1,4 +1,5 @@
-export enum RequestStatus {
+export enum AnchorStatus {
+  NOT_REQUESTED = 'NOT_REQUESTED',
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
   ANCHORED = 'ANCHORED',

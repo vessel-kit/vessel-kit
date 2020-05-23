@@ -17,7 +17,7 @@ export class CreateDocumentRecords1569249291695 implements MigrationInterface {
             name: 'doctype',
             type: 'varchar(255)',
             isNullable: false,
-            isUnique: true,
+            isUnique: false,
           },
           {
             name: 'payload',

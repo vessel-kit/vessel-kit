@@ -23,8 +23,13 @@ export class Ceramic {
     const ipfs = ipfsClient(ipfsUrl);
     const bus = await MessageBus.build(ipfs);
     const fileStore = new FileStore(ipfs, contentStorage);
-    const repository = new DocumentRepository(bus, fileStore, documentStorage);
     const anchoringService = new EthereumAnchorService(anchoringUrl);
+    const repository = new DocumentRepository(
+      bus,
+      fileStore,
+      documentStorage,
+      anchoringService,
+    );
     return new Ceramic(repository, anchoringService);
   }
 

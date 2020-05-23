@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const rulesetRecord = {
   doctype: 'vessel/0.0.2',
+  meta: new Date().valueOf(),
   content: {
     type: 'application/javascript',
     main: `function canApply(a, b) { return b.num > a.num; }; module.exports = {canApply: canApply}`,

@@ -18,7 +18,7 @@ export class RequestSubscriber implements EntitySubscriberInterface<RequestRecor
 
   async afterUpdate(event: UpdateEvent<RequestRecord>): Promise<any> {
     const record = event.entity;
-    if (record.status === RequestStatus.COMPLETED) {
+    if (record.status === RequestStatus.ANCHORED) {
       const anchor = await this.anchorStorage.byRequestId(record.id)
       await this.pubSubService.didAnchor.publish({
         id: record.id.toString(),

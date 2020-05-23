@@ -18,7 +18,7 @@ export class RequestPresentation {
 
   toJSON() {
     switch (this.request.status) {
-      case RequestStatus.COMPLETED:
+      case RequestStatus.ANCHORED:
         return {
           id: this.request.id.toString(),
           status: this.request.status.toString(),

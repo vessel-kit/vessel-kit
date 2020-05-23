@@ -33,7 +33,14 @@ export class DocumentController {
   @Get('/:cid/state')
   async state(@Param('cid') cidString: string) {
     const cid = new CID(cidString);
-    const document = await this.ceramic.load(cid);
-    return new DocumentStatePresentation(document);
+    try {
+      const document = await this.ceramic.load(cid);
+      return new DocumentStatePresentation(document);
+    } catch (e) {
+      console.error(e)
+      return {
+        error: e.message
+      }
+    }
   }
 }

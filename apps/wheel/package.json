@@ -37,6 +37,7 @@
     "graphql-tools": "^5.0.0",
     "ipfs-http-client": "^44.0.0",
     "jose": "^1.27.0",
+    "p-queue": "^6.4.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.5",

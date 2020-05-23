@@ -7,7 +7,8 @@ export class DocumentStatePresentation {
   toJSON() {
     return {
       docId: this.document.docId,
-      state: this.document.state
+      state: this.document.state,
+      anchorStatus: this.document.anchorStatus
     }
   }
 }

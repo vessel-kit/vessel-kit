@@ -9,6 +9,8 @@ import CID from 'cids';
 import { Ruleset001Handler } from './handlers/ruleset-0.0.1.handler';
 import Joi from '@hapi/joi';
 import { DocumentStorage } from '../../storage/document.storage';
+import { EthereumAnchorService } from './ethereum-anchor-service';
+import { AnchorStatus } from './anchor-status';
 
 const createSchema = Joi.object({
   doctype: Joi.string()
@@ -25,11 +27,17 @@ export class DocumentRepository {
     private readonly messageBus: MessageBus,
     private readonly fileStore: FileStore,
     documentStorage: DocumentStorage,
+    private readonly anchoringService: EthereumAnchorService,
   ) {
     this.handlers = this.handlers
       .set(Doctype.THREE_ID, new ThreeIdHandler())
       .set(Doctype.RULESET_0_0_1, new Ruleset001Handler());
-    this.store = new DocumentStore(documentStorage);
+    this.store = new DocumentStore(
+      documentStorage,
+      messageBus,
+      fileStore,
+      this.anchoringService,
+    );
   }
 
   async stats() {
@@ -49,21 +57,20 @@ export class DocumentRepository {
       [],
       this.fileStore,
       this.messageBus,
+      this.anchoringService.anchorStatus$(cid),
     );
     await this.store.put(document);
     return document;
   }
 
   async load(cid: CID) {
-    const documentRecord = await this.store.get(cid);
-    if (documentRecord) {
-      return new Document(
-        cid,
-        documentRecord.payload,
-        [],
-        this.fileStore,
-        this.messageBus,
-      );
+    const document = await this.store.get(cid);
+    // await this.anchoringService.requestAnchorStatus(cid)
+    if (document) {
+      if (document.anchorStatus !== AnchorStatus.ANCHORED) {
+        await this.anchoringService.requestAnchorStatus(cid);
+      }
+      return document;
     } else {
       // Retrieve genesis record
       const genesisRecord = await this.fileStore.get(cid);
@@ -75,7 +82,11 @@ export class DocumentRepository {
         [],
         this.fileStore,
         this.messageBus,
+        this.anchoringService.anchorStatus$(cid),
       );
+      if (document.anchorStatus !== AnchorStatus.ANCHORED) {
+        await this.anchoringService.requestAnchorStatus(cid);
+      }
       await this.store.put(document);
       return document;
     }
