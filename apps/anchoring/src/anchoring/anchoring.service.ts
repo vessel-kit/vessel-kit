@@ -12,6 +12,7 @@ import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
+import { PubSubService } from '../commons/pub-sub.service';
 
 @Injectable()
 export class AnchoringService {

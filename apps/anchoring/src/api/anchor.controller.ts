@@ -18,9 +18,4 @@ export class AnchorController {
       pageSize: PAGE_SIZE,
     };
   }
-
-  @Get('/:number')
-  async anchor() {
-    return 33;
-  }
 }

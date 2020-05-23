@@ -14,7 +14,7 @@ type AnchorRecord {
 }
 
 type AnchoredRequest {
-  id: Int!
+  id: String!
   status: String
   cid: String
   docId: String
@@ -24,5 +24,5 @@ type AnchoredRequest {
 }
 
 type Subscription {
-  didAnchor(cid: String!): AnchoredRequest
+  didAnchor(cid: String): AnchoredRequest
 }

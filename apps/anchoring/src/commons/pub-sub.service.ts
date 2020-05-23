@@ -10,11 +10,18 @@ export class PubSubService {
     this.pubSub = new PubSub();
   }
 
-  async publish(triggerName: string, payload: any): Promise<void> {
+  get didAnchor() {
+    return {
+      publish: (payload: any) => this.publish('didAnchor', { didAnchor: payload }),
+      asyncIterator: this.asyncIterator('didAnchor'),
+    };
+  }
+
+  protected publish(triggerName: string, payload: any) {
     return this.pubSub.publish(triggerName, payload);
   }
 
-  asyncIterator<T>(triggers: string | string[]): AsyncIterator<T> {
+  protected asyncIterator<T>(triggers: string | string[]): AsyncIterator<T> {
     return this.pubSub.asyncIterator(triggers);
   }
 }

@@ -8,6 +8,7 @@ import { AnchorRecord } from './anchor.record';
 import { AnchorStorage } from './anchor.storage';
 import { TransactionStorage } from './transaction.storage';
 import { TransactionRecord } from './transaction.record';
+import { RequestSubscriber } from './request.subscriber';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { TransactionRecord } from './transaction.record';
     CommonsModule,
     TypeOrmModule.forFeature([RequestRecord, AnchorRecord, TransactionRecord]),
   ],
-  providers: [RequestStorage, AnchorStorage, TransactionStorage],
+  providers: [RequestStorage, AnchorStorage, TransactionStorage, RequestSubscriber],
   exports: [RequestStorage, AnchorStorage, TransactionStorage],
 })
 export class StorageModule {}
