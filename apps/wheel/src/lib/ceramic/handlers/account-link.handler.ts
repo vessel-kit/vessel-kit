@@ -20,7 +20,7 @@ export class AccountLinkHandler implements IHandler {
     return {
       doctype: AccountLinkHandler.DOCTYPE,
       owners: record.owners,
-      content: null,
+      content: record.content,
       nextContent: null,
       log: [cid]
     }

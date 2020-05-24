@@ -30,18 +30,23 @@ UpdateD record:
 Genesis:
 
 ```
-{ "doctype": "account-link", "owners": [ "0x25954ef14cebbc9af3d71132489a9cfe87043f20@eip155:1" ] }
+{ "doctype": "account-link", "owners": [ "0x25954ef14cebbc9af3d71132489a9cfe87043f20@eip155:1" ], "content": "did:3:bafyreiecedg6ipyvwdwycdjiakhj5hiuuutxlvywtkvckwvsnu6pjbwxae" }
 ```
 
 
-CID: `bafyreihg3i2wdlxbk3njjhvtwb5ttm2o5bct322b3ativrf5vaom2mapga`
+CID: `bafyreic3ta54bkn6bpljxfyliitqc5izx2c2hnxznqfnfg6fjr7a7eqvri`
 
 Update record:
 
+```
+{ "content": "did:3:bafyreiecedg6ipyvwdwycdjiakhj5hiuuutxlvywtkvckwvsnu6pjbwxad", "prev": "bafyreic3ta54bkn6bpljxfyliitqc5izx2c2hnxznqfnfg6fjr7a7eqvri" }
+```
 
 UpdateD record:
 
-
+```
+{ "doctype": "account-link", "owners": [ "0x25954ef14cebbc9af3d71132489a9cfe87043f20@eip155:1" ], "content": "did:3:bafyreiecedg6ipyvwdwycdjiakhj5hiuuutxlvywtkvckwvsnu6pjbwxad" }
+```
 
 
 ## Tile
