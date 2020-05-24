@@ -24,9 +24,8 @@ services:
       - 5432:5432
   ipfs_a:
     image: ipfs/go-ipfs
-    command:
-      - daemon
-      - "--enable-pubsub-experiment"
+    entrypoint: ""
+    command: /bin/sh -c "/usr/local/bin/start_ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"*\"]' && /usr/local/bin/start_ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"POST\",\"GET\",\"PUT\"]' && /usr/local/bin/start_ipfs daemon  --enable-pubsub-experiment"
     volumes:
       - ipfs_staging_a:/export
       - ipfs_data_a:/data/ipfs
@@ -36,9 +35,8 @@ services:
       - 5001:5001
   ipfs_b:
     image: ipfs/go-ipfs
-    command:
-      - daemon
-      - "--enable-pubsub-experiment"
+    entrypoint: ""
+    command: /bin/sh -c "/usr/local/bin/start_ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"*\"]' && /usr/local/bin/start_ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"POST\",\"GET\",\"PUT\"]' && /usr/local/bin/start_ipfs daemon  --enable-pubsub-experiment"
     volumes:
       - ipfs_staging_b:/export
       - ipfs_data_b:/data/ipfs

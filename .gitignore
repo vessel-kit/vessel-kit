@@ -1,1 +1,17 @@
+# Dependencies and Build Artifacts
 node_modules/
+apps/*/dist/
+apps/*/node_modules/
+
+# Runtime
+*.log
+
+# System
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Environment variables
+./**/.env

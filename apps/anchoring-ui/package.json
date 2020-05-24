@@ -11,11 +11,13 @@
     "@carbon/icons-react": "^10.10.2",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
+    "@potter/ui-shared": "*",
     "@theme-ui/core": "^0.3.1",
     "carbon-components": "^10.11.2",
     "carbon-components-react": "^7.11.3",
     "carbon-icons": "^7.0.7",
     "emotion-theming": "^10.0.27",
+    "ipfs": "^0.43.3",
     "luxon": "^1.24.1",
     "next": "9.4.0",
     "react": "16.13.1",
@@ -24,7 +26,9 @@
   },
   "devDependencies": {
     "@types/carbon-components-react": "^7.10.3",
+    "@types/carbon__icons-react": "^10.10.0",
     "@types/luxon": "^1.24.0",
-    "@types/react": "^16.9.35"
+    "@types/react": "^16.9.35",
+    "next-transpile-modules": "^3.3.0"
   }
 }

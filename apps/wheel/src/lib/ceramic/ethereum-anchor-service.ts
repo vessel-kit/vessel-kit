@@ -1,15 +1,15 @@
 import CID from 'cids';
-import axios from 'axios'
+import axios from 'axios';
+import { CeramicDocumentId } from '@potter/vessel';
 
 export class EthereumAnchorService {
-  constructor(private readonly anchoringEndpoint: string) {
-  }
+  constructor(private readonly anchoringEndpoint: string) {}
 
   async requestAnchor(cid: CID) {
+    const docId = new CeramicDocumentId(cid);
     const request = await axios.post(this.anchoringEndpoint, {
-      docId: cid.toString(),
-      cid: cid.toString()
-    })
-    console.log('Done with anchoring', request.data)
+      docId: docId.toString(),
+      cid: cid.toString(),
+    });
   }
 }

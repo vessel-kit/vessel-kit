@@ -28,6 +28,9 @@ export class AnchorRecord {
   @Column()
   updatedAt: Date;
 
+  @Column('uuid', { transformer: uuidTransformer })
+  transactionId: UuidValue;
+
   @BeforeInsert()
   private beforeInsert() {
     this.id = this.id || new UuidValue();

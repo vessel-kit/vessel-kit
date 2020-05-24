@@ -403,8 +403,8 @@ declare module 'ipfs' {
 
     export interface DagAPI {
       put(dagNode: any, options: any, callback: Callback<any>): void;
-      put(dagNode: any, options: any): Promise<any>;
-      put(dagNode: any): Promise<any>;
+      put(dagNode: any, options: any): Promise<CID>;
+      put(dagNode: any): Promise<CID>;
 
       get(
         cid: string | CID,

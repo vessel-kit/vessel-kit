@@ -13,6 +13,7 @@ export class RequestStorage {
     return this.repository.find({
       skip: (index - 1) * size,
       take: size,
+      order: { updatedAt: 'DESC', createdAt: 'DESC' },
     });
   }
 
@@ -23,9 +24,9 @@ export class RequestStorage {
   countByStatus(status: RequestStatus) {
     return this.repository.count({
       where: {
-        status: status
-      }
-    })
+        status: status,
+      },
+    });
   }
 
   byCidOrFail(cid: CID) {
@@ -52,6 +53,13 @@ export class RequestStorage {
 
   saveAll(records: RequestRecord[]): Promise<RequestRecord[]> {
     return this.repository.save(records);
+  }
+
+  find(cid: CID, docId: string) {
+    return this.repository.findOne({
+      cid: cid,
+      docId: docId,
+    });
   }
 
   save(record: RequestRecord): Promise<RequestRecord> {

@@ -2,7 +2,7 @@ import { AccountLinkHandler } from './handlers/account-link.handler'
 import { TileHandler } from './handlers/tile.handler'
 import { MessageBus } from './message-bus';
 import { FileStore } from './file-store';
-import { Doctype, doctypeFromString } from './doctype';
+import { Doctype } from './doctype';
 import { DocumentStore } from './document.store';
 import { ThreeIdHandler } from './handlers/three-id.handler';
 import { HandlerContainer } from './handler-container';
@@ -10,6 +10,7 @@ import { Document } from './document';
 import CID from 'cids';
 import { Ruleset001Handler } from './handlers/ruleset-0.0.1.handler';
 import Joi from '@hapi/joi';
+import { DocumentStorage } from '../../storage/document.storage';
 
 const createSchema = Joi.object({
   doctype: Joi.string()
@@ -19,18 +20,27 @@ const createSchema = Joi.object({
 });
 
 export class DocumentRepository {
-  private readonly store = new DocumentStore();
+  private readonly store: DocumentStore;
   private readonly handlers = new HandlerContainer();
 
   constructor(
     private readonly messageBus: MessageBus,
     private readonly fileStore: FileStore,
+    documentStorage: DocumentStorage,
   ) {
     this.handlers = this.handlers
       .set(Doctype.THREE_ID, new ThreeIdHandler())
       .set(Doctype.TILE, new TileHandler())
       .set(Doctype.ACCOUNT_LINK, new AccountLinkHandler())
       .set(Doctype.RULESET_0_0_1, new Ruleset001Handler())
+    this.store = new DocumentStore(documentStorage);
+  }
+
+  async stats() {
+    const documentsCount = await this.store.count();
+    return {
+      documentsCount: documentsCount,
+    };
   }
 
   async create(genesisRecord: any): Promise<Document> {
@@ -44,14 +54,20 @@ export class DocumentRepository {
       this.fileStore,
       this.messageBus,
     );
-    this.store.put(document);
+    await this.store.put(document);
     return document;
   }
 
   async load(cid: CID) {
-    const found = this.store.get(cid);
-    if (found) {
-      return found;
+    const documentRecord = await this.store.get(cid);
+    if (documentRecord) {
+      return new Document(
+        cid,
+        documentRecord.payload,
+        [],
+        this.fileStore,
+        this.messageBus,
+      );
     } else {
       // Retrieve genesis record
       const genesisRecord = await this.fileStore.get(cid);
@@ -64,7 +80,7 @@ export class DocumentRepository {
         this.fileStore,
         this.messageBus,
       );
-      this.store.put(document);
+      await this.store.put(document);
       return document;
     }
   }

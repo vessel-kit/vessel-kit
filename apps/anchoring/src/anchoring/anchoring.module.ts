@@ -9,6 +9,6 @@ import { EthereumService } from './ethereum.service';
 @Module({
   imports: [CommonsModule, StorageModule],
   providers: [AnchoringScheduleService, AnchoringService, IpfsService, EthereumService],
-  exports: [AnchoringScheduleService],
+  exports: [AnchoringScheduleService, IpfsService],
 })
 export class AnchoringModule {}

@@ -4,7 +4,6 @@ import { ethers } from 'ethers';
 import querystring from 'querystring';
 import CID from 'cids';
 import { BlockchainTransaction } from './blockchain-transaction';
-import { response } from 'express';
 
 function providerForUrl(blockchainUrl: string) {
   const rpcEndpoint = blockchainUrl.replace(/^ethereum\+/, '');

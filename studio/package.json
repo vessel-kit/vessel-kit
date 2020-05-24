@@ -6,12 +6,13 @@
     "build": "tsc -p ."
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "identity-wallet": "^1.2.0",
-    "axios": "^0.19.2"
+    "multicodec": "^1.0.1"
   },
   "devDependencies": {
-    "typescript": "^3.7.4",
+    "@types/node": "^13.9.1",
     "ts-node": "^8.10.1",
-    "@types/node": "^13.9.1"
+    "typescript": "^3.7.4"
   }
 }
