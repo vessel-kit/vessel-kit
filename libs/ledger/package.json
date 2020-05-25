@@ -1,0 +1,19 @@
+{
+  "name": "@potter/ledger",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "jest"
+  },
+  "dependencies": {
+    "cids": "^0.8.0",
+    "jose": "^1.27.0",
+    "multicodec": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/multicodec": "^1.0.0"
+  }
+}

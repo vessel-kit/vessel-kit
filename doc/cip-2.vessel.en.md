@@ -40,7 +40,7 @@ If the update is invalid, Ceramic node rejects it.
 
 This should contain a signed update to the document as [json-patch](https://github.com/Starcounter-Jack/JSON-Patch). The update should not modify `language`, `main`, `schema` fields. 
 
-## Document
+## Ledger
 
 **Doctype**: `vessel/document/0.0.1`
 

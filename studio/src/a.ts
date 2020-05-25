@@ -30,7 +30,7 @@ async function main() {
   const rulesetDocId = await create(rulesetRecord);
   console.log('Ruleset doc id: ', rulesetDocId);
   // const documentDocId = await create(documentGenesisRecord(rulesetDocId));
-  // console.log('Document id', documentDocId);
+  // console.log('Ledger id', documentDocId);
   // const result = await axios.put(`${ENDPOINT}/${documentDocId}`, {
   //   prev: { '/': documentDocId },
   //   content: {

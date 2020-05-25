@@ -16,7 +16,7 @@ const createSchema = Joi.object({
   doctype: Joi.string()
     .allow('vessel/ruleset/0.0.1')
     .required()
-    .description('Document type'),
+    .description('Ledger type'),
 });
 
 export class DocumentRepository {
@@ -50,7 +50,7 @@ export class DocumentRepository {
   async create(genesisRecord: any): Promise<Document> {
     await createSchema.validateAsync(genesisRecord, { allowUnknown: true });
     const cid = await this.fileStore.put(genesisRecord);
-    // Document.load
+    // Ledger.load
     const document = new Document(
       cid,
       genesisRecord,
