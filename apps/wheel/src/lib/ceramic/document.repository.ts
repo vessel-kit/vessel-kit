@@ -11,6 +11,8 @@ import Joi from '@hapi/joi';
 import { DocumentStorage } from '../../storage/document.storage';
 import { EthereumAnchorService } from './ethereum-anchor-service';
 import { AnchorStatus } from './anchor-status';
+import { TileHandler } from './handlers/tile.handler';
+import { AccountLinkHandler } from './handlers/account-link.handler';
 
 const createSchema = Joi.object({
   doctype: Joi.string()
@@ -31,7 +33,9 @@ export class DocumentRepository {
   ) {
     this.handlers = this.handlers
       .set(Doctype.THREE_ID, new ThreeIdHandler())
-      .set(Doctype.RULESET_0_0_1, new Ruleset001Handler());
+      .set(Doctype.TILE, new TileHandler())
+      .set(Doctype.ACCOUNT_LINK, new AccountLinkHandler())
+      .set(Doctype.RULESET_0_0_1, new Ruleset001Handler())
     this.store = new DocumentStore(
       documentStorage,
       messageBus,
@@ -50,7 +54,7 @@ export class DocumentRepository {
   async create(genesisRecord: any): Promise<Document> {
     await createSchema.validateAsync(genesisRecord, { allowUnknown: true });
     const cid = await this.fileStore.put(genesisRecord);
-    // Ledger.load
+    // Document.load
     const document = new Document(
       cid,
       genesisRecord,
