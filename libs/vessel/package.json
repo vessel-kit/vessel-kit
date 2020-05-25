@@ -9,12 +9,18 @@
     "test": "jest"
   },
   "dependencies": {
+    "base64url": "^3.0.1",
     "cids": "^0.8.0",
+    "ethereumjs-util": "^7.0.1",
+    "fp-ts": "^2.6.1",
+    "io-ts": "^2.2.3",
+    "io-ts-promise": "^2.0.2",
     "jose": "^1.27.0",
     "multicodec": "^1.0.1",
     "rxjs": "^6.5.5"
   },
   "devDependencies": {
-    "@types/multicodec": "^1.0.0"
+    "@types/multicodec": "^1.0.0",
+    "ts-node": "^8.10.1"
   }
 }
