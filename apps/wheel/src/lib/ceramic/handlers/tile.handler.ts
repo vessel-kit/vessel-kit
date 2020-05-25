@@ -4,20 +4,21 @@ import { IHandler } from './handler.interface';
 import { DocumentState } from '../document.state';
 import jsonPatch from 'fast-json-patch'
 
-export class ThreeIdHandler implements IHandler {
-  static DOCTYPE = Doctype.THREE_ID
+export class TileHandler implements IHandler {
+  static DOCTYPE = Doctype.TILE
 
   async makeGenesis(record: any) {
     return {
       ...record,
-      doctype: '3id'
+      doctype: 'tile'
     }
   }
 
   async applyGenesis(record: any, cid: CID) {
     // TODO - verify genesis record
+
     return {
-      doctype: ThreeIdHandler.DOCTYPE,
+      doctype: TileHandler.DOCTYPE,
       owners: record.owners,
       content: record.content,
       nextContent: null,
@@ -38,11 +39,5 @@ export class ThreeIdHandler implements IHandler {
     return {
       ...state
     }
-    // return {
-    //   ...state,
-    //   signature: SignatureStatus.SIGNED,
-    //   anchorStatus: AnchorStatus.NOT_REQUESTED,
-    //   nextContent: jsonpatch.applyPatch(state.content, record.content).newDocument
-    // }
   }
 }
