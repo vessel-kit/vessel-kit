@@ -9,9 +9,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "cids": "^0.8.0",
     "jose": "^1.27.0",
     "multicodec": "^1.0.1",
-    "cids": "^0.8.0"
+    "rxjs": "^6.5.5"
   },
   "devDependencies": {
     "@types/multicodec": "^1.0.0"

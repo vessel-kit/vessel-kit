@@ -3,12 +3,10 @@ export class ChainEntry<A, Pointer> {
   readonly #payload: A;
   readonly #pointer: Pointer;
   readonly #prev: Pointer | null;
-  readonly #next: Pointer[];
 
-  constructor(payload: A, pointer: Pointer, prev?: Pointer, next?: Pointer[]) {
+  constructor(payload: A, pointer: Pointer, prev?: Pointer) {
     this.#payload = payload
     this.#prev = prev
-    this.#next = next || []
     this.#pointer = pointer
   }
 
@@ -20,16 +18,7 @@ export class ChainEntry<A, Pointer> {
     return this.#payload
   }
 
-  get next() {
-    return this.#next
-  }
-
   get prev() {
     return this.#prev
-  }
-
-  addNext(pointer: Pointer) {
-    const nextNext = this.next.concat(pointer)
-    return new ChainEntry(this.payload, this.pointer, this.prev, nextNext)
   }
 }

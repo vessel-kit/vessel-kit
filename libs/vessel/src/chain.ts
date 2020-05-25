@@ -37,14 +37,13 @@ export class Chain<A, Pointer extends WithEq<Pointer>> {
 
   async append(entry: ChainEntry<A, Pointer>) {
     const attachment = await this.canAppend(entry)
-    const updatedAttachment = attachment.addNext(entry.pointer)
-    await this.#store.put(updatedAttachment)
-    this.#events$.next(new DidAppend(entry.pointer))
+    await this.#store.put(attachment)
+    this.notify(new DidAppend(entry.pointer))
     const isTipAppend = this.tip.equals(attachment.pointer)
     if (isTipAppend) {
       const previousTip = this.#tip
       this.#tip = entry.pointer
-      this.#events$.next(new DidTipChanged(previousTip, this.#tip))
+      this.notify(new DidTipChanged(previousTip, this.#tip))
     }
   }
 
@@ -71,5 +70,9 @@ export class Chain<A, Pointer extends WithEq<Pointer>> {
 
   get genesis() {
     return this.#genesis
+  }
+
+  protected notify(event: ChainEvent<Pointer>) {
+    this.#events$.next(event)
   }
 }
