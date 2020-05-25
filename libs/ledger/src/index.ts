@@ -12,5 +12,5 @@
 //
 // Document.apply()
 
-export * from './linked-graph-entry'
-export * from './linked-graph'
+export * from './chain-entry'
+export * from './chain'

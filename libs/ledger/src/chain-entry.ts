@@ -1,5 +1,5 @@
 // Note: No constraints on what pointer is, and how it relates to payload
-export class LinkedGraphEntry<A, Pointer> {
+export class ChainEntry<A, Pointer> {
   readonly #payload: A;
   readonly #pointer: Pointer;
   readonly #prev: Pointer | null;
@@ -30,6 +30,6 @@ export class LinkedGraphEntry<A, Pointer> {
 
   addNext(pointer: Pointer) {
     const nextNext = this.next.concat(pointer)
-    return new LinkedGraphEntry(this.payload, this.pointer, this.prev, nextNext)
+    return new ChainEntry(this.payload, this.pointer, this.prev, nextNext)
   }
 }
