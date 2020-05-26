@@ -1,17 +1,27 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { Ceramic } from '../lib/ceramic/ceramic';
 import { DocumentPresentation } from './document.presentation';
 import CID from 'cids';
 import { DocumentStatePresentation } from './document-state.presentation';
 
-
 @Controller('/api/v0/ceramic')
 export class DocumentController {
+  private readonly logger = new Logger(DocumentController.name);
   constructor(private readonly ceramic: Ceramic) {}
 
   @Post('/')
   async create(@Body() body: any) {
+    this.logger.log(`Handling CREATE`)
     const document = await this.ceramic.create(body);
+    this.logger.log(`Created ${document.doctype} document ${document.cid.toString()}`)
     return new DocumentPresentation(document);
   }
 
@@ -37,10 +47,10 @@ export class DocumentController {
       const document = await this.ceramic.load(cid);
       return new DocumentStatePresentation(document);
     } catch (e) {
-      console.error(e)
+      console.error(e);
       return {
-        error: e.message
-      }
+        error: e.message,
+      };
     }
   }
 }
