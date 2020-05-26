@@ -3,6 +3,7 @@ import * as multicodec from 'multicodec';
 import base64url from 'base64url';
 import * as t from 'io-ts';
 import { PublicKey, multicodecCodec as PublicKeyMultiCodec } from './public-key';
+import { ThreeIdDocument, JsonCodec as ThreeIdDocumentJson } from './three-id.document';
 
 const KEY_A = {
   crv: 'secp256k1' as 'secp256k1',
@@ -39,13 +40,25 @@ const KEY_D = {
 };
 
 async function main() {
-  const keyA = jose.JWK.asKey(KEY_C);
-  const publicKey = new PublicKey(keyA);
-  // console.log('mul', publicKey.toMulticodec());
-  const mul2 = PublicKeyMultiCodec.encode(publicKey);
-  console.log('mul2', mul2);
-  const dec = PublicKeyMultiCodec.decode(mul2)
-  console.log(dec);
+  const ownerKey = new PublicKey(jose.JWK.asKey(KEY_A));
+  const signingKey = new PublicKey(jose.JWK.asKey(KEY_B));
+  const encryptionKey = new PublicKey(jose.JWK.asKey(KEY_C));
+  const doc1 = new ThreeIdDocument(
+    [ownerKey],
+    new Map([
+      ['signing', signingKey],
+      ['encryption', encryptionKey],
+    ]),
+  );
+  const json = ThreeIdDocumentJson.encode(doc1)
+  console.log('encoded', json)
+  const decoded = ThreeIdDocumentJson.decode(json)
+  console.log('decoded', decoded)
+  // // console.log('mul', publicKey.toMulticodec());
+  // const mul2 = PublicKeyMultiCodec.encode(publicKey);
+  // console.log('mul2', mul2);
+  // const dec = PublicKeyMultiCodec.decode(mul2)
+  // console.log(dec);
   // const x = base64url.toBuffer(keyA.x);
   // const y = base64url.toBuffer(keyA.y);
   // const rawPublicKey = Buffer.concat([x, y]);
