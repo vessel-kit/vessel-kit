@@ -3,7 +3,7 @@ import * as multicodec from 'multicodec';
 import base64url from 'base64url';
 import * as t from 'io-ts';
 import { PublicKey, multicodecCodec as PublicKeyMultiCodec } from './public-key';
-import { ThreeIdDocument, JsonCodec as ThreeIdDocumentJson } from './three-id.document';
+import { ThreeIdContent, JsonCodec as ThreeIdDocumentJson } from './three-id.content';
 import jsonPatch from 'fast-json-patch'
 
 const KEY_A = {
@@ -51,13 +51,14 @@ async function main() {
   const ownerKey = new PublicKey(jose.JWK.asKey(KEY_A));
   const signingKey = new PublicKey(jose.JWK.asKey(KEY_B));
   const encryptionKey = new PublicKey(jose.JWK.asKey(KEY_C));
-  const doc1 = new ThreeIdDocument(
+  const doc1 = new ThreeIdContent(
     [ownerKey],
     new Map([
       ['signing', signingKey],
       ['encryption', encryptionKey],
     ]),
   );
+  console.log(ThreeIdDocumentJson.encode(doc1))
   const doc2 = doc1.clone()
   doc2.publicKeys.set('encryption', new PublicKey(jose.JWK.asKey(KEY_D)))
   const dd = delta(doc1, doc2, ThreeIdDocumentJson)
