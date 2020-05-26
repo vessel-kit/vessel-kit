@@ -13,6 +13,15 @@ export class ThreeIdDocument {
     this.owners = owners;
     this.publicKeys = publicKeys;
   }
+
+  clone() {
+    const nextOwners = this.owners.map(o => o.clone());
+    const nextPublicKeys = new Map<string, PublicKey>();
+    this.publicKeys.forEach((value, key) => {
+      nextPublicKeys.set(key, value.clone());
+    });
+    return new ThreeIdDocument(nextOwners, nextPublicKeys);
+  }
 }
 
 export const JsonCodec = t.type({

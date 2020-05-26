@@ -4,6 +4,7 @@ import base64url from 'base64url';
 import * as t from 'io-ts';
 import { PublicKey, multicodecCodec as PublicKeyMultiCodec } from './public-key';
 import { ThreeIdDocument, JsonCodec as ThreeIdDocumentJson } from './three-id.document';
+import jsonPatch from 'fast-json-patch'
 
 const KEY_A = {
   crv: 'secp256k1' as 'secp256k1',
@@ -39,6 +40,13 @@ const KEY_D = {
   kid: 'NRjNXZJrMAO2WlD56lGbbLZu9M7L6lh70lWQV2k_nxU',
 };
 
+function delta<A>(from: A, to: A, codec: t.Type<A, any, any>) {
+  const fromJSON = codec.encode(from)
+  const toJSON = codec.encode(to)
+  const delta = jsonPatch.compare(fromJSON, toJSON)
+  console.log(delta)
+}
+
 async function main() {
   const ownerKey = new PublicKey(jose.JWK.asKey(KEY_A));
   const signingKey = new PublicKey(jose.JWK.asKey(KEY_B));
@@ -50,10 +58,13 @@ async function main() {
       ['encryption', encryptionKey],
     ]),
   );
-  const json = ThreeIdDocumentJson.encode(doc1)
-  console.log('encoded', json)
-  const decoded = ThreeIdDocumentJson.decode(json)
-  console.log('decoded', decoded)
+  const doc2 = doc1.clone()
+  doc2.publicKeys.set('encryption', new PublicKey(jose.JWK.asKey(KEY_D)))
+  const dd = delta(doc1, doc2, ThreeIdDocumentJson)
+  // const json = ThreeIdDocumentJson.encode(doc1)
+  // console.log('encoded', json)
+  // const decoded = ThreeIdDocumentJson.decode(json)
+  // console.log('decoded', decoded)
   // // console.log('mul', publicKey.toMulticodec());
   // const mul2 = PublicKeyMultiCodec.encode(publicKey);
   // console.log('mul2', mul2);

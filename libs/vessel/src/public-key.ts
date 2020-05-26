@@ -2,6 +2,7 @@ import jose from 'jose';
 import base64url from 'base64url';
 import * as t from 'io-ts';
 import * as multicodec from 'multicodec';
+import { Right } from 'fp-ts/lib/Either';
 
 export class PublicKey {
   constructor(readonly jwk: jose.JWK.Key) {}
@@ -16,6 +17,11 @@ export class PublicKey {
     } else {
       throw new Error(`Not implemented for kty ${this.jwk.kty}`);
     }
+  }
+
+  clone() {
+    const recovered = multicodecCodec.decode(multicodecCodec.encode(this)) as Right<PublicKey>;
+    return recovered.right;
   }
 }
 
