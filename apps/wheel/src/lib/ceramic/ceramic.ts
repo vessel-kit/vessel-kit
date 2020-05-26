@@ -39,7 +39,7 @@ export class Ceramic {
 
   async create(record: any): Promise<Document> {
     const document = await this.repository.create(record);
-    await this.anchoringService.requestAnchor(document.cid);
+    this.anchoringService.requestAnchor(document.cid);
     return document;
   }
 

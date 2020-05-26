@@ -3,11 +3,11 @@ import { DocumentState } from './document.state';
 import { MessageBus } from './message-bus';
 import { FileStore } from './file-store';
 import { Compartment, lockdown } from 'ses';
-import { AnchorStatus } from './anchor-status';
 import { Observable } from 'rxjs';
+import { AnchoringStatus } from '@potter/vessel';
 
 export class Document {
-  #anchorStatus: AnchorStatus = AnchorStatus.NOT_REQUESTED
+  #anchorStatus: AnchoringStatus = AnchoringStatus.NOT_REQUESTED
 
   constructor(
     readonly cid: CID,
@@ -15,9 +15,10 @@ export class Document {
     private log: CID[],
     readonly fileStore: FileStore,
     readonly bus: MessageBus,
-    private readonly anchoring$: Observable<AnchorStatus>
+    private readonly anchoring$: Observable<AnchoringStatus>
   ) {
     this.anchoring$.subscribe(a => {
+      console.log(`Updated anchor status for ${cid} to ${a}`)
       this.#anchorStatus = a
     })
   }

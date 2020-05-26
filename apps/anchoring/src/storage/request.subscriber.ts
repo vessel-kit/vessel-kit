@@ -2,8 +2,8 @@ import { Connection, EntitySubscriberInterface, EventSubscriber, UpdateEvent } f
 import { RequestRecord } from './request.record';
 import { Injectable } from '@nestjs/common';
 import { PubSubService } from '../commons/pub-sub.service';
-import { RequestStatus } from './request-status';
 import { AnchorStorage } from './anchor.storage';
+import { AnchoringStatus } from '@potter/vessel';
 
 @EventSubscriber()
 @Injectable()
@@ -18,7 +18,7 @@ export class RequestSubscriber implements EntitySubscriberInterface<RequestRecor
 
   async afterUpdate(event: UpdateEvent<RequestRecord>): Promise<any> {
     const record = event.entity;
-    if (record.status === RequestStatus.ANCHORED) {
+    if (record.status === AnchoringStatus.ANCHORED) {
       const anchor = await this.anchorStorage.byRequestId(record.id)
       await this.pubSubService.didAnchor.publish({
         id: record.id.toString(),

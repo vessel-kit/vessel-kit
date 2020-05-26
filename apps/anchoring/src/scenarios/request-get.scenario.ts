@@ -3,11 +3,11 @@ import { RequestStorage } from '../storage/request.storage';
 import CID from 'cids';
 import { RequestRecord } from '../storage/request.record';
 import { AnchorStorage } from '../storage/anchor.storage';
-import { RequestStatus } from '../storage/request-status';
 import { UnreachableCaseError } from '../unreachable-case.error';
 import { AnchorRecord } from '../storage/anchor.record';
 import { dateAsTimestamp } from '../api/date-as-timestamp';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
+import { AnchoringStatus } from '@potter/vessel';
 
 export class RequestPresentation {
   constructor(
@@ -18,7 +18,7 @@ export class RequestPresentation {
 
   toJSON() {
     switch (this.request.status) {
-      case RequestStatus.ANCHORED:
+      case AnchoringStatus.ANCHORED:
         return {
           id: this.request.id.toString(),
           status: this.request.status.toString(),
@@ -35,7 +35,7 @@ export class RequestPresentation {
             },
           },
         };
-      case RequestStatus.PENDING:
+      case AnchoringStatus.PENDING:
         return {
           id: this.request.id.toString(),
           status: this.request.status.toString(),
@@ -45,8 +45,9 @@ export class RequestPresentation {
           updatedAt: dateAsTimestamp(this.request.updatedAt),
           scheduledAt: dateAsTimestamp(this.nextAnchoring),
         };
-      case RequestStatus.FAILED:
-      case RequestStatus.PROCESSING:
+      case AnchoringStatus.FAILED:
+      case AnchoringStatus.NOT_REQUESTED:
+      case AnchoringStatus.PROCESSING:
         return {
           id: this.request.id.toString(),
           status: this.request.status.toString(),

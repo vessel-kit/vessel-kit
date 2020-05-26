@@ -2,9 +2,9 @@ import CID from 'cids';
 import { RequestRecord } from '../storage/request.record';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
-import { RequestStatus } from '../storage/request-status';
 import { UuidValue } from '../storage/uuid.value';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
+import { AnchoringStatus } from '@potter/vessel';
 
 @Injectable()
 export class RequestCreateScenario {
@@ -43,7 +43,7 @@ export class RequestCreateScenario {
     record.id = new UuidValue();
     record.cid = cid;
     record.docId = docId;
-    record.status = RequestStatus.PENDING;
+    record.status = AnchoringStatus.PENDING;
     return record;
   }
 }

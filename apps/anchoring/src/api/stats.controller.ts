@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
 import { AnchorStorage } from '../storage/anchor.storage';
-import { RequestStatus } from '../storage/request-status';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
+import { AnchoringStatus } from '@potter/vessel';
 
 @Controller('/v0/stats')
 export class StatsController {
@@ -16,7 +16,7 @@ export class StatsController {
   async index() {
     const requestsTotalCount = await this.requestStorage.count();
     const anchorsTotalCount = await this.anchorStorage.count();
-    const pendingRequests = await this.requestStorage.countByStatus(RequestStatus.PENDING);
+    const pendingRequests = await this.requestStorage.countByStatus(AnchoringStatus.PENDING);
     const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
     const nextAnchoring = cronJob.nextDate().toDate()
     return {

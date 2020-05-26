@@ -1,10 +1,10 @@
 import { RequestRecord } from '../storage/request.record';
-import { RequestStatus } from '../storage/request-status';
 import { dateAsTimestamp } from './date-as-timestamp';
+import { AnchoringStatus } from '@potter/vessel';
 
 export class RequestCreatedPresentation {
   readonly id: string;
-  readonly status: RequestStatus;
+  readonly status: AnchoringStatus;
   readonly cid: string;
   readonly docId: string;
   readonly message: string;

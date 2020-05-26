@@ -1,59 +1,65 @@
 import CID from 'cids';
 import axios from 'axios';
-import { CeramicDocumentId } from '@potter/vessel';
-import PQueue from 'p-queue';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { AnchorStatus } from './anchor-status';
+import { AnchoringStatus, CeramicDocumentId } from '@potter/vessel';
+import { BehaviorSubject, Observable, Subject, queueScheduler } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 
 export class EthereumAnchorService {
-  private readonly queue = new PQueue();
   private readonly observations = new Subject<{
     cid: CID;
-    status: AnchorStatus;
+    status: AnchoringStatus;
   }>();
   constructor(private readonly anchoringEndpoint: string) {}
 
-  anchorStatus$(cid: CID): Observable<AnchorStatus> {
-    const subject = new BehaviorSubject(AnchorStatus.PENDING);
+  anchorStatus$(cid: CID): Observable<AnchoringStatus> {
+    const subject = new BehaviorSubject(AnchoringStatus.PENDING);
     this.observations
       .pipe(
         filter(o => o.cid.toString() === cid.toString()),
         map(o => o.status),
       )
       .subscribe(subject);
-    return subject.pipe(
-      tap(o => {
-        console.log(`Get anchor for ${cid.toString()}: ${o}`);
-      }),
-    );
+    return subject.asObservable();
   }
 
-  async requestAnchor(cid: CID): Promise<void> {
-    return this.queue.add(async () => {
+  requestAnchor(cid: CID) {
+    queueScheduler.schedule(async () => {
       const docId = new CeramicDocumentId(cid);
       const endpoint = `${this.anchoringEndpoint}/api/v0/requests`;
       await axios.post(endpoint, {
         docId: docId.toString(),
         cid: cid.toString(),
       });
-      this.observations.next({ cid: cid, status: AnchorStatus.PENDING });
+      this.observations.next({ cid: cid, status: AnchoringStatus.PENDING });
+      this.startRequestingAnchorStatus(cid);
     });
   }
 
-  async requestAnchorStatus(cid: CID): Promise<void> {
-    return this.queue.add(async () => {
-      try {
-        const endpoint = `${
-          this.anchoringEndpoint
-        }/api/v0/requests/${cid.toString()}`;
-        const response = await axios.get(endpoint);
-        const status = response.data.status as AnchorStatus;
-        this.observations.next({ cid: cid, status });
-      } catch (e) {
-        console.error('requestAnchorStatus');
-        console.error(e);
+  startRequestingAnchorStatus(cid: CID) {
+    const doRequest = async () => {
+      const status = await this.requestAnchorStatus(cid);
+      if (status !== AnchoringStatus.ANCHORED) {
+        setTimeout(() => {
+          queueScheduler.schedule(() => doRequest());
+        }, 3000);
       }
-    });
+    };
+    queueScheduler.schedule(() => doRequest());
+  }
+
+  async requestAnchorStatus(cid: CID) {
+    try {
+      console.log(`Requesting anchoring status for ${cid.toString()}`);
+      const endpoint = `${
+        this.anchoringEndpoint
+      }/api/v0/requests/${cid.toString()}`;
+      const response = await axios.get(endpoint);
+      const status = response.data.status as AnchoringStatus;
+      this.observations.next({ cid: cid, status });
+      return status;
+    } catch (e) {
+      console.error('requestAnchorStatus');
+      console.error(e);
+    }
   }
 }

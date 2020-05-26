@@ -1,17 +1,17 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from 'typeorm';
 import { UuidValue } from './uuid.value';
 import { uuidTransformer } from './uuid.transformer';
-import { RequestStatus } from './request-status';
 import CID from 'cids';
 import { cidTransformer } from './cid.transformer';
+import { AnchoringStatus } from '@potter/vessel';
 
 @Entity('requests')
 export class RequestRecord {
   @PrimaryColumn({ generated: 'uuid', transformer: uuidTransformer })
   id: UuidValue;
 
-  @Column({ enum: RequestStatus })
-  status: RequestStatus;
+  @Column({ enum: AnchoringStatus })
+  status: AnchoringStatus;
 
   @Column('varchar', { transformer: cidTransformer })
   cid: CID;

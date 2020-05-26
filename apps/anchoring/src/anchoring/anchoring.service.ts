@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
-import { RequestStatus } from '../storage/request-status';
 import { RequestRecord } from '../storage/request.record';
 import { IpfsService } from './ipfs.service';
 import { MerkleNode, MerkleTree, PathDirection } from './merkle-tree';
@@ -12,6 +11,7 @@ import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
+import { AnchoringStatus } from '@potter/vessel';
 
 @Injectable()
 export class AnchoringService {
@@ -29,8 +29,8 @@ export class AnchoringService {
   }
 
   async anchorRequests() {
-    const pending = await this.requestStorage.allByStatus(RequestStatus.PENDING);
-    const processing = await this.requestStorage.updateStatus(pending, RequestStatus.PROCESSING);
+    const pending = await this.requestStorage.allByStatus(AnchoringStatus.PENDING);
+    const processing = await this.requestStorage.updateStatus(pending, AnchoringStatus.PROCESSING);
     const [stale, latest] = this.separateRecordsByTime(processing);
     await this.markRecordsFailed(stale);
 
@@ -64,7 +64,7 @@ export class AnchoringService {
       anchorRecord.cid = await this.ipfs.dag.put(ipfsAnchorRecord);
       anchorRecord.transactionId = savedTransactionRecord.id;
       await this.anchorStorage.save(anchorRecord);
-      request.status = RequestStatus.ANCHORED;
+      request.status = AnchoringStatus.ANCHORED;
       await this.requestStorage.save(request); // TODO Subscription for state
     }
   }
@@ -81,7 +81,7 @@ export class AnchoringService {
   }
 
   async markRecordsFailed(records: RequestRecord[]) {
-    await this.requestStorage.updateStatus(records, RequestStatus.FAILED); // TODO Subscription for states
+    await this.requestStorage.updateStatus(records, AnchoringStatus.FAILED); // TODO Subscription for states
   }
 
   putAnchorProof(transaction: BlockchainTransaction, root: CID) {

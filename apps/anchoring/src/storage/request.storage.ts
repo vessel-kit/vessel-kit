@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RequestRecord } from './request.record';
 import { Repository } from 'typeorm';
-import { RequestStatus } from './request-status';
 import CID from 'cids';
+import { AnchoringStatus } from '@potter/vessel';
 
 @Injectable()
 export class RequestStorage {
@@ -21,7 +21,7 @@ export class RequestStorage {
     return this.repository.count();
   }
 
-  countByStatus(status: RequestStatus) {
+  countByStatus(status: AnchoringStatus) {
     return this.repository.count({
       where: {
         status: status,
@@ -37,7 +37,7 @@ export class RequestStorage {
     });
   }
 
-  updateStatus(records: RequestRecord[], status: RequestStatus): Promise<RequestRecord[]> {
+  updateStatus(records: RequestRecord[], status: AnchoringStatus): Promise<RequestRecord[]> {
     const next = records.map(r => {
       r.status = status;
       return r;
@@ -45,7 +45,7 @@ export class RequestStorage {
     return this.saveAll(next);
   }
 
-  allByStatus(status: RequestStatus): Promise<RequestRecord[]> {
+  allByStatus(status: AnchoringStatus): Promise<RequestRecord[]> {
     return this.repository.find({
       status: status,
     });

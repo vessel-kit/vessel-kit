@@ -40,7 +40,7 @@ export class DocumentStore {
       const record = await this.storage.byId(docId);
       const document = new Document(
         docId,
-        record.payload,
+        record,
         [],
         this.fileStore,
         this.messageBus,
