@@ -1,7 +1,7 @@
-import { TreeIdDocumentState } from './three-id.content';
+import { ThreeIdContent } from './three-id.content';
 
 export class ThreeIdHandler {
-  async createDocument(genesis: TreeIdDocumentState) {
+  async createDocument(genesis: ThreeIdContent) {
 
   }
 }

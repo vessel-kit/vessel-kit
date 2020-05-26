@@ -1,4 +1,4 @@
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronCommand, CronJob } from 'cron';
 import { ConfigService } from '../commons/config.service';
@@ -7,7 +7,9 @@ import { AnchoringService } from './anchoring.service';
 
 @Injectable()
 export class AnchoringScheduleService implements OnApplicationBootstrap {
-  readonly jobs: Map<string, CronJob> = new Map();
+  private readonly logger = new Logger(AnchoringScheduleService.name);
+  private readonly jobs: Map<string, CronJob> = new Map();
+
   constructor(
     private readonly schedulerRegistry: SchedulerRegistry,
     private readonly configService: ConfigService,
@@ -27,6 +29,7 @@ export class AnchoringScheduleService implements OnApplicationBootstrap {
 
   @bind()
   async triggerAnchoring() {
+    this.logger.log('Trigger anchoring');
     await this.anchoringService.anchorRequests();
   }
 

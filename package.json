@@ -1,6 +1,9 @@
 {
   "name": "@potter/root",
   "private": true,
+  "scripts": {
+    "dev": "lerna run --parallel dev"
+  },
   "workspaces": [
     "apps/*",
     "libs/*",

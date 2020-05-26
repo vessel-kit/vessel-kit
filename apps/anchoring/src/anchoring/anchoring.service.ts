@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
 import { RequestStatus } from '../storage/request-status';
 import { RequestRecord } from '../storage/request.record';
@@ -12,10 +12,10 @@ import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
-import { PubSubService } from '../commons/pub-sub.service';
 
 @Injectable()
 export class AnchoringService {
+  private readonly logger = new Logger(AnchoringService.name);
   private readonly ipfs: Ipfs;
 
   constructor(
@@ -35,8 +35,11 @@ export class AnchoringService {
     await this.markRecordsFailed(stale);
 
     if (latest.length === 0) {
+      this.logger.log(`No pending requests to anchor`);
       // Nothing to do here
       return;
+    } else {
+      this.logger.log(`Requests to anchor: ${latest.length}`);
     }
 
     const merkleTree = await this.merkleTree(latest);
