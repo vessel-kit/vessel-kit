@@ -33,21 +33,25 @@ export class DocumentStore {
     return this.storage.count();
   }
 
-  async get(docId: CID): Promise<Document | undefined> {
+  async get(docId: CID): Promise<Document | null> {
     if (this.mapping.has(docId.toString())) {
       return this.mapping.get(docId.toString());
     } else {
       const record = await this.storage.byId(docId);
-      const document = new Document(
-        docId,
-        record,
-        [],
-        this.fileStore,
-        this.messageBus,
-        this.anchoringService.anchorStatus$(docId),
-      );
-      this.mapping.set(docId.toString(), document);
-      return document;
+      if (record) {
+        const document = new Document(
+          docId,
+          record.payload,
+          [],
+          this.fileStore,
+          this.messageBus,
+          this.anchoringService.anchorStatus$(docId),
+        );
+        this.mapping.set(docId.toString(), document);
+        return document;
+      } else {
+        return null
+      }
     }
   }
 
