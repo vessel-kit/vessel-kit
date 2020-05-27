@@ -3,7 +3,7 @@ export * from './ceramic-document-id';
 export * from './chain';
 export * from './chain-entry';
 export * from './three-id.content'
-export * from './codecs/buffer-multibase-codec'
-export * from './codecs/map-codec'
+export * from './codec/buffer-multibase-codec'
+export * from './codec/map-codec'
 export * from './public-key'
 export * from './anchoring-status'

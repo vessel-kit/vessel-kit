@@ -1,9 +1,10 @@
 import { PublicKey, multicodecCodec as PublicKeyMulticodec } from './public-key';
-import { BufferMultibaseCodec } from './codecs/buffer-multibase-codec';
+import { BufferMultibaseCodec } from './codec/buffer-multibase-codec';
 import * as t from 'io-ts';
-import { MapCodec } from './codecs/map-codec';
+import { MapCodec } from './codec/map-codec';
 import { isEmpty, lefts, rights } from 'fp-ts/lib/Array';
 import { isRight } from 'fp-ts/lib/Either';
+import jsonPatch from 'fast-json-patch';
 
 const codec = new t.Type<ThreeIdContent, any, any>(
   'PublicKeyMulticodec',
@@ -35,10 +36,12 @@ const codec = new t.Type<ThreeIdContent, any, any>(
 
 export class ThreeIdContent {
   static doctype = '3id';
-  static codec = codec
+  static codec = codec;
 
+  public readonly doctype = ThreeIdContent.doctype
   owners: PublicKey[];
   publicKeys: Map<string, PublicKey>;
+  public readonly governance = null
 
   constructor(owners: PublicKey[], publicKeys: Map<string, PublicKey>) {
     this.owners = owners;
@@ -52,5 +55,12 @@ export class ThreeIdContent {
       nextPublicKeys.set(key, value.clone());
     });
     return new ThreeIdContent(nextOwners, nextPublicKeys);
+  }
+
+  delta(from: ThreeIdContent) {
+    const fromJSON = ThreeIdContent.codec.encode(from);
+    const toJSON = ThreeIdContent.codec.encode(this);
+    const delta = jsonPatch.compare(fromJSON, toJSON);
+    return delta;
   }
 }

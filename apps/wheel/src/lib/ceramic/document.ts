@@ -4,7 +4,7 @@ import { MessageBus } from './message-bus';
 import { FileStore } from './file-store';
 import { Compartment, lockdown } from 'ses';
 import { Observable } from 'rxjs';
-import { AnchoringStatus } from '@potter/vessel';
+import { AnchoringStatus, ThreeIdContent } from '@potter/vessel';
 
 export class Document {
   #anchorStatus: AnchoringStatus = AnchoringStatus.NOT_REQUESTED
@@ -46,26 +46,31 @@ export class Document {
   async update(next: any) {
     // const record = await this.handler.makeRecord(this.state, next);
     if (!this.log) this.log = [];
-    const governanceDoc = await this.fileStore.get(this.state.governance['/']); // TODO Get better
-    lockdown();
-    const compartment = new Compartment({
-      module: {},
-    });
-    const main = compartment.evaluate(governanceDoc.main);
-    const canApply = main.canApply
+    const isGoverned = this.state.governance
+    if (isGoverned) {
+      const governanceDoc = await this.fileStore.get(this.state.governance); // TODO Get better
+      lockdown();
+      const compartment = new Compartment({
+        module: {},
+      });
+      const main = compartment.evaluate(governanceDoc.main);
+      const canApply = main.canApply
 
-    // const result = canApply()
-    const nextContent = Object.assign({}, this.state.content, next.content);
-    console.log('content', this.state.content, nextContent)
-    const canApplyResult = canApply(this.state.content, nextContent)
-    console.log('res', canApplyResult)
-    if (canApplyResult) {
-      this.state.content = nextContent
-      const cid = await this.fileStore.put(next);
-      this.log.push(cid);
-      await this.publishHead()
+      // const result = canApply()
+      const nextContent = Object.assign({}, this.state.content, next.content);
+      console.log('content', this.state.content, nextContent)
+      const canApplyResult = canApply(this.state.content, nextContent)
+      console.log('res', canApplyResult)
+      if (canApplyResult) {
+        this.state.content = nextContent
+        const cid = await this.fileStore.put(next);
+        this.log.push(cid);
+        await this.publishHead()
+      } else {
+        console.log('Sorry, can not apply')
+      }
     } else {
-      console.log('Sorry, can not apply')
+      console.log('can not govern')
     }
   }
 

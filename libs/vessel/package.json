@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "@types/colors": "^1.2.1",
     "base64url": "^3.0.1",
     "cids": "^0.8.0",
+    "colors": "^1.4.0",
+    "decko": "^1.2.0",
     "ethereumjs-util": "^7.0.1",
     "fast-json-patch": "^3.0.0-1",
     "fp-ts": "^2.6.1",

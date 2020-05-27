@@ -13,7 +13,11 @@ export class CeramicDocumentId {
     return new CeramicDocumentId(cid);
   }
 
+  valueOf() {
+    return this.cid.toString();
+  }
+
   toString() {
-    return `ceramic://${this.cid.toString()}`;
+    return `/ceramic/${this.cid.toString()}`;
   }
 }
