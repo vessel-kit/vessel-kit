@@ -1,7 +1,7 @@
 export interface ILogger {
-  log(message: any, context?: string): any;
-  error(message: any, trace?: string, context?: string): any;
-  warn(message: any, context?: string): any;
-  debug?(message: any, context?: string): any;
-  verbose?(message: any, context?: string): any;
+  log(...message: any): void
+  error(...message: any): any;
+  warn(...message: any): any;
+  debug?(...message: any): any;
+  verbose?(...message: any): any;
 }
