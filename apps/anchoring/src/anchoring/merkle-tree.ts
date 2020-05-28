@@ -14,11 +14,6 @@ export class MerklePath {
   }
 }
 
-export enum PathDirection {
-  L = 'L',
-  R = 'R',
-}
-
 export class MerkleNode<A> {
   private _uplink?: MerkleNode<A>;
 
