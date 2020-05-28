@@ -1,7 +1,7 @@
 import { ILogger } from './logger.interface';
 import colors from 'colors/safe';
 
-export type LogLevel = 'log' | 'error' | 'warn' | 'debug' | 'verbose';
+export type LogLevel = 'log' | 'error' | 'warn' | 'debug';
 
 const localeStringOptions = {
   year: 'numeric',
@@ -13,31 +13,36 @@ const localeStringOptions = {
 };
 
 export class ConsoleLogger implements ILogger {
-  constructor() {}
+  constructor(readonly context?: string) {}
 
   log(...message: any) {
-    ConsoleLogger.printMessage(message, 'log', colors.green);
+    this.printMessage(message, 'log', colors.green);
   }
 
   error(...message: any) {
-    ConsoleLogger.printMessage(message, 'verbose', colors.red);
+    this.printMessage(message, 'error', colors.red);
   }
 
   warn(...message: any) {
-    ConsoleLogger.printMessage(message, 'verbose', colors.yellow);
+    this.printMessage(message, 'warn', colors.yellow);
   }
 
   debug(...message: any) {
-    ConsoleLogger.printMessage(message, 'debug', colors.magenta);
+    this.printMessage(message, 'debug', colors.magenta);
   }
 
-  verbose(...message: any) {
-    ConsoleLogger.printMessage(message, 'verbose', colors.cyan);
-  }
-
-  private static printMessage(message: any, level: LogLevel, color: (message: string) => string) {
+  private printMessage(message: any, level: LogLevel, color: (message: string) => string) {
     const timestamp = new Date(Date.now()).toLocaleString(undefined, localeStringOptions);
     const timestampMessage = color(timestamp);
-    console[level](timestampMessage, ...message);
+    if (this.context) {
+      const contextClause = color(`[${this.context}]`);
+      console[level](timestampMessage, contextClause, ...message);
+    } else {
+      console[level](timestampMessage, ...message);
+    }
+  }
+
+  withContext(context?: string): ILogger {
+    return new ConsoleLogger(context);
   }
 }

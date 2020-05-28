@@ -1,32 +1,39 @@
 import { ILogger } from './logger/logger.interface';
 import { Ipfs } from 'ipfs';
 import { ConsoleLogger } from './logger/console-logger';
+import { DocumentRepository } from './document.repository';
+import { Dispatcher } from './dispatcher';
 import { DocumentService } from './document.service';
+import { RemoteEthereumAnchoringService } from './anchoring/remote-ethereum-anchoring-service';
+import { AnchoringService } from './anchoring.service';
 
 export interface CeramicOptions {
   logger: ILogger;
+  anchoringEndpoint: string
 }
 
 export class Ceramic {
-  #ipfs: Ipfs
-  #logger: ILogger
-  #documentService: DocumentService
+  #documentRepository: DocumentRepository
 
   constructor(ipfs: Ipfs, options: CeramicOptions) {
-    this.#ipfs = ipfs
-    this.#logger = options.logger
-    this.#logger.log(`Constructed Ceramic instance`)
-    this.#documentService = new DocumentService(options.logger)
+    const logger = options.logger
+    const dispatcher = new Dispatcher(ipfs)
+    const ethereumAnchoringService = new RemoteEthereumAnchoringService(logger, options.anchoringEndpoint)
+    const anchoringService = new AnchoringService(logger, ethereumAnchoringService, dispatcher)
+    const documentService = new DocumentService(logger, anchoringService, dispatcher)
+    this.#documentRepository = new DocumentRepository(logger, dispatcher, documentService)
+    logger.log(`Constructed Ceramic instance`, options)
   }
 
   static async build(ipfs: Ipfs, options?: CeramicOptions) {
     const appliedOptions = Object.assign({
-      logger: new ConsoleLogger(),
+      logger: new ConsoleLogger('Ceramic'),
+      anchoringEndpoint: 'http://localhost:3000'
     }, options);
     return new Ceramic(ipfs, appliedOptions);
   }
 
-  async create(genesis: any & {doctype: string}) {
-    this.#logger.debug(`Creating document from genesis record`, genesis)
+  async create(genesis: any) {
+    return this.#documentRepository.create(genesis)
   }
 }

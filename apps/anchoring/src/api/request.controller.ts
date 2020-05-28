@@ -2,17 +2,15 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import Joi from '@hapi/joi';
 import CID from 'cids';
 import { RequestCreateScenario } from '../scenarios/request-create.scenario';
-import { RequestCreatedPresentation } from './request-created.presentation';
 import { RequestGetScenario } from '../scenarios/request-get.scenario';
 import { RequestStorage } from '../storage/request.storage';
-import { RequestPresentation } from './request.presentation';
 import { ApiProperty } from '@nestjs/swagger';
 import { CeramicDocumentId } from '@potter/vessel';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 import { AnchorStorage } from '../storage/anchor.storage';
-import { Ipfs } from 'ipfs';
 import { IpfsService } from '../anchoring/ipfs.service';
 import * as multihash from 'multihashes';
+import { RequestPresentation } from './request.presentation';
 
 class CreateRequestPayload {
   @ApiProperty()
@@ -60,7 +58,7 @@ export class RequestController {
 
           return new RequestPresentation(r, anchor, digest, ethereumTxHash, chainId);
         } else {
-          return new RequestPresentation(r)
+          return new RequestPresentation(r);
         }
       }),
     );
@@ -84,7 +82,7 @@ export class RequestController {
     }
     const cid = new CID(body.cid);
     const docId = CeramicDocumentId.fromString(body.docId).toString();
-    const result = await this.requestCreateScenario.execute(cid, docId);
-    return new RequestCreatedPresentation(result.record, result.nextAnchoring);
+    await this.requestCreateScenario.execute(cid, docId);
+    return this.requestGetScenario.execute(cid.toString());
   }
 }

@@ -1,9 +1,131 @@
 import { ILogger } from './logger/logger.interface';
+import { CeramicDocumentId } from './ceramic-document-id';
+import CID from 'cids';
+import { BehaviorSubject } from 'rxjs';
+import { AnchoringStatus } from './anchoring/anchoring-status';
+import * as t from 'io-ts';
+import { DocumentState } from './document.state';
+import { UnreachableCaseError } from './unreachable-case.error';
+import { Dispatcher } from './dispatcher';
+import { Chain } from './chain';
+import { NamedMutex } from './named-mutex.util';
+import { AnchoringService } from './anchoring.service';
+
+enum RecordKind {
+  GENESIS,
+  SIGNED,
+  ANCHOR
+}
+
+function detectRecordKind(record: any): RecordKind {
+  if (record.prev) {
+    if (record.proof) {
+      return RecordKind.ANCHOR
+    } else {
+      return RecordKind.SIGNED
+    }
+  } else {
+    return RecordKind.GENESIS
+  }
+}
 
 export class DocumentService {
   #logger: ILogger
-  constructor(logger: ILogger) {
-    this.#logger = logger
-    this.#logger.log(`Constructed DocumentService instance`)
+  #anchoring: AnchoringService
+  #dispatcher: Dispatcher
+  #mutex: NamedMutex
+
+  constructor(logger: ILogger, anchoring: AnchoringService, dispatcher: Dispatcher) {
+    this.#logger = logger.withContext(DocumentService.name)
+    this.#anchoring = anchoring
+    this.#dispatcher = dispatcher
+    this.#mutex = new NamedMutex()
+  }
+
+  async tail(local: Chain, tip: CID, log: CID[] = []): Promise<Chain> {
+    if (local.has(tip)) {
+      return new Chain(log.reverse())
+    } else {
+      const record = await this.#dispatcher.retrieveRecord(tip)
+      const prev = record.prev as CID | null
+      if (prev) {
+        log.push(tip)
+        return this.tail(local, prev, log)
+      } else {
+        return new Chain([])
+      }
+    }
+  }
+
+  async applyHead(recordCid: CID, state$: BehaviorSubject<t.TypeOf<typeof DocumentState>>) {
+      this.#logger.debug(`Applying head ${recordCid.toString()}`)
+      const localLog = state$.value.log
+      const remoteLog = await this.tail(localLog, recordCid)
+      // Case 1: Log is fully applied
+      if (remoteLog.last.equals(localLog.last)) {
+        this.#logger.debug(`Detected ${recordCid} is fully applied`)
+      }
+      // Case 2: Direct continuation
+      const remoteStart = await this.#dispatcher.retrieveRecord(remoteLog.init)
+      if (remoteStart?.prev?.equals(localLog.last)) {
+        this.#logger.debug(`Detected direct continuation for ${recordCid}`)
+        await this.applyLog(remoteLog, state$)
+      }
+      // if (remoteLog[remoteLog.length -1]) {}
+      // Case 3: Merge
+  }
+
+  async applyLog(log: Chain, state$: BehaviorSubject<t.TypeOf<typeof DocumentState>>) {
+    for await (let entry of log.log) {
+      const record = await this.#dispatcher.retrieveRecord(entry)
+      const recordKind = detectRecordKind(record)
+      switch (recordKind) {
+        case RecordKind.SIGNED:
+          break
+        case RecordKind.ANCHOR:
+          const proof = await this.#anchoring.verify(record)
+          console.log('proof', proof)
+          break
+        case RecordKind.GENESIS:
+          break
+        default:
+          throw new UnreachableCaseError(recordKind)
+      }
+    }
+  }
+
+  handleAnchorStatusUpdate(docId: CeramicDocumentId, state$: BehaviorSubject<t.TypeOf<typeof DocumentState>>) {
+    return this.#anchoring.anchorStatus$(docId).subscribe(async observation => {
+      await this.#mutex.use(docId.toString(), async () => {
+        this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation)
+        switch (observation.status) {
+          case AnchoringStatus.ANCHORED:
+            const anchorRecordCID = observation.anchorRecord
+            return this.applyHead(anchorRecordCID, state$)
+          case AnchoringStatus.PENDING:
+            return state$.next({
+              ...state$.value,
+              anchor: {
+                status: AnchoringStatus.PENDING,
+                scheduledAt: observation.scheduledAt
+              }
+            })
+          case AnchoringStatus.PROCESSING:
+            return state$.next({
+              ...state$.value,
+              anchor: {
+                status: AnchoringStatus.PROCESSING,
+              }
+            })
+          default:
+            throw new UnreachableCaseError(observation)
+        }
+      })
+    })
+  }
+
+  requestAnchor(docId: CeramicDocumentId, cid: CID) {
+    this.#logger.debug(`Requesting anchor for ${docId.toString()}?version=${cid.toString()}`)
+    this.#anchoring.requestAnchor(docId, cid)
   }
 }

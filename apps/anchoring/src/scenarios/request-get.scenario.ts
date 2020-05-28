@@ -26,14 +26,15 @@ export class RequestPresentation {
           docId: this.request.docId,
           createdAt: dateAsTimestamp(this.request.createdAt),
           updatedAt: dateAsTimestamp(this.request.updatedAt),
-          anchorRecord: {
-            cid: this.anchor.cid.toString(),
-            content: {
-              path: this.anchor.path,
-              prev: this.request.cid.toString(),
-              proof: this.anchor.proofCid.toString(),
-            },
-          },
+          anchorRecord: this.anchor.cid.toString(),
+          // anchorRecord: {
+          //   cid: this.anchor.cid.toString(),
+          //   content: {
+          //     path: this.anchor.path,
+          //     prev: this.request.cid.toString(),
+          //     proof: this.anchor.proofCid.toString(),
+          //   },
+          // },
         };
       case AnchoringStatus.PENDING:
         return {
