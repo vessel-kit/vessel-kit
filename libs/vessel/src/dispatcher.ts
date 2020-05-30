@@ -8,12 +8,12 @@ export class Dispatcher {
     this.#ipfs = ipfs
   }
 
-  storeRecord(record: any): Promise<CID> {
-    return this.#ipfs.dag.put(record)
+  store(content: any): Promise<CID> {
+    return this.#ipfs.dag.put(content)
   }
 
-  async retrieveRecord(cid: CID) {
-    const blob = await this.#ipfs.dag.get(cid)
-    return blob.value
+  async retrieve(cid: CID, path?: string) {
+    const blob = await this.#ipfs.dag.get(cid, path)
+    return blob?.value
   }
 }

@@ -10,6 +10,7 @@ import { AnchoringService } from './anchoring.service';
 export interface CeramicOptions {
   logger: ILogger;
   anchoringEndpoint: string
+  ethereumEndpoint: string
 }
 
 export class Ceramic {
@@ -19,16 +20,18 @@ export class Ceramic {
     const logger = options.logger
     const dispatcher = new Dispatcher(ipfs)
     const ethereumAnchoringService = new RemoteEthereumAnchoringService(logger, options.anchoringEndpoint)
-    const anchoringService = new AnchoringService(logger, ethereumAnchoringService, dispatcher)
+    const ethereumEndpoint = options.ethereumEndpoint
+    const anchoringService = new AnchoringService(logger, ethereumEndpoint, ethereumAnchoringService, dispatcher)
     const documentService = new DocumentService(logger, anchoringService, dispatcher)
-    this.#documentRepository = new DocumentRepository(logger, dispatcher, documentService)
+    this.#documentRepository = new DocumentRepository(logger, documentService)
     logger.log(`Constructed Ceramic instance`, options)
   }
 
   static async build(ipfs: Ipfs, options?: CeramicOptions) {
     const appliedOptions = Object.assign({
       logger: new ConsoleLogger('Ceramic'),
-      anchoringEndpoint: 'http://localhost:3000'
+      anchoringEndpoint: 'http://localhost:3000',
+      ethereumEndpoint: 'http://localhost:8545'
     }, options);
     return new Ceramic(ipfs, appliedOptions);
   }

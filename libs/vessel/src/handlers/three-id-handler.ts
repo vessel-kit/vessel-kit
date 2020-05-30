@@ -3,11 +3,13 @@ import Joi from '@hapi/joi';
 import multibase from 'multibase';
 import * as multicodec from 'multicodec';
 import * as t from 'io-ts';
-import * as tPromise from 'io-ts-promise';
 import jose from 'jose';
 import base64url from 'base64url';
 import { multicodecCodec as PublicKeyMulticodec, PublicKey } from '../public-key';
 import { BufferMultibaseCodec } from '..';
+import { DocumentState } from '../document.state';
+import { Dispatcher } from '../dispatcher';
+import { AnchoringService } from '../anchoring.service';
 
 const PublicKeyString = Joi.string().custom(value => {
   const buffer = multibase.decode(value);
@@ -62,6 +64,14 @@ const ThreeIdFreight = t.type({
 });
 
 export class ThreeIdHandler implements IHandler {
+  #dispatcher: Dispatcher
+  #anchoring: AnchoringService
+
+  constructor(dispatcher: Dispatcher, anchoring: AnchoringService) {
+    this.#dispatcher = dispatcher
+    this.#anchoring = anchoring
+  }
+
   async makeGenesis(genesis: any): Promise<any> {
     await GENESIS_SCHEMA.validateAsync(genesis);
     return genesis;
@@ -69,5 +79,9 @@ export class ThreeIdHandler implements IHandler {
 
   async applyGenesis(genesis: any) {
     return genesis
+  }
+
+  apply(record: any, state: DocumentState): Promise<DocumentState> {
+    return Promise.resolve(undefined);
   }
 }

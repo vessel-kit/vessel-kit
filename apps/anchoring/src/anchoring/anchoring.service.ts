@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
 import { RequestRecord } from '../storage/request.record';
 import { IpfsService } from './ipfs.service';
-import { MerkleNode, MerkleTree, PathDirection } from './merkle-tree';
 import { Ipfs } from 'ipfs';
 import CID from 'cids';
 import { EthereumService } from './ethereum.service';
@@ -11,7 +10,7 @@ import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
-import { AnchoringStatus } from '@potter/vessel';
+import { AnchoringStatus, PathDirection, MerkleNode, MerkleTree } from '@potter/vessel';
 
 @Injectable()
 export class AnchoringService {

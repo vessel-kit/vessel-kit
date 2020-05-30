@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@ethersproject/providers": "^5.0.0-beta.168",
     "@hapi/joi": "^17.1.1",
     "@types/colors": "^1.2.1",
     "async-sema": "^3.1.0",
@@ -27,7 +28,8 @@
     "lodash": "^4.17.15",
     "multibase": "^0.7.0",
     "multicodec": "^1.0.1",
-    "rxjs": "^6.5.5"
+    "rxjs": "^6.5.5",
+    "typestub-multihashes": "^0.0.1"
   },
   "devDependencies": {
     "@types/hapi__joi": "^17.1.0",
