@@ -1,7 +1,6 @@
 import { Cloud } from './cloud';
 import { Chain } from './chain';
 import CID from 'cids';
-import { BehaviorSubject } from 'rxjs';
 import { DocumentState } from './document.state';
 import { ILogger } from './logger/logger.interface';
 import { RecordWrap } from './record-wrap';
@@ -30,34 +29,35 @@ export class DocumentUpdateService {
       const record = await this.#cloud.retrieve(tip)
       const prev = record.prev as CID | null
       if (prev) {
-        log.push(tip)
-        return this.tail(local, prev, log)
+        const nextLog = log.concat(tip)
+        return this.tail(local, prev, nextLog)
       } else {
         return new Chain([])
       }
     }
   }
 
-  async applyHead(recordCid: CID, state$: BehaviorSubject<DocumentState>) {
+  async applyHead(recordCid: CID, state: DocumentState): Promise<DocumentState | null> {
     this.#logger.debug(`Applying head ${recordCid.toString()}`)
-    const localLog = state$.value.log
+    const localLog = state.log
     const remoteLog = await this.tail(localLog, recordCid)
     // Case 1: Log is fully applied
-    if (remoteLog.last.equals(localLog.last)) {
+    if (remoteLog.isEmpty() || remoteLog.last.equals(localLog.last)) {
       this.#logger.debug(`Detected ${recordCid} is fully applied`)
+      return null
     }
     // Case 2: Direct continuation
     const remoteStart = await this.#cloud.retrieve(remoteLog.init)
     if (remoteStart?.prev?.equals(localLog.last)) {
       this.#logger.debug(`Detected direct continuation for ${recordCid}`)
-      await this.applyLog(remoteLog, state$)
+      return await this.applyLog(remoteLog, state)
     }
-    // if (remoteLog[remoteLog.length -1]) {}
     // Case 3: Merge
+    throw new NotImplementedError(`applyHead.else merge`)
   }
 
-  async applyLog(log: Chain, state$: BehaviorSubject<DocumentState>) {
-    for (let entry of log.log) {
+  async applyLog(log: Chain, state: DocumentState): Promise<DocumentState> {
+    return log.reduce(async (state, entry) => {
       const content = await this.#cloud.retrieve(entry)
       const record = new RecordWrap(content, entry)
       switch (record.kind) {
@@ -65,13 +65,13 @@ export class DocumentUpdateService {
           throw new NotImplementedError(`DocumentService.applyLog:SIGNED`)
         case RecordWrap.Kind.ANCHOR:
           const proof = await this.#anchoring.verify(content, entry)
-          // Get handler, call applyAnchor
-          break
+          const handler = this.#handlers.get(state.doctype)
+          return handler.applyAnchor(record, proof, state)
         case RecordWrap.Kind.GENESIS:
           throw new NotImplementedError(`DocumentService.applyLog:GENESIS`)
         default:
           throw new UnreachableCaseError(record.kind)
       }
-    }
+    }, state)
   }
 }

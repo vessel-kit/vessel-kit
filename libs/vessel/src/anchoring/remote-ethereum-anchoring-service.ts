@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, queueScheduler, Subject } from 'rxjs';
+import { Observable, queueScheduler, Subject } from 'rxjs';
 import CID from 'cids';
 import { filter, map } from 'rxjs/operators';
 import axios from 'axios';

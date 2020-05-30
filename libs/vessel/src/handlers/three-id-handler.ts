@@ -6,10 +6,11 @@ import * as t from 'io-ts';
 import jose from 'jose';
 import base64url from 'base64url';
 import { multicodecCodec as PublicKeyMulticodec, PublicKey } from '../public-key';
-import { BufferMultibaseCodec } from '..';
+import { AnchoringStatus, BufferMultibaseCodec } from '..';
 import { DocumentState } from '../document.state';
-import { Cloud } from '../cloud';
-import { AnchoringService } from '../anchoring.service';
+import { RecordWrap } from '../record-wrap';
+import produce from "immer"
+import { ProofRecord } from '../anchoring.service';
 
 const PublicKeyString = Joi.string().custom(value => {
   const buffer = multibase.decode(value);
@@ -71,5 +72,24 @@ export class ThreeIdHandler implements IHandler {
 
   async applyGenesis(genesis: any) {
     return genesis
+  }
+
+  async applyAnchor(anchorRecord: RecordWrap, proof: ProofRecord, state: DocumentState): Promise<DocumentState> {
+    return produce(state, async next => {
+      next.log = next.log.concat(anchorRecord.cid)
+      if (next.current) {
+        next.freight = next.current
+      }
+      next.anchor = {
+        status: AnchoringStatus.ANCHORED,
+        proof: {
+          chainId: proof.chainId,
+          blockNumber: proof.blockNumber,
+          timestamp: new Date(proof.blockTimestamp * 1000),
+          txHash: proof.txHash,
+          root: proof.root
+        }
+      }
+    })
   }
 }

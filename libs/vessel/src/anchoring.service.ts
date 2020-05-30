@@ -18,7 +18,14 @@ export class MisleadingAnchorError extends Error {
 }
 
 export class InvalidBlockchainProofError extends Error {
+}
 
+export interface ProofRecord {
+  root: CID,
+  txHash: CID
+  chainId: string
+  blockNumber: number
+  blockTimestamp: number
 }
 
 const EthereumNetworks = new Map<string, string>([
@@ -38,12 +45,13 @@ export class AnchoringService {
     this.#cloud = cloud
   }
 
-  async verify(anchorRecord: any, anchorRecordCid: CID) {
+  async verify(anchorRecord: any, anchorRecordCid: CID): Promise<ProofRecord> {
     this.#logger.debug(`Verifying anchor record ${anchorRecordCid}...`)
     await this.verifyPrev(anchorRecord, anchorRecordCid)
     const proofRecord = await this.#cloud.retrieve(anchorRecord.proof)
     await this.validateChainInclusion(proofRecord)
     this.#logger.debug(`Anchor record ${anchorRecordCid} is verified`)
+    return proofRecord as ProofRecord
   }
 
   async validateChainInclusion(proofRecord: any) {

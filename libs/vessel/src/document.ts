@@ -1,20 +1,21 @@
 import { CeramicDocumentId } from './ceramic-document-id';
 import { DocumentService } from './document.service';
 import { AnchoringStatus } from './anchoring/anchoring-status';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Chain } from './chain';
 import { DocumentState } from './document.state';
+import { FrozenSubject } from './frozen-subject';
 
 export class Document {
-  #docId: CeramicDocumentId
+  #id: CeramicDocumentId
   #service: DocumentService
-  #state$: BehaviorSubject<DocumentState>
+  #state$: FrozenSubject<DocumentState>
   #anchoringSubscription: Subscription
 
   constructor(docId: CeramicDocumentId, genesisRecord: any & {doctype: string}, documentService: DocumentService) {
-    this.#docId = docId
+    this.#id = docId
     this.#service = documentService
-    this.#state$ = new BehaviorSubject({
+    this.#state$ = new FrozenSubject({
       doctype: genesisRecord.doctype,
       current: null,
       freight: genesisRecord,
@@ -27,16 +28,24 @@ export class Document {
   }
 
   get id() {
-    return this.#docId
+    return this.#id
+  }
+
+  get state() {
+    return this.#state$.value
+  }
+
+  get state$() {
+    return this.#state$
   }
 
   requestAnchor() {
-    this.#service.requestAnchor(this.#docId, this.#docId.cid)
+    this.#service.requestAnchor(this.#id, this.#id.cid)
   }
 
   toJSON() {
     return {
-      docId: this.#docId.valueOf(),
+      docId: this.#id.valueOf(),
       ...this.#state$.value
     }
   }

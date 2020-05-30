@@ -25,7 +25,28 @@ export class Chain {
     return this.#log
   }
 
+  async reduce<A>(f: (acc: A, item: CID) => Promise<A>, initial: A) {
+    let acc = initial
+    for (let item of this.#log) {
+      acc = await f(acc, item)
+    }
+    return acc
+  }
+
   has(cid: CID) {
     return this.#set.has(cid.toString())
+  }
+
+  concat(cid: CID) {
+    return new Chain(this.log.concat(cid))
+  }
+
+  isEmpty() {
+    return this.log.length === 0
+  }
+
+  get [Symbol.toStringTag]() {
+    const log = this.#log.map(cid => cid.toString()).join(', ')
+    return `<Chain log: [${log}]>`;
   }
 }

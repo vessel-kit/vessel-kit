@@ -51,8 +51,15 @@ async function main() {
     doctype: '3id',
     ...content,
   };
-  const a = await ceramic.create(genesisRecord);
-  await sleep(62000);
+  const document = await ceramic.create(genesisRecord);
+  console.log('Present state', document.state);
+  console.log('Waiting for a minute for anchoring...');
+  const firstSubscription = document.state$.subscribe(state => {
+    console.log(`Updated state`, state)
+  })
+  await sleep(60000);
+  firstSubscription.unsubscribe()
+  console.log(`Present state`, document.state);
 }
 
 main();

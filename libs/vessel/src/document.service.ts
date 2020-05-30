@@ -9,6 +9,7 @@ import { Cloud } from './cloud';
 import { NamedMutex } from './named-mutex.util';
 import { AnchoringService } from './anchoring.service';
 import { DocumentUpdateService } from './document-update.service';
+import { FrozenSubject } from './frozen-subject';
 
 export class DocumentService {
   #logger: ILogger
@@ -23,11 +24,14 @@ export class DocumentService {
     this.#updateService = updateService
   }
 
-  async applyHead(recordCid: CID, state$: BehaviorSubject<DocumentState>) {
-    return this.#updateService.applyHead(recordCid, state$)
+  async applyHead(recordCid: CID, state$: FrozenSubject<DocumentState>) {
+    const nextState = await this.#updateService.applyHead(recordCid, state$.value)
+    if (nextState) {
+      state$.next(nextState)
+    }
   }
 
-  handleAnchorStatusUpdate(docId: CeramicDocumentId, state$: BehaviorSubject<DocumentState>) {
+  handleAnchorStatusUpdate(docId: CeramicDocumentId, state$: FrozenSubject<DocumentState>) {
     return this.#anchoring.anchorStatus$(docId).subscribe(async observation => {
       await this.#mutex.use(docId.toString(), async () => {
         this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation)
