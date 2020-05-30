@@ -18,11 +18,11 @@ export class Ceramic {
 
   constructor(ipfs: Ipfs, options: CeramicOptions) {
     const logger = options.logger
-    const dispatcher = new Cloud(ipfs)
+    const cloud = new Cloud(ipfs)
     const ethereumAnchoringService = new RemoteEthereumAnchoringService(logger, options.anchoringEndpoint)
     const ethereumEndpoint = options.ethereumEndpoint
-    const anchoringService = new AnchoringService(logger, ethereumEndpoint, ethereumAnchoringService, dispatcher)
-    const documentService = new DocumentService(logger, anchoringService, dispatcher)
+    const anchoringService = new AnchoringService(logger, ethereumEndpoint, ethereumAnchoringService, cloud)
+    const documentService = new DocumentService(logger, anchoringService, cloud)
     this.#documentRepository = new DocumentRepository(logger, documentService)
     logger.log(`Constructed Ceramic instance`, options)
   }

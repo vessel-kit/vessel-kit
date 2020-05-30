@@ -10,15 +10,15 @@ import { DocumentService } from './document.service';
 export class DocumentRepository {
   #logger: ILogger
   #handlers: Map<string, IHandler>
-  #dispatcher: Cloud
+  #cloud: Cloud
   #documentService: DocumentService
 
   constructor(logger: ILogger, documentService: DocumentService) {
     this.#logger = logger.withContext(DocumentRepository.name)
     this.#handlers = new Map([
-      ['3id', new ThreeIdHandler(documentService.dispatcher, documentService.anchoring)]
+      ['3id', new ThreeIdHandler(documentService.cloud, documentService.anchoring)]
     ])
-    this.#dispatcher = documentService.dispatcher
+    this.#cloud = documentService.cloud
     this.#documentService = documentService
     this.#logger.log(`Constructed DocumentService instance`)
   }
@@ -39,7 +39,7 @@ export class DocumentRepository {
     this.#logger.debug(`Found handler for doctype "${doctype}"`)
     const record = await handler.makeGenesis(genesis)
     this.#logger.debug(`Genesis record is valid for doctype "${doctype}"`)
-    const cid = await this.#dispatcher.store(record)
+    const cid = await this.#cloud.store(record)
     this.#logger.debug(`Stored record to IPFS as ${cid.toString()}`)
     const documentId = new CeramicDocumentId(cid)
     const document = await this.load(documentId)
@@ -49,7 +49,7 @@ export class DocumentRepository {
 
   async load(documentId: CeramicDocumentId) {
     this.#logger.log(`Loading document ${documentId}...`)
-    const genesis = await this.#dispatcher.retrieve(documentId.cid)
+    const genesis = await this.#cloud.retrieve(documentId.cid)
     this.#logger.debug(`Loaded genesis record for ${documentId}`)
     const handler = this.handler(genesis.doctype)
     const freight = await handler.applyGenesis(genesis)

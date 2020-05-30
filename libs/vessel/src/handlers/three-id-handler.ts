@@ -64,11 +64,11 @@ const ThreeIdFreight = t.type({
 });
 
 export class ThreeIdHandler implements IHandler {
-  #dispatcher: Cloud
+  #cloud: Cloud
   #anchoring: AnchoringService
 
-  constructor(dispatcher: Cloud, anchoring: AnchoringService) {
-    this.#dispatcher = dispatcher
+  constructor(cloud: Cloud, anchoring: AnchoringService) {
+    this.#cloud = cloud
     this.#anchoring = anchoring
   }
 

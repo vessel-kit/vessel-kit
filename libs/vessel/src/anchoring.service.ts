@@ -29,19 +29,19 @@ const EthereumNetworks = new Map<string, string>([
 
 export class AnchoringService {
   readonly #anchoring: RemoteEthereumAnchoringService
-  readonly #dispatcher: Cloud
+  readonly #cloud: Cloud
   readonly #logger: ILogger
 
-  constructor(logger: ILogger, ethereumEndpoint: string, anchoring: RemoteEthereumAnchoringService, dispatcher: Cloud) {
+  constructor(logger: ILogger, ethereumEndpoint: string, anchoring: RemoteEthereumAnchoringService, cloud: Cloud) {
     this.#logger = logger.withContext(AnchoringService.name)
     this.#anchoring = anchoring
-    this.#dispatcher = dispatcher
+    this.#cloud = cloud
   }
 
   async verify(anchorRecord: any, anchorRecordCid: CID) {
     this.#logger.debug(`Verifying anchor record ${anchorRecordCid}...`)
     await this.verifyPrev(anchorRecord, anchorRecordCid)
-    const proofRecord = await this.#dispatcher.retrieve(anchorRecord.proof)
+    const proofRecord = await this.#cloud.retrieve(anchorRecord.proof)
     await this.validateChainInclusion(proofRecord)
     this.#logger.debug(`Anchor record ${anchorRecordCid} is verified`)
   }
@@ -85,11 +85,11 @@ export class AnchoringService {
   }
 
   async originalRecordCid(anchorRecord: any): Promise<CID> {
-    const proofRecord = await this.#dispatcher.retrieve(anchorRecord.proof)
+    const proofRecord = await this.#cloud.retrieve(anchorRecord.proof)
     if (proofRecord.path) {
       const merklePath = await MerklePath.fromString(anchorRecord.path)
       const queryPath = '/root/' + merklePath.initial.toString()
-      const record = await this.#dispatcher.retrieve(anchorRecord.proof, queryPath)
+      const record = await this.#cloud.retrieve(anchorRecord.proof, queryPath)
       return record[merklePath.last]
     } else {
       return proofRecord.root

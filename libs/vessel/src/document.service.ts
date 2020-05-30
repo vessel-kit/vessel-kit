@@ -15,13 +15,13 @@ import { RecordWrap } from './record-wrap';
 export class DocumentService {
   #logger: ILogger
   #anchoring: AnchoringService
-  #dispatcher: Cloud
+  #cloud: Cloud
   #mutex: NamedMutex
 
-  constructor(logger: ILogger, anchoring: AnchoringService, dispatcher: Cloud) {
+  constructor(logger: ILogger, anchoring: AnchoringService, cloud: Cloud) {
     this.#logger = logger.withContext(DocumentService.name)
     this.#anchoring = anchoring
-    this.#dispatcher = dispatcher
+    this.#cloud = cloud
     this.#mutex = new NamedMutex()
   }
 
@@ -29,15 +29,15 @@ export class DocumentService {
     return this.#anchoring
   }
 
-  get dispatcher() {
-    return this.#dispatcher
+  get cloud() {
+    return this.#cloud
   }
 
   async tail(local: Chain, tip: CID, log: CID[] = []): Promise<Chain> {
     if (local.has(tip)) {
       return new Chain(log.reverse())
     } else {
-      const record = await this.#dispatcher.retrieve(tip)
+      const record = await this.#cloud.retrieve(tip)
       const prev = record.prev as CID | null
       if (prev) {
         log.push(tip)
@@ -57,7 +57,7 @@ export class DocumentService {
         this.#logger.debug(`Detected ${recordCid} is fully applied`)
       }
       // Case 2: Direct continuation
-      const remoteStart = await this.#dispatcher.retrieve(remoteLog.init)
+      const remoteStart = await this.#cloud.retrieve(remoteLog.init)
       if (remoteStart?.prev?.equals(localLog.last)) {
         this.#logger.debug(`Detected direct continuation for ${recordCid}`)
         await this.applyLog(remoteLog, state$)
@@ -68,7 +68,7 @@ export class DocumentService {
 
   async applyLog(log: Chain, state$: BehaviorSubject<DocumentState>) {
     for (let entry of log.log) {
-      const content = await this.#dispatcher.retrieve(entry)
+      const content = await this.#cloud.retrieve(entry)
       const record = new RecordWrap(content, entry)
       switch (record.kind) {
         case RecordWrap.Kind.SIGNED:
