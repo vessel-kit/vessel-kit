@@ -2,7 +2,7 @@ import { ILogger } from './logger/logger.interface';
 import { Ipfs } from 'ipfs';
 import { ConsoleLogger } from './logger/console-logger';
 import { DocumentRepository } from './document.repository';
-import { Dispatcher } from './dispatcher';
+import { Cloud } from './cloud';
 import { DocumentService } from './document.service';
 import { RemoteEthereumAnchoringService } from './anchoring/remote-ethereum-anchoring-service';
 import { AnchoringService } from './anchoring.service';
@@ -18,7 +18,7 @@ export class Ceramic {
 
   constructor(ipfs: Ipfs, options: CeramicOptions) {
     const logger = options.logger
-    const dispatcher = new Dispatcher(ipfs)
+    const dispatcher = new Cloud(ipfs)
     const ethereumAnchoringService = new RemoteEthereumAnchoringService(logger, options.anchoringEndpoint)
     const ethereumEndpoint = options.ethereumEndpoint
     const anchoringService = new AnchoringService(logger, ethereumEndpoint, ethereumAnchoringService, dispatcher)

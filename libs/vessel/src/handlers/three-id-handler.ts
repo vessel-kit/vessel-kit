@@ -8,7 +8,7 @@ import base64url from 'base64url';
 import { multicodecCodec as PublicKeyMulticodec, PublicKey } from '../public-key';
 import { BufferMultibaseCodec } from '..';
 import { DocumentState } from '../document.state';
-import { Dispatcher } from '../dispatcher';
+import { Cloud } from '../cloud';
 import { AnchoringService } from '../anchoring.service';
 
 const PublicKeyString = Joi.string().custom(value => {
@@ -64,10 +64,10 @@ const ThreeIdFreight = t.type({
 });
 
 export class ThreeIdHandler implements IHandler {
-  #dispatcher: Dispatcher
+  #dispatcher: Cloud
   #anchoring: AnchoringService
 
-  constructor(dispatcher: Dispatcher, anchoring: AnchoringService) {
+  constructor(dispatcher: Cloud, anchoring: AnchoringService) {
     this.#dispatcher = dispatcher
     this.#anchoring = anchoring
   }

@@ -1,10 +1,10 @@
-import { Dispatcher } from './dispatcher';
+import { Cloud } from './cloud';
 import CID from 'cids';
 
 export class ChainService {
-  #dispatcher: Dispatcher
+  #dispatcher: Cloud
 
-  constructor(dispatcher: Dispatcher) {
+  constructor(dispatcher: Cloud) {
     this.#dispatcher = dispatcher
   }
 

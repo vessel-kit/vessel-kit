@@ -77,7 +77,7 @@
 //   }
 // }
 
-import { Dispatcher } from './dispatcher';
+import { Cloud } from './cloud';
 import { ChainService } from './chain.service';
 import { CeramicDocumentId } from './ceramic-document-id';
 import CID from 'cids';

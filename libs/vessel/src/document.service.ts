@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { AnchoringStatus } from './anchoring/anchoring-status';
 import { DocumentState } from './document.state';
 import { UnreachableCaseError } from './unreachable-case.error';
-import { Dispatcher } from './dispatcher';
+import { Cloud } from './cloud';
 import { Chain } from './chain';
 import { NamedMutex } from './named-mutex.util';
 import { AnchoringService } from './anchoring.service';
@@ -15,10 +15,10 @@ import { RecordWrap } from './record-wrap';
 export class DocumentService {
   #logger: ILogger
   #anchoring: AnchoringService
-  #dispatcher: Dispatcher
+  #dispatcher: Cloud
   #mutex: NamedMutex
 
-  constructor(logger: ILogger, anchoring: AnchoringService, dispatcher: Dispatcher) {
+  constructor(logger: ILogger, anchoring: AnchoringService, dispatcher: Cloud) {
     this.#logger = logger.withContext(DocumentService.name)
     this.#anchoring = anchoring
     this.#dispatcher = dispatcher

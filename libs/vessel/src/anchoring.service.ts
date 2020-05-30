@@ -1,5 +1,5 @@
 import { Observation, RemoteEthereumAnchoringService } from './anchoring/remote-ethereum-anchoring-service';
-import { Dispatcher } from './dispatcher';
+import { Cloud } from './cloud';
 import { CeramicDocumentId } from './ceramic-document-id';
 import { Observable } from 'rxjs';
 import { ILogger } from './logger/logger.interface';
@@ -29,10 +29,10 @@ const EthereumNetworks = new Map<string, string>([
 
 export class AnchoringService {
   readonly #anchoring: RemoteEthereumAnchoringService
-  readonly #dispatcher: Dispatcher
+  readonly #dispatcher: Cloud
   readonly #logger: ILogger
 
-  constructor(logger: ILogger, ethereumEndpoint: string, anchoring: RemoteEthereumAnchoringService, dispatcher: Dispatcher) {
+  constructor(logger: ILogger, ethereumEndpoint: string, anchoring: RemoteEthereumAnchoringService, dispatcher: Cloud) {
     this.#logger = logger.withContext(AnchoringService.name)
     this.#anchoring = anchoring
     this.#dispatcher = dispatcher

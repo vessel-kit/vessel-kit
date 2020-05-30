@@ -2,7 +2,7 @@ import { ILogger } from './logger/logger.interface';
 import { UnknownDoctypeError } from './unknown-doctype.error';
 import { IHandler } from './handlers/handler.interface';
 import { ThreeIdHandler } from './handlers/three-id-handler';
-import { Dispatcher } from './dispatcher';
+import { Cloud } from './cloud';
 import { CeramicDocumentId } from './ceramic-document-id';
 import { Document } from './document';
 import { DocumentService } from './document.service';
@@ -10,7 +10,7 @@ import { DocumentService } from './document.service';
 export class DocumentRepository {
   #logger: ILogger
   #handlers: Map<string, IHandler>
-  #dispatcher: Dispatcher
+  #dispatcher: Cloud
   #documentService: DocumentService
 
   constructor(logger: ILogger, documentService: DocumentService) {

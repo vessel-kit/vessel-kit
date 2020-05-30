@@ -1,8 +1,7 @@
 import { Ipfs } from 'ipfs';
 import CID from 'cids';
 
-// TODO Rename to Cloud
-export class Dispatcher {
+export class Cloud {
   #ipfs: Ipfs
   constructor(ipfs: Ipfs) {
     this.#ipfs = ipfs
