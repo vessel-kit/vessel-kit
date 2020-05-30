@@ -6,82 +6,25 @@ import { AnchoringStatus } from './anchoring/anchoring-status';
 import { DocumentState } from './document.state';
 import { UnreachableCaseError } from './unreachable-case.error';
 import { Cloud } from './cloud';
-import { Chain } from './chain';
 import { NamedMutex } from './named-mutex.util';
 import { AnchoringService } from './anchoring.service';
-import { NotImplementedError } from './not-implemented.error';
-import { RecordWrap } from './record-wrap';
+import { DocumentUpdateService } from './document-update.service';
 
 export class DocumentService {
   #logger: ILogger
   #anchoring: AnchoringService
-  #cloud: Cloud
   #mutex: NamedMutex
+  #updateService: DocumentUpdateService
 
-  constructor(logger: ILogger, anchoring: AnchoringService, cloud: Cloud) {
+  constructor(logger: ILogger, anchoring: AnchoringService, updateService: DocumentUpdateService) {
     this.#logger = logger.withContext(DocumentService.name)
     this.#anchoring = anchoring
-    this.#cloud = cloud
     this.#mutex = new NamedMutex()
-  }
-
-  get anchoring() {
-    return this.#anchoring
-  }
-
-  get cloud() {
-    return this.#cloud
-  }
-
-  async tail(local: Chain, tip: CID, log: CID[] = []): Promise<Chain> {
-    if (local.has(tip)) {
-      return new Chain(log.reverse())
-    } else {
-      const record = await this.#cloud.retrieve(tip)
-      const prev = record.prev as CID | null
-      if (prev) {
-        log.push(tip)
-        return this.tail(local, prev, log)
-      } else {
-        return new Chain([])
-      }
-    }
+    this.#updateService = updateService
   }
 
   async applyHead(recordCid: CID, state$: BehaviorSubject<DocumentState>) {
-      this.#logger.debug(`Applying head ${recordCid.toString()}`)
-      const localLog = state$.value.log
-      const remoteLog = await this.tail(localLog, recordCid)
-      // Case 1: Log is fully applied
-      if (remoteLog.last.equals(localLog.last)) {
-        this.#logger.debug(`Detected ${recordCid} is fully applied`)
-      }
-      // Case 2: Direct continuation
-      const remoteStart = await this.#cloud.retrieve(remoteLog.init)
-      if (remoteStart?.prev?.equals(localLog.last)) {
-        this.#logger.debug(`Detected direct continuation for ${recordCid}`)
-        await this.applyLog(remoteLog, state$)
-      }
-      // if (remoteLog[remoteLog.length -1]) {}
-      // Case 3: Merge
-  }
-
-  async applyLog(log: Chain, state$: BehaviorSubject<DocumentState>) {
-    for (let entry of log.log) {
-      const content = await this.#cloud.retrieve(entry)
-      const record = new RecordWrap(content, entry)
-      switch (record.kind) {
-        case RecordWrap.Kind.SIGNED:
-          throw new NotImplementedError(`DocumentService.applyLog:SIGNED`)
-        case RecordWrap.Kind.ANCHOR:
-          const proof = await this.#anchoring.verify(content, entry)
-          break
-        case RecordWrap.Kind.GENESIS:
-          throw new NotImplementedError(`DocumentService.applyLog:GENESIS`)
-        default:
-          throw new UnreachableCaseError(record.kind)
-      }
-    }
+    return this.#updateService.applyHead(recordCid, state$)
   }
 
   handleAnchorStatusUpdate(docId: CeramicDocumentId, state$: BehaviorSubject<DocumentState>) {

@@ -6,36 +6,26 @@ import { Cloud } from './cloud';
 import { CeramicDocumentId } from './ceramic-document-id';
 import { Document } from './document';
 import { DocumentService } from './document.service';
+import { HandlersContainer } from './handlers/handlers.container';
 
 export class DocumentRepository {
   #logger: ILogger
-  #handlers: Map<string, IHandler>
+  #handlers: HandlersContainer
   #cloud: Cloud
   #documentService: DocumentService
 
-  constructor(logger: ILogger, documentService: DocumentService) {
+  constructor(logger: ILogger, handlers: HandlersContainer, cloud: Cloud, documentService: DocumentService) {
     this.#logger = logger.withContext(DocumentRepository.name)
-    this.#handlers = new Map([
-      ['3id', new ThreeIdHandler(documentService.cloud, documentService.anchoring)]
-    ])
-    this.#cloud = documentService.cloud
+    this.#handlers = handlers
+    this.#cloud = cloud
     this.#documentService = documentService
     this.#logger.log(`Constructed DocumentService instance`)
-  }
-
-  handler(doctype: string) {
-    const handler = this.#handlers.get(doctype)
-    if (handler) {
-      return handler
-    } else {
-      throw new UnknownDoctypeError(doctype)
-    }
   }
 
   async create(genesis: any) {
     this.#logger.debug(`Creating document from genesis record`, genesis)
     const doctype = genesis.doctype
-    const handler = this.handler(doctype)
+    const handler = this.#handlers.get(doctype)
     this.#logger.debug(`Found handler for doctype "${doctype}"`)
     const record = await handler.makeGenesis(genesis)
     this.#logger.debug(`Genesis record is valid for doctype "${doctype}"`)
@@ -51,7 +41,7 @@ export class DocumentRepository {
     this.#logger.log(`Loading document ${documentId}...`)
     const genesis = await this.#cloud.retrieve(documentId.cid)
     this.#logger.debug(`Loaded genesis record for ${documentId}`)
-    const handler = this.handler(genesis.doctype)
+    const handler = this.#handlers.get(genesis.doctype)
     const freight = await handler.applyGenesis(genesis)
     return new Document(documentId, freight, this.#documentService)
     // Load pinned

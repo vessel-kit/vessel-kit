@@ -40,4 +40,10 @@ export class Document {
       ...this.#state$.value
     }
   }
+
+  // TODO
+  close() {
+    // Unsubscribe from everything
+    // Clear named mutex from the service
+  }
 }

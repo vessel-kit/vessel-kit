@@ -64,14 +64,6 @@ const ThreeIdFreight = t.type({
 });
 
 export class ThreeIdHandler implements IHandler {
-  #cloud: Cloud
-  #anchoring: AnchoringService
-
-  constructor(cloud: Cloud, anchoring: AnchoringService) {
-    this.#cloud = cloud
-    this.#anchoring = anchoring
-  }
-
   async makeGenesis(genesis: any): Promise<any> {
     await GENESIS_SCHEMA.validateAsync(genesis);
     return genesis;
@@ -79,9 +71,5 @@ export class ThreeIdHandler implements IHandler {
 
   async applyGenesis(genesis: any) {
     return genesis
-  }
-
-  apply(record: any, state: DocumentState): Promise<DocumentState> {
-    return Promise.resolve(undefined);
   }
 }
