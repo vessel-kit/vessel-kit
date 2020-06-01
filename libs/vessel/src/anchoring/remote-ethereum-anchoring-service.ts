@@ -95,8 +95,7 @@ export class RemoteEthereumAnchoringService {
       this.#observation$.next(decoded);
       return status;
     } catch (e) {
-      console.error('requestAnchorStatus');
-      console.error(e);
+      this.#logger.error(e)
     }
   }
 }

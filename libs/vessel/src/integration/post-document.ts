@@ -3,7 +3,8 @@ import ipfsClient from 'ipfs-http-client';
 import { PublicKey } from '../public-key';
 import jose from 'jose';
 import { ThreeIdContent } from '../three-id.content';
-import { sleep } from './sleep.util';
+import { waitUntil } from './wait.util';
+import { AnchoringStatus } from '..';
 
 const IPFS_URL = 'http://localhost:5001';
 const ipfs = ipfsClient(IPFS_URL);
@@ -53,13 +54,24 @@ async function main() {
   };
   const document = await ceramic.create(genesisRecord);
   console.log('Present state', document.state);
-  console.log('Waiting for a minute for anchoring...');
+  console.log('Waiting some time for anchoring...');
   const firstSubscription = document.state$.subscribe(state => {
-    console.log(`Updated state`, state)
-  })
-  await sleep(60000);
-  firstSubscription.unsubscribe()
+    console.log(`Updated state`, state);
+  });
+  await waitUntil(5000, async () => {
+    return document.state.anchor.status === AnchoringStatus.ANCHORED;
+  });
+  firstSubscription.unsubscribe();
   console.log(`Present state`, document.state);
+  const doc2 = doc1.clone();
+  doc2.publicKeys.set('foocryption', signingKey);
+  const delta = doc2.delta(doc1);
+  console.log('delta', delta);
+  const updateRecord = {
+    content: delta,
+    prev: document.state.log.last
+  }
+  console.log(updateRecord)
 }
 
 main();
