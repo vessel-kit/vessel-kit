@@ -13,15 +13,26 @@ function secp256k1PubKeyFromCompressed(compressedHex: string) {
 }
 
 export class KeyPrecious {
-  #keyring: Keyring
-  constructor(seed: string) {
-    this.#keyring = new Keyring(seed)
+  readonly #keyring: Keyring
+
+  constructor(keyring: Keyring) {
+    this.#keyring = keyring
+  }
+
+  static fromSeed(seed: string) {
+    const keyring = new Keyring(seed)
+    return KeyPrecious.fromKeyring(keyring)
+  }
+
+  static fromKeyring(keyring: Keyring) {
+    return new KeyPrecious(keyring)
   }
 
   /**
    * Multibase encoded public key
    */
   async managementKey() {
+    console.log('keyring', this.#keyring)
     const compressedPubKey = this.#keyring._getKeys().managementKey.publicKey
     return secp256k1PubKeyFromCompressed(compressedPubKey)
   }

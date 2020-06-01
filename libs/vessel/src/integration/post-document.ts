@@ -4,18 +4,24 @@ import { ThreeIdContent } from '../three-id.content';
 import { waitUntil } from './wait.util';
 import { AnchoringStatus } from '..';
 import { KeyPrecious } from '../person/key-precious';
+import IdentityWallet from 'identity-wallet';
+import { LocalUser } from '../person/local.user';
 
 const IPFS_URL = 'http://localhost:5001';
 const ipfs = ipfsClient(IPFS_URL);
 
-const keyPrecious = new KeyPrecious('0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f')
-
 async function main() {
+  const identityWallet = new IdentityWallet(() => true, {
+    seed: '0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f',
+  });
+  const localUser = await LocalUser.fromIdentityWallet(identityWallet);
+  return
+
   const ceramic = await Ceramic.build(ipfs);
 
-  const ownerKey = await keyPrecious.managementKey()
-  const signingKey = await keyPrecious.signingKey()
-  const encryptionKey = await keyPrecious.asymEncryptionKey()
+  const ownerKey = await localUser.keyPrecious.managementKey();
+  const signingKey = await localUser.keyPrecious.signingKey();
+  const encryptionKey = await localUser.keyPrecious.asymEncryptionKey();
 
   const doc1 = new ThreeIdContent(
     [ownerKey],
@@ -45,10 +51,10 @@ async function main() {
   const delta = doc2.delta(doc1);
   console.log('delta', delta);
   const updateRecord = {
-    content: delta,
-    prev: document.state.log.last
-  }
-  console.log(updateRecord)
+    patch: delta,
+    prev: document.state.log.last,
+  };
+  localUser.signManagement(updateRecord);
 }
 
 main();
