@@ -4,27 +4,6 @@ import * as t from 'io-ts';
 import * as multicodec from 'multicodec';
 import { Right } from 'fp-ts/lib/Either';
 
-export class PublicKey {
-  constructor(readonly jwk: jose.JWK.Key) {}
-
-  raw() {
-    if (this.jwk.crv === 'secp256k1' && this.jwk.kty === 'EC') {
-      const x = base64url.toBuffer(this.jwk.x);
-      const y = base64url.toBuffer(this.jwk.y);
-      return Buffer.concat([x, y]);
-    } else if (this.jwk.crv === 'X25519' && this.jwk.kty === 'OKP') {
-      return base64url.toBuffer(this.jwk.x);
-    } else {
-      throw new Error(`Not implemented for kty ${this.jwk.kty}`);
-    }
-  }
-
-  clone() {
-    const recovered = multicodecCodec.decode(multicodecCodec.encode(this)) as Right<PublicKey>;
-    return recovered.right;
-  }
-}
-
 export const multicodecCodec = new t.Type<PublicKey, Buffer, Buffer>(
   'PublicKeyMulticodec',
   (input: unknown): input is PublicKey => input instanceof PublicKey,
@@ -70,3 +49,26 @@ export const multicodecCodec = new t.Type<PublicKey, Buffer, Buffer>(
     }
   },
 );
+
+export class PublicKey {
+  static codec = multicodecCodec;
+
+  constructor(readonly jwk: jose.JWK.Key) {}
+
+  raw() {
+    if (this.jwk.crv === 'secp256k1' && this.jwk.kty === 'EC') {
+      const x = base64url.toBuffer(this.jwk.x);
+      const y = base64url.toBuffer(this.jwk.y);
+      return Buffer.concat([x, y]);
+    } else if (this.jwk.crv === 'X25519' && this.jwk.kty === 'OKP') {
+      return base64url.toBuffer(this.jwk.x);
+    } else {
+      throw new Error(`Not implemented for kty ${this.jwk.kty}`);
+    }
+  }
+
+  clone() {
+    const recovered = multicodecCodec.decode(multicodecCodec.encode(this)) as Right<PublicKey>;
+    return recovered.right;
+  }
+}

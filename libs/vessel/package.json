@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@ethersproject/hdnode": "^5.0.0-beta.140",
     "@ethersproject/providers": "^5.0.0-beta.168",
     "@hapi/joi": "^17.1.1",
     "@types/colors": "^1.2.1",
@@ -19,9 +20,11 @@
     "cids": "^0.8.0",
     "colors": "^1.4.0",
     "decko": "^1.2.0",
-    "ethereumjs-util": "^7.0.1",
+    "did-jwt": "^4.3.3",
+    "ethereumjs-util": "^7.0.2",
     "fast-json-patch": "^3.0.0-1",
     "fp-ts": "^2.6.1",
+    "identity-wallet": "^1.3.0",
     "immer": "^6.0.9",
     "io-ts": "^2.2.3",
     "io-ts-promise": "^2.0.2",
@@ -30,6 +33,8 @@
     "multibase": "^0.7.0",
     "multicodec": "^1.0.1",
     "rxjs": "^6.5.5",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
     "typestub-multihashes": "^0.0.1"
   },
   "devDependencies": {
