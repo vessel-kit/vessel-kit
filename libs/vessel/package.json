@@ -33,6 +33,7 @@
     "multibase": "^0.7.0",
     "multicodec": "^1.0.1",
     "rxjs": "^6.5.5",
+    "sort-keys": "^4.0.0",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "typestub-multihashes": "^0.0.1"
