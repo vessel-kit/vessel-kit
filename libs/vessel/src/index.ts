@@ -1,6 +1,6 @@
 export * from './codec/buffer-multibase-codec'
 export * from './codec/map-codec'
-export * from './public-key'
+export * from './person/public-key'
 export * from './anchoring/anchoring-status'
 export * from './ceramic-document-id'
 export * from './merkle/merkle-path'

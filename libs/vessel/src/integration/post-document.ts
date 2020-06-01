@@ -1,6 +1,6 @@
 import { Ceramic } from '../ceramic';
 import ipfsClient from 'ipfs-http-client';
-import { PublicKey } from '../public-key';
+import { PublicKey } from '../person/public-key';
 import jose from 'jose';
 import { ThreeIdContent } from '../three-id.content';
 import { waitUntil } from './wait.util';

@@ -5,7 +5,7 @@ import * as multicodec from 'multicodec';
 import * as t from 'io-ts';
 import jose from 'jose';
 import base64url from 'base64url';
-import { multicodecCodec as PublicKeyMulticodec, PublicKey } from '../public-key';
+import { multicodecCodec as PublicKeyMulticodec, PublicKey } from '../person/public-key';
 import { AnchoringStatus, BufferMultibaseCodec } from '..';
 import { DocumentState } from '../document.state';
 import { RecordWrap } from '../record-wrap';

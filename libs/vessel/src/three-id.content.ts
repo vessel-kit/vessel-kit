@@ -1,4 +1,4 @@
-import { PublicKey, multicodecCodec as PublicKeyMulticodec } from './public-key';
+import { PublicKey, multicodecCodec as PublicKeyMulticodec } from './person/public-key';
 import { BufferMultibaseCodec } from './codec/buffer-multibase-codec';
 import * as t from 'io-ts';
 import { MapCodec } from './codec/map-codec';

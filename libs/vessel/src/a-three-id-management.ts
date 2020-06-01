@@ -2,7 +2,7 @@ import jose from 'jose';
 import * as multicodec from 'multicodec';
 import base64url from 'base64url';
 import * as t from 'io-ts';
-import { PublicKey, multicodecCodec as PublicKeyMultiCodec } from './public-key';
+import { PublicKey, multicodecCodec as PublicKeyMultiCodec } from './person/public-key';
 import { ThreeIdContent } from './three-id.content';
 import jsonPatch from 'fast-json-patch'
 
