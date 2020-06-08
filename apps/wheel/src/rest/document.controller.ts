@@ -15,11 +15,30 @@ export class DocumentController {
     return new DocumentPresentation(document);
   }
 
+  @Get('/')
+  async list() {
+    return await this.ceramic.list();
+  }
+
   @Get('/:cid')
   async read(@Param('cid') cidString: string) {
     const cid = new CID(cidString);
     const document = await this.ceramic.load(cid);
     return new DocumentPresentation(document);
+  }
+
+  @Get('/list/:cid')
+  async readMany(@Param('cid') cidString: string) {
+    const cid = new CID(cidString);
+    const documents = await this.ceramic.loadMany(cid);
+    return documents.map(d => {
+      return {
+        cid: d.cid,
+        status: d.status,
+        content: d.anchorRecord?.content,
+        updatedAt: d.updatedAt
+      }
+    });
   }
 
   @Put('/:cid')

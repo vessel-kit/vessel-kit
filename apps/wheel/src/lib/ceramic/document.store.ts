@@ -29,4 +29,8 @@ export class DocumentStore {
     const record = await this.storage.byId(docId);
     return !!record;
   }
+
+  list(): Promise<DocumentRecord[]> {
+    return this.storage.list();
+  }
 }

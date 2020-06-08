@@ -80,4 +80,12 @@ export class DocumentRepository {
       return document;
     }
   }
+
+  async list() {
+    return (await this.store.list()).map(e => {
+      return {...e,
+        docId: e.cid.toString()
+      }
+    })
+  }
 }

@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import Joi from '@hapi/joi';
 import CID from 'cids';
 import { RequestCreateScenario } from '../scenarios/request-create.scenario';
+import { RequestGetManyScenario } from '../scenarios/request-get-many.scenario'
 import { RequestCreatedPresentation } from './request-created.presentation';
 import { RequestGetScenario } from '../scenarios/request-get.scenario';
 import { RequestStorage } from '../storage/request.storage';
@@ -34,6 +35,7 @@ export class RequestController {
   constructor(
     private readonly requestCreateScenario: RequestCreateScenario,
     private readonly requestGetScenario: RequestGetScenario,
+    private readonly requestGetManyScenario: RequestGetManyScenario,
     private readonly requestStorage: RequestStorage,
     private readonly anchoringSchedule: AnchoringScheduleService,
     private readonly anchorStorage: AnchorStorage,
@@ -72,8 +74,13 @@ export class RequestController {
   }
 
   @Get('/:cid')
-  async get(@Param('cid') cidString: string) {
+  async get(@Param('cid') cidString: string, @Query() query: string) {
     return this.requestGetScenario.execute(cidString);
+  }
+
+  @Get('/list/:cid')
+  async getMany(@Param('cid') cidString: string) {
+    return this.requestGetManyScenario.execute(cidString);
   }
 
   @Post('/')

@@ -12,4 +12,14 @@ export class EthereumAnchorService {
       cid: cid.toString(),
     });
   }
+
+  async lastRecord(cid: CID | string) {
+    const request = await axios.get(`${this.anchoringEndpoint}/${cid.toString()}?latest=true`);
+    return request.data;
+  }
+
+  async listRequest(cid: CID | string) {
+    const request = await axios.get(`${this.anchoringEndpoint}/list/${cid.toString()}`);
+    return request.data;
+  }
 }
