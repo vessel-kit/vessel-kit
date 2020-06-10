@@ -105,4 +105,8 @@ export class Ceramic {
       return result
     }))
   }
+
+  content(cid: CID): Promise<string> {
+    return this.repository.content(cid)
+  }
 }

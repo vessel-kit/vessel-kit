@@ -6,19 +6,21 @@ import {
   TableBody, TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
+  Link
 } from 'carbon-components-react';
 
 import useSWR from 'swr'
+import { RecordType } from '../styling/document'
 
 
 function DocumentsTable(props: { documents: any }) {
   const row = (document: any) => {
     return (
       <TableRow key={document.docId} >
-        <TableCell>{document.docId}</TableCell>
+        <TableCell><Link href={`/document?docId=${document.docId}`}>{document.docId}</Link></TableCell>
         <TableCell>{document.cid}</TableCell>
-        <TableCell>{document.recordType}</TableCell>
+        <TableCell><RecordType recordType={document.recordType}></RecordType></TableCell>
         <TableCell>{DateTime.fromMillis(document.time * 1000).setZone('UTC').toLocal().toString()}</TableCell>
       </TableRow>
     );
@@ -30,18 +32,11 @@ function DocumentsTable(props: { documents: any }) {
     });
   };
 
-  function onRowClicked(e) {
-    console.log(e)
-  }
-
-
-  console.log(props.documents)
-
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableHeader>docId</TableHeader>
+          <TableHeader>DocId</TableHeader>
           <TableHeader>Last CID</TableHeader>
           <TableHeader>Record type</TableHeader>
           <TableHeader>Time</TableHeader>

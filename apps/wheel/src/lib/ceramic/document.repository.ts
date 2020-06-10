@@ -88,4 +88,9 @@ export class DocumentRepository {
       }
     })
   }
+
+  async content(cid: CID): Promise<string> {
+    const documentRecord = await this.store.get(cid);
+    return documentRecord.payload;
+  }
 }

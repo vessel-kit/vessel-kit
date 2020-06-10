@@ -9,7 +9,7 @@ import {
 import Router from 'next/router'
 
 
-export default function Document() {
+export default function GetDocument() {
   const [docId, setDocId] = useState("")
 
   return (
@@ -17,8 +17,7 @@ export default function Document() {
       <h1>Document Request</h1>
       <FormGroup legendText={''}>
         <TextInput
-          id="test2"
-          invalidText="A valid value is required"
+          id="docIDInput"
           labelText="Enter document CID"
           placeholder="Document CID"
           onInput={(e) => setDocId(e.target.value)}
