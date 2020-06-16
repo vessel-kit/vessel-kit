@@ -70,8 +70,7 @@ export class DocumentService {
     const next = await this.#updateService.applyUpdate(recordWrap, state$.value)
     const documentId = new CeramicDocumentId(state$.value.log.first)
     this.#anchoring.requestAnchor(documentId, cid)
-    // state$.next(next)
-    console.log('DocumentService.update', next)
+    state$.next(next)
     // Publish head
   }
 
