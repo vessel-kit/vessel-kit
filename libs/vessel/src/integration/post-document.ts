@@ -3,24 +3,24 @@ import ipfsClient from 'ipfs-http-client';
 import { ThreeIdContent } from '../three-id.content';
 import { waitUntil } from './wait.util';
 import { AnchoringStatus } from '..';
-import { KeyPrecious } from '../person/key-precious';
 import IdentityWallet from 'identity-wallet';
-import { LocalUser } from '../person/local.user';
 import { Signor } from '../person/signor';
 
 const IPFS_URL = 'http://localhost:5001';
 const ipfs = ipfsClient(IPFS_URL);
 
-const cborSortCompareFn = (a: string, b: string): number => a.length - b.length || a.localeCompare(b)
+const cborSortCompareFn = (a: string, b: string): number => a.length - b.length || a.localeCompare(b);
 
 function sortPropertiesDeep(obj: any, compareFn: (a: any, b: any) => number = cborSortCompareFn): any {
   if (typeof obj !== 'object' || Array.isArray(obj)) {
-    return obj
+    return obj;
   }
-  return Object.keys(obj).sort(compareFn).reduce<Record<string, any>>((acc, prop) => {
-    acc[prop] = sortPropertiesDeep(obj[prop], compareFn)
-    return acc
-  }, {})
+  return Object.keys(obj)
+    .sort(compareFn)
+    .reduce<Record<string, any>>((acc, prop) => {
+      acc[prop] = sortPropertiesDeep(obj[prop], compareFn);
+      return acc;
+    }, {});
 }
 
 async function main() {
@@ -51,17 +51,14 @@ async function main() {
   const document = await ceramic.create(genesisRecord);
   console.log('Present state', document.state);
   console.log('Waiting some time for anchoring...');
-  const firstSubscription = document.state$.subscribe(state => {
-    console.log(`Updated state`, state);
-  });
   await waitUntil(5000, async () => {
     return document.state.anchor.status === AnchoringStatus.ANCHORED;
   });
-  firstSubscription.unsubscribe();
   console.log(`Present state`, document.state);
   const doc2 = doc1.clone();
   doc2.publicKeys.set('foocryption', signingKey);
   const delta = doc2.delta(doc1);
+  // TODO Signature encoding
   const updateRecord = {
     patch: delta,
     prev: document.state.log.last,
@@ -71,14 +68,16 @@ async function main() {
     patch: delta,
     prev: { '/': document.state.log.last.toString() },
     id: { '/': document.id.valueOf() },
-  })
-  user.did = `did:3:${document.id.valueOf()}`
+  });
+  user.did = `did:3:${document.id.valueOf()}`;
   const a = await user.sign(updateRecordToSign, { useMgmt: true });
   const updateRecordA = {
     ...updateRecord,
+    iss: user.did,
     header: a.header,
-    signature: a.signature
-  }
+    signature: a.signature,
+  };
+  await document.update(updateRecordA);
   // localUser.signManagement(updateRecord);
 }
 

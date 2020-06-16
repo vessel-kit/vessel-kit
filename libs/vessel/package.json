@@ -29,6 +29,7 @@
     "io-ts": "^2.2.3",
     "io-ts-promise": "^2.0.2",
     "jose": "^1.27.0",
+    "js-sha3": "^0.8.0",
     "lodash": "^4.17.15",
     "multibase": "^0.7.0",
     "multicodec": "^1.0.1",

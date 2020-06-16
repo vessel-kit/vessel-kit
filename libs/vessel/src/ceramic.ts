@@ -29,7 +29,7 @@ export class Ceramic {
     const ethereumEndpoint = options.ethereumEndpoint
     const anchoringService = new AnchoringService(logger, ethereumEndpoint, ethereumAnchoringService, cloud)
     const documentUpdateService = new DocumentUpdateService(logger, handlers, anchoringService, cloud)
-    const documentService = new DocumentService(logger, anchoringService, documentUpdateService)
+    const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService)
     this.#documentRepository = new DocumentRepository(logger, handlers, cloud, documentService)
     logger.log(`Constructed Ceramic instance`, options)
   }

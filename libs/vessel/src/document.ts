@@ -31,6 +31,14 @@ export class Document {
     return this.#id
   }
 
+  get current () {
+    return this.state.current || this.state.freight
+  }
+
+  update(record: any) {
+    return this.#service.update(record, this.state$)
+  }
+
   get state() {
     return this.#state$.value
   }

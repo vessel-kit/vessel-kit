@@ -3,11 +3,10 @@ import * as tPromise from 'io-ts-promise';
 import { PublicKey } from './public-key';
 import { ethers } from 'ethers';
 import sortKeys from 'sort-keys'
-
-type ProviderResponse<A> = { result: A } & {errors: any[]}
+import { decodeJWT } from 'did-jwt';
 
 interface IdentityProvider {
-  send<A = any>(payload: any): Promise<ProviderResponse<A>>;
+  send<A = any>(payload: any, origin?: any, callback?: any): Promise<any>;
 }
 
 function openRpcCall(method: string, params: any) {
@@ -82,10 +81,13 @@ export class Signor {
   async sign (payload: any, opts: { useMgmt: boolean } = {useMgmt: false}) {
     if (!this.did) throw new EmptyDIDSigningError(`Can not sign payload without DID`)
     payload.iss = this.did
+    payload.iat = undefined // did-jwt is quite opinionated
     const sortedPayload = sortKeys(payload, {deep: true})
     const claimParams = { payload: sortedPayload, did: this.did, useMgmt: opts.useMgmt }
     const jwt = await this.ask<string>('3id_signClaim', claimParams)
-    const [header, _, signature] = jwt.split('.')
+    const jwtComponents = decodeJWT(jwt)
+    const header = jwtComponents.header
+    const signature = jwtComponents.signature
     return {header, payload, signature}
   }
 

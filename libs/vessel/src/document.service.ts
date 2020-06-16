@@ -10,18 +10,21 @@ import { NamedMutex } from './named-mutex.util';
 import { AnchoringService } from './anchoring.service';
 import { DocumentUpdateService } from './document-update.service';
 import { FrozenSubject } from './frozen-subject';
+import { RecordWrap } from './record-wrap';
 
 export class DocumentService {
   #logger: ILogger
   #anchoring: AnchoringService
   #mutex: NamedMutex
   #updateService: DocumentUpdateService
+  #cloud: Cloud
 
-  constructor(logger: ILogger, anchoring: AnchoringService, updateService: DocumentUpdateService) {
+  constructor(logger: ILogger, anchoring: AnchoringService, cloud: Cloud, updateService: DocumentUpdateService) {
     this.#logger = logger.withContext(DocumentService.name)
     this.#anchoring = anchoring
     this.#mutex = new NamedMutex()
     this.#updateService = updateService
+    this.#cloud = cloud
   }
 
   async applyHead(recordCid: CID, state$: FrozenSubject<DocumentState>) {
@@ -59,6 +62,13 @@ export class DocumentService {
         }
       })
     })
+  }
+
+  async update(record: any, state$: FrozenSubject<DocumentState>) {
+    const cid = await this.#cloud.store(record)
+    const recordWrap = new RecordWrap(record, cid)
+    const a = await this.#updateService.applyUpdate(recordWrap, state$.value)
+    console.log('DocumentService.update', a)
   }
 
   requestAnchor(docId: CeramicDocumentId, cid: CID) {

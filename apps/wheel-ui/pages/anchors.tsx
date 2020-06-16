@@ -27,8 +27,6 @@ function AnchorsTable(props: { anchors: any }) {
     });
   };
 
-  console.log(props.anchors)
-
   return (
     <Table>
       <TableHead>

@@ -47,7 +47,7 @@ export class DocumentUpdateService {
       return null
     }
     // Case 2: Direct continuation
-    const remoteStart = await this.#cloud.retrieve(remoteLog.init)
+    const remoteStart = await this.#cloud.retrieve(remoteLog.first)
     if (remoteStart?.prev?.equals(localLog.last)) {
       this.#logger.debug(`Detected direct continuation for ${recordCid}`)
       return await this.applyLog(remoteLog, state)
@@ -73,5 +73,11 @@ export class DocumentUpdateService {
           throw new UnreachableCaseError(record.kind)
       }
     }, state)
+  }
+
+  async applyUpdate(updateRecord: RecordWrap, state: DocumentState) {
+    const handler = this.#handlers.get(state.doctype)
+    const update = await handler.applyUpdate(updateRecord, state)
+    console.log('DocumentUpdateService.update', update)
   }
 }

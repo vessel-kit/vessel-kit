@@ -55,7 +55,7 @@ export class PublicKey {
 
   constructor(readonly jwk: jose.JWK.Key) {}
 
-  raw() {
+  raw(): Buffer {
     if (this.jwk.crv === 'secp256k1' && this.jwk.kty === 'EC') {
       const x = base64url.toBuffer(this.jwk.x);
       const y = base64url.toBuffer(this.jwk.y);
