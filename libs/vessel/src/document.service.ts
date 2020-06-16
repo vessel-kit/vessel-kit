@@ -67,8 +67,12 @@ export class DocumentService {
   async update(record: any, state$: FrozenSubject<DocumentState>) {
     const cid = await this.#cloud.store(record)
     const recordWrap = new RecordWrap(record, cid)
-    const a = await this.#updateService.applyUpdate(recordWrap, state$.value)
-    console.log('DocumentService.update', a)
+    const next = await this.#updateService.applyUpdate(recordWrap, state$.value)
+    const documentId = new CeramicDocumentId(state$.value.log.first)
+    this.#anchoring.requestAnchor(documentId, cid)
+    // state$.next(next)
+    console.log('DocumentService.update', next)
+    // Publish head
   }
 
   requestAnchor(docId: CeramicDocumentId, cid: CID) {

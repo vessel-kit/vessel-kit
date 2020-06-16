@@ -15,6 +15,7 @@ import { ProofRecord } from '../anchoring.service';
 import * as _ from 'lodash';
 import sortKeys from 'sort-keys';
 import { verifyThreeId } from './verify-three-did';
+import jsonPatch from 'fast-json-patch';
 
 const PublicKeyString = Joi.string().custom(value => {
   const buffer = multibase.decode(value);
@@ -94,26 +95,29 @@ export class ThreeIdHandler implements IHandler {
     return genesis;
   }
 
-  async applyUpdate(record: RecordWrap, state: DocumentState) {
+  async applyUpdate(record: RecordWrap, state: DocumentState): Promise<DocumentState> {
     if (!(record.load.id && record.load.id.equals(state.log.first))) {
       throw new InvalidDocumentUpdateLinkError(`Expected ${state.log.first} id while got ${record.load.id}`);
     }
     const payloadObject = _.omit(record.load, ['header', 'signature']);
     payloadObject.prev = { '/': payloadObject.prev.toString() };
     payloadObject.id = { '/': payloadObject.id.toString() };
-    // payloadObject.iss = record.lo
     const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject, { deep: true })));
     const encodedHeader = base64url(JSON.stringify(record.load.header));
     const encodedSignature = record.load.signature;
     const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');
-    const currentState = state.freight;
-    const threeIdContent = await tPromise.decode(ThreeIdContent.codec, currentState);
+    const freight = state.freight;
+    const threeIdContent = await tPromise.decode(ThreeIdContent.codec, freight);
     await verifyThreeId(jwt, `did:3:${state.log.first.toString()}`, threeIdContent);
-
-    // console.log('three id.applyUpdate', deco)
-    // Check Signature
-    // Push to log
-    // Return next state
+    const next = jsonPatch.applyPatch(state.current || state.freight, payloadObject.patch);
+    return {
+      ...state,
+      current: next.newDocument,
+      log: state.log.concat(record.cid),
+      anchor: {
+        status: AnchoringStatus.NOT_REQUESTED,
+      },
+    };
   }
 
   async applyAnchor(anchorRecord: RecordWrap, proof: ProofRecord, state: DocumentState): Promise<DocumentState> {

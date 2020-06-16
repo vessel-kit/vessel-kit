@@ -1,5 +1,3 @@
-import { sleep } from './sleep.util';
-
 /**
  * Continue execution if `continue` returns true.
  * @param periodMs Period of checking for stop condition, in milliseconds

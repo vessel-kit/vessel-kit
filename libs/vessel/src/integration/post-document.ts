@@ -5,6 +5,7 @@ import { waitUntil } from './wait.util';
 import { AnchoringStatus } from '..';
 import IdentityWallet from 'identity-wallet';
 import { Signor } from '../person/signor';
+import { sleep } from './sleep.util';
 
 const IPFS_URL = 'http://localhost:5001';
 const ipfs = ipfsClient(IPFS_URL);
@@ -78,6 +79,7 @@ async function main() {
     signature: a.signature,
   };
   await document.update(updateRecordA);
+  await sleep(20000)
   // localUser.signManagement(updateRecord);
 }
 

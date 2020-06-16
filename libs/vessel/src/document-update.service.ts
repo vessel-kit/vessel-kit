@@ -8,6 +8,7 @@ import { NotImplementedError } from './not-implemented.error';
 import { UnreachableCaseError } from './unreachable-case.error';
 import { AnchoringService } from './anchoring.service';
 import { HandlersContainer } from './handlers/handlers.container';
+import { CeramicDocumentId } from './ceramic-document-id';
 
 export class DocumentUpdateService {
   #cloud: Cloud
@@ -60,12 +61,12 @@ export class DocumentUpdateService {
     return log.reduce(async (state, entry) => {
       const content = await this.#cloud.retrieve(entry)
       const record = new RecordWrap(content, entry)
+      const handler = this.#handlers.get(state.doctype)
       switch (record.kind) {
         case RecordWrap.Kind.SIGNED:
-          throw new NotImplementedError(`DocumentService.applyLog:SIGNED`)
+          return handler.applyUpdate(record, state)
         case RecordWrap.Kind.ANCHOR:
           const proof = await this.#anchoring.verify(content, entry)
-          const handler = this.#handlers.get(state.doctype)
           return handler.applyAnchor(record, proof, state)
         case RecordWrap.Kind.GENESIS:
           throw new NotImplementedError(`DocumentService.applyLog:GENESIS`)
@@ -77,7 +78,6 @@ export class DocumentUpdateService {
 
   async applyUpdate(updateRecord: RecordWrap, state: DocumentState) {
     const handler = this.#handlers.get(state.doctype)
-    const update = await handler.applyUpdate(updateRecord, state)
-    console.log('DocumentUpdateService.update', update)
+    return handler.applyUpdate(updateRecord, state)
   }
 }
