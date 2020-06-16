@@ -11,6 +11,7 @@ export class Document {
   #service: DocumentService
   #state$: FrozenSubject<DocumentState>
   #anchoringSubscription: Subscription
+  #updateSubscription: Subscription
 
   constructor(docId: CeramicDocumentId, genesisRecord: any & {doctype: string}, documentService: DocumentService) {
     this.#id = docId
@@ -25,6 +26,8 @@ export class Document {
       log: new Chain([docId.cid])
     })
     this.#anchoringSubscription = this.#service.handleAnchorStatusUpdate(docId, this.#state$)
+    this.#updateSubscription = this.state$.subscribe(update => {
+    })
   }
 
   get id() {

@@ -24,7 +24,7 @@ export class Ceramic {
     const handlers = new HandlersContainer(new Map([
       ['3id', new ThreeIdHandler()]
     ]))
-    const cloud = new Cloud(ipfs)
+    const cloud = new Cloud(logger, ipfs)
     const ethereumAnchoringService = new RemoteEthereumAnchoringService(logger, options.anchoringEndpoint)
     const ethereumEndpoint = options.ethereumEndpoint
     const anchoringService = new AnchoringService(logger, ethereumEndpoint, ethereumAnchoringService, cloud)

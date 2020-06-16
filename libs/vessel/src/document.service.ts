@@ -71,7 +71,7 @@ export class DocumentService {
     const documentId = new CeramicDocumentId(state$.value.log.first)
     this.#anchoring.requestAnchor(documentId, cid)
     state$.next(next)
-    // Publish head
+    this.#cloud.publishHead(documentId.toString(), cid)
   }
 
   requestAnchor(docId: CeramicDocumentId, cid: CID) {
