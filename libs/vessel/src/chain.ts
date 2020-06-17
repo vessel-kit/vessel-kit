@@ -25,6 +25,15 @@ export class Chain {
     return this.#log
   }
 
+  findIndex(fn: (item: CID) => boolean) {
+    return this.log.findIndex(fn)
+  }
+
+  slice(index: number) {
+    const next = this.log.slice(index)
+    return new Chain(next)
+  }
+
   async reduce<A>(f: (acc: A, item: CID) => Promise<A>, initial: A) {
     let acc = initial
     for (let item of this.#log) {

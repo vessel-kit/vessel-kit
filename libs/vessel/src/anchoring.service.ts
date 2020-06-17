@@ -1,5 +1,5 @@
 import { Observation, RemoteEthereumAnchoringService } from './anchoring/remote-ethereum-anchoring-service';
-import { Cloud } from './cloud';
+import { Cloud } from './cloud/cloud';
 import { CeramicDocumentId } from './ceramic-document-id';
 import { Observable } from 'rxjs';
 import { ILogger } from './logger/logger.interface';

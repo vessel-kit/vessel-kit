@@ -1,14 +1,13 @@
-import { Cloud } from './cloud';
+import { Cloud } from './cloud/cloud';
 import { Chain } from './chain';
 import CID from 'cids';
 import { DocumentState } from './document.state';
 import { ILogger } from './logger/logger.interface';
 import { RecordWrap } from './record-wrap';
-import { NotImplementedError } from './not-implemented.error';
 import { UnreachableCaseError } from './unreachable-case.error';
 import { AnchoringService } from './anchoring.service';
 import { HandlersContainer } from './handlers/handlers.container';
-import { CeramicDocumentId } from './ceramic-document-id';
+import { AnchoringStatus } from './anchoring/anchoring-status';
 
 export class DocumentUpdateService {
   #cloud: Cloud
@@ -54,7 +53,19 @@ export class DocumentUpdateService {
       return await this.applyLog(remoteLog, state)
     }
     // Case 3: Merge
-    throw new NotImplementedError(`applyHead.else merge`)
+    // const conflictIdx = localLog.log.findIndex(x => x.equals(record.prev)) + 1
+    const record = await this.#cloud.retrieve(remoteLog.first)
+    const conflictIdx = localLog.findIndex(x => x.equals(record.prev))
+    const nonConflictingLog = localLog.slice(conflictIdx + 1)
+    const nonConflictingState = await this.applyLog(nonConflictingLog, state)
+    const localState = await this.applyLog(localLog, nonConflictingState)
+    const remoteState = await this.applyLog(remoteLog, nonConflictingState)
+    if (remoteState.anchor.status ===  AnchoringStatus.ANCHORED && localState.anchor.status === AnchoringStatus.ANCHORED &&
+      remoteState.anchor.proof.timestamp < localState.anchor.proof.timestamp) {
+      // if the remote state is anchored before the local,
+      // apply the remote log to our local state
+      return remoteState
+    }
   }
 
   async applyLog(log: Chain, state: DocumentState): Promise<DocumentState> {
@@ -69,7 +80,15 @@ export class DocumentUpdateService {
           const proof = await this.#anchoring.verify(content, entry)
           return handler.applyAnchor(record, proof, state)
         case RecordWrap.Kind.GENESIS:
-          throw new NotImplementedError(`DocumentService.applyLog:GENESIS`)
+          return {
+            doctype: content.doctype,
+            current: null,
+            freight: content,
+            anchor: {
+              status: AnchoringStatus.NOT_REQUESTED
+            },
+            log: [entry]
+          }
         default:
           throw new UnreachableCaseError(record.kind)
       }

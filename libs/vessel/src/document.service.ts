@@ -4,13 +4,15 @@ import CID from 'cids';
 import { AnchoringStatus } from './anchoring/anchoring-status';
 import { DocumentState } from './document.state';
 import { UnreachableCaseError } from './unreachable-case.error';
-import { Cloud } from './cloud';
+import { Cloud } from './cloud/cloud';
 import { NamedMutex } from './named-mutex.util';
 import { AnchoringService } from './anchoring.service';
 import { DocumentUpdateService } from './document-update.service';
 import { FrozenSubject } from './frozen-subject';
 import { RecordWrap } from './record-wrap';
 import { normalizeRecord } from './normalize-record.util';
+import { MessageTyp } from './cloud/message-typ';
+import { filter } from 'rxjs/operators';
 
 export class DocumentService {
   #logger: ILogger
@@ -31,6 +33,12 @@ export class DocumentService {
     const nextState = await this.#updateService.applyHead(recordCid, state$.value)
     if (nextState) {
       state$.next(nextState)
+    }
+  }
+
+  handleUpdate(docId: CeramicDocumentId, state: DocumentState) {
+    if (!docId.cid.equals(state.log.last)) {
+      this.#cloud.bus.publishHead(docId, state.log.last)
     }
   }
 
@@ -71,11 +79,20 @@ export class DocumentService {
     const documentId = new CeramicDocumentId(state$.value.log.first)
     this.#anchoring.requestAnchor(documentId, cid)
     state$.next(next)
-    this.#cloud.publishHead(documentId.toString(), cid)
   }
 
   requestAnchor(docId: CeramicDocumentId, cid: CID) {
     this.#logger.debug(`Requesting anchor for ${docId.toString()}?version=${cid.toString()}`)
     this.#anchoring.requestAnchor(docId, cid)
+  }
+
+  requestUpdates(docId: CeramicDocumentId, state$: FrozenSubject<DocumentState>) {
+    this.#logger.debug(`Requesting updates for ${docId}`)
+    this.#cloud.bus.request(docId.toString())
+    this.#cloud.bus.message$.pipe(filter(message => message.id === docId.toString())).subscribe(async message => {
+      if (message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE) {
+        await this.applyHead(message.cid, state$)
+      }
+    })
   }
 }

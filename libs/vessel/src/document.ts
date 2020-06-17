@@ -27,7 +27,12 @@ export class Document {
     })
     this.#anchoringSubscription = this.#service.handleAnchorStatusUpdate(docId, this.#state$)
     this.#updateSubscription = this.state$.subscribe(update => {
+      this.#service.handleUpdate(this.id, update)
     })
+  }
+
+  get head() {
+    return this.state.log.last
   }
 
   get id() {
@@ -52,6 +57,10 @@ export class Document {
 
   requestAnchor() {
     this.#service.requestAnchor(this.#id, this.#id.cid)
+  }
+
+  requestUpdates() {
+    this.#service.requestUpdates(this.#id, this.state$)
   }
 
   toJSON() {

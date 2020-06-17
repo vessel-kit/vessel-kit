@@ -1,12 +1,11 @@
 import { ILogger } from './logger/logger.interface';
-import { UnknownDoctypeError } from './unknown-doctype.error';
-import { IHandler } from './handlers/handler.interface';
-import { ThreeIdHandler } from './handlers/three-id-handler';
-import { Cloud } from './cloud';
+import { Cloud } from './cloud/cloud';
 import { CeramicDocumentId } from './ceramic-document-id';
 import { Document } from './document';
 import { DocumentService } from './document.service';
 import { HandlersContainer } from './handlers/handlers.container';
+import { filter } from 'rxjs/operators';
+import { MessageTyp } from './cloud/message-typ';
 
 export class DocumentRepository {
   #logger: ILogger
@@ -22,6 +21,15 @@ export class DocumentRepository {
     this.#documentService = documentService
     this.#logger.log(`Constructed DocumentService instance`)
     this.#documentCache = new Map()
+
+    this.#cloud.bus.message$.subscribe(message => {
+      if (message.typ === MessageTyp.REQUEST) {
+        const found = this.#documentCache.get(message.id)
+        if (found) {
+          this.#cloud.bus.publishResponse(found.id, found.head)
+        }
+      }
+    })
   }
 
   async create(genesis: any) {
@@ -50,6 +58,7 @@ export class DocumentRepository {
       const handler = this.#handlers.get(genesis.doctype)
       const freight = await handler.applyGenesis(genesis)
       const document = new Document(documentId, freight, this.#documentService)
+      document.requestUpdates()
       this.#documentCache.set(documentId.toString(), document)
       return document
     }

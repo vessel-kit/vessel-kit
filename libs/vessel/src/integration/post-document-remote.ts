@@ -55,7 +55,7 @@ async function main() {
   const response = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
   console.log('respo', response.data);
   const documentId = new CID(response.data.docId);
-  await sleep(10000);
+  await sleep(2000);
   // const document = await ceramic.create(genesisRecord);
   // console.log('Present state', document.state);
   // console.log('Waiting some time for anchoring...');

@@ -2,7 +2,7 @@ import { ILogger } from './logger/logger.interface';
 import { Ipfs } from 'ipfs';
 import { ConsoleLogger } from './logger/console-logger';
 import { DocumentRepository } from './document.repository';
-import { Cloud } from './cloud';
+import { Cloud } from './cloud/cloud';
 import { DocumentService } from './document.service';
 import { RemoteEthereumAnchoringService } from './anchoring/remote-ethereum-anchoring-service';
 import { AnchoringService } from './anchoring.service';
