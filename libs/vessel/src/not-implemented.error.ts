@@ -1,1 +1,5 @@
-export class NotImplementedError extends Error {}
+export class NotImplementedError extends Error {
+  constructor(message) {
+    super(`Not implemented: ${message}`);
+  }
+}

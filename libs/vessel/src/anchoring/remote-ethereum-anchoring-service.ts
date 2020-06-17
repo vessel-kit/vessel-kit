@@ -78,7 +78,7 @@ export class RemoteEthereumAnchoringService {
       if (status !== AnchoringStatus.ANCHORED) {
         setTimeout(() => {
           queueScheduler.schedule(() => doRequest());
-        }, 3000);
+        }, 5000);
       }
     };
     queueScheduler.schedule(() => doRequest());

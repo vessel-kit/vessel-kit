@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { Ceramic } from '../lib/ceramic/ceramic';
+import { Ceramic } from '@potter/vessel';
 
 @Controller('/api/v0/stats')
 export class StatsController {
@@ -8,9 +8,12 @@ export class StatsController {
 
   @Get('/')
   async index() {
-    const stats = await this.ceramic.stats()
+    // const stats = await this.ceramic.stats()
+    // return {
+    //   documentsCount: stats.documentsCount
+    // }
     return {
-      documentsCount: stats.documentsCount
+      documentsCount: 'N/A'
     }
   }
 }

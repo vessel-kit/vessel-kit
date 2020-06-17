@@ -1,4 +1,5 @@
 import CID from 'cids';
+import { normalizeRecord } from './normalize-record.util';
 
 enum RecordKind {
   GENESIS,
@@ -26,8 +27,8 @@ export class RecordWrap {
   static Kind = RecordKind;
 
   constructor(load: any, cid: CID) {
-    this.#load = load
-    this.#kind = detectRecordKind(load)
+    this.#load = normalizeRecord(load)
+    this.#kind = detectRecordKind(this.#load)
     this.#cid = cid
   }
 

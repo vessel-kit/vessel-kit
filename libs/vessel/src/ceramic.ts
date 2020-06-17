@@ -9,11 +9,12 @@ import { AnchoringService } from './anchoring.service';
 import { ThreeIdHandler } from './handlers/three-id-handler';
 import { DocumentUpdateService } from './document-update.service';
 import { HandlersContainer } from './handlers/handlers.container';
+import { CeramicDocumentId } from './ceramic-document-id';
 
 export interface CeramicOptions {
-  logger: ILogger;
-  anchoringEndpoint: string
-  ethereumEndpoint: string
+  logger?: ILogger;
+  anchoringEndpoint?: string
+  ethereumEndpoint?: string
 }
 
 export class Ceramic {
@@ -45,5 +46,9 @@ export class Ceramic {
 
   async create(genesis: any) {
     return this.#documentRepository.create(genesis)
+  }
+
+  async load(docId: CeramicDocumentId) {
+    return this.#documentRepository.load(docId)
   }
 }

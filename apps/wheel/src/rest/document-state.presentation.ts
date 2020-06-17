@@ -1,4 +1,4 @@
-import { Document} from '../lib/ceramic/document'
+import { Document} from '@potter/vessel'
 
 export class DocumentStatePresentation {
   constructor(private readonly document: Document) {
@@ -6,9 +6,9 @@ export class DocumentStatePresentation {
 
   toJSON() {
     return {
-      docId: this.document.docId,
+      docId: this.document.id.cid.toString(),
       state: this.document.state,
-      anchorStatus: this.document.anchorStatus
+      anchorStatus: this.document.state.anchor
     }
   }
 }

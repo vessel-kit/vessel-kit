@@ -1,7 +1,6 @@
 import { ILogger } from './logger/logger.interface';
 import { CeramicDocumentId } from './ceramic-document-id';
 import CID from 'cids';
-import { BehaviorSubject } from 'rxjs';
 import { AnchoringStatus } from './anchoring/anchoring-status';
 import { DocumentState } from './document.state';
 import { UnreachableCaseError } from './unreachable-case.error';
@@ -11,6 +10,7 @@ import { AnchoringService } from './anchoring.service';
 import { DocumentUpdateService } from './document-update.service';
 import { FrozenSubject } from './frozen-subject';
 import { RecordWrap } from './record-wrap';
+import { normalizeRecord } from './normalize-record.util';
 
 export class DocumentService {
   #logger: ILogger
@@ -65,7 +65,7 @@ export class DocumentService {
   }
 
   async update(record: any, state$: FrozenSubject<DocumentState>) {
-    const cid = await this.#cloud.store(record)
+    const cid = await this.#cloud.store(normalizeRecord(record))
     const recordWrap = new RecordWrap(record, cid)
     const next = await this.#updateService.applyUpdate(recordWrap, state$.value)
     const documentId = new CeramicDocumentId(state$.value.log.first)

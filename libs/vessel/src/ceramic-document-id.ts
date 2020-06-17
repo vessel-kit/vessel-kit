@@ -11,10 +11,14 @@ export class CeramicDocumentId {
 
   static fromString(s: string) {
     const match = PATTERN.exec(s);
-    if (!match || !match[2]) throw new Error(`Invalid Ceramic identifier ${s}`);
-    const cidString = match[2];
-    const cid = new CID(cidString);
-    return new CeramicDocumentId(cid);
+    if (match && match[2]) {
+      const cidString = match[2];
+      const cid = new CID(cidString);
+      return new CeramicDocumentId(cid);
+    } else {
+      const cid = new CID(s);
+      return new CeramicDocumentId(cid);
+    }
   }
 
   valueOf() {

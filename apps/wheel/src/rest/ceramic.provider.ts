@@ -1,24 +1,16 @@
-import { Ceramic } from '../lib/ceramic/ceramic';
 import { ConfigService } from '../commons/config.service';
-import { ContentStorage } from '../storage/content.storage';
-import { DocumentStorage } from '../storage/document.storage';
-import { EthereumAnchorService } from '../lib/ceramic/ethereum-anchor-service';
+import { Ceramic } from '@potter/vessel';
+import ipfsClient from 'ipfs-http-client';
 
 export const ceramicProvider = {
   provide: Ceramic,
-  useFactory: async (
-    config: ConfigService,
-    contentStorage: ContentStorage,
-    documentStorage: DocumentStorage,
-  ) => {
+  useFactory: async (config: ConfigService) => {
     const ipfsUrl = config.current.IPFS_URL;
-    const anchoringUrl = config.current.ANCHORING_URL;
-    return Ceramic.build(
-      ipfsUrl,
-      anchoringUrl,
-      contentStorage,
-      documentStorage,
-    );
+    const anchoringEndpoint = config.current.ANCHORING_URL;
+    const ipfs = ipfsClient(ipfsUrl);
+    return Ceramic.build(ipfs, {
+      anchoringEndpoint: anchoringEndpoint,
+    });
   },
-  inject: [ConfigService, ContentStorage, DocumentStorage],
+  inject: [ConfigService],
 };

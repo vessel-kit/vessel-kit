@@ -13,6 +13,7 @@ export class DocumentRepository {
   #handlers: HandlersContainer
   #cloud: Cloud
   #documentService: DocumentService
+  #documentCache: Map<string, Document>
 
   constructor(logger: ILogger, handlers: HandlersContainer, cloud: Cloud, documentService: DocumentService) {
     this.#logger = logger.withContext(DocumentRepository.name)
@@ -20,6 +21,7 @@ export class DocumentRepository {
     this.#cloud = cloud
     this.#documentService = documentService
     this.#logger.log(`Constructed DocumentService instance`)
+    this.#documentCache = new Map()
   }
 
   async create(genesis: any) {
@@ -38,18 +40,18 @@ export class DocumentRepository {
   }
 
   async load(documentId: CeramicDocumentId) {
-    this.#logger.log(`Loading document ${documentId}...`)
-    const genesis = await this.#cloud.retrieve(documentId.cid)
-    this.#logger.debug(`Loaded genesis record for ${documentId}`)
-    const handler = this.#handlers.get(genesis.doctype)
-    const freight = await handler.applyGenesis(genesis)
-    return new Document(documentId, freight, this.#documentService)
-    // Load pinned
-    // init document:
-    // Retrieve genesis
-    // apply genesis +
-    // set up document updates
-    // anchor
-    // publish head
+    const found = this.#documentCache.get(documentId.toString())
+    if (found) {
+      return found
+    } else {
+      this.#logger.log(`Loading document ${documentId}...`)
+      const genesis = await this.#cloud.retrieve(documentId.cid)
+      this.#logger.debug(`Loaded genesis record for ${documentId}`)
+      const handler = this.#handlers.get(genesis.doctype)
+      const freight = await handler.applyGenesis(genesis)
+      const document = new Document(documentId, freight, this.#documentService)
+      this.#documentCache.set(documentId.toString(), document)
+      return document
+    }
   }
 }
