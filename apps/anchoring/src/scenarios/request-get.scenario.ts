@@ -48,6 +48,14 @@ export class RequestPresentation {
         };
       case AnchoringStatus.FAILED:
       case AnchoringStatus.NOT_REQUESTED:
+        return {
+          id: this.request.id.toString(),
+          status: this.request.status.toString(),
+          cid: this.request.cid.toString(),
+          docId: this.request.docId,
+          createdAt: dateAsTimestamp(this.request.createdAt),
+          updatedAt: dateAsTimestamp(this.request.updatedAt),
+        };
       case AnchoringStatus.PROCESSING:
         return {
           id: this.request.id.toString(),
@@ -56,6 +64,7 @@ export class RequestPresentation {
           docId: this.request.docId,
           createdAt: dateAsTimestamp(this.request.createdAt),
           updatedAt: dateAsTimestamp(this.request.updatedAt),
+          scheduledAt: dateAsTimestamp(this.nextAnchoring),
         };
       default:
         throw new UnreachableCaseError(this.request.status);

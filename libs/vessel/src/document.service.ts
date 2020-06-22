@@ -44,7 +44,6 @@ export class DocumentService {
 
   handleAnchorStatusUpdate(docId: CeramicDocumentId, state$: FrozenSubject<DocumentState>) {
     return this.#anchoring.anchorStatus$(docId).subscribe(async observation => {
-      await this.#mutex.use(docId.toString(), async () => {
         this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation)
         switch (observation.status) {
           case AnchoringStatus.ANCHORED:
@@ -65,10 +64,16 @@ export class DocumentService {
                 status: AnchoringStatus.PROCESSING,
               }
             })
+          case AnchoringStatus.FAILED:
+            return state$.next({
+              ...state$.value,
+              anchor: {
+                status: AnchoringStatus.FAILED,
+              }
+            })
           default:
             throw new UnreachableCaseError(observation)
         }
-      })
     })
   }
 

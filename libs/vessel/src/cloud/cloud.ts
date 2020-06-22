@@ -21,10 +21,6 @@ export class Cloud {
     this.#bus.listen()
   }
 
-  get message$() {
-    return this.bus.message$
-  }
-
   get bus() {
     return this.#bus
   }

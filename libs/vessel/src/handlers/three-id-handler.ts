@@ -109,7 +109,7 @@ export class ThreeIdHandler implements IHandler {
     const freight = state.freight;
     const threeIdContent = await tPromise.decode(ThreeIdContent.codec, freight);
     await verifyThreeId(jwt, `did:3:${state.log.first.toString()}`, threeIdContent);
-    const next = jsonPatch.applyPatch(state.current || state.freight, payloadObject.patch);
+    const next = jsonPatch.applyPatch(state.current || state.freight, payloadObject.patch, false, false);
     return {
       ...state,
       current: next.newDocument,
@@ -125,6 +125,7 @@ export class ThreeIdHandler implements IHandler {
       next.log = next.log.concat(anchorRecord.cid);
       if (next.current) {
         next.freight = next.current;
+        next.current = null;
       }
       next.anchor = {
         status: AnchoringStatus.ANCHORED,

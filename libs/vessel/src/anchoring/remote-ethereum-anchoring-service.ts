@@ -11,6 +11,12 @@ import { CidCodec } from '../codec/cid-codec';
 import { DateTimestampCodec } from '../codec/date-timestamp.codec';
 import { CeramicDocumentIdStringCodec } from '../codec/ceramid-document-id-string.codec';
 
+const FailedResponse = t.type({
+  status: t.literal(AnchoringStatus.FAILED),
+  cid: t.string.pipe(CidCodec),
+  docId: t.string.pipe(CeramicDocumentIdStringCodec),
+})
+
 const PendingResponse = t.type({
   status: t.union([t.literal(AnchoringStatus.PENDING), t.literal(AnchoringStatus.PROCESSING)]),
   cid: t.string.pipe(CidCodec),
@@ -23,17 +29,9 @@ const AnchoredResponse = t.type({
   cid: t.string.pipe(CidCodec),
   docId: t.string.pipe(CeramicDocumentIdStringCodec),
   anchorRecord: t.string.pipe(CidCodec)
-  // anchorRecord: t.type({
-  //   cid: t.string.pipe(CidCodec),
-  //   content: t.type({
-  //     path: t.string,
-  //     prev: t.string.pipe(CidCodec),
-  //     proof: t.string.pipe(CidCodec)
-  //   })
-  // })
 })
 
-const AnchoringResponse = t.union([AnchoredResponse, PendingResponse])
+const AnchoringResponse = t.union([AnchoredResponse, PendingResponse, FailedResponse])
 
 export type Observation = t.TypeOf<typeof AnchoringResponse>
 

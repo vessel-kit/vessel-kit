@@ -2,16 +2,15 @@ import { Ceramic } from '../ceramic';
 import ipfsClient from 'ipfs-http-client';
 import { ThreeIdContent } from '../three-id.content';
 import { waitUntil } from './wait.util';
-import { AnchoringStatus } from '..';
 import IdentityWallet from 'identity-wallet';
 import { Signor } from '../person/signor';
 import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
+import { Chain } from '../chain';
 
 const IPFS_URL = 'http://localhost:5001';
 const REMOTE_URL = 'http://localhost:3001';
-const ipfs = ipfsClient(IPFS_URL);
 
 const cborSortCompareFn = (a: string, b: string): number => a.length - b.length || a.localeCompare(b);
 
@@ -34,8 +33,6 @@ async function main() {
   const user = new Signor(identityWallet.get3idProvider());
   await user.auth();
 
-  // const ceramic = await Ceramic.build(ipfs);
-
   const ownerKey = user.publicKeys.managementKey;
   const signingKey = user.publicKeys.signingKey;
   const encryptionKey = user.publicKeys.asymEncryptionKey;
@@ -52,45 +49,37 @@ async function main() {
     doctype: '3id',
     ...content,
   };
-  const response = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
-  console.log('respo', response.data);
-  const documentId = new CID(response.data.docId);
-  await sleep(2000);
-  // const document = await ceramic.create(genesisRecord);
-  // console.log('Present state', document.state);
-  // console.log('Waiting some time for anchoring...');
-  // await waitUntil(5000, async () => {
-  //   return document.state.anchor.status === AnchoringStatus.ANCHORED;
-  // });
-  // console.log(`Present state`, document.state);
+  console.log('genesis record', genesisRecord)
+  const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
+  console.log('genesis response', genesisResponse.data);
+  const documentId = new CID(genesisResponse.data.docId);
+  await sleep(80000);
+  const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`)
+  const log = new Chain(anchoredGenesisResponse.data.log.map(cid => new CID(cid)))
   const doc2 = doc1.clone();
   doc2.publicKeys.set('foocryption', signingKey);
   const delta = doc2.delta(doc1);
   const updateRecord = {
     patch: delta,
-    prev: documentId,
+    prev: log.last,
     id: documentId,
   };
   const updateRecordToSign = sortPropertiesDeep({
-    patch: delta,
-    prev: { '/': documentId.valueOf().toString() },
-    id: { '/': documentId.valueOf().toString() },
+    patch: updateRecord.patch,
+    prev: { '/': updateRecord.prev.valueOf().toString() },
+    id: { '/': updateRecord.id.valueOf().toString() },
   });
   user.did = `did:3:${documentId.valueOf()}`;
-  console.log('signing payload', updateRecordToSign)
-  const a = await user.sign(updateRecordToSign, { useMgmt: true });
+  console.log('signing payload', updateRecordToSign);
+  const jwt = await user.sign(updateRecordToSign, { useMgmt: true });
   const updateRecordA = {
-    ...updateRecord,
-    prev: { '/': updateRecord.prev.toString() },
-    id: { '/': updateRecord.id.toString() },
+    ...updateRecordToSign,
     iss: user.did,
-    header: a.header,
-    signature: a.signature,
+    header: jwt.header,
+    signature: jwt.signature,
   };
   const updateResponse = await axios.put(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`, updateRecordA);
-  console.log('respo', updateResponse.data);
-  // await document.update(updateRecordA);
-  // await sleep(20000)
+  console.log('update response', updateResponse.data);
 }
 
 main();

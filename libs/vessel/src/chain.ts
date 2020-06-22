@@ -58,4 +58,8 @@ export class Chain {
     const log = this.#log.map(cid => cid.toString()).join(', ')
     return `<Chain log: [${log}]>`;
   }
+
+  toJSON() {
+    return this.#log.map(cid => cid.toString())
+  }
 }

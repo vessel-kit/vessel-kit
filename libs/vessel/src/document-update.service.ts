@@ -54,6 +54,7 @@ export class DocumentUpdateService {
     }
     // Case 3: Merge
     // const conflictIdx = localLog.log.findIndex(x => x.equals(record.prev)) + 1
+    this.#logger.debug(`Detected merge required for ${recordCid}`)
     const record = await this.#cloud.retrieve(remoteLog.first)
     const conflictIdx = localLog.findIndex(x => x.equals(record.prev))
     const nonConflictingLog = localLog.slice(conflictIdx + 1)
@@ -96,7 +97,11 @@ export class DocumentUpdateService {
   }
 
   async applyUpdate(updateRecord: RecordWrap, state: DocumentState) {
-    const handler = this.#handlers.get(state.doctype)
-    return handler.applyUpdate(updateRecord, state)
+    if (state.log.last.equals(updateRecord.load.prev)) {
+      const handler = this.#handlers.get(state.doctype)
+      return handler.applyUpdate(updateRecord, state)
+    } else {
+      throw new Error(`Update should reference last log entry ${state.log.last}, got ${updateRecord.load.prev}`)
+    }
   }
 }
