@@ -37,6 +37,14 @@ export class RequestStorage {
     });
   }
 
+  byDocIdMany(docId: CID): Promise<RequestRecord[]> {
+    return this.repository.find({
+      where: {
+        docId: docId.toString(),
+      },
+    });
+  }
+
   updateStatus(records: RequestRecord[], status: AnchoringStatus): Promise<RequestRecord[]> {
     const next = records.map(r => {
       r.status = status;

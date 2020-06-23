@@ -63,4 +63,8 @@ export class DocumentRepository {
       return document
     }
   }
+
+  async list(): Promise<Document[]> {
+    return Array.from(this.#documentCache.values())
+  }
 }

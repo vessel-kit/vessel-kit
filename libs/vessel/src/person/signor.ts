@@ -5,6 +5,31 @@ import { ethers } from 'ethers';
 import sortKeys from 'sort-keys'
 import { decodeJWT } from 'did-jwt';
 
+interface JWTHeader {
+  typ: 'JWT'
+  alg: string
+  [x: string]: any
+}
+
+interface JWTDecoded {
+  header: JWTHeader
+  payload: JWTPayload
+  signature: string
+  data: string
+}
+
+interface JWTPayload {
+  iss?: string
+  sub?: string
+  aud?: string | string[]
+  iat?: number
+  nbf?: number
+  type?: string
+  exp?: number
+  rexp?: number
+  [x: string]: any
+}
+
 interface IdentityProvider {
   send<A = any>(payload: any, origin?: any, callback?: any): Promise<any>;
 }
@@ -85,7 +110,7 @@ export class Signor {
     const sortedPayload = sortKeys(payload, {deep: true})
     const claimParams = { payload: sortedPayload, did: this.did, useMgmt: opts.useMgmt }
     const jwt = await this.ask<string>('3id_signClaim', claimParams)
-    const jwtComponents = decodeJWT(jwt)
+    const jwtComponents = decodeJWT(jwt) as JWTDecoded
     const header = jwtComponents.header
     const signature = jwtComponents.signature
     return {header, payload, signature}

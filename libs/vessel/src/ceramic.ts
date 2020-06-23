@@ -51,4 +51,8 @@ export class Ceramic {
   async load(docId: CeramicDocumentId) {
     return this.#documentRepository.load(docId)
   }
+
+  async list() {
+    return this.#documentRepository.list()
+  }
 }

@@ -69,6 +69,14 @@ const HeaderMenuItemE = styled.a(
   })
 );
 
+export const Header3 = styled.h3(
+  css({
+    "paddingTop": "20pt",
+    "paddingBottom": "10pt",
+    "color": "black"
+  })
+);
+
 export function HeaderMenuItem(
   props: React.PropsWithChildren<{ href: string; as?: string }>
 ) {

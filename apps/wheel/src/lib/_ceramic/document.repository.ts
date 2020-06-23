@@ -97,4 +97,18 @@ export class DocumentRepository {
       return document;
     }
   }
+
+  async list() {
+    // return (await this.store.list()).map(e => {
+    //   return {...e,
+    //     docId: e.cid.toString()
+    //   }
+    // })
+  }
+
+  async content(cid: CID): Promise<string> {
+    return Promise.resolve(undefined)
+    // const documentRecord = await this.store.get(cid);
+    // return documentRecord.payload;
+  }
 }
