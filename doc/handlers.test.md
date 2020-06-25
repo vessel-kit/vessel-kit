@@ -1,29 +1,13 @@
 # Handlers
 
-## 3id
+## 3ID
 
-Genesis:
-
-```
-{ "doctype": "3id", "owners": [ "0x123" ], "content": { "publicKeys": { "test": "0xabc" } } }
-```
-
-CID: `bafyreid5hbqpacf3cxm2tb55xn4ex4xs3fbbq75khxi6v2uzk546nk54ra`
-
-
-Update record:
-
-```
-{ "content": [ { "op": "add", "path": "/publicKeys", "value": { "test2": "0xdef" } } ], "prev": "bafyreid5hbqpacf3cxm2tb55xn4ex4xs3fbbq75khxi6v2uzk546nk54ra" }
-```
-
-UpdateD record:
-
-
-```
-{ "doctype": "3id", "owners": [ "0x123" ], "content": { "publicKeys": { "test": "0xabc", "test2": "0xdef"  } } }
-```
-
+Scenario:
+1. Run anchoring service
+2. Run wheel node, instance A
+3. Run wheel node, instance B
+4. Start `libs/vessel/src/post-document-remote.ts`, it will take about 1.5 minutes
+5. After it runs, open `bafyreic3pjr64v764qezetbqbyd66djmbhzlbkqr7e3cpceomagkghed2a` document on the node B. The document should contain `foocryption` key entry.
 
 ## Account-link
 
