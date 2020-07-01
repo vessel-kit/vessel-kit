@@ -1,8 +1,23 @@
 {
-  "name": "@potter/anchoring",
+  "name": "@potter/anchoring-api",
   "version": "0.0.1",
-  "description": "Anchoring Service for Ceramic Protocol",
-  "author": "Sergey Ukustov <sergey@ukstv.me>",
+  "description": "Anchoring Service API for Ceramic Protocol",
+  "author": {
+    "name": "Sergey Ukustov",
+    "email": "sergey@ukstv.me"
+  },
+  "contributors": [
+    {
+      "name": "Andrei Riaskov",
+      "email": "andrei.riaskov@onder.tech"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Sergey Ukustov",
+      "email": "sergey@ukstv.me"
+    }
+  ],
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
