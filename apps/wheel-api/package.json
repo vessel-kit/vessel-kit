@@ -1,8 +1,23 @@
 {
-  "name": "@potter/wheel",
+  "name": "@potter/wheel-api",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": {
+    "name": "Sergey Ukustov",
+    "email": "sergey@ukstv.me"
+  },
+  "contributors": [
+    {
+      "name": "Andrei Riaskov",
+      "email": "andrei.riaskov@onder.tech"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Sergey Ukustov",
+      "email": "sergey@ukstv.me"
+    }
+  ],
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
