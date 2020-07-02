@@ -48,16 +48,16 @@ export class Scheme {
     }
   }
 
-  static isValid(protocol: string) {
+  static isValid(protocol: string): boolean {
     return Boolean(Scheme.case(protocol));
   }
 
-  static fromURL(url: URL, defaults?: SchemeDefaults) {
+  static fromURL(url: URL, defaults?: SchemeDefaults): Scheme {
     const protocol = url.protocol.replace(/:$/, '');
     return Scheme.fromString(protocol, defaults);
   }
 
-  static fromString(input: string, defaults?: SchemeDefaults) {
+  static fromString(input: string, defaults?: SchemeDefaults): Scheme {
     const schemeCase = Scheme.case(input);
     if (schemeCase) {
       const match = schemeCase[1];
@@ -79,7 +79,7 @@ export class Scheme {
     }
   }
 
-  toString() {
+  toString(): string {
     return `${this.chain}+${this.messaging}+${this.transport}`;
   }
 }

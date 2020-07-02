@@ -11,7 +11,7 @@ export class ConnectionString {
     this.#original = original
   }
 
-  get chain() {
+  get chain(): string {
     return this.#scheme.chain
   }
 
@@ -46,7 +46,7 @@ export class ConnectionString {
     }
   }
 
-  toString() {
+  toString(): string {
     return this.#original.toString()
   }
 }
