@@ -1,5 +1,5 @@
 import { ConnectionString } from './connection-string';
-import { InvalidSchemeError, Scheme } from "./scheme";
+import { InvalidSchemeError } from "./scheme";
 
 const CANONICAL = `eip155+openrpc+https://mainnet.infura.io/non/ws?mnemonic=enemy boat gauge orphan column malbolge prepare cave only first limb garlic&path=m/44'/60'/0'/0/0`;
 
@@ -81,9 +81,9 @@ describe('.isValid', () => {
     expect(ConnectionString.isValid('https://mainnet.infura.io/non/ws')).toBeTruthy()
   });
   test('invalid protocol', () => {
-    expect(Scheme.isValid('pigeon://mainnet.infura.io/non/ws')).toBeFalsy();
+    expect(ConnectionString.isValid('pigeon://mainnet.infura.io/non/ws')).toBeFalsy();
   });
   test('invalid url', () => {
-    expect(Scheme.isValid('https://mainnet:infura.io/non/ws')).toBeFalsy();
+    expect(ConnectionString.isValid('https://mainnet:infura.io/non/ws')).toBeFalsy();
   });
 });

@@ -6,6 +6,13 @@ export class InvalidSchemeError extends Error {}
 
 export class MissedDefaultsError extends Error {}
 
+/* istanbul ignore next */
+export class UnexpectedSchemeCase extends Error {
+  constructor(schemeCase: never) {
+    super(schemeCase);
+  }
+}
+
 export interface SchemeDefaults {
   chain: string;
   messaging: string;
@@ -27,7 +34,7 @@ export class Scheme {
     this.transport = transport;
   }
 
-  static case(input: string) {
+  static case(input: string): [SchemeCase, RegExpExecArray] | null {
     const match = SCHEME_REGEXP.exec(input);
     if (match) {
       return [SchemeCase.FULL_SCHEME, match];
@@ -63,8 +70,9 @@ export class Scheme {
           } else {
             throw new MissedDefaultsError(`Known transport ${input} requires defaults, got none`);
           }
+        /* istanbul ignore next */
         default:
-          throw new Error(`Unknown case ${schemeCase[0]}`);
+          throw new UnexpectedSchemeCase(schemeCase[0]);
       }
     } else {
       throw new InvalidSchemeError(`Received invalid scheme: ${input}`);
