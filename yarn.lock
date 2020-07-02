@@ -3530,6 +3530,174 @@
   resolved "https://registry.yarnpkg.com/@panva/asn1.js/-/asn1.js-1.0.0.tgz#dd55ae7b8129e02049f009408b97c61ccf9032f6"
   integrity sha512-UdkG3mLEqXgnlKsWanWcgb6dOjUzJ+XC5f+aWw30qrtjxeNUSfKX1cd5FBzOaXQumoe9nIqeZUvrRJS03HCCtw==
 
+"@potter/anchoring-api@file:apps/anchoring-api":
+  version "0.0.1"
+  dependencies:
+    "@hapi/joi" "^17.1.1"
+    "@nestjs/common" "^7.0.0"
+    "@nestjs/core" "^7.0.0"
+    "@nestjs/graphql" "^7.3.9"
+    "@nestjs/platform-express" "^7.0.0"
+    "@nestjs/schedule" "^0.3.1"
+    "@nestjs/swagger" "^4.5.7"
+    "@nestjs/terminus" "^7.0.1"
+    "@nestjs/typeorm" "^7.0.0"
+    "@potter/blockchain-connection-string" "file:../../../../Library/Caches/Yarn/v6/npm-@potter-anchoring-api-0.0.1-763276a4-10aa-4348-9dc9-6b061c56fce7-1593649438870/node_modules/libs/blockchain-connection-string"
+    "@potter/vessel" "file:../../../../Library/Caches/Yarn/v6/npm-@potter-anchoring-api-0.0.1-763276a4-10aa-4348-9dc9-6b061c56fce7-1593649438870/node_modules/libs/vessel"
+    "@types/dotenv" "^8.2.0"
+    apollo-server-express "^2.13.1"
+    cids "^0.8.0"
+    class-transformer "^0.2.3"
+    cron-parser "^2.13.0"
+    decko "^1.2.0"
+    dotenv "^8.2.0"
+    ethers "^4.0.47"
+    graphql "^15.0.0"
+    graphql-subscriptions "^1.1.0"
+    graphql-tools "^5.0.0"
+    ipfs-http-client "^44.0.0"
+    multihashes "^0.4.19"
+    nestjs-i18n "^8.0.2"
+    reflect-metadata "^0.1.13"
+    rimraf "^3.0.2"
+    rxjs "^6.5.4"
+    swagger-ui-express "^4.1.4"
+    typeorm "^0.2.24"
+    typestub-multihashes "^0.0.1"
+    uuid "^7.0.3"
+
+"@potter/anchoring-ui@file:apps/anchoring-ui":
+  version "0.0.1"
+  dependencies:
+    "@carbon/icons-react" "^10.10.2"
+    "@emotion/core" "^10.0.28"
+    "@emotion/styled" "^10.0.27"
+    "@potter/ui-shared" "file:../../../../Library/Caches/Yarn/v6/npm-@potter-anchoring-ui-0.0.1-3049d26f-5900-4b41-ac48-f87149c4e5db-1593649439121/node_modules/libs/ui-shared"
+    "@theme-ui/core" "^0.3.1"
+    carbon-components "^10.11.2"
+    carbon-components-react "^7.11.3"
+    carbon-icons "^7.0.7"
+    emotion-theming "^10.0.27"
+    ipfs "^0.43.3"
+    luxon "^1.24.1"
+    next "9.4.0"
+    react "16.13.1"
+    react-dom "16.13.1"
+    theme-ui "^0.3.1"
+
+"@potter/blockchain-connection-string@file:libs/blockchain-connection-string":
+  version "1.0.0-a.0"
+
+"@potter/studio@file:studio":
+  version "0.0.1"
+  dependencies:
+    axios "^0.19.2"
+    identity-wallet "^1.2.0"
+    jose "^1.27.0"
+    multicodec "^1.0.1"
+
+"@potter/three-id@file:libs/three-id":
+  version "0.0.1"
+  dependencies:
+    jose "^1.27.0"
+    multicodec "^1.0.1"
+
+"@potter/ui-shared@file:libs/ui-shared":
+  version "0.0.1"
+  dependencies:
+    "@carbon/icons-react" "^10.10.2"
+    "@emotion/core" "^10.0.28"
+    "@emotion/styled" "^10.0.27"
+    "@theme-ui/core" "^0.3.1"
+    carbon-components "^10.11.2"
+    carbon-components-react "^7.11.3"
+    carbon-icons "^7.0.7"
+    emotion-theming "^10.0.27"
+    luxon "^1.24.1"
+    next "9.4.0"
+    react "16.13.1"
+    react-dom "16.13.1"
+    theme-ui "^0.3.1"
+
+"@potter/vessel@file:libs/vessel":
+  version "0.0.1"
+  dependencies:
+    "@ethersproject/hdnode" "^5.0.0-beta.140"
+    "@ethersproject/providers" "^5.0.0-beta.168"
+    "@hapi/joi" "^17.1.1"
+    "@types/colors" "^1.2.1"
+    async-sema "^3.1.0"
+    await-semaphore "^0.1.3"
+    base64url "^3.0.1"
+    cids "^0.8.0"
+    colors "^1.4.0"
+    decko "^1.2.0"
+    did-jwt "^4.3.3"
+    ethereumjs-util "^7.0.2"
+    fast-json-patch "^3.0.0-1"
+    fp-ts "^2.6.1"
+    identity-wallet "1.2.0-ceramic.1"
+    immer "^6.0.9"
+    io-ts "^2.2.3"
+    io-ts-promise "^2.0.2"
+    jose "^1.27.0"
+    js-sha3 "^0.8.0"
+    lodash "^4.17.15"
+    multibase "^0.7.0"
+    multicodec "^1.0.1"
+    rxjs "^6.5.5"
+    sort-keys "^4.0.0"
+    tweetnacl "^1.0.3"
+    tweetnacl-util "^0.15.1"
+    typestub-multihashes "^0.0.1"
+
+"@potter/wheel-api@file:apps/wheel-api":
+  version "0.0.1"
+  dependencies:
+    "@hapi/joi" "^17.1.1"
+    "@nestjs/common" "^7.0.0"
+    "@nestjs/core" "^7.0.0"
+    "@nestjs/graphql" "^7.3.9"
+    "@nestjs/platform-express" "^7.0.0"
+    "@nestjs/platform-socket.io" "^7.1.3"
+    "@nestjs/terminus" "^7.0.1"
+    "@nestjs/typeorm" "^7.0.0"
+    "@nestjs/websockets" "^7.1.3"
+    "@potter/vessel" "file:../../../../Library/Caches/Yarn/v6/npm-@potter-wheel-api-0.0.1-88045261-0627-4523-b504-aabbe5eab25c-1593649439453/node_modules/libs/vessel"
+    cids "^0.8.0"
+    decko "^1.2.0"
+    fast-json-patch "^3.0.0-1"
+    graphql "^15.0.0"
+    graphql-tools "^5.0.0"
+    ipfs-http-client "^44.0.0"
+    jose "^1.27.0"
+    p-queue "^6.4.0"
+    reflect-metadata "^0.1.13"
+    rimraf "^3.0.2"
+    rxjs "^6.5.5"
+    ses "^0.7.7"
+    socket.io "^2.3.0"
+
+"@potter/wheel-ui@file:apps/wheel-ui":
+  version "0.0.1"
+  dependencies:
+    "@carbon/icons-react" "^10.10.2"
+    "@emotion/core" "^10.0.28"
+    "@emotion/styled" "^10.0.27"
+    "@potter/ui-shared" "file:../../../../Library/Caches/Yarn/v6/npm-@potter-wheel-ui-0.0.1-7ec31488-5a1b-4ee2-a47e-88f81cc7a2df-1593649439456/node_modules/libs/ui-shared"
+    "@theme-ui/core" "^0.3.1"
+    carbon-components "^10.11.2"
+    carbon-components-react "^7.11.3"
+    carbon-icons "^7.0.7"
+    emotion-theming "^10.0.27"
+    luxon "^1.24.1"
+    next "9.4.0"
+    react "16.13.1"
+    react-dom "16.13.1"
+    socket.io-client "^2.3.0"
+    swr "^0.2.2"
+    theme-ui "^0.3.1"
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -4022,11 +4190,6 @@
     "@types/fs-capacitor" "*"
     "@types/koa" "*"
     graphql "^14.5.3"
-
-"@types/hapi__joi@^16.0.12":
-  version "16.0.12"
-  resolved "https://registry.yarnpkg.com/@types/hapi__joi/-/hapi__joi-16.0.12.tgz#fb9113f17cf5764d6b3586ae9817d1606cc7c90c"
-  integrity sha512-xJYifuz59jXdWY5JMS15uvA3ycS3nQYOGqoIIE0+fwQ0qI3/4CxBc6RHsOTp6wk9M0NWEdpcTl02lOQOKMifbQ==
 
 "@types/hapi__joi@^17.1.0":
   version "17.1.2"
@@ -17971,17 +18134,6 @@ ts-node@^8.10.1:
   version "8.10.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.10.1.tgz#77da0366ff8afbe733596361d2df9a60fc9c9bd3"
   integrity sha512-bdNz1L4ekHiJul6SHtZWs1ujEKERJnHs4HxN7rjTyyVOFf3HaJ6sLqe6aPG62XTzAB/63pKRh5jTSWL0D7bsvw==
-  dependencies:
-    arg "^4.1.0"
-    diff "^4.0.1"
-    make-error "^1.1.1"
-    source-map-support "^0.5.17"
-    yn "3.1.1"
-
-ts-node@^8.6.2:
-  version "8.9.0"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.9.0.tgz#d7bf7272dcbecd3a2aa18bd0b96c7d2f270c15d4"
-  integrity sha512-rwkXfOs9zmoHrV8xE++dmNd6ZIS+nmHHCxcV53ekGJrxFLMbp+pizpPS07ARvhwneCIECPppOwbZHvw9sQtU4w==
   dependencies:
     arg "^4.1.0"
     diff "^4.0.1"

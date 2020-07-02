@@ -1,11 +1,11 @@
 import { ConnectionString } from './connection-string';
-import { InvalidSchemeError } from './scheme';
+import { InvalidSchemeError, Scheme } from "./scheme";
+
+const CANONICAL = `eip155+openrpc+https://mainnet.infura.io/non/ws?mnemonic=enemy boat gauge orphan column malbolge prepare cave only first limb garlic&path=m/44'/60'/0'/0/0`;
 
 describe('.build', () => {
   test('correct string', () => {
-    const result = ConnectionString.fromString(
-      `eip155+openrpc+https://mainnet.infura.io/non/ws?mnemonic=enemy boat gauge orphan column malbolge prepare cave only first limb garlic&path=m/44'/60'/0'/0/0`,
-    );
+    const result = ConnectionString.fromString(CANONICAL);
     expect(result.chain).toEqual('eip155');
     expect(result.messagingProtocol).toEqual('openrpc');
     expect(result.transportProtocol).toEqual('https');
@@ -18,8 +18,7 @@ describe('.build', () => {
   });
 
   test('urlencoded string', () => {
-    const original = `eip155+openrpc+https://mainnet.infura.io/non/ws?mnemonic=enemy boat gauge orphan column malbolge prepare cave only first limb garlic&path=m/44'/60'/0'/0/0`;
-    const result = ConnectionString.fromString(encodeURI(original));
+    const result = ConnectionString.fromString(encodeURI(CANONICAL));
     expect(result.chain).toEqual('eip155');
     expect(result.messagingProtocol).toEqual('openrpc');
     expect(result.transportProtocol).toEqual('https');
@@ -57,9 +56,7 @@ describe('.build', () => {
 
 describe('#toString', () => {
   test('pass through', () => {
-    const original = encodeURI(
-      `eip155+openrpc+https://mainnet.infura.io/non/ws?mnemonic=enemy boat gauge orphan column malbolge prepare cave only first limb garlic&path=m/44'/60'/0'/0/0`,
-    );
+    const original = encodeURI(CANONICAL);
     const a = ConnectionString.fromString(original);
     expect(a.toString()).toEqual(original);
     const b = ConnectionString.fromString(a.toString());
@@ -73,5 +70,20 @@ describe('#toString', () => {
       'enemy boat gauge orphan column malbolge prepare cave only first limb garlic',
     );
     expect(b.options.get('path')).toEqual("m/44'/60'/0'/0/0");
+  });
+});
+
+describe('.isValid', () => {
+  test('correct string', () => {
+    expect(ConnectionString.isValid(CANONICAL)).toBeTruthy()
+  });
+  test('known transport', () => {
+    expect(ConnectionString.isValid('https://mainnet.infura.io/non/ws')).toBeTruthy()
+  });
+  test('invalid protocol', () => {
+    expect(Scheme.isValid('pigeon://mainnet.infura.io/non/ws')).toBeFalsy();
+  });
+  test('invalid url', () => {
+    expect(Scheme.isValid('https://mainnet:infura.io/non/ws')).toBeFalsy();
   });
 });

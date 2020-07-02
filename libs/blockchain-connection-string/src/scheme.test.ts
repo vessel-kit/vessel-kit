@@ -1,4 +1,4 @@
-import { InvalidSchemeError, MissedDefaultsError, Scheme } from './scheme';
+import { InvalidSchemeError, MissedDefaultsError, Scheme, SchemeCase } from './scheme';
 
 describe('.fromString', () => {
   test('correct full scheme', () => {
@@ -45,4 +45,30 @@ test('#toString', () => {
   const original = 'eip155+openrpc+https';
   const scheme = Scheme.fromString(original);
   expect(scheme.toString()).toEqual(original);
+});
+
+describe('.schemeCase', () => {
+  test('full scheme', () => {
+    const result = Scheme.case('eip155+openrpc+https');
+    expect(result[0]).toEqual(SchemeCase.FULL_SCHEME);
+  });
+  test('known transport', () => {
+    const result = Scheme.case('https');
+    expect(result[0]).toEqual(SchemeCase.KNOWN_TRANSPORT);
+  });
+  test('invalid input', () => {
+    expect(Scheme.case('foo')).toBeNull();
+  });
+});
+
+describe('.isValid', () => {
+  test('full scheme', () => {
+    expect(Scheme.isValid('eip155+openrpc+https')).toBeTruthy();
+  });
+  test('known transport', () => {
+    expect(Scheme.isValid('https')).toBeTruthy();
+  });
+  test('invalid input', () => {
+    expect(Scheme.isValid('foo')).toBeFalsy();
+  });
 });

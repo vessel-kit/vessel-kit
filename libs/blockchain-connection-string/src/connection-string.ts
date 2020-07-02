@@ -15,19 +15,19 @@ export class ConnectionString {
     return this.#scheme.chain
   }
 
-  get messagingProtocol() {
+  get messagingProtocol(): string {
     return this.#scheme.messaging
   }
 
-  get options() {
+  get options(): Map<string, string> {
     return this.#options
   }
 
-  get transportProtocol () {
+  get transportProtocol (): string {
     return this.#scheme.transport
   }
 
-  get transport() {
+  get transport(): string {
     return `${this.#scheme.transport}://${this.#original.host}${this.#original.pathname}`
   }
 
@@ -35,6 +35,15 @@ export class ConnectionString {
     const url = new URL(input);
     const scheme = Scheme.fromURL(url, defaults);
     return new ConnectionString(scheme, url, new Map(url.searchParams));
+  }
+
+  static isValid(input: string): boolean {
+    try {
+      const url = new URL(input)
+      return Scheme.isValid(url.protocol.replace(/:$/, ''))
+    } catch (e) {
+      return false
+    }
   }
 
   toString() {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import Joi, { CustomHelpers } from '@hapi/joi';
 import dotenv from 'dotenv';
 import cronParser from 'cron-parser';
+import { ConnectionString } from '@potter/blockchain-connection-string';
 
 export interface Config {
   PORT: number;
@@ -11,7 +12,6 @@ export interface Config {
   ANCHORING_SCHEDULE: string;
   IPFS_URL: string;
   BLOCKCHAIN_URL: string;
-  BLOCKCHAIN_SECRET: string;
 }
 
 function cronValidation(value: string, helpers: CustomHelpers) {
@@ -46,12 +46,9 @@ const schema = Joi.object<Config>({
     .required()
     .description('IPFS endpoint'),
   BLOCKCHAIN_URL: Joi.string()
-    .uri({ scheme: ['ethereum+http', 'ethereum+https', 'ethereum+ws', 'ethereum+wss'] })
+    .custom(v => (ConnectionString.isValid(v) ? v : null))
     .required()
     .description('Blockchain endpoint'),
-  BLOCKCHAIN_SECRET: Joi.string()
-    .optional()
-    .description('Blockchain private key'),
 });
 
 @Injectable()

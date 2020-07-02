@@ -11,8 +11,5 @@
   "dependencies": {
     "jose": "^1.27.0",
     "multicodec": "^1.0.1"
-  },
-  "devDependencies": {
-    "@types/multicodec": "^1.0.0"
   }
 }

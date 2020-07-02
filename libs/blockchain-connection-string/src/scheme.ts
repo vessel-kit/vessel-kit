@@ -11,6 +11,11 @@ export interface SchemeDefaults {
   messaging: string;
 }
 
+export enum SchemeCase {
+  FULL_SCHEME,
+  KNOWN_TRANSPORT,
+}
+
 export class Scheme {
   chain: string;
   messaging: string;
@@ -22,24 +27,47 @@ export class Scheme {
     this.transport = transport;
   }
 
+  static case(input: string) {
+    const match = SCHEME_REGEXP.exec(input);
+    if (match) {
+      return [SchemeCase.FULL_SCHEME, match];
+    } else {
+      const knownTransportMatch = KNOWN_TRANSPORT_REGEXP.exec(input);
+      if (knownTransportMatch) {
+        return [SchemeCase.KNOWN_TRANSPORT, knownTransportMatch];
+      } else {
+        return null;
+      }
+    }
+  }
+
+  static isValid(protocol: string) {
+    return Boolean(Scheme.case(protocol));
+  }
+
   static fromURL(url: URL, defaults?: SchemeDefaults) {
     const protocol = url.protocol.replace(/:$/, '');
     return Scheme.fromString(protocol, defaults);
   }
 
   static fromString(input: string, defaults?: SchemeDefaults) {
-    const match = SCHEME_REGEXP.exec(input);
-    if (match) {
-      return new Scheme(match[1], match[2], match[3]);
-    } else {
-      const knownTransportMatch = KNOWN_TRANSPORT_REGEXP.exec(input);
-      if (knownTransportMatch && defaults) {
-        return new Scheme(defaults.chain, defaults.messaging, knownTransportMatch[1]);
-      } else if (knownTransportMatch && !defaults) {
-        throw new MissedDefaultsError(`Known transport ${input} requires defaults, got none`);
-      } else {
-        throw new InvalidSchemeError(`Received invalid scheme: ${input}`);
+    const schemeCase = Scheme.case(input);
+    if (schemeCase) {
+      const match = schemeCase[1];
+      switch (schemeCase[0]) {
+        case SchemeCase.FULL_SCHEME:
+          return new Scheme(match[1], match[2], match[3]);
+        case SchemeCase.KNOWN_TRANSPORT:
+          if (defaults) {
+            return new Scheme(defaults.chain, defaults.messaging, match[1]);
+          } else {
+            throw new MissedDefaultsError(`Known transport ${input} requires defaults, got none`);
+          }
+        default:
+          throw new Error(`Unknown case ${schemeCase[0]}`);
       }
+    } else {
+      throw new InvalidSchemeError(`Received invalid scheme: ${input}`);
     }
   }
 

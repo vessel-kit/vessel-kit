@@ -38,12 +38,5 @@
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "typestub-multihashes": "^0.0.1"
-  },
-  "devDependencies": {
-    "@types/hapi__joi": "^17.1.0",
-    "@types/lodash": "^4.14.152",
-    "@types/multibase": "^0.6.0",
-    "@types/multicodec": "^1.0.0",
-    "ts-node": "^8.10.1"
   }
 }

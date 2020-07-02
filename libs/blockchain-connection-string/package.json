@@ -8,7 +8,5 @@
     "build": "tsc -p .",
     "dev": "tsc -p . --watch",
     "test": "jest"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }

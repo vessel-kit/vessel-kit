@@ -12,7 +12,7 @@
     "@carbon/icons-react": "^10.10.2",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
-    "@potter/ui-shared": "*",
+    "@potter/ui-shared": "file:../../libs/ui-shared",
     "@theme-ui/core": "^0.3.1",
     "carbon-components": "^10.11.2",
     "carbon-components-react": "^7.11.3",
@@ -25,11 +25,5 @@
     "socket.io-client": "^2.3.0",
     "swr": "^0.2.2",
     "theme-ui": "^0.3.1"
-  },
-  "devDependencies": {
-    "@types/carbon-components-react": "^7.10.3",
-    "@types/luxon": "^1.24.0",
-    "@types/react": "^16.9.35",
-    "next-transpile-modules": "^3.3.0"
   }
 }

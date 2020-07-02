@@ -4,18 +4,20 @@ import { ethers } from 'ethers';
 import querystring from 'querystring';
 import CID from 'cids';
 import { BlockchainTransaction } from './blockchain-transaction';
+import { ConnectionString } from '@potter/blockchain-connection-string';
 
 function providerForUrl(blockchainUrl: string) {
   const rpcEndpoint = blockchainUrl.replace(/^ethereum\+/, '');
   return new ethers.providers.JsonRpcProvider(rpcEndpoint);
 }
 
-function walletFromSecret(secret: string): ethers.Wallet {
-  const params = querystring.parse(secret);
-  if (params.key) {
-    return new ethers.Wallet(params.key as string);
-  } else if (params.mnemonic) {
-    return ethers.Wallet.fromMnemonic(params.mnemonic as string, params.path as string | undefined);
+function walletFromSecret(options: Map<string, string>): ethers.Wallet {
+  const key = options.get('key');
+  const mnemonic = options.get('mnemonic');
+  if (key) {
+    return new ethers.Wallet(key);
+  } else if (mnemonic) {
+    return ethers.Wallet.fromMnemonic(mnemonic, options.get('path'));
   } else {
     throw new Error(`Mnemonic or private key is expected`);
   }
@@ -26,8 +28,9 @@ export class EthereumService {
   private readonly wallet: ethers.Wallet;
 
   constructor(private readonly configService: ConfigService) {
-    const provider = providerForUrl(configService.current.BLOCKCHAIN_URL);
-    this.wallet = walletFromSecret(configService.current.BLOCKCHAIN_SECRET).connect(provider);
+    const connectionString = ConnectionString.fromString(configService.current.BLOCKCHAIN_URL);
+    const provider = providerForUrl(connectionString.transport);
+    this.wallet = walletFromSecret(connectionString.options).connect(provider);
   }
 
   async createAnchor(cid: CID) {
