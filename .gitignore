@@ -1,7 +1,7 @@
 # Dependencies and Build Artifacts
 node_modules/
-apps/*/dist/
-apps/*/node_modules/
+**/*/dist/
+**/*/node_modules/
 
 # Runtime
 *.log

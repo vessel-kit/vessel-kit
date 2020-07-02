@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "lerna run --parallel dev",
-    "build": "lerna run --parallel build"
+    "build": "lerna run --parallel build",
+    "bootstrap": "lerna bootstrap"
   },
   "workspaces": [
     "apps/*",
