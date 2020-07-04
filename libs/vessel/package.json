@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@potter/anchoring": "file:../anchoring",
     "@ethersproject/hdnode": "^5.0.0-beta.140",
     "@ethersproject/providers": "^5.0.0-beta.168",
     "@hapi/joi": "^17.1.1",
@@ -26,7 +27,7 @@
     "fp-ts": "^2.6.1",
     "identity-wallet": "1.2.0-ceramic.1",
     "immer": "^6.0.9",
-    "io-ts": "^2.2.3",
+    "io-ts": "^2.2.7",
     "io-ts-promise": "^2.0.2",
     "jose": "^1.27.0",
     "js-sha3": "^0.8.0",

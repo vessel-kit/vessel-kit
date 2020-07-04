@@ -1,5 +1,5 @@
 {
-  "name": "@potter/anchoring",
+  "name": "@potter/codec",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,7 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@potter/codec": "file:../codec",
     "io-ts": "^2.2.7",
     "fp-ts": "^2.0.0"
   }
