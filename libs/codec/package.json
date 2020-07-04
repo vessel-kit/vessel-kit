@@ -1,0 +1,20 @@
+{
+  "name": "@potter/codec",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "version": "0.0.1-a.0",
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "tsc -p . --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "io-ts": "^2.2.x",
+    "fp-ts": "^2.0.x",
+    "typescript": "^3.9.x"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.x"
+  }
+}
