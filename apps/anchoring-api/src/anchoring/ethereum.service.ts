@@ -1,15 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '../commons/config.service';
 import { ethers } from 'ethers';
-import querystring from 'querystring';
 import CID from 'cids';
 import { BlockchainTransaction } from './blockchain-transaction';
 import { ConnectionString } from '@potter/blockchain-connection-string';
-
-function providerForUrl(blockchainUrl: string) {
-  const rpcEndpoint = blockchainUrl.replace(/^ethereum\+/, '');
-  return new ethers.providers.JsonRpcProvider(rpcEndpoint);
-}
 
 function walletFromSecret(options: Map<string, string>): ethers.Wallet {
   const key = options.get('key');
@@ -29,7 +23,7 @@ export class EthereumService {
 
   constructor(private readonly configService: ConfigService) {
     const connectionString = ConnectionString.fromString(configService.current.BLOCKCHAIN_URL);
-    const provider = providerForUrl(connectionString.transport);
+    const provider = new ethers.providers.JsonRpcProvider(connectionString.transport);
     this.wallet = walletFromSecret(connectionString.options).connect(provider);
   }
 
