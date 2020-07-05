@@ -9,7 +9,7 @@ import { AnchoringService } from './anchoring.service';
 import { ThreeIdHandler } from './handlers/three-id-handler';
 import { DocumentUpdateService } from './document-update.service';
 import { HandlersContainer } from './handlers/handlers.container';
-import { CeramicDocumentId } from './ceramic-document-id';
+import { CeramicDocumentId } from '@potter/codec';
 
 export interface CeramicOptions {
   logger?: ILogger;

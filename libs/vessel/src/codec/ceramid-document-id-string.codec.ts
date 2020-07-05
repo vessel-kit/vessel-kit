@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { CeramicDocumentId } from '../ceramic-document-id';
+import { CeramicDocumentId } from '@potter/codec';
 
 export const CeramicDocumentIdStringCodec = new t.Type<CeramicDocumentId, string, string>(
   'CeramicDocumentIdString',

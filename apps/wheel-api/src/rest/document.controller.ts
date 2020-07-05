@@ -11,7 +11,7 @@ import { Ceramic } from '@potter/vessel';
 import { LiveGateway } from '../live/live.gateway';
 import { DocumentPresentation } from './document.presentation';
 import { DocumentStatePresentation } from './document-state.presentation';
-import { CeramicDocumentId } from '@potter/vessel';
+import { CeramicDocumentId } from '@potter/codec';
 import CID from 'cids';
 
 @Controller('/api/v0/ceramic')

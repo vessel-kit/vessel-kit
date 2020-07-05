@@ -48,6 +48,7 @@
     "@nestjs/terminus": "^7.0.1",
     "@nestjs/typeorm": "^7.0.0",
     "@potter/anchoring": "workspace:*",
+    "@potter/codec": "workspace:*",
     "@potter/blockchain-connection-string": "workspace:*",
     "@potter/vessel": "workspace:*",
     "apollo-server-express": "^2.13.1",

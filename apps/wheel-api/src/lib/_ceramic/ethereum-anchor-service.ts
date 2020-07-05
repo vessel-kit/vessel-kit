@@ -1,6 +1,6 @@
 import CID from 'cids';
 import axios from 'axios';
-import { CeramicDocumentId } from '@potter/vessel';
+import { CeramicDocumentId } from '@potter/codec';
 import { BehaviorSubject, Observable, Subject, queueScheduler } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { AnchoringStatus } from '@potter/anchoring';

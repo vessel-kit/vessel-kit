@@ -3,10 +3,10 @@ import CID from 'cids';
 const PATTERN = new RegExp(/(ceramic:\/\/|\/ceramic\/)(\w+)/);
 
 export class CeramicDocumentId {
-  readonly cid: CID
+  readonly cid: CID;
 
   constructor(cid: CID) {
-    this.cid = cid
+    this.cid = cid;
   }
 
   static fromString(s: string) {
@@ -26,6 +26,6 @@ export class CeramicDocumentId {
   }
 
   toString() {
-    return `/ceramic/${this.cid.toString()}`;
+    return `ceramic://${this.cid.toString()}`;
   }
 }

@@ -6,7 +6,7 @@ import { MessageTyp } from './message-typ';
 import CID from 'cids';
 import { bind } from 'decko';
 import { UnknownMessageError } from './cloud';
-import { CeramicDocumentId } from '../ceramic-document-id';
+import { CeramicDocumentId } from '@potter/codec';
 
 function rawMessageToDelta(message: any): CloudMessage {
   const { typ, id, cid } = JSON.parse(message.data);

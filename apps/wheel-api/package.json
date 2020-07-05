@@ -39,6 +39,7 @@
   "dependencies": {
     "@potter/vessel": "workspace:*",
     "@potter/anchoring": "workspace:*",
+    "@potter/codec": "workspace:*",
     "@ethersproject/hdnode": "^5.0.1",
     "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^7.0.0",

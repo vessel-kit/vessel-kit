@@ -3,11 +3,10 @@ import Joi from '@hapi/joi';
 import CID from 'cids';
 import { RequestCreateScenario } from '../scenarios/request-create.scenario';
 import { RequestGetManyScenario } from '../scenarios/request-get-many.scenario'
-import { RequestCreatedPresentation } from './request-created.presentation';
 import { RequestGetScenario } from '../scenarios/request-get.scenario';
 import { RequestStorage } from '../storage/request.storage';
 import { ApiProperty } from '@nestjs/swagger';
-import { CeramicDocumentId } from '@potter/vessel';
+import { CeramicDocumentId } from '@potter/codec';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { IpfsService } from '../anchoring/ipfs.service';

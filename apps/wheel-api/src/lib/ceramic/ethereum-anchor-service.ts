@@ -1,6 +1,6 @@
 import CID from 'cids';
 import axios from 'axios';
-import { CeramicDocumentId } from '@potter/vessel';
+import { CeramicDocumentId } from '@potter/codec';
 
 export class EthereumAnchorService {
   constructor(private readonly anchoringEndpoint: string) {}

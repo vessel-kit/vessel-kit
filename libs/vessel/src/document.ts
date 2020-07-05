@@ -1,4 +1,4 @@
-import { CeramicDocumentId } from './ceramic-document-id';
+import { CeramicDocumentId } from '@potter/codec';
 import { DocumentService } from './document.service';
 import { AnchoringStatus } from '@potter/anchoring';
 import { Subscription } from 'rxjs';

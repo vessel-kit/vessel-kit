@@ -1,10 +1,9 @@
 import { ILogger } from './logger/logger.interface';
 import { Cloud } from './cloud/cloud';
-import { CeramicDocumentId } from './ceramic-document-id';
+import { CeramicDocumentId } from '@potter/codec';
 import { Document } from './document';
 import { DocumentService } from './document.service';
 import { HandlersContainer } from './handlers/handlers.container';
-import { filter } from 'rxjs/operators';
 import { MessageTyp } from './cloud/message-typ';
 
 export class DocumentRepository {
