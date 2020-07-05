@@ -1,7 +1,7 @@
 import React from "react";
 import { Global } from "@emotion/core";
 
-export const fontFace = `
+const fontFace = `
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: italic;

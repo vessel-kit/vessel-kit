@@ -13,10 +13,8 @@ function Container(props: React.PropsWithChildren<{}>) {
 
 interface HeaderProps {
   "aria-label"?: string;
-  role?: string
+  role?: string;
 }
-
-
 
 function Header(props: React.PropsWithChildren<HeaderProps>) {
   return <header {...props} />;
@@ -43,5 +41,5 @@ export const Shell = {
   Container,
   Header,
   Footer,
-  Content
+  Content,
 };

@@ -20,10 +20,11 @@
     "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
-    "typescript": "^3.9.6",
+    "@types/jest": "^26.0.3",
     "eslint": "^7.4.0",
     "jest": "^26.1.0",
+    "prettier": "^2.0.5",
     "ts-jest": "^26.1.1",
-    "@types/jest": "^26.0.3"
+    "typescript": "^3.9.6"
   }
 }

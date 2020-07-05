@@ -1,0 +1,13 @@
+# System Files
+.DS_Store
+.idea
+
+# Dependencies
+node_modules/
+./**/node_modules/
+
+# Per app
+apps/*/dist
+apps/anchoring-ui/.next
+apps/anchoring-ui/next-env.d.ts
+libs/*/dist

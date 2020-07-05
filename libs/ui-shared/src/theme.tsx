@@ -187,7 +187,7 @@ export const COLORS = {
   shellHeaderBg01: PALETTE.gray[10]
 }
 
-
+// @ts-ignore
 export const THEME = {
   breakpoints: ["42rem", "66rem", "82rem", "99rem"],
   space: spacingScale,
