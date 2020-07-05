@@ -1,0 +1,12 @@
+{
+  "name": "@potter/blockchain-connection-string",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "version": "1.0.0-a.0",
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -p . --watch",
+    "test": "jest"
+  }
+}
