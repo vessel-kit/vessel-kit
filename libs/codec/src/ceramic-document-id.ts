@@ -3,10 +3,14 @@ import CID from 'cids';
 const PATTERN = new RegExp(/(ceramic:\/\/|\/ceramic\/)(\w+)/);
 
 export class CeramicDocumentId {
-  readonly cid: CID;
+  #cid: CID;
 
   constructor(cid: CID) {
-    this.cid = cid;
+    this.#cid = cid;
+  }
+
+  get cid() {
+    return this.#cid;
   }
 
   static fromString(s: string) {

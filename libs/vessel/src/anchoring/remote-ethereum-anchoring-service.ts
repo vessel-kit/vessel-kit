@@ -7,28 +7,28 @@ import { CeramicDocumentId } from '@potter/codec';
 import { ILogger } from '../logger/logger.interface';
 import * as t from 'io-ts';
 import * as tPromise from 'io-ts-promise';
-import { CidCodec } from '../codec/cid-codec';
+import { CidStringCodec } from '@potter/codec';
 import { DateTimestampCodec } from '../codec/date-timestamp.codec';
-import { CeramicDocumentIdStringCodec } from '../codec/ceramid-document-id-string.codec';
+import { CeramicDocumentIdStringCodec } from '@potter/codec';
 
 const FailedResponse = t.type({
   status: t.literal(AnchoringStatus.FAILED),
-  cid: t.string.pipe(CidCodec),
+  cid: t.string.pipe(CidStringCodec),
   docId: t.string.pipe(CeramicDocumentIdStringCodec),
 });
 
 const PendingResponse = t.type({
   status: t.union([t.literal(AnchoringStatus.PENDING), t.literal(AnchoringStatus.PROCESSING)]),
-  cid: t.string.pipe(CidCodec),
+  cid: t.string.pipe(CidStringCodec),
   docId: t.string.pipe(CeramicDocumentIdStringCodec),
   scheduledAt: t.number.pipe(DateTimestampCodec),
 });
 
 const AnchoredResponse = t.type({
   status: t.literal(AnchoringStatus.ANCHORED),
-  cid: t.string.pipe(CidCodec),
+  cid: t.string.pipe(CidStringCodec),
   docId: t.string.pipe(CeramicDocumentIdStringCodec),
-  anchorRecord: t.string.pipe(CidCodec),
+  anchorRecord: t.string.pipe(CidStringCodec),
 });
 
 const AnchoringResponse = t.union([AnchoredResponse, PendingResponse, FailedResponse]);

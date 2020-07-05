@@ -1,8 +1,8 @@
 import * as t from 'io-ts';
 import { AnchoringStatus } from '@potter/anchoring';
-import { CidCodec } from './codec/cid-codec';
 import { DateStringCodec } from './codec/date-string.codec';
 import { ChainCidArrayCodec } from './codec/chain-cid-array.codec';
+import { CidStringCodec } from '@potter/codec';
 
 const AnchorDone = t.type(
   {
@@ -11,8 +11,8 @@ const AnchorDone = t.type(
       chainId: t.string,
       blockNumber: t.number,
       timestamp: t.string.pipe(DateStringCodec),
-      txHash: t.string.pipe(CidCodec),
-      root: t.string.pipe(CidCodec),
+      txHash: t.string.pipe(CidStringCodec),
+      root: t.string.pipe(CidStringCodec),
     }),
   },
   'AnchorDone',
@@ -45,9 +45,9 @@ export const DocumentStateCodec = t.type(
     current: t.union([t.UnknownRecord, t.null]),
     freight: t.UnknownRecord,
     anchor: AnchorState,
-    log: t.array(t.string.pipe(CidCodec)).pipe(ChainCidArrayCodec),
+    log: t.array(t.string.pipe(CidStringCodec)).pipe(ChainCidArrayCodec),
   },
   'DocumentState',
 );
 
-export type DocumentState = t.TypeOf<typeof DocumentStateCodec>
+export type DocumentState = t.TypeOf<typeof DocumentStateCodec>;
