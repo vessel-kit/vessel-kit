@@ -1,14 +1,14 @@
 import * as t from 'io-ts';
 import CID from 'cids';
 
-export const CidStringCodec = new t.Type<CID, string, unknown>(
+export const CidStringCodec = new t.Type<CID, string, string>(
   'CID-string',
   (input: unknown): input is CID => CID.isCID(input),
   (input, context) => {
-    if (CID.isCID(input)) {
+    try {
       return t.success(new CID(input));
-    } else {
-      return t.failure(input, context, 'CID expected');
+    } catch (e) {
+      return t.failure(input, context, e.message);
     }
   },
   (cid) => cid.toString(),

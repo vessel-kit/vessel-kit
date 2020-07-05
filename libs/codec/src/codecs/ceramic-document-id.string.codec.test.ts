@@ -1,7 +1,7 @@
 import CID from 'cids';
 import { CeramicDocumentId } from '../ceramic-document-id';
 import { CeramicDocumentIdStringCodec } from './ceramic-document-id.string.codec';
-import { decodePromise } from '../decodePromise';
+import { decodePromise } from '../decode-promise';
 
 const cid = new CID('QmSnuWmxptJZdLJpKRarxBMS2Ju2oANVrgbr2xWbie9b2D');
 

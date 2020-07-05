@@ -32,4 +32,8 @@ export class CeramicDocumentId {
   toString() {
     return `ceramic://${this.cid.toString()}`;
   }
+
+  [Symbol.for('nodejs.util.inspect.custom')]() {
+    return 'CeramicDocumentId(' + this.cid.toString() + ')';
+  }
 }

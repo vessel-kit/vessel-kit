@@ -4,6 +4,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 import { AnchoringStatus, UuidValue } from '@potter/anchoring';
+import { CeramicDocumentId, CeramicDocumentIdStringCodec } from '@potter/codec';
 
 @Injectable()
 export class RequestCreateScenario {
@@ -12,7 +13,7 @@ export class RequestCreateScenario {
     private readonly anchoringSchedule: AnchoringScheduleService,
   ) {}
 
-  async execute(cid: CID, docId: string) {
+  async execute(cid: CID, docId: CeramicDocumentId) {
     const record = await this.buildRequestRecord(cid, docId);
     const saved = await this.save(record);
     const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
@@ -24,9 +25,9 @@ export class RequestCreateScenario {
 
   async save(record: RequestRecord) {
     try {
-      const found = await this.requestStorage.find(record.cid, record.docId)
+      const found = await this.requestStorage.find(record.cid, record.docId);
       if (found) {
-        return found
+        return found;
       } else {
         return await this.requestStorage.save(record);
       }
@@ -37,11 +38,11 @@ export class RequestCreateScenario {
     }
   }
 
-  async buildRequestRecord(cid: CID, docId: string) {
+  async buildRequestRecord(cid: CID, docId: CeramicDocumentId) {
     const record = new RequestRecord();
     record.id = new UuidValue();
     record.cid = cid;
-    record.docId = docId;
+    record.docId = CeramicDocumentIdStringCodec.encode(docId);
     record.status = AnchoringStatus.PENDING;
     return record;
   }

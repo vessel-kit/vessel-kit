@@ -54,6 +54,7 @@ importers:
       graphql: 15.2.0
       graphql-subscriptions: 1.1.0_graphql@15.2.0
       graphql-tools: 5.0.0_graphql@15.2.0
+      io-ts: 2.2.7
       ipfs-http-client: 44.3.0
       multihashes: 0.4.21
       nestjs-i18n: 8.0.6_410e308ee2ecb22a2e89e86bc82d53a8
@@ -95,6 +96,7 @@ importers:
       graphql: ^15.0.0
       graphql-subscriptions: ^1.1.0
       graphql-tools: ^5.0.0
+      io-ts: ^2.2.7
       ipfs-http-client: ^44.0.0
       multihashes: ^0.4.19
       nestjs-i18n: ^8.0.2
@@ -9081,6 +9083,12 @@ packages:
       io-ts: 2.x
     resolution:
       integrity: sha512-heFR4LRkdEgTCwTzH/YI7FL/18/oWVFipzdwBWOq7GZVM4oLK33HXITDkaTSFkmKTk9zcGGreHHhNxI8RY8jsg==
+  /io-ts/2.2.7:
+    dev: false
+    peerDependencies:
+      fp-ts: ^2.0.0
+    resolution:
+      integrity: sha512-kCusyu/Fa0oax5ue2Id/ZqVLEk5JOWyrXHcLbD4kHoVM50MhDEWUtcHlN7RrD94I8OrWILcVltM6OllnZiHJmg==
   /io-ts/2.2.7_fp-ts@2.6.7:
     dependencies:
       fp-ts: 2.6.7

@@ -80,8 +80,7 @@ export class RequestGetScenario {
     private readonly anchorStorage: AnchorStorage,
   ) {}
 
-  async execute(cidString: string) {
-    const cid = new CID(cidString);
+  async execute(cid: CID) {
     const request = await this.requestStorage.byCidOrFail(cid);
     const anchor = await this.anchorStorage.byRequestId(request.id);
     const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);

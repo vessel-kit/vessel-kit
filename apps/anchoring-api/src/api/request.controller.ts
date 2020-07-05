@@ -1,30 +1,17 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import Joi from '@hapi/joi';
 import CID from 'cids';
 import { RequestCreateScenario } from '../scenarios/request-create.scenario';
-import { RequestGetManyScenario } from '../scenarios/request-get-many.scenario'
+import { RequestGetManyScenario } from '../scenarios/request-get-many.scenario';
 import { RequestGetScenario } from '../scenarios/request-get.scenario';
 import { RequestStorage } from '../storage/request.storage';
-import { ApiProperty } from '@nestjs/swagger';
-import { CeramicDocumentId } from '@potter/codec';
+import { CidStringCodec, DecodePipe } from '@potter/codec';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { IpfsService } from '../anchoring/ipfs.service';
 import * as multihash from 'multihashes';
 import { RequestPresentation } from './request.presentation';
-
-class CreateRequestPayload {
-  @ApiProperty()
-  cid: string;
-
-  @ApiProperty()
-  docId: string;
-}
-
-const createRequestSchema = Joi.object<CreateRequestPayload>({
-  cid: Joi.string().required(),
-  docId: Joi.string().required(),
-});
+import { AnchorRequestPayload } from '@potter/anchoring';
+import * as t from 'io-ts';
 
 const PAGE_SIZE = 25;
 
@@ -46,7 +33,7 @@ export class RequestController {
     const totalCount = await this.requestStorage.count();
     const ipfs = this.ipfsService.client;
     const presentations = await Promise.all(
-      requests.map(async r => {
+      requests.map(async (r) => {
         const anchor = await this.anchorStorage.byRequestId(r.id);
         if (anchor) {
           const proofDag = await ipfs.dag.get(new CID(anchor.proofCid));
@@ -72,8 +59,8 @@ export class RequestController {
   }
 
   @Get('/:cid')
-  async get(@Param('cid') cidString: string, @Query() query: string) {
-    return this.requestGetScenario.execute(cidString);
+  async get(@Param('cid', new DecodePipe(t.string.pipe(CidStringCodec))) cid: CID, @Query() query: string) {
+    return this.requestGetScenario.execute(cid);
   }
 
   @Get('/list/:cid')
@@ -82,14 +69,8 @@ export class RequestController {
   }
 
   @Post('/')
-  async create(@Body() body: CreateRequestPayload) {
-    const validationResult = createRequestSchema.validate(body);
-    if (validationResult.error) {
-      throw new Error(`Validation error: ${validationResult.error.message}`);
-    }
-    const cid = new CID(body.cid);
-    const docId = CeramicDocumentId.fromString(body.docId).toString();
-    await this.requestCreateScenario.execute(cid, docId);
-    return this.requestGetScenario.execute(cid.toString());
+  async create(@Body(new DecodePipe(AnchorRequestPayload)) body: t.TypeOf<typeof AnchorRequestPayload>) {
+    await this.requestCreateScenario.execute(body.cid, body.docId);
+    return this.requestGetScenario.execute(body.cid);
   }
 }

@@ -1,7 +1,7 @@
 import * as t from 'io-ts';
 
-export const DateTimestampCodec = new t.Type<Date, number, number>(
-  'DateTimestamp',
+export const DateNumberCodec = new t.Type<Date, number, number>(
+  'Date-number',
   (input: unknown): input is Date => input instanceof Date,
   (input, context) => {
     try {
