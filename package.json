@@ -1,0 +1,29 @@
+{
+  "name": "@potter/root",
+  "private": true,
+  "version": "1.0.0-a.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OnderPlatform/potter.git"
+  },
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/OnderPlatform/potter/issues"
+  },
+  "homepage": "https://github.com/OnderPlatform/potter#readme",
+  "engines": {
+    "node": ">=12.18 <13",
+    "pnpm": ">=5"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.6",
+    "eslint": "^7.4.0",
+    "jest": "^26.1.0",
+    "ts-jest": "^26.1.1",
+    "@types/jest": "^26.0.3"
+  }
+}

@@ -1,14 +1,16 @@
 {
-  "name": "@potter/codec",
+  "name": "@potter/anchoring",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "version": "1.0.0-a.0",
+  "version": "0.0.1-a.0",
   "scripts": {
     "build": "tsc -p .",
-    "watch": "tsc -p . --watch"
+    "watch": "tsc -p . --watch",
+    "test": "jest"
   },
   "dependencies": {
+    "@potter/codec": "workspace:*",
     "io-ts": "^2.2.7",
     "fp-ts": "^2.0.0"
   }

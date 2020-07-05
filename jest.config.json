@@ -1,0 +1,12 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "projects": [
+    "libs/*"
+  ],
+  "testRegex": ".(spec|test).ts$",
+  "transform": {
+    "^.+\\.ts$": "ts-jest"
+  },
+  "coverageDirectory": "../coverage",
+  "testEnvironment": "node"
+}
