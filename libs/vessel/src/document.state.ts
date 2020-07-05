@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { AnchoringStatus } from './anchoring/anchoring-status';
+import { AnchoringStatus } from '@potter/anchoring';
 import { CidCodec } from './codec/cid-codec';
 import { DateStringCodec } from './codec/date-string.codec';
 import { ChainCidArrayCodec } from './codec/chain-cid-array.codec';

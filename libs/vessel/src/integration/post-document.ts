@@ -2,7 +2,7 @@ import { Ceramic } from '../ceramic';
 import ipfsClient from 'ipfs-http-client';
 import { ThreeIdContent } from '../three-id.content';
 import { waitUntil } from './wait.util';
-import { AnchoringStatus } from '..';
+import { AnchoringStatus } from '@potter/anchoring';
 import IdentityWallet from 'identity-wallet';
 import { Signor } from '../person/signor';
 import { sleep } from './sleep.util';

@@ -3,7 +3,7 @@ import { UuidValue } from './uuid.value';
 import { uuidTransformer } from './uuid.transformer';
 import CID from 'cids';
 import { cidTransformer } from './cid.transformer';
-import { AnchoringStatus } from '@potter/vessel';
+import { AnchoringStatus } from '@potter/anchoring';
 
 @Entity('requests')
 export class RequestRecord {

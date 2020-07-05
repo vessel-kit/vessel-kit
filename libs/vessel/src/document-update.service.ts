@@ -7,7 +7,7 @@ import { RecordWrap } from './record-wrap';
 import { UnreachableCaseError } from './unreachable-case.error';
 import { AnchoringService } from './anchoring.service';
 import { HandlersContainer } from './handlers/handlers.container';
-import { AnchoringStatus } from './anchoring/anchoring-status';
+import { AnchoringStatus } from '@potter/anchoring';
 
 export class DocumentUpdateService {
   #cloud: Cloud

@@ -2,7 +2,7 @@ import { Observable, queueScheduler, Subject } from 'rxjs';
 import CID from 'cids';
 import { filter, map } from 'rxjs/operators';
 import axios from 'axios';
-import { AnchoringStatus } from './anchoring-status';
+import { AnchoringStatus } from '@potter/anchoring';
 import { CeramicDocumentId } from '../ceramic-document-id';
 import { ILogger } from '../logger/logger.interface';
 import * as t from 'io-ts';

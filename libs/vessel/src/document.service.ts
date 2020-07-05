@@ -1,7 +1,7 @@
 import { ILogger } from './logger/logger.interface';
 import { CeramicDocumentId } from './ceramic-document-id';
 import CID from 'cids';
-import { AnchoringStatus } from './anchoring/anchoring-status';
+import { AnchoringStatus } from '@potter/anchoring';
 import { DocumentState } from './document.state';
 import { UnreachableCaseError } from './unreachable-case.error';
 import { Cloud } from './cloud/cloud';

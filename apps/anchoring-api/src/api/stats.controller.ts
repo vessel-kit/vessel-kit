@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
-import { AnchoringStatus } from '@potter/vessel';
+import { AnchoringStatus } from '@potter/anchoring';
 
 @Controller('/v0/stats')
 export class StatsController {

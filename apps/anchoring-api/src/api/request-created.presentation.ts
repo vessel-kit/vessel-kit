@@ -1,6 +1,6 @@
 import { RequestRecord } from '../storage/request.record';
 import { dateAsTimestamp } from './date-as-timestamp';
-import { AnchoringStatus } from '@potter/vessel';
+import { AnchoringStatus } from '@potter/anchoring';
 
 export class RequestCreatedPresentation {
   readonly id: string;

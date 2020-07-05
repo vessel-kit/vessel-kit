@@ -12,7 +12,7 @@ import { DocumentStorage } from '../../storage/document.storage';
 import { EthereumAnchorService } from './ethereum-anchor-service';
 import { TileHandler } from './handlers/tile.handler';
 import { AccountLinkHandler } from './handlers/account-link.handler';
-import { AnchoringStatus } from '@potter/vessel';
+import { AnchoringStatus } from '@potter/anchoring';
 
 const createSchema = Joi.object({
   doctype: Joi.string()

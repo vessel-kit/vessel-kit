@@ -1,7 +1,6 @@
 export * from './codec/buffer-multibase-codec'
 export * from './codec/map-codec'
 export * from './person/public-key'
-export * from './anchoring/anchoring-status'
 export * from './ceramic-document-id'
 export * from './three-id.content'
 export * from './ceramic'

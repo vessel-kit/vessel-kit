@@ -4,7 +4,7 @@ import { MessageBus } from './message-bus';
 import { FileStore } from './file-store';
 import { Compartment, lockdown } from 'ses';
 import { Observable } from 'rxjs';
-import { AnchoringStatus } from '@potter/vessel';
+import { AnchoringStatus } from '@potter/anchoring';
 
 export class Document {
   #anchorStatus: AnchoringStatus = AnchoringStatus.NOT_REQUESTED

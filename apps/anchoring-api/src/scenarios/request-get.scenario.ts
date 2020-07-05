@@ -7,7 +7,7 @@ import { UnreachableCaseError } from '../unreachable-case.error';
 import { AnchorRecord } from '../storage/anchor.record';
 import { dateAsTimestamp } from '../api/date-as-timestamp';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
-import { AnchoringStatus } from '@potter/vessel';
+import { AnchoringStatus } from '@potter/anchoring';
 
 export class RequestPresentation {
   constructor(

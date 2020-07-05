@@ -1,8 +1,9 @@
 import CID from 'cids';
 import axios from 'axios';
-import { AnchoringStatus, CeramicDocumentId } from '@potter/vessel';
+import { CeramicDocumentId } from '@potter/vessel';
 import { BehaviorSubject, Observable, Subject, queueScheduler } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
+import { AnchoringStatus } from '@potter/anchoring';
 
 export class EthereumAnchorService {
   private readonly observations = new Subject<{
@@ -15,8 +16,8 @@ export class EthereumAnchorService {
     const subject = new BehaviorSubject(AnchoringStatus.PENDING);
     this.observations
       .pipe(
-        filter(o => o.cid.toString() === cid.toString()),
-        map(o => o.status),
+        filter((o) => o.cid.toString() === cid.toString()),
+        map((o) => o.status),
       )
       .subscribe(subject);
     return subject.asObservable();

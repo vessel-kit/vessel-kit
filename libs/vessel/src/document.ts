@@ -1,6 +1,6 @@
 import { CeramicDocumentId } from './ceramic-document-id';
 import { DocumentService } from './document.service';
-import { AnchoringStatus } from './anchoring/anchoring-status';
+import { AnchoringStatus } from '@potter/anchoring';
 import { Subscription } from 'rxjs';
 import { Chain } from './chain';
 import { DocumentState } from './document.state';

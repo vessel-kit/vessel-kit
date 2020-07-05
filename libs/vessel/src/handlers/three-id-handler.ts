@@ -7,7 +7,7 @@ import * as tPromise from 'io-ts-promise';
 import jose from 'jose';
 import base64url from 'base64url';
 import { multicodecCodec as PublicKeyMulticodec, PublicKey } from '../person/public-key';
-import { AnchoringStatus, BufferMultibaseCodec, ThreeIdContent } from '..';
+import { BufferMultibaseCodec, ThreeIdContent } from '..';
 import { DocumentState } from '../document.state';
 import { RecordWrap } from '../record-wrap';
 import produce from 'immer';
@@ -16,8 +16,9 @@ import * as _ from 'lodash';
 import sortKeys from 'sort-keys';
 import { verifyThreeId } from './verify-three-did';
 import jsonPatch from 'fast-json-patch';
+import { AnchoringStatus } from '@potter/anchoring';
 
-const PublicKeyString = Joi.string().custom(value => {
+const PublicKeyString = Joi.string().custom((value) => {
   const buffer = multibase.decode(value);
   const codecIndex = multicodec.getCode(buffer);
   const point = multicodec.rmPrefix(buffer);
@@ -48,9 +49,7 @@ const PublicKeyString = Joi.string().custom(value => {
 
 const GENESIS_SCHEMA = Joi.object({
   doctype: Joi.string().valid('3id'),
-  owners: Joi.array()
-    .items(PublicKeyString)
-    .required(),
+  owners: Joi.array().items(PublicKeyString).required(),
   content: Joi.object({
     publicKeys: Joi.object({
       signing: PublicKeyString,
@@ -121,7 +120,7 @@ export class ThreeIdHandler implements IHandler {
   }
 
   async applyAnchor(anchorRecord: RecordWrap, proof: ProofRecord, state: DocumentState): Promise<DocumentState> {
-    return produce(state, async next => {
+    return produce(state, async (next) => {
       next.log = next.log.concat(anchorRecord.cid);
       if (next.current) {
         next.freight = next.current;

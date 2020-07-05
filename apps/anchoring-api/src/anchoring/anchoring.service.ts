@@ -10,8 +10,7 @@ import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
-import { AnchoringStatus } from '@potter/vessel';
-import { MerkleNode, PathDirection, MerkleTree } from '@potter/anchoring';
+import { MerkleNode, PathDirection, MerkleTree, AnchoringStatus } from '@potter/anchoring';
 
 @Injectable()
 export class AnchoringService {
@@ -70,7 +69,7 @@ export class AnchoringService {
   }
 
   async merkleTree(records: RequestRecord[]) {
-    const leaves = records.sort((a, b) => a.docId.localeCompare(b.docId)).map(r => r.cid);
+    const leaves = records.sort((a, b) => a.docId.localeCompare(b.docId)).map((r) => r.cid);
     return MerkleTree.fromLeaves(leaves, async (left, right) => {
       const cid = await this.ipfs.dag.put({
         [PathDirection.L]: left.id,
@@ -98,7 +97,7 @@ export class AnchoringService {
   separateRecordsByTime(records: RequestRecord[]) {
     const latest = new Map<string, RequestRecord>();
     const stale = new Array<RequestRecord>();
-    records.forEach(record => {
+    records.forEach((record) => {
       const present = latest.get(record.docId);
       if (present) {
         if (record.createdAt > present.createdAt) {

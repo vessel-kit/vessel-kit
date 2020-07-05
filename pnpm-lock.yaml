@@ -160,6 +160,7 @@ importers:
       '@nestjs/terminus': 7.0.1_26e9ecc0d27b0f80f182fb91151b2ad7
       '@nestjs/typeorm': 7.1.0_1f45d726341d93cf8aa03617fab33e64
       '@nestjs/websockets': 7.3.1_b044a474f8c061db2ad0c6b2a909e64b
+      '@potter/anchoring': 'link:../../libs/anchoring'
       '@potter/vessel': 'link:../../libs/vessel'
       axios: 0.19.2
       cids: 0.8.3
@@ -192,6 +193,7 @@ importers:
       '@nestjs/terminus': ^7.0.1
       '@nestjs/typeorm': ^7.0.0
       '@nestjs/websockets': ^7.1.3
+      '@potter/anchoring': 'workspace:*'
       '@potter/vessel': 'workspace:*'
       axios: ^0.19.2
       cids: ^0.8.0
