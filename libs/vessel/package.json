@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@potter/anchoring": "workspace:*",
+    "@potter/codec": "workspace:*",
     "@ethersproject/hdnode": "^5.0.1",
     "@ethersproject/providers": "^5.0.3",
     "ethers": "^5.0.3",

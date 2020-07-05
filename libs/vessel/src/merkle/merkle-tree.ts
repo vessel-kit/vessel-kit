@@ -1,6 +1,4 @@
-import { MerklePath } from './merkle-path';
-import { MerkleNode } from './merkle-node';
-import { PathDirection } from '@potter/anchoring';
+import { PathDirection, MerkleNode, MerklePath } from '@potter/anchoring';
 
 export interface MergeFn<A> {
   (left: MerkleNode<A>, right: MerkleNode<A>): Promise<MerkleNode<A>>;
