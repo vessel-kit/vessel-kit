@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '../commons/config.service';
 import { ethers } from 'ethers';
 import CID from 'cids';
-import { BlockchainTransaction } from './blockchain-transaction';
+import { ChainID } from 'caip';
+import { BlockchainTransaction } from '@potter/anchoring';
 import { ConnectionString } from '@potter/blockchain-connection-string';
 
 function walletFromSecret(options: Map<string, string>): ethers.Wallet {
@@ -35,7 +36,7 @@ export class EthereumService {
     });
     const receipt = await this.wallet.provider.waitForTransaction(transaction.hash);
     const block = await this.wallet.provider.getBlock(receipt.blockHash);
-    const chain = `eip155:${transaction.chainId}`;
+    const chain = new ChainID(`eip155:${transaction.chainId}`)
     return new BlockchainTransaction(chain, receipt.transactionHash, receipt.blockNumber, block.timestamp);
   }
 }

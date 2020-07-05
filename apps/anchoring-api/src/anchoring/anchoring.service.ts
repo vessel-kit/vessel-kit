@@ -5,12 +5,11 @@ import { IpfsService } from './ipfs.service';
 import { Ipfs } from 'ipfs';
 import CID from 'cids';
 import { EthereumService } from './ethereum.service';
-import { BlockchainTransaction } from './blockchain-transaction';
 import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
-import { MerkleNode, PathDirection, MerkleTree, AnchoringStatus } from '@potter/anchoring';
+import { MerkleNode, PathDirection, MerkleTree, AnchoringStatus, BlockchainTransaction } from '@potter/anchoring';
 
 @Injectable()
 export class AnchoringService {
@@ -45,7 +44,7 @@ export class AnchoringService {
     const transaction = await this.ethereum.createAnchor(merkleTree.root.id);
     const transactionRecord = new TransactionRecord();
     transactionRecord.blockNumber = transaction.blockNumber;
-    transactionRecord.chainId = transaction.chain;
+    transactionRecord.chainId = transaction.chainId.toString();
     transactionRecord.txHash = transaction.txHash;
     transactionRecord.createdAt = new Date(transaction.blockTimestamp * 1000);
     const savedTransactionRecord = await this.transactionStorage.save(transactionRecord);
@@ -88,7 +87,7 @@ export class AnchoringService {
       blockNumber: transaction.blockNumber,
       blockTimestamp: transaction.blockTimestamp,
       root: root,
-      chainId: transaction.chain,
+      chainId: transaction.chainId.toString(),
       txHash: transaction.cid,
     };
     return this.ipfs.dag.put(ipfsAnchorProof);

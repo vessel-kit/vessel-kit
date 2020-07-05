@@ -40,6 +40,7 @@ importers:
       '@potter/blockchain-connection-string': 'link:../../libs/blockchain-connection-string'
       '@potter/vessel': 'link:../../libs/vessel'
       apollo-server-express: 2.15.1_graphql@15.2.0
+      caip: 0.9.2
       cids: 0.8.3
       class-transformer: 0.2.3
       cron: 1.7.2
@@ -79,6 +80,7 @@ importers:
       '@potter/blockchain-connection-string': 'workspace:*'
       '@potter/vessel': 'workspace:*'
       apollo-server-express: ^2.13.1
+      caip: ^0.9.2
       cids: ^0.8.0
       class-transformer: ^0.2.3
       cron: ^1.7.2
@@ -249,13 +251,23 @@ importers:
       theme-ui: ^0.3.1
   libs/anchoring:
     dependencies:
+      '@potter/blockchain-connection-string': 'link:../blockchain-connection-string'
       '@potter/codec': 'link:../codec'
+      caip: 0.9.2
+      cids: 0.8.3
+      ethers: 5.0.4
       fp-ts: 2.6.7
       io-ts: 2.2.7_fp-ts@2.6.7
+      typestub-multihashes: 0.0.4
     specifiers:
+      '@potter/blockchain-connection-string': 'workspace:*'
       '@potter/codec': 'workspace:*'
+      caip: ^0.9.2
+      cids: ^0.8.3
+      ethers: ^5.0.4
       fp-ts: ^2.0.0
       io-ts: ^2.2.7
+      typestub-multihashes: ^0.0.4
   libs/blockchain-connection-string:
     specifiers: {}
   libs/codec:
@@ -1849,7 +1861,7 @@ packages:
   /@ethersproject/abi/5.0.1:
     dependencies:
       '@ethersproject/address': 5.0.1
-      '@ethersproject/bignumber': 5.0.2
+      '@ethersproject/bignumber': 5.0.3
       '@ethersproject/bytes': 5.0.1
       '@ethersproject/constants': 5.0.1
       '@ethersproject/hash': 5.0.1
@@ -1957,7 +1969,7 @@ packages:
       '@ethersproject/abstract-provider': 5.0.1
       '@ethersproject/abstract-signer': 5.0.1
       '@ethersproject/address': 5.0.1
-      '@ethersproject/bignumber': 5.0.2
+      '@ethersproject/bignumber': 5.0.3
       '@ethersproject/bytes': 5.0.1
       '@ethersproject/constants': 5.0.1
       '@ethersproject/logger': 5.0.2
@@ -2098,6 +2110,27 @@ packages:
     dev: false
     resolution:
       integrity: sha512-HuZf+QSq3R/TKEOQE2ZrEqXy8r6wtXwxOC3+ZayHAiVisy9hL/VRTljhVd2XwHwu/1GSn4FmXyCT3OzZxXpiQg==
+  /@ethersproject/providers/5.0.4:
+    dependencies:
+      '@ethersproject/abstract-provider': 5.0.1
+      '@ethersproject/abstract-signer': 5.0.1
+      '@ethersproject/address': 5.0.1
+      '@ethersproject/bignumber': 5.0.3
+      '@ethersproject/bytes': 5.0.1
+      '@ethersproject/constants': 5.0.1
+      '@ethersproject/hash': 5.0.1
+      '@ethersproject/logger': 5.0.2
+      '@ethersproject/networks': 5.0.1
+      '@ethersproject/properties': 5.0.1
+      '@ethersproject/random': 5.0.1
+      '@ethersproject/rlp': 5.0.1
+      '@ethersproject/strings': 5.0.1
+      '@ethersproject/transactions': 5.0.1
+      '@ethersproject/web': 5.0.1
+      ws: 7.2.3
+    dev: false
+    resolution:
+      integrity: sha512-bnju7KB3v+NDcbHYxbZJawb20WRh/FLhop/XvHBmGUAbYSCV+cRftRvvgsdeyJOApjsCioMtmIe5iYkRxDx/DA==
   /@ethersproject/random/5.0.1:
     dependencies:
       '@ethersproject/bytes': 5.0.1
@@ -2131,7 +2164,7 @@ packages:
       integrity: sha512-kgpCdtgoLoKXJTwJPw3ggRW7EO93YCQ98zY8hBpIb4OK3FxFCR3UUjlrGEwjMnLHDjFrxpKCeJagGWf477RyMQ==
   /@ethersproject/solidity/5.0.1:
     dependencies:
-      '@ethersproject/bignumber': 5.0.2
+      '@ethersproject/bignumber': 5.0.3
       '@ethersproject/bytes': 5.0.1
       '@ethersproject/keccak256': 5.0.1
       '@ethersproject/sha2': 5.0.1
@@ -2163,7 +2196,7 @@ packages:
       integrity: sha512-IGc6/5hri3PrqR/ZCj89osDiq3Lt0CSrycn6vlRl8SjpBKYDdcT+Ru5xkeC7YcsnqcdBmTL+jyR3SLudU+x2Kw==
   /@ethersproject/units/5.0.1:
     dependencies:
-      '@ethersproject/bignumber': 5.0.2
+      '@ethersproject/bignumber': 5.0.3
       '@ethersproject/constants': 5.0.1
       '@ethersproject/logger': 5.0.2
     dev: false
@@ -2194,7 +2227,7 @@ packages:
       '@ethersproject/abstract-provider': 5.0.1
       '@ethersproject/abstract-signer': 5.0.1
       '@ethersproject/address': 5.0.1
-      '@ethersproject/bignumber': 5.0.2
+      '@ethersproject/bignumber': 5.0.3
       '@ethersproject/bytes': 5.0.1
       '@ethersproject/hash': 5.0.1
       '@ethersproject/hdnode': 5.0.1
@@ -7591,6 +7624,40 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Y9ud5W9Gtuzibyc8tEEkFRd/+uQciUoy0j7PTHF0i8H9521i67NQPXYOIA0NS0fRD2TolNTFeRLNNEY7EA98qg==
+  /ethers/5.0.4:
+    dependencies:
+      '@ethersproject/abi': 5.0.1
+      '@ethersproject/abstract-provider': 5.0.1
+      '@ethersproject/abstract-signer': 5.0.1
+      '@ethersproject/address': 5.0.1
+      '@ethersproject/base64': 5.0.1
+      '@ethersproject/bignumber': 5.0.3
+      '@ethersproject/bytes': 5.0.1
+      '@ethersproject/constants': 5.0.1
+      '@ethersproject/contracts': 5.0.1
+      '@ethersproject/hash': 5.0.1
+      '@ethersproject/hdnode': 5.0.1
+      '@ethersproject/json-wallets': 5.0.1
+      '@ethersproject/keccak256': 5.0.1
+      '@ethersproject/logger': 5.0.2
+      '@ethersproject/networks': 5.0.1
+      '@ethersproject/pbkdf2': 5.0.1
+      '@ethersproject/properties': 5.0.1
+      '@ethersproject/providers': 5.0.4
+      '@ethersproject/random': 5.0.1
+      '@ethersproject/rlp': 5.0.1
+      '@ethersproject/sha2': 5.0.1
+      '@ethersproject/signing-key': 5.0.2
+      '@ethersproject/solidity': 5.0.1
+      '@ethersproject/strings': 5.0.1
+      '@ethersproject/transactions': 5.0.1
+      '@ethersproject/units': 5.0.1
+      '@ethersproject/wallet': 5.0.1
+      '@ethersproject/web': 5.0.1
+      '@ethersproject/wordlists': 5.0.1
+    dev: false
+    resolution:
+      integrity: sha512-/VzvmgsrBDOxGo+WIZD7kKXcEUFCrr53P40w5fk1EcGYidv+XVbtTWil5FMsijV6BVXTKqxwMv7hDvKLAObfNQ==
   /ethjs-util/0.1.6:
     dependencies:
       is-hex-prefixed: 1.0.0
@@ -16785,6 +16852,14 @@ packages:
       '@types/node': ^8.0.0
     resolution:
       integrity: sha512-C+diWpowbTj0vD8mNN38prFzQwCL1zsK8UwLddOFYoLc8hz7vuKJkarYANycn/YzJ1ozLyfmplsdaJ1i0quEOA==
+  /typestub-multihashes/0.0.4:
+    dependencies:
+      multihashes: 0.4.21
+    dev: false
+    peerDependencies:
+      '@types/node': ^8.0.0
+    resolution:
+      integrity: sha512-De7NTQ6CpXRSe/mZe89k0V+RopeEAUH/jRMj093E/j8cX8wKoilo7ySbEzGWxmFu4jO2Y5DA+FrOXIYmIOvurA==
   /typical/6.0.1:
     dev: false
     engines:

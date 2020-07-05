@@ -10,8 +10,13 @@
     "test": "jest"
   },
   "dependencies": {
+    "@potter/blockchain-connection-string": "workspace:*",
     "@potter/codec": "workspace:*",
+    "caip": "^0.9.2",
+    "cids": "^0.8.3",
+    "ethers": "^5.0.4",
+    "fp-ts": "^2.0.0",
     "io-ts": "^2.2.7",
-    "fp-ts": "^2.0.0"
+    "typestub-multihashes": "^0.0.4"
   }
 }
