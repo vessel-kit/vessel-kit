@@ -4,26 +4,31 @@ import { RequestRecord } from '../storage/request.record';
 import { IpfsService } from './ipfs.service';
 import { Ipfs } from 'ipfs';
 import CID from 'cids';
-import { EthereumService } from './ethereum.service';
 import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
 import { MerkleNode, PathDirection, MerkleTree, AnchoringStatus, BlockchainTransaction } from '@potter/anchoring';
+import { ConfigService } from '../commons/config.service';
+import { BlockchainWriter, IBlockchainWriter } from '@potter/anchoring';
+import { ConnectionString } from '@potter/blockchain-connection-string';
 
 @Injectable()
 export class AnchoringService {
   private readonly logger = new Logger(AnchoringService.name);
   private readonly ipfs: Ipfs;
+  private readonly writer: IBlockchainWriter;
 
   constructor(
+    private readonly configService: ConfigService,
     private readonly requestStorage: RequestStorage,
     private readonly anchorStorage: AnchorStorage,
     ipfsService: IpfsService,
-    private readonly ethereum: EthereumService,
     private readonly transactionStorage: TransactionStorage,
   ) {
     this.ipfs = ipfsService.client;
+    const connectionString = ConnectionString.fromString(configService.current.BLOCKCHAIN_URL);
+    this.writer = BlockchainWriter.fromConnectionString(connectionString);
   }
 
   async anchorRequests() {
@@ -41,7 +46,7 @@ export class AnchoringService {
     }
 
     const merkleTree = await this.merkleTree(latest);
-    const transaction = await this.ethereum.createAnchor(merkleTree.root.id);
+    const transaction = await this.writer.createAnchor(merkleTree.root.id);
     const transactionRecord = new TransactionRecord();
     transactionRecord.blockNumber = transaction.blockNumber;
     transactionRecord.chainId = transaction.chainId.toString();

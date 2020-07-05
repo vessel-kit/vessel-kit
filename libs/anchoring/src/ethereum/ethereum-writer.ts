@@ -7,6 +7,20 @@ import { IBlockchainWriter } from '../blockchain-writer.interface';
 
 export class InvalidKeyMaterialError extends Error {}
 
+function walletFromConnectionString(connectionString: ConnectionString) {
+  const options = connectionString.options;
+  const privateKeyHex = options.get('privateKeyHex');
+  const mnemonic = options.get('mnemonic');
+  if (privateKeyHex) {
+    return new ethers.Wallet(privateKeyHex);
+  } else if (mnemonic) {
+    const hdPath = options.get('path');
+    return ethers.Wallet.fromMnemonic(mnemonic, hdPath);
+  } else {
+    throw new InvalidKeyMaterialError(`Mnemonic or private key is expected`);
+  }
+}
+
 export class EthereumWriter implements IBlockchainWriter {
   #wallet: ethers.Wallet;
 
@@ -15,17 +29,9 @@ export class EthereumWriter implements IBlockchainWriter {
   }
 
   static fromConnectionString(connectionString: ConnectionString): EthereumWriter {
-    const options = connectionString.options;
-    const privateKeyHex = options.get('privateKeyHex');
-    const mnemonic = options.get('mnemonic');
-    if (privateKeyHex) {
-      return new EthereumWriter(new ethers.Wallet(privateKeyHex));
-    } else if (mnemonic) {
-      const hdPath = options.get('path');
-      return new EthereumWriter(ethers.Wallet.fromMnemonic(mnemonic, hdPath));
-    } else {
-      throw new InvalidKeyMaterialError(`Mnemonic or private key is expected`);
-    }
+    const provider = new ethers.providers.JsonRpcProvider(connectionString.transport);
+    const wallet = walletFromConnectionString(connectionString).connect(provider);
+    return new EthereumWriter(wallet);
   }
 
   async createAnchor(cid: CID): Promise<BlockchainTransaction> {
