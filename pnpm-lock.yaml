@@ -7182,7 +7182,7 @@ packages:
       cookie: 0.3.1
       debug: 4.1.1
       engine.io-parser: 2.2.0
-      ws: 7.3.0
+      ws: 7.3.1
     dev: false
     engines:
       node: '>=8.0.0'
@@ -10469,7 +10469,7 @@ packages:
       buffer: 5.6.0
       event-iterator: 1.2.0
       relative-url: 1.0.2
-      ws: 7.3.0
+      ws: 7.3.1
     dev: false
     resolution:
       integrity: sha512-9qPAgBPA4yyu8XC71ugOhTOrEDpmSqVeEoJeAaNmtQIOu4sByzO8rsLq1GFKChaEhf8nbtK6jxr3e7LmpjMqmQ==
@@ -11238,7 +11238,7 @@ packages:
     dependencies:
       inherits: 2.0.4
       level-errors: 1.0.5
-      readable-stream: 1.1.14
+      readable-stream: 1.0.34
       xtend: 4.0.2
     dev: false
     resolution:
@@ -17510,6 +17510,7 @@ packages:
     resolution:
       integrity: sha512-HTDl9G9hbkNDk98naoR/cHDws7+EyYMOdL1BmjsZXRUjf7d+MficC4B7HLUPlSiho0vg+CWKrGIt/VJBd1xunQ==
   /ws/7.3.0:
+    dev: true
     engines:
       node: '>=8.3.0'
     peerDependencies:
@@ -17522,6 +17523,20 @@ packages:
         optional: true
     resolution:
       integrity: sha512-iFtXzngZVXPGgpTlP1rBqsUK82p9tKqsWRPg5L56egiljujJT3vGAYnHANvFxBieXrTFavhzhxW52jnaWV+w2w==
+  /ws/7.3.1:
+    dev: false
+    engines:
+      node: '>=8.3.0'
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    resolution:
+      integrity: sha512-D3RuNkynyHmEJIpD2qrgVkc9DQ23OrN/moAwZX4L8DfvszsJxpjQuUq3LMx6HoYji9fbIOBY18XWBsAux1ZZUA==
   /xdg-basedir/4.0.0:
     dev: false
     engines:
@@ -17731,5 +17746,6 @@ packages:
     dev: false
     name: webrtcsupport
     resolution:
+      registry: 'https://registry.npmjs.org/'
       tarball: 'https://codeload.github.com/ipfs/webrtcsupport/tar.gz/0a7099ff04fd36227a32e16966dbb3cca7002378'
     version: 2.2.0

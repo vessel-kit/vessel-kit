@@ -3,21 +3,20 @@ import { RequestStorage } from '../storage/request.storage';
 import { RequestRecord } from '../storage/request.record';
 import { IpfsService } from './ipfs.service';
 import { Ipfs } from 'ipfs';
-import CID from 'cids';
 import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
-import { MerkleNode, PathDirection, MerkleTree, AnchoringStatus, BlockchainTransaction } from '@potter/anchoring';
+import { AnchoringStatus } from '@potter/anchoring';
 import { ConfigService } from '../commons/config.service';
-import { BlockchainWriter, IBlockchainWriter } from '@potter/anchoring';
+import { Anchoring, MerklePathStringCodec } from '@potter/anchoring';
 import { ConnectionString } from '@potter/blockchain-connection-string';
 
 @Injectable()
 export class AnchoringService {
   private readonly logger = new Logger(AnchoringService.name);
   private readonly ipfs: Ipfs;
-  private readonly writer: IBlockchainWriter;
+  private readonly anchoring: Anchoring;
 
   constructor(
     private readonly configService: ConfigService,
@@ -28,7 +27,7 @@ export class AnchoringService {
   ) {
     this.ipfs = ipfsService.client;
     const connectionString = ConnectionString.fromString(configService.current.BLOCKCHAIN_URL);
-    this.writer = BlockchainWriter.fromConnectionString(connectionString);
+    this.anchoring = new Anchoring(this.ipfs, connectionString);
   }
 
   async anchorRequests() {
@@ -39,65 +38,35 @@ export class AnchoringService {
 
     if (latest.length === 0) {
       this.logger.log(`No pending requests to anchor`);
-      // Nothing to do here
       return;
     } else {
       this.logger.log(`Requests to anchor: ${latest.length}`);
     }
 
-    const merkleTree = await this.merkleTree(latest);
-    const transaction = await this.writer.createAnchor(merkleTree.root.id);
-    const proofCid = await this.putAnchorProof(transaction, merkleTree.root.id);
+    const creation = await this.anchoring.create(latest);
 
     const transactionRecord = new TransactionRecord();
-    transactionRecord.blockNumber = transaction.blockNumber;
-    transactionRecord.chainId = transaction.chainId.toString();
-    transactionRecord.txHash = transaction.txHash;
-    transactionRecord.createdAt = new Date(transaction.blockTimestamp * 1000);
+    transactionRecord.blockNumber = creation.transaction.blockNumber;
+    transactionRecord.chainId = creation.transaction.chainId.toString();
+    transactionRecord.txHash = creation.transaction.txHash;
+    transactionRecord.createdAt = new Date(creation.transaction.blockTimestamp * 1000);
     const savedTransactionRecord = await this.transactionStorage.save(transactionRecord);
 
-    for (const request of latest) {
+    for (const response of creation.responses) {
       const anchorRecord = new AnchorRecord();
-      anchorRecord.requestId = request.id;
-      anchorRecord.proofCid = proofCid;
-      anchorRecord.path = merkleTree.path(request.cid).toString();
-      const ipfsAnchorRecord = {
-        prev: new CID(request.cid),
-        proof: proofCid,
-        path: anchorRecord.path,
-      };
-      anchorRecord.cid = await this.ipfs.dag.put(ipfsAnchorRecord);
+      anchorRecord.requestId = response.request.id;
+      anchorRecord.proofCid = response.proofCid;
+      anchorRecord.path = MerklePathStringCodec.encode(response.path);
+      anchorRecord.cid = response.leafCid;
       anchorRecord.transactionId = savedTransactionRecord.id;
       await this.anchorStorage.save(anchorRecord);
-      request.status = AnchoringStatus.ANCHORED;
-      await this.requestStorage.save(request); // TODO Subscription for state
+      response.request.status = AnchoringStatus.ANCHORED;
+      await this.requestStorage.save(response.request);
     }
-  }
-
-  async merkleTree(records: RequestRecord[]) {
-    const leaves = records.sort((a, b) => a.docId.localeCompare(b.docId)).map((r) => r.cid);
-    return MerkleTree.fromLeaves(leaves, async (left, right) => {
-      const cid = await this.ipfs.dag.put({
-        [PathDirection.L]: left.id,
-        [PathDirection.R]: right.id,
-      });
-      return new MerkleNode(cid, left, right);
-    });
   }
 
   async markRecordsFailed(records: RequestRecord[]) {
     await this.requestStorage.updateStatus(records, AnchoringStatus.FAILED); // TODO Subscription for states
-  }
-
-  putAnchorProof(transaction: BlockchainTransaction, root: CID) {
-    const ipfsAnchorProof = {
-      blockNumber: transaction.blockNumber,
-      blockTimestamp: transaction.blockTimestamp,
-      root: root,
-      chainId: transaction.chainId.toString(),
-      txHash: transaction.cid,
-    };
-    return this.ipfs.dag.put(ipfsAnchorProof);
   }
 
   separateRecordsByTime(records: RequestRecord[]) {

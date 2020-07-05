@@ -6,11 +6,11 @@ import { splitString } from '@potter/codec';
 
 const PathDirectionArrayStringCodec = t.string.pipe(
   splitString('/', PathDirectionStringCodec),
-  'PathDirectionArrayString',
+  'PathDirectionArray-String',
 );
 
 export const MerklePathStringCodec = new t.Type<MerklePath, string>(
-  'MerklePathString',
+  'MerklePath-String',
   (a: unknown): a is MerklePath => a instanceof MerklePath,
   (input, context) =>
     either.chain(PathDirectionArrayStringCodec.validate(input, context), paths => {

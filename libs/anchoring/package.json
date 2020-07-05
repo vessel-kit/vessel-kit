@@ -20,6 +20,9 @@
     "typestub-multihashes": "^0.0.4",
     "uuid": "^8.2.0"
   },
+  "peerDependencies": {
+    "ipfs": "^0.47.0"
+  },
   "devDependencies": {
     "@types/uuid": "^8.0.0"
   }
