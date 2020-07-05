@@ -2,9 +2,8 @@ import CID from 'cids';
 import { RequestRecord } from '../storage/request.record';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
-import { UuidValue } from '../storage/uuid.value';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
-import { AnchoringStatus } from '@potter/anchoring';
+import { AnchoringStatus, UuidValue } from '@potter/anchoring';
 
 @Injectable()
 export class RequestCreateScenario {

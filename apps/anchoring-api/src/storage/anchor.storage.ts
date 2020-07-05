@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AnchorRecord } from './anchor.record';
-import { UuidValue } from './uuid.value';
+import { UuidValue } from '@potter/anchoring';
 
 @Injectable()
 export class AnchorStorage {

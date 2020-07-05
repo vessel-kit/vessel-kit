@@ -1,9 +1,8 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { UuidValue } from './uuid.value';
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from 'typeorm';
+import { UuidValue } from '@potter/anchoring';
 import { uuidTransformer } from './uuid.transformer';
 import CID from 'cids';
 import { cidTransformer } from './cid.transformer';
-import { RequestRecord } from './request.record';
 
 @Entity('anchors')
 export class AnchorRecord {

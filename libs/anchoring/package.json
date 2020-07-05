@@ -17,6 +17,10 @@
     "ethers": "^5.0.4",
     "fp-ts": "^2.0.0",
     "io-ts": "^2.2.7",
-    "typestub-multihashes": "^0.0.4"
+    "typestub-multihashes": "^0.0.4",
+    "uuid": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.0.0"
   }
 }

@@ -261,15 +261,20 @@ importers:
       fp-ts: 2.6.7
       io-ts: 2.2.7_fp-ts@2.6.7
       typestub-multihashes: 0.0.4
+      uuid: 8.2.0
+    devDependencies:
+      '@types/uuid': 8.0.0
     specifiers:
       '@potter/blockchain-connection-string': 'workspace:*'
       '@potter/codec': 'workspace:*'
+      '@types/uuid': ^8.0.0
       caip: ^0.9.2
       cids: ^0.8.3
       ethers: ^5.0.4
       fp-ts: ^2.0.0
       io-ts: ^2.2.7
       typestub-multihashes: ^0.0.4
+      uuid: ^8.2.0
   libs/blockchain-connection-string:
     specifiers: {}
   libs/codec:
@@ -3779,6 +3784,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-d6dIfpPbF+8B7WiCi2ELY7m0w1joD8cRW4ms88Emdb2w062NeEpbNCeWwVCgzLRpVG+5e74VFSg4rgJ2xXjEiQ==
+  /@types/uuid/8.0.0:
+    dev: true
+    resolution:
+      integrity: sha512-xSQfNcvOiE5f9dyd4Kzxbof1aTrLobL278pGLKOZI6esGfZ7ts9Ka16CzIN6Y8hFHE1C7jIBZokULhK1bOgjRw==
   /@types/webpack-sources/1.4.0:
     dependencies:
       '@types/node': 14.0.14
