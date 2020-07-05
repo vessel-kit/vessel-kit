@@ -3067,7 +3067,10 @@ packages:
       react-dom: ^16.9.0
     resolution:
       integrity: sha512-jHlfqviYKPiWRaxBsFMSxDgGf8rJcWiLhw84QevAWmt8Z0Fi4Z6nvAz5prpzavLTMUF+i+7Bd8+sv/b73sHY3g==
-  /@next/react-refresh-utils/9.4.0:
+  /@next/react-refresh-utils/9.4.0_ddb546fadf4e996beac5119642b9b107:
+    dependencies:
+      react-refresh: 0.8.2
+      webpack: 4.43.0_webpack@4.43.0
     dev: false
     peerDependencies:
       react-refresh: 0.8.2
@@ -4203,20 +4206,16 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-quoaXsZ9/BLNae5yiNoUz+Nhkwz83GhWwtYFglcjEQB2NDHCIpApbqXxIFnm4Pq/Nvhrsq5sYJFyohrrxnTGAA==
-  /ajv-errors/1.0.1:
+  /ajv-errors/1.0.1_ajv@6.12.3:
+    dependencies:
+      ajv: 6.12.3
     peerDependencies:
       ajv: '>=5.0.0'
     resolution:
       integrity: sha512-DCRfO/4nQ+89p/RK43i8Ezd41EqdGIU4ld7nGF8OQ14oc/we5rEntLCUa7+jrn3nn83BosfwZA0wb4pon2o8iQ==
-  /ajv-keywords/3.5.0:
-    peerDependencies:
-      ajv: ^6.9.1
-    resolution:
-      integrity: sha512-eyoaac3btgU8eJlvh01En8OCKzRqlLe2G5jDsCr3RiE2uLGMEEB1aaGwVVpwR8M95956tGH6R+9edC++OvzaVw==
   /ajv-keywords/3.5.0_ajv@6.12.3:
     dependencies:
       ajv: 6.12.3
-    dev: true
     peerDependencies:
       ajv: ^6.9.1
     resolution:
@@ -6264,7 +6263,7 @@ packages:
       node: '>4'
     resolution:
       integrity: sha512-BcxQSKTSEEQUftYpBVnsH4SF05NTuBokb19/sBt6asXGKZ/6VP7PLG1CBCkFDYOnhXhPh0jMhO6xZ71oYHXHBA==
-  /css-loader/3.5.3:
+  /css-loader/3.5.3_webpack@4.43.0:
     dependencies:
       camelcase: 5.3.1
       cssesc: 3.0.0
@@ -6279,6 +6278,7 @@ packages:
       postcss-value-parser: 4.1.0
       schema-utils: 2.6.6
       semver: 6.3.0
+      webpack: 4.43.0_webpack@4.43.0
     dev: false
     engines:
       node: '>= 8.9.0'
@@ -12430,11 +12430,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-j5EctnkH7amfV/q5Hgmoal1g2QHFJRraOtmx0JpIqkxhBhI/lJSl1nMpQ45hVarwNETOoWEimndZ4QK0RHxuxQ==
-  /mini-css-extract-plugin/0.8.0:
+  /mini-css-extract-plugin/0.8.0_webpack@4.43.0:
     dependencies:
       loader-utils: 1.4.0
       normalize-url: 1.9.1
       schema-utils: 1.0.0
+      webpack: 4.43.0_webpack@4.43.0
       webpack-sources: 1.4.3
     dev: false
     engines:
@@ -12887,19 +12888,19 @@ packages:
       '@babel/runtime': 7.9.6
       '@babel/types': 7.9.6
       '@next/react-dev-overlay': 9.4.0_react-dom@16.13.1+react@16.13.1
-      '@next/react-refresh-utils': 9.4.0
+      '@next/react-refresh-utils': 9.4.0_ddb546fadf4e996beac5119642b9b107
       babel-plugin-syntax-jsx: 6.18.0
       babel-plugin-transform-define: 2.0.0
       babel-plugin-transform-react-remove-prop-types: 0.4.24
       browserslist: 4.12.0
       cacache: 13.0.1
       chokidar: 2.1.8
-      css-loader: 3.5.3
+      css-loader: 3.5.3_webpack@4.43.0
       find-cache-dir: 3.3.1
       fork-ts-checker-webpack-plugin: 3.1.1
       jest-worker: 24.9.0
       loader-utils: 2.0.0
-      mini-css-extract-plugin: 0.8.0
+      mini-css-extract-plugin: 0.8.0_webpack@4.43.0
       mkdirp: 0.5.3
       native-url: 0.3.1
       neo-async: 2.6.1
@@ -12912,14 +12913,14 @@ packages:
       react-is: 16.13.1
       react-refresh: 0.8.2
       resolve-url-loader: 3.1.1
-      sass-loader: 8.0.2
+      sass-loader: 8.0.2_webpack@4.43.0
       schema-utils: 2.6.6
-      style-loader: 1.2.1
+      style-loader: 1.2.1_webpack@4.43.0
       styled-jsx: 3.2.5_react@16.13.1
       use-subscription: 1.4.1_react@16.13.1
       watchpack: 2.0.0-beta.13
       web-vitals: 0.2.1
-      webpack: 4.43.0
+      webpack: 4.43.0_webpack@4.43.0
       webpack-sources: 1.4.3
     dev: false
     engines:
@@ -15183,13 +15184,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-y/52Mcy7aw3gRm7IrcGDFx/bCk4AhRh2eI9luHOQM86nZsqwiRkkq2GekHXBBD+SmPidc8i2PqtYZl+pWJ8Oeg==
-  /sass-loader/8.0.2:
+  /sass-loader/8.0.2_webpack@4.43.0:
     dependencies:
       clone-deep: 4.0.1
       loader-utils: 1.4.0
       neo-async: 2.6.1
       schema-utils: 2.6.6
       semver: 6.3.0
+      webpack: 4.43.0_webpack@4.43.0
     dev: false
     engines:
       node: '>= 8.9.0'
@@ -15228,8 +15230,8 @@ packages:
   /schema-utils/1.0.0:
     dependencies:
       ajv: 6.12.3
-      ajv-errors: 1.0.1
-      ajv-keywords: 3.5.0
+      ajv-errors: 1.0.1_ajv@6.12.3
+      ajv-keywords: 3.5.0_ajv@6.12.3
     engines:
       node: '>= 4'
     resolution:
@@ -15237,7 +15239,7 @@ packages:
   /schema-utils/2.6.6:
     dependencies:
       ajv: 6.12.3
-      ajv-keywords: 3.5.0
+      ajv-keywords: 3.5.0_ajv@6.12.3
     dev: false
     engines:
       node: '>= 8.9.0'
@@ -16049,10 +16051,11 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-/3RaYN9rW5WEYNHSvn081CgL4HziT027hfi5tsksbPfeWxi3BSLb8tolZDzpYU3I78/0ZqRiFpMDAqN2t4YShA==
-  /style-loader/1.2.1:
+  /style-loader/1.2.1_webpack@4.43.0:
     dependencies:
       loader-utils: 2.0.0
       schema-utils: 2.6.6
+      webpack: 4.43.0_webpack@4.43.0
     dev: false
     engines:
       node: '>= 8.9.0'
@@ -16070,7 +16073,7 @@ packages:
       source-map: 0.7.3
       string-hash: 1.1.3
       stylis: 3.5.4
-      stylis-rule-sheet: 0.0.10
+      stylis-rule-sheet: 0.0.10_stylis@3.5.4
     dev: false
     peerDependencies:
       react: 15.x.x || 16.x.x
@@ -16104,7 +16107,9 @@ packages:
       node: '>=6.9.0'
     resolution:
       integrity: sha512-7GlLk9JwlElY4Y6a/rmbH2MhVlTyVmiJd1PfTCqFaIBEGMYNsrO/v3SeGTdhBThLg4Z+NbOk/qFMwCa+J+3p/g==
-  /stylis-rule-sheet/0.0.10:
+  /stylis-rule-sheet/0.0.10_stylis@3.5.4:
+    dependencies:
+      stylis: 3.5.4
     dev: false
     peerDependencies:
       stylis: ^3.5.0
@@ -16276,24 +16281,6 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-un0FmiRUQNr5PJqy9kP7c40F5BOfpGlYTrxonDChEZB7pzZxRNp/bt+ymiy9/npwXya9KH99nJ/GXFIiUkYGFQ==
-  /terser-webpack-plugin/1.4.4:
-    dependencies:
-      cacache: 12.0.4
-      find-cache-dir: 2.1.0
-      is-wsl: 1.1.0
-      schema-utils: 1.0.0
-      serialize-javascript: 3.1.0
-      source-map: 0.6.1
-      terser: 4.8.0
-      webpack-sources: 1.4.3
-      worker-farm: 1.7.0
-    dev: false
-    engines:
-      node: '>= 6.9.0'
-    peerDependencies:
-      webpack: ^4.0.0
-    resolution:
-      integrity: sha512-U4mACBHIegmfoEe5fdongHESNJWqsGU+W0S/9+BmYGVQDw1+c2Ow05TpMhxjPK1sRb7cuYq1BPl1e5YHJMTCqA==
   /terser-webpack-plugin/1.4.4_webpack@4.43.0:
     dependencies:
       cacache: 12.0.4
@@ -16306,7 +16293,6 @@ packages:
       webpack: 4.43.0_webpack@4.43.0
       webpack-sources: 1.4.3
       worker-farm: 1.7.0
-    dev: true
     engines:
       node: '>= 6.9.0'
     peerDependencies:
@@ -17220,39 +17206,6 @@ packages:
       source-map: 0.6.1
     resolution:
       integrity: sha512-lgTS3Xhv1lCOKo7SA5TjKXMjpSM4sBjNV5+q2bqesbSPs5FjGmU6jjtBSkX9b4qW87vDIsCIlUPOEhbZrMdjeQ==
-  /webpack/4.43.0:
-    dependencies:
-      '@webassemblyjs/ast': 1.9.0
-      '@webassemblyjs/helper-module-context': 1.9.0
-      '@webassemblyjs/wasm-edit': 1.9.0
-      '@webassemblyjs/wasm-parser': 1.9.0
-      acorn: 6.4.1
-      ajv: 6.12.3
-      ajv-keywords: 3.5.0
-      chrome-trace-event: 1.0.2
-      enhanced-resolve: 4.2.0
-      eslint-scope: 4.0.3
-      json-parse-better-errors: 1.0.2
-      loader-runner: 2.4.0
-      loader-utils: 1.4.0
-      memory-fs: 0.4.1
-      micromatch: 3.1.10
-      mkdirp: 0.5.5
-      neo-async: 2.6.1
-      node-libs-browser: 2.2.1
-      schema-utils: 1.0.0
-      tapable: 1.1.3
-      terser-webpack-plugin: 1.4.4
-      watchpack: 1.7.2
-      webpack-sources: 1.4.3
-    dev: false
-    engines:
-      node: '>=6.11.5'
-    hasBin: true
-    peerDependencies:
-      webpack: '*'
-    resolution:
-      integrity: sha512-GW1LjnPipFW2Y78OOab8NJlCflB7EFskMih2AHdvjbpKMeDJqEgSx24cXXXiPS65+WSwVyxtDsJH6jGX2czy+g==
   /webpack/4.43.0_webpack@4.43.0:
     dependencies:
       '@webassemblyjs/ast': 1.9.0
@@ -17278,7 +17231,6 @@ packages:
       terser-webpack-plugin: 1.4.4_webpack@4.43.0
       watchpack: 1.7.2
       webpack-sources: 1.4.3
-    dev: true
     engines:
       node: '>=6.11.5'
     hasBin: true
