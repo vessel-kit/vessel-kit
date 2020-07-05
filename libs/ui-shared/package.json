@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "tsc -p .",
-    "watch": "tsc -p . --watch"
+    "dev": "tsc -p . --watch"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
