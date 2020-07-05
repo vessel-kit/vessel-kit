@@ -47,13 +47,15 @@ export class AnchoringService {
 
     const merkleTree = await this.merkleTree(latest);
     const transaction = await this.writer.createAnchor(merkleTree.root.id);
+    const proofCid = await this.putAnchorProof(transaction, merkleTree.root.id);
+
     const transactionRecord = new TransactionRecord();
     transactionRecord.blockNumber = transaction.blockNumber;
     transactionRecord.chainId = transaction.chainId.toString();
     transactionRecord.txHash = transaction.txHash;
     transactionRecord.createdAt = new Date(transaction.blockTimestamp * 1000);
     const savedTransactionRecord = await this.transactionStorage.save(transactionRecord);
-    const proofCid = await this.putAnchorProof(transaction, merkleTree.root.id);
+
     for (const request of latest) {
       const anchorRecord = new AnchorRecord();
       anchorRecord.requestId = request.id;

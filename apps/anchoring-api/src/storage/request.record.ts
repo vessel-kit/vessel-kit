@@ -2,10 +2,10 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from 'typeo
 import { uuidTransformer } from './uuid.transformer';
 import CID from 'cids';
 import { cidTransformer } from './cid.transformer';
-import { AnchoringStatus, UuidValue } from '@potter/anchoring';
+import { AnchoringStatus, UuidValue, IAnchoringRequest } from '@potter/anchoring';
 
 @Entity('requests')
-export class RequestRecord {
+export class RequestRecord implements IAnchoringRequest {
   @PrimaryColumn({ generated: 'uuid', transformer: uuidTransformer })
   id: UuidValue;
 
