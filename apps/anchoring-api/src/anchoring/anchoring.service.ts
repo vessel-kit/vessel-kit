@@ -10,7 +10,8 @@ import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
-import { AnchoringStatus, PathDirection, MerkleNode, MerkleTree } from '@potter/vessel';
+import { AnchoringStatus } from '@potter/vessel';
+import { MerkleNode, PathDirection, MerkleTree } from '@potter/anchoring';
 
 @Injectable()
 export class AnchoringService {

@@ -36,6 +36,7 @@ importers:
       '@nestjs/swagger': 4.5.12_7284d3517e82a29b2c8130ce58bd05cc
       '@nestjs/terminus': 7.0.1_26e9ecc0d27b0f80f182fb91151b2ad7
       '@nestjs/typeorm': 7.1.0_1f45d726341d93cf8aa03617fab33e64
+      '@potter/anchoring': 'link:../../libs/anchoring'
       '@potter/blockchain-connection-string': 'link:../../libs/blockchain-connection-string'
       '@potter/vessel': 'link:../../libs/vessel'
       apollo-server-express: 2.15.1_graphql@15.2.0
@@ -74,6 +75,7 @@ importers:
       '@nestjs/swagger': ^4.5.7
       '@nestjs/terminus': ^7.0.1
       '@nestjs/typeorm': ^7.0.0
+      '@potter/anchoring': 'workspace:*'
       '@potter/blockchain-connection-string': 'workspace:*'
       '@potter/vessel': 'workspace:*'
       apollo-server-express: ^2.13.1

@@ -37,6 +37,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@potter/blockchain-connection-string": "workspace:*",
+    "@potter/vessel": "workspace:*",
+    "@potter/anchoring": "workspace:*",
     "@ethersproject/hdnode": "^5.0.1",
     "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^7.0.0",
@@ -47,8 +50,6 @@
     "@nestjs/swagger": "^4.5.7",
     "@nestjs/terminus": "^7.0.1",
     "@nestjs/typeorm": "^7.0.0",
-    "@potter/blockchain-connection-string": "workspace:*",
-    "@potter/vessel": "workspace:*",
     "apollo-server-express": "^2.13.1",
     "cids": "^0.8.0",
     "class-transformer": "^0.2.3",

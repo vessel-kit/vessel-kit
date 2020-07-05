@@ -4,7 +4,8 @@ import { CeramicDocumentId } from './ceramic-document-id';
 import { Observable } from 'rxjs';
 import { ILogger } from './logger/logger.interface';
 import CID from 'cids';
-import { MerklePath } from './merkle/merkle-path';
+import { MerklePathStringCodec } from '@potter/anchoring';
+import { decodePromise } from '@potter/codec';
 import { decode } from "typestub-multihashes";
 import * as providers from "@ethersproject/providers"
 import * as tPromise from 'io-ts-promise'
@@ -95,7 +96,7 @@ export class AnchoringService {
   async originalRecordCid(anchorRecord: any): Promise<CID> {
     const proofRecord = await this.#cloud.retrieve(anchorRecord.proof)
     if (proofRecord.path) {
-      const merklePath = await MerklePath.fromString(anchorRecord.path)
+      const merklePath = await decodePromise(MerklePathStringCodec, anchorRecord.path)
       const queryPath = '/root/' + merklePath.initial.toString()
       const record = await this.#cloud.retrieve(anchorRecord.proof, queryPath)
       return record[merklePath.last]
