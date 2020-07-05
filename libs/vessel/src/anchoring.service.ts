@@ -1,10 +1,9 @@
-import { Observation, RemoteEthereumAnchoringService } from './anchoring/remote-ethereum-anchoring-service';
 import { Cloud } from './cloud/cloud';
 import { CeramicDocumentId } from '@potter/codec';
 import { Observable } from 'rxjs';
 import { ILogger } from './logger/logger.interface';
 import CID from 'cids';
-import { MerklePathStringCodec } from '@potter/anchoring';
+import { MerklePathStringCodec, AnchoringHttpClient, AnchorResponsePayloadType } from '@potter/anchoring';
 import { decodePromise } from '@potter/codec';
 import { decode } from 'typestub-multihashes';
 import * as providers from '@ethersproject/providers';
@@ -38,11 +37,11 @@ const EthereumNetworks = new Map<string, string>([
 ]);
 
 export class AnchoringService {
-  readonly #anchoring: RemoteEthereumAnchoringService;
+  readonly #anchoring: AnchoringHttpClient;
   readonly #cloud: Cloud;
   readonly #logger: ILogger;
 
-  constructor(logger: ILogger, ethereumEndpoint: string, anchoring: RemoteEthereumAnchoringService, cloud: Cloud) {
+  constructor(logger: ILogger, ethereumEndpoint: string, anchoring: AnchoringHttpClient, cloud: Cloud) {
     this.#logger = logger.withContext(AnchoringService.name);
     this.#anchoring = anchoring;
     this.#cloud = cloud;
@@ -112,7 +111,7 @@ export class AnchoringService {
     }
   }
 
-  anchorStatus$(docId: CeramicDocumentId): Observable<Observation> {
+  anchorStatus$(docId: CeramicDocumentId): Observable<AnchorResponsePayloadType> {
     return this.#anchoring.anchorStatus$(docId);
   }
 

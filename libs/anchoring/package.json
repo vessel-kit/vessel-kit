@@ -19,7 +19,9 @@
     "io-ts": "^2.2.7",
     "typestub-multihashes": "^0.0.4",
     "uuid": "^8.2.0",
-    "ipfs": "^0.47.0"
+    "ipfs": "^0.47.0",
+    "rxjs": "^6.5.5",
+    "axios": "^0.19.2"
   },
   "devDependencies": {
     "@types/uuid": "^8.0.0"

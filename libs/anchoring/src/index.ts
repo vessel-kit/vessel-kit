@@ -12,6 +12,7 @@ export * from './anchoring-request.interface';
 export * from './anchoring-response.interface';
 export * from './anchor-leaf';
 export * from './anchor-proof';
-export * from './anchoring'
-export * from './remote/anchor-request-payload'
-export * from './remote/anchor-response-payload'
+export * from './anchoring';
+export * from './remote/anchor-request-payload';
+export * from './remote/anchor-response-payload';
+export * from './remote/anchoring-http-client';
