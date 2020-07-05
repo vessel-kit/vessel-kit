@@ -6,11 +6,14 @@ import { ILogger } from './logger/logger.interface';
 import CID from 'cids';
 import { MerklePathStringCodec } from '@potter/anchoring';
 import { decodePromise } from '@potter/codec';
-import { decode } from "typestub-multihashes";
+import { decode } from 'typestub-multihashes';
 import * as providers from "@ethersproject/providers"
-import * as tPromise from 'io-ts-promise'
 import { UnreachableCaseError } from './unreachable-case.error';
-import { CHAIN_NAMESPACE, ChainId } from './anchoring/chain-id';
+import { ChainID } from 'caip';
+
+export enum CHAIN_NAMESPACE {
+  ETHEREUM = 'eip155',
+}
 
 export class MisleadingAnchorError extends Error {
   constructor(record: any) {
@@ -56,16 +59,17 @@ export class AnchoringService {
   }
 
   async validateChainInclusion(proofRecord: any) {
-    const chainId = await tPromise.decode(ChainId.codec, proofRecord.chainId)
-    switch (chainId.namespace) {
+    const chainId = new ChainID(proofRecord.chainId)
+    const namespace = chainId.namespace as CHAIN_NAMESPACE
+    switch (namespace) {
       case CHAIN_NAMESPACE.ETHEREUM:
         return this.validateEthereumProof(chainId, proofRecord)
       default:
-        throw new UnreachableCaseError(chainId.namespace)
+        throw new UnreachableCaseError(namespace)
     }
   }
 
-  async validateEthereumProof(chainId: ChainId, proofRecord: any) {
+  async validateEthereumProof(chainId: ChainID, proofRecord: any) {
     const network = EthereumNetworks.get(chainId.namespace)
     const provider = network ? providers.getDefaultProvider(network) : new providers.JsonRpcProvider()
     const txid = '0x' + decode(proofRecord.txHash.multihash).digest.toString('hex')
