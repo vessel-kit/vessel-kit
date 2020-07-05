@@ -1,3 +1,5 @@
 export * from './enumOf'
 export * from './splitString'
 export * from './decodePromise'
+export * from './codecs/cid.ipld.codec'
+export * from './codecs/cid.string.codec'

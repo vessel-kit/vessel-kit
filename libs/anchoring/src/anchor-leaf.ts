@@ -1,7 +1,7 @@
 import CID from 'cids';
 import { MerklePath } from './merkle-tree/merkle-path';
 import * as t from 'io-ts'
-import { CidIpldCodec } from './cid.ipld.codec';
+import { CidIpldCodec } from '@potter/codec';
 import { MerklePathStringCodec } from './merkle-tree/merkle-path.string.codec';
 
 export interface AnchorLeaf {

@@ -12,6 +12,4 @@ export * from './anchoring-request.interface';
 export * from './anchoring-response.interface';
 export * from './anchor-leaf';
 export * from './anchor-proof';
-export * from './chain-id.string.codec';
-export * from './cid.ipld.codec';
 export * from './anchoring'

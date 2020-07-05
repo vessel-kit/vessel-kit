@@ -1,7 +1,7 @@
 import CID from 'cids';
 import { ChainID } from 'caip';
 import * as t from 'io-ts';
-import { CidIpldCodec } from './cid.ipld.codec';
+import { CidIpldCodec } from '@potter/codec';
 import { ChainIdStringCodec } from './chain-id.string.codec';
 
 export interface AnchorProof {

@@ -3,7 +3,7 @@ import { BlockchainWriter } from './blockchain-writer';
 import { IBlockchainWriter } from './blockchain-writer.interface';
 import { IAnchoringRequest } from './anchoring-request.interface';
 import { MerkleTree } from './merkle-tree/merkle-tree';
-import type { Ipfs } from 'ipfs';
+import { Ipfs } from 'ipfs';
 import { PathDirection } from './merkle-tree/path-direction';
 import { MerkleNode } from './merkle-tree/merkle-node';
 import { BlockchainTransaction } from './blockchain-transaction';
