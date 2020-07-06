@@ -40,11 +40,13 @@ export class AnchoringService {
   readonly #anchoring: AnchoringHttpClient;
   readonly #cloud: Cloud;
   readonly #logger: ILogger;
+  readonly #ethereumEndpoint: string;
 
   constructor(logger: ILogger, ethereumEndpoint: string, anchoring: AnchoringHttpClient, cloud: Cloud) {
     this.#logger = logger.withContext(AnchoringService.name);
     this.#anchoring = anchoring;
     this.#cloud = cloud;
+    this.#ethereumEndpoint = ethereumEndpoint;
   }
 
   async verify(anchorRecord: any, anchorRecordCid: CID): Promise<ProofRecord> {
@@ -69,7 +71,9 @@ export class AnchoringService {
 
   async validateEthereumProof(chainId: ChainID, proofRecord: any) {
     const network = EthereumNetworks.get(chainId.namespace);
-    const provider = network ? providers.getDefaultProvider(network) : new providers.JsonRpcProvider();
+    const provider = network
+      ? providers.getDefaultProvider(network)
+      : new providers.JsonRpcProvider(this.#ethereumEndpoint);
     const txid = '0x' + decode(proofRecord.txHash.multihash).digest.toString('hex');
     const transaction = await provider.getTransaction(txid);
     const block = await provider.getBlock(transaction.blockHash);

@@ -23,7 +23,11 @@
     "rxjs": "^6.5.5",
     "axios": "^0.19.2"
   },
+  "peerDependencies": {
+    "@ethersproject/providers": "^5.0.4"
+  },
   "devDependencies": {
-    "@types/uuid": "^8.0.0"
+    "@types/uuid": "^8.0.0",
+    "@ethersproject/providers": "^5.0.4"
   }
 }
