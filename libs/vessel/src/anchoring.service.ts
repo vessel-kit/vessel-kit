@@ -3,12 +3,20 @@ import { CeramicDocumentId } from '@potter/codec';
 import { Observable } from 'rxjs';
 import { ILogger } from './logger/logger.interface';
 import CID from 'cids';
-import { MerklePathStringCodec, AnchoringHttpClient, AnchorResponsePayloadType } from '@potter/anchoring';
-import { decodePromise } from '@potter/codec';
+import {
+  MerklePathStringCodec,
+  AnchoringHttpClient,
+  AnchorResponsePayloadType,
+  BlockchainReader,
+  IBlockchainReader,
+  AnchorProof,
+} from '@potter/anchoring';
+import { decodePromise, RecordWrap } from '@potter/codec';
 import { decode } from 'typestub-multihashes';
 import * as providers from '@ethersproject/providers';
 import { UnreachableCaseError } from './unreachable-case.error';
 import { ChainID } from 'caip';
+import { ConnectionString } from '@potter/blockchain-connection-string';
 
 export enum CHAIN_NAMESPACE {
   ETHEREUM = 'eip155',
@@ -22,14 +30,6 @@ export class MisleadingAnchorError extends Error {
 
 export class InvalidBlockchainProofError extends Error {}
 
-export interface ProofRecord {
-  root: CID;
-  txHash: CID;
-  chainId: string;
-  blockNumber: number;
-  blockTimestamp: number;
-}
-
 const EthereumNetworks = new Map<string, string>([
   ['1', 'mainnet'],
   ['3', 'ropsten'],
@@ -40,22 +40,27 @@ export class AnchoringService {
   readonly #anchoring: AnchoringHttpClient;
   readonly #cloud: Cloud;
   readonly #logger: ILogger;
-  readonly #ethereumEndpoint: string;
+  readonly #ethereumEndpoint: ConnectionString;
+  readonly #reader: IBlockchainReader;
 
-  constructor(logger: ILogger, ethereumEndpoint: string, anchoring: AnchoringHttpClient, cloud: Cloud) {
+  constructor(logger: ILogger, blockchainEndpoints: ConnectionString[], anchoring: AnchoringHttpClient, cloud: Cloud) {
     this.#logger = logger.withContext(AnchoringService.name);
     this.#anchoring = anchoring;
     this.#cloud = cloud;
-    this.#ethereumEndpoint = ethereumEndpoint;
+    this.#ethereumEndpoint = blockchainEndpoints[0];
+    this.#reader = BlockchainReader.build(cloud.ipfs, blockchainEndpoints);
   }
 
-  async verify(anchorRecord: any, anchorRecordCid: CID): Promise<ProofRecord> {
-    this.#logger.debug(`Verifying anchor record ${anchorRecordCid}...`);
-    await this.verifyPrev(anchorRecord, anchorRecordCid);
-    const proofRecord = await this.#cloud.retrieve(anchorRecord.proof);
-    await this.validateChainInclusion(proofRecord);
-    this.#logger.debug(`Anchor record ${anchorRecordCid} is verified`);
-    return proofRecord as ProofRecord;
+  async verify(anchorRecord: any, anchorRecordCid: CID): Promise<AnchorProof> {
+    const wrap = new RecordWrap(anchorRecord, anchorRecordCid);
+    return this.#reader.verify(wrap);
+    // this.#reader.verify()
+    // this.#logger.debug(`Verifying anchor record ${anchorRecordCid}...`);
+    // await this.verifyPrev(anchorRecord, anchorRecordCid);
+    // const proofRecord = await this.#cloud.retrieve(anchorRecord.proof);
+    // await this.validateChainInclusion(proofRecord);
+    // this.#logger.debug(`Anchor record ${anchorRecordCid} is verified`);
+    // return proofRecord as ProofRecord;
   }
 
   async validateChainInclusion(proofRecord: any) {
@@ -73,7 +78,7 @@ export class AnchoringService {
     const network = EthereumNetworks.get(chainId.namespace);
     const provider = network
       ? providers.getDefaultProvider(network)
-      : new providers.JsonRpcProvider(this.#ethereumEndpoint);
+      : new providers.JsonRpcProvider(this.#ethereumEndpoint.transport);
     const txid = '0x' + decode(proofRecord.txHash.multihash).digest.toString('hex');
     const transaction = await provider.getTransaction(txid);
     const block = await provider.getBlock(transaction.blockHash);

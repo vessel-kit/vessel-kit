@@ -21,6 +21,10 @@ export class Cloud {
     this.#bus.listen()
   }
 
+  get ipfs() {
+    return this.#ipfs
+  }
+
   get bus() {
     return this.#bus
   }

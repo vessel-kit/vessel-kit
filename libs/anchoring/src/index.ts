@@ -16,6 +16,6 @@ export * from './anchoring';
 export * from './remote/anchor-request-payload';
 export * from './remote/anchor-response-payload';
 export * from './remote/anchoring-http-client';
-export * from './blockchain-reader.interface';
+export * from './blockchain-reader-handler.interface';
 export * from './blockchain-reader';
 export * from './ethereum/ethereum-reader';

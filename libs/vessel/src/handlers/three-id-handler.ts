@@ -11,12 +11,11 @@ import { BufferMultibaseCodec, ThreeIdContent } from '..';
 import { DocumentState } from '../document.state';
 import { RecordWrap } from '../record-wrap';
 import produce from 'immer';
-import { ProofRecord } from '../anchoring.service';
 import * as _ from 'lodash';
 import sortKeys from 'sort-keys';
 import { verifyThreeId } from './verify-three-did';
 import jsonPatch from 'fast-json-patch';
-import { AnchoringStatus } from '@potter/anchoring';
+import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 
 const PublicKeyString = Joi.string().custom((value) => {
   const buffer = multibase.decode(value);
@@ -119,7 +118,7 @@ export class ThreeIdHandler implements IHandler {
     };
   }
 
-  async applyAnchor(anchorRecord: RecordWrap, proof: ProofRecord, state: DocumentState): Promise<DocumentState> {
+  async applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: DocumentState): Promise<DocumentState> {
     return produce(state, async (next) => {
       next.log = next.log.concat(anchorRecord.cid);
       if (next.current) {
@@ -129,7 +128,7 @@ export class ThreeIdHandler implements IHandler {
       next.anchor = {
         status: AnchoringStatus.ANCHORED,
         proof: {
-          chainId: proof.chainId,
+          chainId: proof.chainId.toString(),
           blockNumber: proof.blockNumber,
           timestamp: new Date(proof.blockTimestamp * 1000),
           txHash: proof.txHash,

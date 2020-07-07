@@ -10,11 +10,12 @@ import { DocumentUpdateService } from './document-update.service';
 import { HandlersContainer } from './handlers/handlers.container';
 import { CeramicDocumentId } from '@potter/codec';
 import { AnchoringHttpClient } from '@potter/anchoring';
+import { ConnectionString } from '@potter/blockchain-connection-string';
 
 export interface CeramicOptions {
   logger?: ILogger;
   anchoringEndpoint?: string;
-  ethereumEndpoint?: string;
+  blockchainEndpoints?: ConnectionString[];
 }
 
 export class Ceramic {
@@ -25,15 +26,15 @@ export class Ceramic {
     const handlers = new HandlersContainer(new Map([['3id', new ThreeIdHandler()]]));
     const cloud = new Cloud(logger, ipfs);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
-    const ethereumEndpoint = options.ethereumEndpoint;
-    const anchoringService = new AnchoringService(logger, ethereumEndpoint, anchoring, cloud);
+    const blockchainEndpoints = options.blockchainEndpoints || [];
+    const anchoringService = new AnchoringService(logger, blockchainEndpoints, anchoring, cloud);
     const documentUpdateService = new DocumentUpdateService(logger, handlers, anchoringService, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService);
     this.#documentRepository = new DocumentRepository(logger, handlers, cloud, documentService);
     logger.log(`Constructed Ceramic instance`, options);
   }
 
-  static async build(ipfs: Ipfs, options?: CeramicOptions) {
+  static build(ipfs: Ipfs, options?: CeramicOptions) {
     const appliedOptions = Object.assign(
       {
         logger: new ConsoleLogger('Ceramic'),

@@ -1,4 +1,4 @@
-import { IBlockchainReader } from './blockchain-reader.interface';
+import { IBlockchainReaderHandler } from './blockchain-reader-handler.interface';
 import { Ipfs } from 'ipfs';
 import { AnchorProof, AnchorProofIpldCodec } from './anchor-proof';
 import { AnchorLeaf, AnchorLeafIpldCodec } from './anchor-leaf';
@@ -6,6 +6,9 @@ import { RecordWrap, decodePromise } from '@potter/codec';
 import CID from 'cids';
 import { MerklePathStringCodec } from './merkle-tree/merkle-path.string.codec';
 import { ChainID } from 'caip';
+import { EthereumWriter } from './ethereum/ethereum-writer';
+import { EthereumReader } from './ethereum/ethereum-reader';
+import { ConnectionString } from '@potter/blockchain-connection-string';
 
 export class MisleadingAnchorError extends Error {
   constructor(record: any) {
@@ -13,19 +16,42 @@ export class MisleadingAnchorError extends Error {
   }
 }
 
-export class UnhandledChainIdError extends Error {
-  constructor(chainId: ChainID) {
-    super(`Can not find reader for ${chainId}`);
+export class UnhandledChainError extends Error {
+  constructor(chain: string) {
+    super(`Can not find reader for ${chain}`);
   }
 }
 
-export class BlockchainReader {
-  #readers: IBlockchainReader[];
-  #ipfs: Ipfs
+function providerFromConnectionString(connectionString: ConnectionString) {
+  switch (connectionString.chain) {
+    case 'eip155':
+      return new EthereumReader(connectionString);
+    default:
+      throw new UnhandledChainError(connectionString.chain);
+  }
+}
 
-  constructor(ipfs: Ipfs, readers: IBlockchainReader[]) {
-    this.#ipfs = ipfs
+export interface IBlockchainReader {
+  verify(recordWrap: RecordWrap<any>): Promise<AnchorProof>;
+}
+
+export class BlockchainReader implements IBlockchainReader {
+  #readers: Map<string, IBlockchainReaderHandler>;
+  #ipfs: Ipfs;
+
+  constructor(ipfs: Ipfs, readers: Map<string, IBlockchainReaderHandler>) {
+    this.#ipfs = ipfs;
     this.#readers = readers;
+  }
+
+  static build(ipfs: Ipfs, connectionStrings: ConnectionString[]): IBlockchainReader {
+    let readers = new Map<string, IBlockchainReaderHandler>(
+      connectionStrings.map((connectionString) => {
+        const provider = providerFromConnectionString(connectionString);
+        return [connectionString.chain, provider];
+      }),
+    );
+    return new BlockchainReader(ipfs, readers);
   }
 
   async verify(recordWrap: RecordWrap<any>): Promise<AnchorProof> {
@@ -35,16 +61,16 @@ export class BlockchainReader {
     const anchorProofRecord = await this.retrieve(anchorLeaf.proof);
     const anchorProof = await decodePromise(AnchorProofIpldCodec, anchorProofRecord);
     await this.validateChainInclusion(anchorProof);
-    return anchorProof
+    return anchorProof;
   }
 
   async validateChainInclusion(proofRecord: AnchorProof) {
     const chainId = new ChainID(proofRecord.chainId);
-    const handler = this.#readers.find(handler => handler.canAccept(chainId))
+    const handler = this.#readers.get(chainId.namespace);
     if (handler) {
-      return handler.validateProof(chainId, proofRecord)
+      return handler.validateProof(chainId, proofRecord);
     } else {
-      throw new UnhandledChainIdError(chainId)
+      throw new UnhandledChainError(chainId.toString());
     }
   }
 

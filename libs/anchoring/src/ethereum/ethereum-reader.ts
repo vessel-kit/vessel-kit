@@ -1,4 +1,4 @@
-import { IBlockchainReader } from '../blockchain-reader.interface';
+import { IBlockchainReaderHandler } from '../blockchain-reader-handler.interface';
 import { AnchorProof } from '../anchor-proof';
 import { ChainID } from 'caip';
 import { ConnectionString } from '@potter/blockchain-connection-string';
@@ -14,7 +14,7 @@ const EthereumNetworks = new Map<string, string>([
   ['4', 'rinkeby'],
 ]);
 
-export class EthereumReader implements IBlockchainReader {
+export class EthereumReader implements IBlockchainReaderHandler {
   constructor(readonly ethereumEndpoint: ConnectionString) {}
 
   canAccept(chainID: ChainID): Boolean {

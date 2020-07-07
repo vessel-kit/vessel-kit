@@ -169,6 +169,7 @@ importers:
       '@nestjs/typeorm': 7.1.0_1f45d726341d93cf8aa03617fab33e64
       '@nestjs/websockets': 7.3.1_b044a474f8c061db2ad0c6b2a909e64b
       '@potter/anchoring': 'link:../../libs/anchoring'
+      '@potter/blockchain-connection-string': 'link:../../libs/blockchain-connection-string'
       '@potter/codec': 'link:../../libs/codec'
       '@potter/vessel': 'link:../../libs/vessel'
       axios: 0.19.2
@@ -203,6 +204,7 @@ importers:
       '@nestjs/typeorm': ^7.0.0
       '@nestjs/websockets': ^7.1.3
       '@potter/anchoring': 'workspace:*'
+      '@potter/blockchain-connection-string': 'workspace:*'
       '@potter/codec': 'workspace:*'
       '@potter/vessel': 'workspace:*'
       axios: ^0.19.2
@@ -345,6 +347,7 @@ importers:
       '@ethersproject/providers': 5.0.3
       '@hapi/joi': 17.1.1
       '@potter/anchoring': 'link:../anchoring'
+      '@potter/blockchain-connection-string': 'link:../blockchain-connection-string'
       '@potter/codec': 'link:../codec'
       async-sema: 3.1.0
       await-semaphore: 0.1.3
@@ -384,6 +387,7 @@ importers:
       '@ethersproject/providers': ^5.0.3
       '@hapi/joi': ^17.1.1
       '@potter/anchoring': 'workspace:*'
+      '@potter/blockchain-connection-string': 'workspace:*'
       '@potter/codec': 'workspace:*'
       '@types/jest': ^26.0.3
       '@types/lodash': ^4.14.157
