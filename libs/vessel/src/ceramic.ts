@@ -27,7 +27,7 @@ export class Ceramic {
     const cloud = new Cloud(logger, ipfs);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
     const blockchainEndpoints = options.blockchainEndpoints || [];
-    const anchoringService = new AnchoringService(logger, blockchainEndpoints, anchoring, cloud);
+    const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
     const documentUpdateService = new DocumentUpdateService(logger, handlers, anchoringService, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService);
     this.#documentRepository = new DocumentRepository(logger, handlers, cloud, documentService);
