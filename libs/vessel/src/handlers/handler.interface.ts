@@ -1,4 +1,4 @@
-import { RecordWrap } from '../record-wrap';
+import { RecordWrap } from '@potter/codec';
 import { DocumentState } from '../document.state';
 import { AnchorProof } from '@potter/anchoring';
 

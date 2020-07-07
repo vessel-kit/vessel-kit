@@ -9,7 +9,7 @@ import { NamedMutex } from './named-mutex.util';
 import { AnchoringService } from './anchoring.service';
 import { DocumentUpdateService } from './document-update.service';
 import { FrozenSubject } from './frozen-subject';
-import { RecordWrap } from './record-wrap';
+import { RecordWrap } from '@potter/codec';
 import { normalizeRecord } from './normalize-record.util';
 import { MessageTyp } from './cloud/message-typ';
 import { filter } from 'rxjs/operators';

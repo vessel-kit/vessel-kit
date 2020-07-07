@@ -3,7 +3,7 @@ import { Chain } from './chain';
 import CID from 'cids';
 import { DocumentState } from './document.state';
 import { ILogger } from './logger/logger.interface';
-import { RecordWrap } from './record-wrap';
+import { RecordWrap } from '@potter/codec';
 import { UnreachableCaseError } from './unreachable-case.error';
 import { AnchoringService } from './anchoring.service';
 import { HandlersContainer } from './handlers/handlers.container';

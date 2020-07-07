@@ -9,7 +9,7 @@ import base64url from 'base64url';
 import { multicodecCodec as PublicKeyMulticodec, PublicKey } from '../person/public-key';
 import { BufferMultibaseCodec, ThreeIdContent } from '..';
 import { DocumentState } from '../document.state';
-import { RecordWrap } from '../record-wrap';
+import { RecordWrap } from '@potter/codec';
 import produce from 'immer';
 import * as _ from 'lodash';
 import sortKeys from 'sort-keys';
