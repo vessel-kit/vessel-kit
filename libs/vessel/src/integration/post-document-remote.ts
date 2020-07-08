@@ -1,7 +1,4 @@
-import { Ceramic } from '../ceramic';
-import ipfsClient from 'ipfs-http-client';
 import { ThreeIdContent } from '../three-id.content';
-import { waitUntil } from './wait.util';
 import IdentityWallet from 'identity-wallet';
 import { Signor } from '../person/signor';
 import { sleep } from './sleep.util';
@@ -9,7 +6,6 @@ import axios from 'axios';
 import CID from 'cids';
 import { Chain } from '../chain';
 
-const IPFS_URL = 'http://localhost:5001';
 const REMOTE_URL = 'http://localhost:3001';
 
 const cborSortCompareFn = (a: string, b: string): number => a.length - b.length || a.localeCompare(b);
