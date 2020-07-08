@@ -57,6 +57,12 @@ export class Signor {
     };
   }
 
+  static async build(identityProvider: IdentityProvider) {
+    const signor = new Signor(identityProvider);
+    await signor.auth();
+    return signor;
+  }
+
   async sign(payload: any, opts: { useMgmt: boolean } = { useMgmt: false }) {
     if (!this.did) throw new EmptyDIDSigningError(`Can not sign payload without DID`);
     payload.iss = this.did;

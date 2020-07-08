@@ -26,8 +26,7 @@ async function main() {
   const identityWallet = new IdentityWallet(() => true, {
     seed: '0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f',
   });
-  const user = new Signor(identityWallet.get3idProvider());
-  await user.auth();
+  const user = await Signor.build(identityWallet.get3idProvider());
 
   const ownerKey = user.publicKeys.managementKey;
   const signingKey = user.publicKeys.signingKey;
@@ -45,13 +44,13 @@ async function main() {
     doctype: '3id',
     ...content,
   };
-  console.log('genesis record', genesisRecord)
+  console.log('genesis record', genesisRecord);
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
   console.log('genesis response', genesisResponse.data);
   const documentId = new CID(genesisResponse.data.docId);
   await sleep(80000);
-  const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`)
-  const log = new Chain(anchoredGenesisResponse.data.log.map(cid => new CID(cid)))
+  const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
+  const log = new Chain(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
   const doc2 = doc1.clone();
   doc2.publicKeys.set('foocryption', signingKey);
   const delta = doc2.delta(doc1);
