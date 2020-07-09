@@ -1,5 +1,5 @@
 import { PublicKey, multicodecCodec as PublicKeyMulticodec } from './person/public-key';
-import { BufferMultibaseCodec } from './codec/buffer-multibase-codec';
+import { BufferMultibaseCodec } from '@potter/codec';
 import * as t from 'io-ts';
 import { MapCodec } from './codec/map-codec';
 import { isEmpty, lefts, rights } from 'fp-ts/lib/Array';
