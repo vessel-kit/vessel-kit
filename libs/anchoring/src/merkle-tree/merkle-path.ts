@@ -1,28 +1,36 @@
 import { PathDirection } from './path-direction';
 
 export class MerklePath {
-  readonly steps: PathDirection[];
+  #steps: PathDirection[];
+
   constructor(steps: PathDirection[] = []) {
-    this.steps = steps;
+    this.#steps = steps;
   }
 
-  get last() {
-    return this.steps[this.steps.length - 1];
+  get steps() {
+    return this.#steps;
+  }
+
+  get last(): PathDirection | undefined {
+    return this.#steps[this.#steps.length - 1];
   }
 
   get isEmpty() {
-    return this.steps.length == 0;
+    return this.#steps.length == 0;
   }
 
-  get initial() {
-    return new MerklePath(this.steps.slice(0, this.steps.length - 1));
+  /**
+   * All elements except last.
+   */
+  get initial(): MerklePath {
+    return new MerklePath(this.#steps.slice(0, this.#steps.length - 1));
   }
 
   append(step: PathDirection) {
-    return new MerklePath(this.steps.concat(step));
+    return new MerklePath(this.#steps.concat(step));
   }
 
   reverse() {
-    return new MerklePath(this.steps.reverse());
+    return new MerklePath(this.#steps.reverse());
   }
 }
