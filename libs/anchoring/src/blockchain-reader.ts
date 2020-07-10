@@ -74,17 +74,17 @@ export class BlockchainReader implements IBlockchainReader {
     }
   }
 
-  async verifyPrev(recordWrap: RecordWrap<AnchorLeaf>) {
-    const originalRecordCid = await this.originalRecordCid(recordWrap);
-    if (!originalRecordCid.equals(recordWrap.load.prev)) {
-      throw new MisleadingAnchorError(recordWrap.load);
+  async verifyPrev(anchorLeaf: RecordWrap<AnchorLeaf>) {
+    const originalRecordCid = await this.originalRecordCid(anchorLeaf);
+    if (!originalRecordCid.equals(anchorLeaf.load.prev)) {
+      throw new MisleadingAnchorError(anchorLeaf.load);
     }
   }
 
   async originalRecordCid(anchorRecord: RecordWrap<AnchorLeaf>): Promise<CID> {
     const proofRecord = await this.retrieve(anchorRecord.load.proof);
-    if (proofRecord.path) {
-      const merklePath = await decodePromise(MerklePathStringCodec, anchorRecord.load.path);
+    if (anchorRecord.load.path) {
+      const merklePath = anchorRecord.load.path;
       const queryPath = '/root/' + MerklePathStringCodec.encode(merklePath.initial);
       const record = await this.retrieve(anchorRecord.load.proof, queryPath);
       return record[merklePath.last];

@@ -1,6 +1,7 @@
 export * from './enum-of';
 export * from './split-string';
 export * from './decode-promise';
+export * from './validate-promise'
 export * from './ceramic-document-id';
 export * from './decode-pipe';
 export * from './normalize-record';

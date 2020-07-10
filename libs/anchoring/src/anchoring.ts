@@ -2,7 +2,7 @@ import { ConnectionString } from '@potter/blockchain-connection-string';
 import { BlockchainWriter } from './blockchain-writer';
 import { IBlockchainWriter } from './blockchain-writer.interface';
 import { IAnchoringRequest } from './anchoring-request.interface';
-import { MerkleTree } from './merkle-tree/merkle-tree';
+import { ipfsMerge, MerkleTree } from './merkle-tree/merkle-tree';
 import { Ipfs } from 'ipfs';
 import { PathDirection } from './merkle-tree/path-direction';
 import { MerkleNode } from './merkle-tree/merkle-node';
@@ -68,12 +68,6 @@ export class Anchoring {
 
   async merkleTree(records: IAnchoringRequest[]) {
     const leaves = records.sort((a, b) => a.docId.localeCompare(b.docId)).map((r) => r.cid);
-    return MerkleTree.fromLeaves(leaves, async (left, right) => {
-      const cid = await this.#ipfs.dag.put({
-        [PathDirection.L]: left.id,
-        [PathDirection.R]: right.id,
-      });
-      return new MerkleNode(cid, left, right);
-    });
+    return MerkleTree.fromLeaves(leaves, ipfsMerge(this.#ipfs));
   }
 }

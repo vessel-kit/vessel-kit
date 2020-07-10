@@ -11,6 +11,8 @@ import { HandlersContainer } from './handlers/handlers.container';
 import { CeramicDocumentId } from '@potter/codec';
 import { AnchoringHttpClient } from '@potter/anchoring';
 import { ConnectionString } from '@potter/blockchain-connection-string';
+import { TileHandler } from './handlers/tile-handler';
+import { IHandler } from './handlers/handler.interface';
 
 export interface CeramicOptions {
   logger?: ILogger;
@@ -23,7 +25,12 @@ export class Ceramic {
 
   constructor(ipfs: Ipfs, options: CeramicOptions) {
     const logger = options.logger;
-    const handlers = new HandlersContainer(new Map([['3id', new ThreeIdHandler()]]));
+    const handlers = new HandlersContainer(
+      new Map<string, IHandler>([
+        ['3id', new ThreeIdHandler()],
+        ['tile', new TileHandler()],
+      ]),
+    );
     const cloud = new Cloud(logger, ipfs);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
     const blockchainEndpoints = options.blockchainEndpoints || [];

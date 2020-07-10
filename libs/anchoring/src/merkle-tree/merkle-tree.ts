@@ -1,6 +1,7 @@
 import { MerklePath } from './merkle-path';
 import { MerkleNode } from './merkle-node';
 import { PathDirection } from './path-direction';
+import { Ipfs } from 'ipfs';
 
 export interface MergeFn<A> {
   (left: MerkleNode<A>, right: MerkleNode<A>): Promise<MerkleNode<A>>;
@@ -23,9 +24,18 @@ async function grow<A>(levels: Level<A>[], mergeFn: MergeFn<A>): Promise<Level<A
       // if it's an odd level
       nextLevel.push(currentLevel[currentLevel.length - 1]);
     }
-    levels.concat([nextLevel]);
-    return levels;
+    return grow(levels.concat([nextLevel]), mergeFn);
   }
+}
+
+export function ipfsMerge<A>(ipfs: Ipfs) {
+  return async function (left: MerkleNode<A>, right: MerkleNode<A>): Promise<MerkleNode<A>> {
+    const cid = await ipfs.dag.put({
+      [PathDirection.L]: left.id,
+      [PathDirection.R]: right.id,
+    });
+    return new MerkleNode(cid, left, right);
+  };
 }
 
 /**
@@ -35,7 +45,7 @@ export class MerkleTree<A> {
   constructor(readonly levels: MerkleNode<A>[][]) {}
 
   static async fromLeaves<A>(leaves: A[], mergeFn: MergeFn<A>) {
-    const layer = leaves.map(e => new MerkleNode(e));
+    const layer = leaves.map((e) => new MerkleNode(e));
     const levels = await grow([layer], mergeFn);
     return new MerkleTree(levels);
   }
@@ -46,7 +56,7 @@ export class MerkleTree<A> {
 
   path(element: A): MerklePath {
     const level = this.levels[0];
-    const node = level.find(node => node.id === element);
+    const node = level.find((node) => node.id === element);
     if (node) {
       return this.nodePath(node);
     } else {
