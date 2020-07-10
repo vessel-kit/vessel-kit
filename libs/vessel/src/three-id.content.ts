@@ -7,8 +7,8 @@ import { isRight } from 'fp-ts/lib/Either';
 import jsonPatch from 'fast-json-patch';
 import { PublicKeyMulticodecCodec } from './person/public-key.multicodec.codec';
 
-const codec = new t.Type<ThreeIdContent, any, any>(
-  'PublicKeyMulticodec',
+export const ThreeIdContentJSONCodec = new t.Type<ThreeIdContent, any, any>(
+  'ThreeIdContent-json',
   (input: unknown): input is ThreeIdContent => input instanceof ThreeIdContent,
   (input: any) => {
     const ownersR = input.owners.map(o => BufferMultibaseCodec.pipe(PublicKeyMulticodecCodec).decode(o));
@@ -37,7 +37,7 @@ const codec = new t.Type<ThreeIdContent, any, any>(
 
 export class ThreeIdContent {
   static doctype = '3id';
-  static codec = codec;
+  static codec = ThreeIdContentJSONCodec;
 
   public readonly doctype = ThreeIdContent.doctype
   owners: PublicKey[];

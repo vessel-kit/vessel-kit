@@ -46,7 +46,7 @@ export class DocumentRepository {
     return document
   }
 
-  async load(documentId: CeramicDocumentId) {
+  async load(documentId: CeramicDocumentId): Promise<Document> {
     const found = this.#documentCache.get(documentId.toString())
     if (found) {
       return found

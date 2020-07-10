@@ -5,8 +5,15 @@ import { TileContent } from '../tile.content';
 import { validatePromise } from '@potter/codec';
 import produce from 'immer';
 import { AnchoringStatus } from '@potter/anchoring';
+import * as _ from 'lodash';
+import base64url from 'base64url';
+import sortKeys from 'sort-keys';
+import * as didJwt from 'did-jwt';
+import { Resolver } from 'did-resolver';
 
 export class TileHandler implements IHandler {
+  constructor(readonly resolver: Resolver) {}
+
   applyAnchor(anchorRecord, proof, state: DocumentState): Promise<DocumentState> {
     return produce(state, async (next) => {
       next.log = next.log.concat(anchorRecord.cid);
@@ -37,6 +44,22 @@ export class TileHandler implements IHandler {
 
   async makeGenesis(content: any): Promise<any> {
     await validatePromise(TileContent, content);
+    await this.validateSignature(content);
     return content;
+  }
+
+  async validateSignature(record: any): Promise<void> {
+    const payloadObject = _.omit(record, ['header', 'signature']);
+    payloadObject.prev = payloadObject.prev ? { '/': payloadObject.prev.toString() } : undefined;
+    payloadObject.id = payloadObject.id ? { '/': payloadObject.id.toString() } : undefined;
+    const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject, { deep: true })));
+    const encodedHeader = base64url(JSON.stringify(record.header));
+    const encodedSignature = record.signature;
+    const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');
+    try {
+      await didJwt.verifyJWT(jwt, { resolver: this.resolver });
+    } catch (e) {
+      throw new Error('Invalid signature for signed record:' + e);
+    }
   }
 }

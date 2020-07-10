@@ -13,6 +13,8 @@ import { AnchoringHttpClient } from '@potter/anchoring';
 import { ConnectionString } from '@potter/blockchain-connection-string';
 import { TileHandler } from './handlers/tile-handler';
 import { IHandler } from './handlers/handler.interface';
+import { Resolver } from 'did-resolver';
+import { ThreeIdResolver } from './resolver/three-id-resolver';
 
 export interface CeramicOptions {
   logger?: ILogger;
@@ -25,10 +27,12 @@ export class Ceramic {
 
   constructor(ipfs: Ipfs, options: CeramicOptions) {
     const logger = options.logger;
+    const threeIdResolver = new ThreeIdResolver(this.load.bind(this));
+    const resolver = new Resolver(threeIdResolver.registry);
     const handlers = new HandlersContainer(
       new Map<string, IHandler>([
         ['3id', new ThreeIdHandler()],
-        ['tile', new TileHandler()],
+        ['tile', new TileHandler(resolver)],
       ]),
     );
     const cloud = new Cloud(logger, ipfs);

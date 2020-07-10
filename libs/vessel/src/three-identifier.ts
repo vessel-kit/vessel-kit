@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 
-const format = new RegExp(/^did:3:(\w+)$/gi);
+const format = new RegExp(/^did:3:(\w+)$/i);
 
 export const ThreeIdentifierStringCodec = new t.Type<ThreeIdentifier, string, string>(
   'ThreeIdentifier-string',
