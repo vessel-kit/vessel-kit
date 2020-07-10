@@ -3,7 +3,7 @@ import { Chain } from '../chain';
 import CID from 'cids';
 
 export const ChainCidArrayCodec = new t.Type<Chain, CID[], CID[]>(
-  'BufferMultibaseCodec',
+  'Chain-CIDArray',
   (input: unknown): input is Chain => input instanceof Chain,
   input => {
     return t.success(new Chain(input));

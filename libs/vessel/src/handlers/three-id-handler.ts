@@ -6,16 +6,17 @@ import * as t from 'io-ts';
 import * as tPromise from 'io-ts-promise';
 import jose from 'jose';
 import base64url from 'base64url';
-import { multicodecCodec as PublicKeyMulticodec, PublicKey } from '../person/public-key';
-import { BufferMultibaseCodec, ThreeIdContent } from '..';
+import { PublicKey } from '../person/public-key';
+import { ThreeIdContent } from '..';
 import { DocumentState } from '../document.state';
-import { RecordWrap } from '@potter/codec';
+import { RecordWrap, BufferMultibaseCodec, validatePromise } from '@potter/codec';
 import produce from 'immer';
 import * as _ from 'lodash';
 import sortKeys from 'sort-keys';
 import { verifyThreeId } from './verify-three-did';
 import jsonPatch from 'fast-json-patch';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
+import { PublicKeyMulticodecCodec } from '../person/public-key.multicodec.codec';
 
 const PublicKeyString = Joi.string().custom((value) => {
   const buffer = multibase.decode(value);
@@ -57,12 +58,24 @@ const GENESIS_SCHEMA = Joi.object({
   }),
 });
 
-const ThreeIdFreight = t.type({
-  owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodec)),
+export const ThreeIdFreight = t.type({
+  doctype: t.literal('3id'),
+  owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodecCodec)),
   content: t.type({
     publicKeys: t.type({
-      encryption: t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodec),
-      signing: t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodec),
+      encryption: t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodecCodec),
+      signing: t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodecCodec),
+    }),
+  }),
+});
+
+export const TreeIdIpldCodec = t.type({
+  doctype: t.literal('3id'),
+  owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodecCodec)),
+  content: t.type({
+    publicKeys: t.type({
+      encryption: t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodecCodec),
+      signing: t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodecCodec),
     }),
   }),
 });
@@ -85,8 +98,8 @@ export function decodeJWT(jwt: string) {
 
 export class ThreeIdHandler implements IHandler {
   async makeGenesis(genesis: any): Promise<any> {
-    await GENESIS_SCHEMA.validateAsync(genesis);
-    return genesis;
+    await validatePromise(ThreeIdFreight, genesis)
+    return genesis
   }
 
   async applyGenesis(genesis: any) {

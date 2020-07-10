@@ -5,13 +5,14 @@ import * as multicodec from 'multicodec';
 import * as tPromise from 'io-ts-promise';
 import { PublicKey } from './public-key';
 import { ethers } from 'ethers';
+import { PublicKeyMulticodecCodec } from './public-key.multicodec.codec';
 
 function secp256k1PubKeyFromCompressed(compressedHex: string) {
   const publicKey = ethers.utils.computePublicKey('0x' + compressedHex.replace('0x',''))
   const asBuffer = Buffer.from(publicKey.replace('0x04', ''), 'hex')
   // It is secp256k1 public key
   const encoded = multicodec.addPrefix(Buffer.from('e7', 'hex'), asBuffer)
-  return tPromise.decode(PublicKey.codec, encoded)
+  return tPromise.decode(PublicKeyMulticodecCodec, encoded)
 }
 
 export class LocalUser {
@@ -37,7 +38,7 @@ export class LocalUser {
     const managementKey = await secp256k1PubKeyFromCompressed(response.result.main.managementKey)
     const encryptionKeyBuffer = Buffer.from(response.result.main.asymEncryptionKey, 'base64')
     const encoded = multicodec.addPrefix(Buffer.from('ec', 'hex'), encryptionKeyBuffer)
-    const encr = await tPromise.decode(PublicKey.codec, encoded)
+    const encr = await tPromise.decode(PublicKeyMulticodecCodec, encoded)
     console.log('encr', encr)
 
 

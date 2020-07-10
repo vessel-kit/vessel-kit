@@ -1,15 +1,15 @@
 import Keyring from 'identity-wallet/lib/keyring';
 import * as multicodec from 'multicodec';
-import { PublicKey } from '..';
 import * as tPromise from 'io-ts-promise'
 import { ethers } from 'ethers';
+import { PublicKeyMulticodecCodec } from './public-key.multicodec.codec';
 
 function secp256k1PubKeyFromCompressed(compressedHex: string) {
   const publicKey = ethers.utils.computePublicKey(compressedHex)
   const asBuffer = Buffer.from(publicKey.replace('0x04', ''), 'hex')
   // It is secp256k1 public key
   const encoded = multicodec.addPrefix(Buffer.from('e7', 'hex'), asBuffer)
-  return tPromise.decode(PublicKey.codec, encoded)
+  return tPromise.decode(PublicKeyMulticodecCodec, encoded)
 }
 
 export class KeyPrecious {
@@ -46,6 +46,6 @@ export class KeyPrecious {
     const publicKey = this.#keyring._getKeys().asymEncryptionKey.publicKey
     // x25519 public
     const encoded = multicodec.addPrefix(Buffer.from('ec', 'hex'), publicKey)
-    return tPromise.decode(PublicKey.codec, encoded)
+    return tPromise.decode(PublicKeyMulticodecCodec, encoded)
   }
 }

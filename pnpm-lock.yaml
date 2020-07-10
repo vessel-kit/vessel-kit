@@ -298,10 +298,15 @@ importers:
       cids: 0.8.3
       fp-ts: 2.6.7
       io-ts: 2.2.7_fp-ts@2.6.7
+      multibase: 1.0.1
+    devDependencies:
+      '@types/multibase': 0.6.0
     specifiers:
+      '@types/multibase': ^0.6.0
       cids: ^0.8.0
       fp-ts: ^2.0.0
       io-ts: ^2.2.7
+      multibase: ^1.0.1
   libs/three-id:
     dependencies:
       jose: 1.27.2
@@ -3652,6 +3657,12 @@ packages:
     optional: true
     resolution:
       integrity: sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
+  /@types/multibase/0.6.0:
+    dependencies:
+      '@types/node': 14.0.20
+    dev: true
+    resolution:
+      integrity: sha512-PhQiA4pCcIG5yibX/G7K7mk/CXw0HTY98R+efcbbfce9WOyAGbIVqY3zv5kMm+vMAunY29aeOtQ96ePjeX417w==
   /@types/node-fetch/2.5.4:
     dependencies:
       '@types/node': 14.0.14
@@ -3677,6 +3688,10 @@ packages:
   /@types/node/14.0.14:
     resolution:
       integrity: sha512-syUgf67ZQpaJj01/tRTknkMNoBBLWJOBODF0Zm4NrXmiSuxjymFrxnTu1QVYRubhVkRcZLYZG8STTwJRdVm/WQ==
+  /@types/node/14.0.20:
+    dev: true
+    resolution:
+      integrity: sha512-MRn/NP3dee8yL5QhbSA6riuwkS+UOcsPUMOIOG3KMUQpuor/2TopdRBu8QaaB4fGU+gz/bzyDWt0FtUbeJ8H1A==
   /@types/normalize-package-data/2.4.0:
     dev: true
     resolution:

@@ -1,19 +1,20 @@
-import { PublicKey, multicodecCodec as PublicKeyMulticodec } from './person/public-key';
-import { BufferMultibaseCodec } from './codec/buffer-multibase-codec';
+import { PublicKey } from './person/public-key';
+import { BufferMultibaseCodec } from '@potter/codec';
 import * as t from 'io-ts';
 import { MapCodec } from './codec/map-codec';
 import { isEmpty, lefts, rights } from 'fp-ts/lib/Array';
 import { isRight } from 'fp-ts/lib/Either';
 import jsonPatch from 'fast-json-patch';
+import { PublicKeyMulticodecCodec } from './person/public-key.multicodec.codec';
 
-const codec = new t.Type<ThreeIdContent, any, any>(
-  'PublicKeyMulticodec',
+export const ThreeIdContentJSONCodec = new t.Type<ThreeIdContent, any, any>(
+  'ThreeIdContent-json',
   (input: unknown): input is ThreeIdContent => input instanceof ThreeIdContent,
   (input: any) => {
-    const ownersR = input.owners.map(o => BufferMultibaseCodec.pipe(PublicKeyMulticodec).decode(o));
+    const ownersR = input.owners.map(o => BufferMultibaseCodec.pipe(PublicKeyMulticodecCodec).decode(o));
     if (isEmpty(lefts(ownersR))) {
       const owners: Array<PublicKey> = rights(ownersR);
-      const contentR = MapCodec(BufferMultibaseCodec.pipe(PublicKeyMulticodec)).decode(input.content.publicKeys);
+      const contentR = MapCodec(BufferMultibaseCodec.pipe(PublicKeyMulticodecCodec)).decode(input.content.publicKeys);
       if (isRight(contentR)) {
         const publicKeys = contentR.right;
         return t.success(new ThreeIdContent(owners, publicKeys));
@@ -26,9 +27,9 @@ const codec = new t.Type<ThreeIdContent, any, any>(
   },
   (a: ThreeIdContent) => {
     return {
-      owners: a.owners.map(o => BufferMultibaseCodec.pipe(PublicKeyMulticodec).encode(o)),
+      owners: a.owners.map(o => BufferMultibaseCodec.pipe(PublicKeyMulticodecCodec).encode(o)),
       content: {
-        publicKeys: MapCodec(BufferMultibaseCodec.pipe(PublicKeyMulticodec)).encode(a.publicKeys),
+        publicKeys: MapCodec(BufferMultibaseCodec.pipe(PublicKeyMulticodecCodec)).encode(a.publicKeys),
       },
     };
   },
@@ -36,7 +37,7 @@ const codec = new t.Type<ThreeIdContent, any, any>(
 
 export class ThreeIdContent {
   static doctype = '3id';
-  static codec = codec;
+  static codec = ThreeIdContentJSONCodec;
 
   public readonly doctype = ThreeIdContent.doctype
   owners: PublicKey[];

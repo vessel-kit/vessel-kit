@@ -30,3 +30,14 @@ test('decode empty', async () => {
 test('decode garbage', async () => {
   await expect(decodePromise(MerklePathStringCodec, 'R/as/L')).rejects.toThrow();
 });
+
+describe('validate', () => {
+  test('instance', () => {
+    const merklePath = new MerklePath();
+    expect(MerklePathStringCodec.is(merklePath)).toBeTruthy();
+  });
+
+  test('garbage', () => {
+    expect(MerklePathStringCodec.is('garbage')).toBeFalsy();
+  });
+});

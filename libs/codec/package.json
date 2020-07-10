@@ -11,6 +11,10 @@
   "dependencies": {
     "cids": "^0.8.0",
     "fp-ts": "^2.0.0",
-    "io-ts": "^2.2.7"
+    "io-ts": "^2.2.7",
+    "multibase": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/multibase": "^0.6.0"
   }
 }

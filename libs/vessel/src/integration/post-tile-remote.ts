@@ -5,6 +5,9 @@ import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
 import { Chain } from '../chain';
+import { TileContent } from '../tile.content';
+import { ThreeIdentifier } from '../three-identifier';
+import jsonPatch from 'fast-json-patch';
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -22,9 +25,9 @@ function sortPropertiesDeep(obj: any, compareFn: (a: any, b: any) => number = cb
     }, {});
 }
 
-async function main() {
+async function createUser(seed: string) {
   const identityWallet = new IdentityWallet(() => true, {
-    seed: '0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f',
+    seed: seed,
   });
   const user = await Signor.build(identityWallet.get3idProvider());
 
@@ -44,16 +47,39 @@ async function main() {
     doctype: '3id',
     ...content,
   };
-  console.log('genesis record', genesisRecord);
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
+  const documentId = new CID(genesisResponse.data.docId);
+  user.did = `did:3:${documentId.valueOf()}`;
+  return user;
+}
+
+async function main() {
+  const user = await createUser('0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f');
+  const tile = {
+    doctype: 'tile' as 'tile',
+    owners: [ThreeIdentifier.fromString(user.did)],
+    content: {},
+  };
+  const encodedTile = TileContent.encode(tile);
+  const jwt = await user.sign(sortPropertiesDeep(encodedTile));
+  const signedTile = {
+    ...encodedTile,
+    iss: user.did,
+    header: jwt.header,
+    signature: jwt.signature,
+  };
+  const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, signedTile);
   console.log('genesis response', genesisResponse.data);
   const documentId = new CID(genesisResponse.data.docId);
-  await sleep(80000);
+  await sleep(61000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
   const log = new Chain(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
-  const doc2 = doc1.clone();
-  doc2.publicKeys.set('foocryption', signingKey);
-  const delta = doc2.delta(doc1);
+  const doc2 = Object.assign({}, tile);
+  doc2.content = {
+    foo: '33',
+  };
+  const delta = jsonPatch.compare(tile, doc2);
+  console.log(delta);
   const updateRecord = {
     patch: delta,
     prev: log.last,
@@ -64,14 +90,13 @@ async function main() {
     prev: { '/': updateRecord.prev.valueOf().toString() },
     id: { '/': updateRecord.id.valueOf().toString() },
   });
-  user.did = `did:3:${documentId.valueOf()}`;
   console.log('signing payload', updateRecordToSign);
-  const jwt = await user.sign(updateRecordToSign, { useMgmt: true });
+  const jwtUpdate = await user.sign(updateRecordToSign);
   const updateRecordA = {
     ...updateRecordToSign,
     iss: user.did,
-    header: jwt.header,
-    signature: jwt.signature,
+    header: jwtUpdate.header,
+    signature: jwtUpdate.signature,
   };
   const updateResponse = await axios.put(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`, updateRecordA);
   console.log('update response', updateResponse.data);

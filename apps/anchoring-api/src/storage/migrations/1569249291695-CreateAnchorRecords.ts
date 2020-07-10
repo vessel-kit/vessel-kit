@@ -29,7 +29,7 @@ export class CreateAnchorRecords1569249291695 implements MigrationInterface {
             name: 'proofCid',
             type: 'varchar(512)',
             isNullable: false,
-            isUnique: true,
+            isUnique: false,
           },
           {
             name: 'createdAt',
