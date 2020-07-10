@@ -1,6 +1,5 @@
 import { IHandler } from './handler.interface';
 import { DocumentState } from '../document.state';
-import { NotImplementedError } from '../not-implemented.error';
 import { TileContent } from '../tile.content';
 import { validatePromise } from '@potter/codec';
 import produce from 'immer';
@@ -10,6 +9,8 @@ import base64url from 'base64url';
 import sortKeys from 'sort-keys';
 import * as didJwt from 'did-jwt';
 import { Resolver } from 'did-resolver';
+import { InvalidDocumentUpdateLinkError } from './three-id-handler';
+import jsonPatch from 'fast-json-patch';
 
 export class TileHandler implements IHandler {
   constructor(readonly resolver: Resolver) {}
@@ -38,8 +39,20 @@ export class TileHandler implements IHandler {
     return genesis;
   }
 
-  applyUpdate(updateRecord, state: DocumentState) {
-    throw new NotImplementedError(`TileHandler.applyUpdate`);
+  async applyUpdate(record, state: DocumentState) {
+    if (!(record.load.id && record.load.id.equals(state.log.first))) {
+      throw new InvalidDocumentUpdateLinkError(`Expected ${state.log.first} id while got ${record.load.id}`);
+    }
+    await this.validateSignature(record.load);
+    const next = jsonPatch.applyPatch(state.current || state.freight, record.load.patch, false, false);
+    return {
+      ...state,
+      current: next.newDocument,
+      log: state.log.concat(record.cid),
+      anchor: {
+        status: AnchoringStatus.NOT_REQUESTED,
+      },
+    };
   }
 
   async makeGenesis(content: any): Promise<any> {

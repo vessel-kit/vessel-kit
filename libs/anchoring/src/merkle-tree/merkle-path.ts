@@ -10,6 +10,10 @@ export class MerklePath {
     return this.steps[this.steps.length - 1];
   }
 
+  get isEmpty() {
+    return this.steps.length == 0;
+  }
+
   get initial() {
     return new MerklePath(this.steps.slice(0, this.steps.length - 1));
   }

@@ -83,7 +83,7 @@ export class BlockchainReader implements IBlockchainReader {
 
   async originalRecordCid(anchorRecord: RecordWrap<AnchorLeaf>): Promise<CID> {
     const proofRecord = await this.retrieve(anchorRecord.load.proof);
-    if (anchorRecord.load.path) {
+    if (anchorRecord.load.path && !anchorRecord.load.path.isEmpty) {
       const merklePath = anchorRecord.load.path;
       const queryPath = '/root/' + MerklePathStringCodec.encode(merklePath.initial);
       const record = await this.retrieve(anchorRecord.load.proof, queryPath);
