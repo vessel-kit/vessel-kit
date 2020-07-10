@@ -31,7 +31,7 @@ export class DocumentRepository {
     })
   }
 
-  async create(genesis: any) {
+  async create(genesis: any): Promise<Document> {
     this.#logger.debug(`Creating document from genesis record`, genesis)
     const doctype = genesis.doctype
     const handler = this.#handlers.get(doctype)

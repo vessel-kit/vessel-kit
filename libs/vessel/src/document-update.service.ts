@@ -4,10 +4,15 @@ import CID from 'cids';
 import { DocumentState } from './document.state';
 import { ILogger } from './logger/logger.interface';
 import { RecordWrap } from '@potter/codec';
-import { UnreachableCaseError } from './unreachable-case.error';
 import { AnchoringService } from './anchoring.service';
 import { HandlersContainer } from './handlers/handlers.container';
 import { AnchoringStatus } from '@potter/anchoring';
+
+export class UnidentifiedRecordKindError extends Error {
+  constructor(kind: never) {
+    super(`Unhandled kind of record: ${kind}`);
+  }
+}
 
 export class DocumentUpdateService {
   #cloud: Cloud
@@ -91,7 +96,7 @@ export class DocumentUpdateService {
             log: [entry]
           }
         default:
-          throw new UnreachableCaseError(record.kind)
+          throw new UnidentifiedRecordKindError(record.kind)
       }
     }, state)
   }
