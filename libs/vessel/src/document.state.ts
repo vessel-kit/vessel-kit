@@ -1,8 +1,7 @@
 import * as t from 'io-ts';
 import { AnchoringStatus } from '@potter/anchoring';
-import { DateStringCodec } from './codec/date-string.codec';
-import { ChainCidArrayCodec } from './codec/chain-cid-array.codec';
-import { CidStringCodec } from '@potter/codec';
+import { ChainCidArrayCodec } from './chain';
+import { CidStringCodec, DateISO8601Codec } from '@potter/codec';
 
 const AnchorDone = t.type(
   {
@@ -10,7 +9,7 @@ const AnchorDone = t.type(
     proof: t.type({
       chainId: t.string,
       blockNumber: t.number,
-      timestamp: t.string.pipe(DateStringCodec),
+      timestamp: t.string.pipe(DateISO8601Codec),
       txHash: t.string.pipe(CidStringCodec),
       root: t.string.pipe(CidStringCodec),
     }),
@@ -21,7 +20,7 @@ const AnchorDone = t.type(
 const AnchorPending = t.type(
   {
     status: t.literal(AnchoringStatus.PENDING),
-    scheduledAt: t.string.pipe(DateStringCodec),
+    scheduledAt: t.string.pipe(DateISO8601Codec),
   },
   'AnchorPending',
 );

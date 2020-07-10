@@ -12,3 +12,4 @@ export * from './codecs/cid.ipld.codec';
 export * from './codecs/cid.string.codec';
 export * from './codecs/ceramic-document-id.string.codec';
 export * from './codecs/buffer.multibase.codec';
+export * from './codecs/date.iso8601.codec'

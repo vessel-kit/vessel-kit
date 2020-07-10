@@ -1,4 +1,5 @@
 import CID from 'cids';
+import * as t from 'io-ts';
 
 export class Chain {
   #log: CID[];
@@ -63,3 +64,12 @@ export class Chain {
     return this.#log.map(cid => cid.toString())
   }
 }
+
+export const ChainCidArrayCodec = new t.Type<Chain, CID[], CID[]>(
+  'Chain-Array<CID>',
+  (input: unknown): input is Chain => input instanceof Chain,
+  input => {
+    return t.success(new Chain(input));
+  },
+  (a: Chain) => a.log,
+);
