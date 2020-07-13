@@ -15,6 +15,9 @@ import { TileHandler } from './handlers/tile-handler';
 import { IHandler } from './handlers/handler.interface';
 import { Resolver } from 'did-resolver';
 import { ThreeIdResolver } from './resolver/three-id-resolver';
+import { VesselAlphaRulesetHandler } from './handlers/vessel-alpha-ruleset-handler';
+import { VESSEL_DOCUMENT_DOCTYPE, VESSEL_RULESET_DOCTYPE } from './handlers/vessel-freight';
+import { VesselAlphaDocumentHandler } from './handlers/vessel-alpha-document-handler';
 
 export interface CeramicOptions {
   logger?: ILogger;
@@ -33,6 +36,8 @@ export class Ceramic {
       new Map<string, IHandler>([
         ['3id', new ThreeIdHandler()],
         ['tile', new TileHandler(resolver)],
+        [VESSEL_RULESET_DOCTYPE, new VesselAlphaRulesetHandler()],
+        [VESSEL_DOCUMENT_DOCTYPE, new VesselAlphaDocumentHandler()],
       ]),
     );
     const cloud = new Cloud(logger, ipfs);

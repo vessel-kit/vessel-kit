@@ -87,7 +87,7 @@ export class BlockchainReader implements IBlockchainReader {
       const merklePath = anchorRecord.load.path;
       const queryPath = '/root/' + MerklePathStringCodec.encode(merklePath.initial);
       const record = await this.retrieve(anchorRecord.load.proof, queryPath);
-      return record[merklePath.last];
+      return record[merklePath.last!];
     } else {
       return proofRecord.root;
     }
