@@ -1,6 +1,17 @@
 import { ThreeIdContent } from './three-id.content';
+import { JWKMulticodecCodec } from './person/jwk.multicodec.codec';
+import * as jose from 'jose';
+import * as multicodec from 'multicodec';
 
-const METHOD = '3';
+function publicKeyHex(key: jose.JWK.Key): string {
+  const multicodecBuffer = JWKMulticodecCodec.encode(key);
+  return '04' + multicodec.rmPrefix(multicodecBuffer).toString('hex');
+}
+
+function publicKeyBase64(key: jose.JWK.Key): string {
+  const multicodecBuffer = JWKMulticodecCodec.encode(key);
+  return multicodec.rmPrefix(multicodecBuffer).toString('base64');
+}
 
 export class DidPresentation {
   private readonly id: string;
@@ -19,21 +30,13 @@ export class DidPresentation {
           id: `${this.id}#signingKey`,
           type: 'Secp256k1VerificationKey2018',
           owner: this.id,
-          publicKeyHex:
-            '04' +
-            this.document.publicKeys
-              .get('signing')
-              .raw()
-              .toString('hex'),
+          publicKeyHex: publicKeyHex(this.document.publicKeys.get('signing')),
         },
         {
           id: `${this.id}#encryptionKey`,
           type: 'Curve25519EncryptionPublicKey',
           owner: this.id,
-          publicKeyBase64: this.document.publicKeys
-            .get('encryption')
-            .raw()
-            .toString('base64'),
+          publicKeyBase64: publicKeyBase64(this.document.publicKeys.get('encryption')),
         },
       ],
       authentication: [
@@ -49,7 +52,7 @@ export class DidPresentation {
         id: `${this.id}#managementKey_${i}`,
         type: 'Secp256k1VerificationKey2018',
         owner: this.id,
-        publicKeyHex: '04' + ownerKey.raw().toString('hex'),
+        publicKeyHex: publicKeyHex(ownerKey),
       });
       document.authentication.push({
         type: 'Secp256k1SignatureAuthentication2018',
@@ -57,25 +60,6 @@ export class DidPresentation {
       });
     });
 
-    // FFS
-    // if (this.document.publicKeys.size) {
-    //   document.publicKey = [];
-    //   this.document.publicKeys.forEach((key, id) => {
-    //     document.publicKey.push({
-    //       id: `${this.id}#${id}`,
-    //       type: "JwsVerificationKey2020",
-    //       publicKeyJwk: key
-    //     });
-    //   });
-    // }
-    // if (this.document.publicKeys.get("signing")) {
-    //   document.authentication = [
-    //     {
-    //       type: "Secp256k1SignatureAuthentication2018",
-    //       publicKey: `${this.id}#signing`
-    //     }
-    //   ];
-    // }
     return document;
   }
 }

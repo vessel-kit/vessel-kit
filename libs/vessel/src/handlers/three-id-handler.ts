@@ -11,15 +11,15 @@ import sortKeys from 'sort-keys';
 import { verifyThreeId } from './verify-three-did';
 import jsonPatch from 'fast-json-patch';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
-import { PublicKeyMulticodecCodec } from '../person/public-key.multicodec.codec';
+import { JWKMulticodecCodec } from '../person/jwk.multicodec.codec';
 
 export const ThreeIdFreight = t.type({
   doctype: t.literal('3id'),
-  owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodecCodec)),
+  owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec)),
   content: t.type({
     publicKeys: t.type({
-      encryption: t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodecCodec),
-      signing: t.string.pipe(BufferMultibaseCodec).pipe(PublicKeyMulticodecCodec),
+      encryption: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
+      signing: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
     }),
   }),
 });
@@ -28,8 +28,8 @@ export class InvalidDocumentUpdateLinkError extends Error {}
 
 export class ThreeIdHandler implements IHandler {
   async makeGenesis(genesis: any): Promise<any> {
-    await validatePromise(ThreeIdFreight, genesis)
-    return genesis
+    await validatePromise(ThreeIdFreight, genesis);
+    return genesis;
   }
 
   async applyGenesis(genesis: any) {

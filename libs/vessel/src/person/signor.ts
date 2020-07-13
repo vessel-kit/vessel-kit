@@ -1,31 +1,31 @@
 import * as multicodec from 'multicodec';
 import * as tPromise from 'io-ts-promise';
-import { PublicKey } from './public-key';
 import { ethers } from 'ethers';
 import sortKeys from 'sort-keys';
 import { IdentityProvider } from './identity-provider.interface';
 import { IdentityProviderWrap } from './identity-provider.wrap';
-import { PublicKeyMulticodecCodec } from './public-key.multicodec.codec';
+import jose from 'jose';
+import { JWKMulticodecCodec } from './jwk.multicodec.codec';
 
 function secp256k1PubKeyFromCompressed(compressedHex: string) {
   const publicKey = ethers.utils.computePublicKey('0x' + compressedHex.replace('0x', ''));
   const asBuffer = Buffer.from(publicKey.replace('0x04', ''), 'hex');
   // It is secp256k1 public key
   const encoded = multicodec.addPrefix(Buffer.from('e7', 'hex'), asBuffer);
-  return tPromise.decode(PublicKeyMulticodecCodec, encoded);
+  return tPromise.decode(JWKMulticodecCodec, encoded);
 }
 
 async function x25519publicKey(base64: string) {
   const encryptionKeyBuffer = Buffer.from(base64, 'base64');
   const encoded = multicodec.addPrefix(Buffer.from('ec', 'hex'), encryptionKeyBuffer);
-  return tPromise.decode(PublicKeyMulticodecCodec, encoded);
+  return tPromise.decode(JWKMulticodecCodec, encoded);
 }
 
 export class EmptyDIDSigningError extends Error {}
 
 export class Signor {
   readonly #identityProvider: IdentityProviderWrap;
-  #publicKeys: Record<string, PublicKey>;
+  #publicKeys: Record<string, jose.JWK.Key>;
   #did?: string;
 
   constructor(identityProvider: IdentityProvider) {

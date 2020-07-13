@@ -1,5 +1,4 @@
 export * from './codec/map-codec'
-export * from './person/public-key'
 export * from './three-id.content'
 export * from './ceramic'
 export * from './document'
