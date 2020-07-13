@@ -1,10 +1,14 @@
-{
+module.exports = {
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": "src",
   "testRegex": ".(spec|test).ts$",
   "transform": {
     "^.+\\.ts$": "ts-jest"
   },
-  "coverageDirectory": "../coverage",
-  "testEnvironment": "node"
+  "testEnvironment": "node",
+  "globals": {
+    "ts-jest": {
+      "packageJson": "package.json"
+    }
+  }
 }
