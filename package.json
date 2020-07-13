@@ -19,7 +19,8 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "pnpm run --parallel dev",
-    "build": "pnpm run --parallel build"
+    "build": "pnpm run --parallel build",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/jest": "^26.0.3",
