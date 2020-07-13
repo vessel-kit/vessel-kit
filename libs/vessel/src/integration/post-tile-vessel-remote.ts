@@ -67,6 +67,23 @@ async function main() {
   const documentId = new CID(genesisResponse.data.docId);
   console.log(`document Id`, documentId);
 
+  const document = {
+    doctype: 'vessel/document/0.0.1',
+    owners: [user.did],
+    governance: documentId.toString(),
+    content: {
+      num: 1,
+    },
+  };
+  const jwt = await user.sign(sortPropertiesDeep(document));
+  const signedDocument = {
+    ...document,
+    iss: user.did,
+    header: jwt.header,
+    signature: jwt.signature,
+  };
+  const genesisSignedDocument = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, signedDocument);
+  console.log('gen', genesisSignedDocument.data)
   // const tile = {
   //   doctype: 'tile' as 'tile',
   //   owners: [ThreeIdentifier.fromString(user.did)],
