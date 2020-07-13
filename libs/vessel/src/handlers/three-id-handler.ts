@@ -10,7 +10,7 @@ import sortKeys from 'sort-keys';
 import { verifyThreeId } from './verify-three-did';
 import jsonPatch from 'fast-json-patch';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
-import { JWKMulticodecCodec } from '../person/jwk.multicodec.codec';
+import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
 import { decodePromise } from '@potter/codec';
 
 export const ThreeIdFreight = t.type({

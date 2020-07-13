@@ -1,5 +1,5 @@
 import { ThreeIdContent } from './three-id.content';
-import { JWKMulticodecCodec } from './person/jwk.multicodec.codec';
+import { JWKMulticodecCodec } from './signor/jwk.multicodec.codec';
 import * as jose from 'jose';
 import * as multicodec from 'multicodec';
 

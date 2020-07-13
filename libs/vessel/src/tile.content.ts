@@ -1,8 +1,8 @@
 import * as t from 'io-ts';
-import { ThreeIdentifierStringCodec } from './three-identifier';
+import { ThreeIdentifier } from './three-identifier';
 
 export const TileContent = t.type({
   doctype: t.string.pipe(t.literal('tile')),
-  owners: t.array(t.string.pipe(ThreeIdentifierStringCodec)),
+  owners: t.array(t.string.pipe(ThreeIdentifier)),
   content: t.UnknownRecord,
 });

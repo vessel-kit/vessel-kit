@@ -5,7 +5,7 @@ import { MapCodec } from './codec/map-codec';
 import { isEmpty, lefts, rights } from 'fp-ts/lib/Array';
 import { isRight } from 'fp-ts/lib/Either';
 import jsonPatch from 'fast-json-patch';
-import { JWKMulticodecCodec } from './person/jwk.multicodec.codec';
+import { JWKMulticodecCodec } from './signor/jwk.multicodec.codec';
 
 export const ThreeIdContentJSONCodec = new t.Type<ThreeIdContent, any, any>(
   'ThreeIdContent-json',

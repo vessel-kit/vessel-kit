@@ -1,6 +1,6 @@
 import { ThreeIdContent } from '../three-id.content';
 import IdentityWallet from 'identity-wallet';
-import { Signor } from '../person/signor';
+import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
@@ -8,6 +8,7 @@ import { Chain } from '../chain';
 import { TileContent } from '../tile.content';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
+import { decodeThrow } from '@potter/codec';
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -29,11 +30,12 @@ async function createUser(seed: string) {
   const identityWallet = new IdentityWallet(() => true, {
     seed: seed,
   });
-  const user = await Signor.build(identityWallet.get3idProvider());
+  const user = await User.build(identityWallet.get3idProvider());
 
-  const ownerKey = user.publicKeys.managementKey;
-  const signingKey = user.publicKeys.signingKey;
-  const encryptionKey = user.publicKeys.asymEncryptionKey;
+  const publicKeys = await user.publicKeys();
+  const ownerKey = publicKeys.managementKey;
+  const signingKey = publicKeys.signingKey;
+  const encryptionKey = publicKeys.asymEncryptionKey;
 
   const doc1 = new ThreeIdContent(
     [ownerKey],
@@ -48,8 +50,7 @@ async function createUser(seed: string) {
     ...content,
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
-  const documentId = new CID(genesisResponse.data.docId);
-  user.did = `did:3:${documentId.valueOf()}`;
+  await user.did(decodeThrow(ThreeIdentifier, `did:3:${genesisResponse.data.docId}`));
   return user;
 }
 
@@ -58,7 +59,7 @@ async function main() {
   const userB = await createUser('0x2220000000000000000000000000000000000000000000000000000000000000');
   const tile = {
     doctype: 'tile' as 'tile',
-    owners: [ThreeIdentifier.fromString(userA.did), ThreeIdentifier.fromString(userB.did)],
+    owners: [await userA.did(), await userB.did()],
     content: {},
   };
   const encodedTile = TileContent.encode(tile);
