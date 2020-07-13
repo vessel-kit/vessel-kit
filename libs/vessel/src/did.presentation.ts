@@ -17,7 +17,6 @@ export class DidPresentation {
   private readonly id: string;
 
   constructor(id: string, private readonly document: ThreeIdContent) {
-    // this.id = `did:${METHOD}:${id}`;
     this.id = id;
   }
 
