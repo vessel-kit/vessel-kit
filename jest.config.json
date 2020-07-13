@@ -1,0 +1,8 @@
+{
+  "globals": {
+    "ts-jest": {
+      "packageJson": "package.json"
+    }
+  },
+  "projects": ["<rootDir>/libs/*/jest.config.json"]
+}

@@ -2,9 +2,13 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": "src",
   "testRegex": ".(spec|test).ts$",
-  "coverageDirectory": "../coverage",
   "transform": {
     "^.+\\.ts$": "ts-jest"
   },
-  "testEnvironment": "node"
+  "testEnvironment": "node",
+  "globals": {
+    "ts-jest": {
+      "packageJson": "package.json"
+    }
+  }
 }
