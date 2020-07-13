@@ -1,24 +1,24 @@
 import * as multicodec from 'multicodec';
-import * as tPromise from 'io-ts-promise';
 import { ethers } from 'ethers';
 import sortKeys from 'sort-keys';
 import { IdentityProvider } from './identity-provider.interface';
 import { IdentityProviderWrap } from './identity-provider.wrap';
 import jose from 'jose';
 import { JWKMulticodecCodec } from './jwk.multicodec.codec';
+import { decodePromise } from '@potter/codec';
 
 function secp256k1PubKeyFromCompressed(compressedHex: string) {
   const publicKey = ethers.utils.computePublicKey('0x' + compressedHex.replace('0x', ''));
   const asBuffer = Buffer.from(publicKey.replace('0x04', ''), 'hex');
   // It is secp256k1 public key
   const encoded = multicodec.addPrefix(Buffer.from('e7', 'hex'), asBuffer);
-  return tPromise.decode(JWKMulticodecCodec, encoded);
+  return decodePromise(JWKMulticodecCodec, encoded);
 }
 
 async function x25519publicKey(base64: string) {
   const encryptionKeyBuffer = Buffer.from(base64, 'base64');
   const encoded = multicodec.addPrefix(Buffer.from('ec', 'hex'), encryptionKeyBuffer);
-  return tPromise.decode(JWKMulticodecCodec, encoded);
+  return decodePromise(JWKMulticodecCodec, encoded);
 }
 
 export class EmptyDIDSigningError extends Error {}

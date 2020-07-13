@@ -1,6 +1,5 @@
 import { IHandler } from './handler.interface';
 import * as t from 'io-ts';
-import * as tPromise from 'io-ts-promise';
 import base64url from 'base64url';
 import { ThreeIdContent } from '..';
 import { DocumentState } from '../document.state';
@@ -12,6 +11,7 @@ import { verifyThreeId } from './verify-three-did';
 import jsonPatch from 'fast-json-patch';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 import { JWKMulticodecCodec } from '../person/jwk.multicodec.codec';
+import { decodePromise } from '@potter/codec';
 
 export const ThreeIdFreight = t.type({
   doctype: t.literal('3id'),
@@ -48,7 +48,7 @@ export class ThreeIdHandler implements IHandler {
     const encodedSignature = record.load.signature;
     const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');
     const freight = state.freight;
-    const threeIdContent = await tPromise.decode(ThreeIdContent.codec, freight);
+    const threeIdContent = await decodePromise(ThreeIdContent.codec, freight);
     await verifyThreeId(jwt, `did:3:${state.log.first.toString()}`, threeIdContent);
     const next = jsonPatch.applyPatch(state.current || state.freight, payloadObject.patch, false, false);
     return {
