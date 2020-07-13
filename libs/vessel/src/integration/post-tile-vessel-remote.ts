@@ -64,26 +64,43 @@ async function main() {
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, ruleset);
   console.log('genesis response', genesisResponse.data);
-  const documentId = new CID(genesisResponse.data.docId);
-  console.log(`document Id`, documentId);
+  const rulesetId = new CID(genesisResponse.data.docId);
+  console.log(`document Id`, rulesetId);
 
-  const document = {
+  const doc1 = {
     doctype: 'vessel/document/0.0.1',
     owners: [user.did],
-    governance: documentId.toString(),
+    governance: rulesetId.toString(),
     content: {
       num: 1,
     },
   };
-  const jwt = await user.sign(sortPropertiesDeep(document));
+  const jwt = await user.sign(sortPropertiesDeep(doc1));
   const signedDocument = {
-    ...document,
+    ...doc1,
     iss: user.did,
     header: jwt.header,
     signature: jwt.signature,
   };
   const genesisSignedDocument = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, signedDocument);
-  console.log('gen', genesisSignedDocument.data)
+  const documentId = new CID(genesisSignedDocument.data.docId);
+
+  await sleep(80000)
+  const anchoredDocument = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
+  const anchoredDocumentId = new CID(anchoredDocument.data.docId)
+
+  const doc2: any = Object.assign({ }, doc1)
+  doc2.content.num = 2
+  doc2.prev = {'/': anchoredDocumentId.toString()}
+  doc2.docId = {'/': documentId.toString()}
+  const doc2jwt = await user.sign(sortPropertiesDeep(doc2))
+  const signedDoc2 = {
+    ...doc2jwt,
+    iss: user.did,
+    header: jwt.header,
+    signature: jwt.signature
+  }
+  const delta = jsonPatch.compare(doc1, doc2);
   // const tile = {
   //   doctype: 'tile' as 'tile',
   //   owners: [ThreeIdentifier.fromString(user.did)],
