@@ -380,6 +380,7 @@ importers:
       multibase: 0.7.0
       multicodec: 1.0.3
       rxjs: 6.6.0
+      ses: 0.8.0
       sort-keys: 4.0.0
       tweetnacl: 1.0.3
       tweetnacl-util: 0.15.1
@@ -422,6 +423,7 @@ importers:
       multibase: ^0.7.0
       multicodec: ^1.0.1
       rxjs: ^6.5.5
+      ses: ^0.8.0
       sort-keys: ^4.0.0
       tweetnacl: ^1.0.3
       tweetnacl-util: ^0.15.1
@@ -436,10 +438,52 @@ packages:
     dev: false
     resolution:
       integrity: sha512-GS3IfeXWnaLasHaOGvQukr9Gm+9IgofbysfkZF5X6lNztVysXhj5ZXv+Az5FmDNg3Q/ssVw7FfwK/r7HJYNi+g==
+  /@agoric/babel-parser/7.9.4:
+    dev: false
+    engines:
+      node: '>=6.0.0'
+    hasBin: true
+    resolution:
+      integrity: sha512-m/3AWP71douAzBIMWAkrZnFpFTZpeRNph6bwEhjJ9RZYI+QtmLbf1ipIJLFaeRMfo5NGB6hVa/SbSCKGnPEpuQ==
+  /@agoric/babel-standalone/7.9.5:
+    dev: false
+    resolution:
+      integrity: sha512-1Aa23oPuRi4kywUyZODo8zey9Gq2NpD2xUnNvgJLoT8orMQRlVOtvbG3JeHq5sjJERlF/q6csg4/P8t8/5IABA==
+  /@agoric/default-evaluate-options/0.3.6:
+    dependencies:
+      '@agoric/babel-parser': 7.9.4
+      '@agoric/transform-eventual-send': 1.3.1
+      '@babel/generator': 7.10.4
+    dev: false
+    resolution:
+      integrity: sha512-26L3QdtFPolca9S7p7+SE8YOGfZ9Jxsa1P2Kf2bQ1VqjuiPrFj0ad06iXHWWkBpMfDwGeVPwLlc0LSmfn/xtjw==
+  /@agoric/evaluate/2.2.6:
+    dependencies:
+      '@agoric/default-evaluate-options': 0.3.6
+      esm: 3.2.25
+    dev: false
+    engines:
+      node: '>=10.15.1'
+    resolution:
+      integrity: sha512-LWHM3h3z020O/oiPLTWbWVuShhPYb5cCsFxx3K2i1H36aKZoAKHENlehwlBzlKqDdDRbdrUnu9+dqojbj8Bvwg==
   /@agoric/make-hardener/0.0.8:
     dev: false
     resolution:
       integrity: sha512-bd83IYEMQbzpprwyA10RjHIGWmWeUMdsd5EzaHwke+zLH0HyqP6UKxFLv5mqkmrMeQyOMhNgKN1hCagjRyjlxQ==
+  /@agoric/transform-eventual-send/1.3.1:
+    dev: false
+    resolution:
+      integrity: sha512-JxBIyu3NQfvzO0jtHUdomTTLPJF/9v2nmNRPPxdK8eMm4W0al4R8udS+yesHqE7Hb8gZFYXRlIY5s1oMtwPmyg==
+  /@agoric/transform-module/0.3.0:
+    dependencies:
+      '@agoric/evaluate': 2.2.6
+      '@babel/core': 7.10.4
+      esm: 3.2.25
+      rollup: 1.32.1
+      rollup-plugin-node-resolve: 5.2.0_rollup@1.32.1
+    dev: false
+    resolution:
+      integrity: sha512-thK/Gro0NJdBzer8cbJ0AKTakqWwDon2IwqzaKlKJRR9CoYbtd5TBrI7g8H4LrmnFSGDNG8HiFzlDHYvzVHI9A==
   /@ampproject/toolbox-core/2.5.4:
     dependencies:
       cross-fetch: 3.0.5
@@ -677,11 +721,10 @@ packages:
       debug: 4.1.1
       gensync: 1.0.0-beta.1
       json5: 2.1.3
-      lodash: 4.17.15
+      lodash: 4.17.19
       resolve: 1.17.0
       semver: 5.7.1
       source-map: 0.5.7
-    dev: true
     engines:
       node: '>=6.9.0'
     resolution:
@@ -713,7 +756,7 @@ packages:
     dependencies:
       '@babel/types': 7.10.4
       jsesc: 2.5.2
-      lodash: 4.17.15
+      lodash: 4.17.19
       source-map: 0.5.7
     resolution:
       integrity: sha512-toLIHUIAgcQygFZRAQcsLQV3CBuX6yOIru1kJk/qqqvcRmZrYe6WavZTSG+bB8MxhnL9YPf+pKQfuiP161q7ng==
@@ -834,7 +877,7 @@ packages:
       '@babel/helper-split-export-declaration': 7.10.4
       '@babel/template': 7.10.4
       '@babel/types': 7.10.4
-      lodash: 4.17.15
+      lodash: 4.17.19
     resolution:
       integrity: sha512-Er2FQX0oa3nV7eM1o0tNCTx7izmQtwAQsIiaLRWtavAAEcskb0XJ5OjJbVrYXWOTr8om921Scabn4/tzlx7j1Q==
   /@babel/helper-optimise-call-expression/7.10.4:
@@ -1743,13 +1786,13 @@ packages:
       '@babel/types': 7.10.4
       debug: 4.1.1
       globals: 11.12.0
-      lodash: 4.17.15
+      lodash: 4.17.19
     resolution:
       integrity: sha512-aSy7p5THgSYm4YyxNGz6jZpXf+Ok40QF3aA2LyIONkDHpAcJzDUqlCKXv6peqYUs2gmic849C/t2HKw2a2K20Q==
   /@babel/types/7.10.4:
     dependencies:
       '@babel/helper-validator-identifier': 7.10.4
-      lodash: 4.17.15
+      lodash: 4.17.19
       to-fast-properties: 2.0.0
     resolution:
       integrity: sha512-UTCFOxC3FsFHb7lkRMVvgLzaRVamXuAs2Tz4wajva4WxtVY82eZeaUBtC2Zt95FU9TiznuC0Zk35tsim8jeVpg==
@@ -3547,6 +3590,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==
+  /@types/estree/0.0.45:
+    dev: false
+    resolution:
+      integrity: sha512-jnqIUKDUqJbDIUxm0Uj7bnlMnRm1T/eZ9N+AVMqhPgzrba2GhGG5o/jCTwmdPK709nEZsGoMzXEDUjcXHa3W0g==
   /@types/express-serve-static-core/4.17.8:
     dependencies:
       '@types/node': 14.0.14
@@ -3692,6 +3739,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-MRn/NP3dee8yL5QhbSA6riuwkS+UOcsPUMOIOG3KMUQpuor/2TopdRBu8QaaB4fGU+gz/bzyDWt0FtUbeJ8H1A==
+  /@types/node/14.0.22:
+    dev: false
+    resolution:
+      integrity: sha512-emeGcJvdiZ4Z3ohbmw93E/64jRzUHAItSHt8nF7M4TGgQTiWqFVGB8KNpLGFmUHmHLvjvBgFwVlqNcq+VuGv9g==
   /@types/normalize-package-data/2.4.0:
     dev: true
     resolution:
@@ -3726,6 +3777,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-6cFei7F7L4wwuM+IND/Q2cV1koQUvJ8iSV+Gwn0c3kvABZ691g7sp3hfEQHOUBJtccl1gPi+EyNjMIl9nGA0ug==
+  /@types/resolve/0.0.8:
+    dependencies:
+      '@types/node': 14.0.22
+    dev: false
+    resolution:
+      integrity: sha512-auApPaJf3NPfe18hSoJkp8EbZzer2ISk7o8mCC3M9he/a04+gbMF97NkpD2S8riMGvm4BMRI59/SZQSaLTKpsQ==
   /@types/serve-static/1.13.4:
     dependencies:
       '@types/express-serve-static-core': 4.17.8
@@ -4221,7 +4278,6 @@ packages:
     resolution:
       integrity: sha512-ZVA9k326Nwrj3Cj9jlh3wGFutC2ZornPNARZwsNYqQYgN0EsV2d53w5RN/co65Ohn4sUAUtb1rSUAOD6XN9idA==
   /acorn/7.3.1:
-    dev: true
     engines:
       node: '>=0.4.0'
     hasBin: true
@@ -5404,6 +5460,12 @@ packages:
       node: '>=8.0.0'
     resolution:
       integrity: sha512-bd1dDQhiC+bEbEfg56IdBv7faWa6OipMs/AFFFvtFnB3wAYjlwQpQRZ0pm6ZkgtfL0pILRXhKxOiQj6UzoMR7A==
+  /builtin-modules/3.1.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-k0KL0aWZuBt2lrxrcASWDfwOLMnodeQjodT/1SxEQAXsHANgo6ZC/VEaSEHCXt7aSTZ4/4H5LKa+tBXmW7Vtvw==
   /builtin-status-codes/3.0.0:
     resolution:
       integrity: sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
@@ -7486,6 +7548,12 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-K+Iayyo2LtyYhDSYwz5D5QdWw0hCacNzyq1Y821Xna2xSJj7cijoLLYmLxTQgcgZ9mC61nryMy9S7GRbYpI5Ig==
+  /esm/3.2.25:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==
   /espree/6.2.1:
     dependencies:
       acorn: 7.3.1
@@ -7528,6 +7596,10 @@ packages:
       node: '>=4.0'
     resolution:
       integrity: sha512-FyohXK+R0vE+y1nHLoBM7ZTyqRpqAlhdZHCWIWEviFLiGB8b04H6bQs8G+XTthacvT8VuwvteiP7RJSxMs8UEw==
+  /estree-walker/0.6.1:
+    dev: false
+    resolution:
+      integrity: sha512-SqmZANLWS0mnatqbSfRP5g8OXZC12Fgg1IwNtLsyHDzJizORW4khDfjPqJZsemPWBB2uqykUah5YpQ6epsqC/w==
   /esutils/2.0.3:
     engines:
       node: '>=0.10.0'
@@ -10075,6 +10147,10 @@ packages:
     optional: true
     resolution:
       integrity: sha1-PZh3iZ5qU+/AFgUEzeFfgubwYdU=
+  /is-module/1.0.0:
+    dev: false
+    resolution:
+      integrity: sha1-Mlj7afeMFNW4FdZkM2tM/7ZEFZE=
   /is-nan/1.3.0:
     dependencies:
       define-properties: 1.1.3
@@ -12185,6 +12261,9 @@ packages:
   /lodash/4.17.15:
     resolution:
       integrity: sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+  /lodash/4.17.19:
+    resolution:
+      integrity: sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
   /log-symbols/3.0.0:
     dependencies:
       chalk: 2.4.2
@@ -15225,6 +15304,35 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-y1QxTQOp0OZnjn19FxBmped4p+BSKPHwGndaqrESseyd2xXZtcgR3yuTIosh8CaMaOii9SKIYerBXnV/CpJ3qw==
+  /rollup-plugin-node-resolve/5.2.0_rollup@1.32.1:
+    dependencies:
+      '@types/resolve': 0.0.8
+      builtin-modules: 3.1.0
+      is-module: 1.0.0
+      resolve: 1.17.0
+      rollup: 1.32.1
+      rollup-pluginutils: 2.8.2
+    deprecated: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-node-resolve.
+    dev: false
+    peerDependencies:
+      rollup: '>=1.11.0'
+    resolution:
+      integrity: sha512-jUlyaDXts7TW2CqQ4GaO5VJ4PwwaV8VUGA7+km3n6k6xtOEacf61u0VXwN80phY/evMcaS+9eIeJ9MOyDxt5Zw==
+  /rollup-pluginutils/2.8.2:
+    dependencies:
+      estree-walker: 0.6.1
+    dev: false
+    resolution:
+      integrity: sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==
+  /rollup/1.32.1:
+    dependencies:
+      '@types/estree': 0.0.45
+      '@types/node': 14.0.22
+      acorn: 7.3.1
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-/2HA0Ec70TvQnXdzynFffkjA6XN+1e2pEv/uKS5Ulca40g2L7KuOE3riasHoNVHOsFD5KKZgDsMk1CP3Tw9s+A==
   /rsvp/4.8.5:
     dev: true
     engines:
@@ -15479,6 +15587,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-rN+z8Auz+XX/SXUMPHePZhHP0mLeDdihq8Au8UZzxlyOK+SdUeVxDJOjUdrtxebtQYNk8LMqFE0Qst5ea/SN6Q==
+  /ses/0.8.0:
+    dependencies:
+      '@agoric/babel-standalone': 7.9.5
+      '@agoric/make-hardener': 0.0.8
+      '@agoric/transform-module': 0.3.0
+    dev: false
+    resolution:
+      integrity: sha512-De6R7ok79m2CMNtsldZ3g8w3GvjBn3X3YN1r2ZT0z+xtXjkPKZqFGuoLeb7ys81SZbJYQWnrmDwLdxA7XU94xw==
   /set-blocking/2.0.0:
     resolution:
       integrity: sha1-BF+XgtARrppoA93TgrJDkrPYkPc=
