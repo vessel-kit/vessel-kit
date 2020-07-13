@@ -59,7 +59,7 @@ async function main() {
     doctype: 'vessel/ruleset/0.0.1',
     content: {
       type: 'application/javascript',
-      main: `function canApply(a, b) { return b.num > a.num; }; module.exports = {canApply: canApply}`,
+      main: `function canApply(a, b) { return b.content.num > a.content.num; }; module.exports = {canApply: canApply}`,
     },
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, ruleset);
@@ -87,65 +87,32 @@ async function main() {
 
   await sleep(80000)
   const anchoredDocument = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
+  const log = new Chain(anchoredDocument.data.log.map((cid) => new CID(cid)));
   const anchoredDocumentId = new CID(anchoredDocument.data.docId)
 
-  const doc2: any = Object.assign({ }, doc1)
+  const doc2: any = JSON.parse(JSON.stringify(doc1))
   doc2.content.num = 2
-  doc2.prev = {'/': anchoredDocumentId.toString()}
-  doc2.docId = {'/': documentId.toString()}
-  const doc2jwt = await user.sign(sortPropertiesDeep(doc2))
-  const signedDoc2 = {
-    ...doc2jwt,
-    iss: user.did,
-    header: jwt.header,
-    signature: jwt.signature
-  }
+  console.log('prepatch', doc1, doc2)
   const delta = jsonPatch.compare(doc1, doc2);
-  // const tile = {
-  //   doctype: 'tile' as 'tile',
-  //   owners: [ThreeIdentifier.fromString(user.did)],
-  //   content: {},
-  // };
-  // const encodedTile = TileContent.encode(tile);
-  // const jwt = await user.sign(sortPropertiesDeep(encodedTile));
-  // const signedTile = {
-  //   ...encodedTile,
-  //   iss: user.did,
-  //   header: jwt.header,
-  //   signature: jwt.signature,
-  // };
-  // const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, signedTile);
-  // console.log('genesis response', genesisResponse.data);
-  // const documentId = new CID(genesisResponse.data.docId);
-  // await sleep(61000);
-  // const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
-  // const log = new Chain(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
-  // const doc2 = Object.assign({}, tile);
-  // doc2.content = {
-  //   foo: '33',
-  // };
-  // const delta = jsonPatch.compare(tile, doc2);
-  // console.log(delta);
-  // const updateRecord = {
-  //   patch: delta,
-  //   prev: log.last,
-  //   id: documentId,
-  // };
-  // const updateRecordToSign = sortPropertiesDeep({
-  //   patch: updateRecord.patch,
-  //   prev: { '/': updateRecord.prev.valueOf().toString() },
-  //   id: { '/': updateRecord.id.valueOf().toString() },
-  // });
-  // console.log('signing payload', updateRecordToSign);
-  // const jwtUpdate = await user.sign(updateRecordToSign);
-  // const updateRecordA = {
-  //   ...updateRecordToSign,
-  //   iss: user.did,
-  //   header: jwtUpdate.header,
-  //   signature: jwtUpdate.signature,
-  // };
-  // const updateResponse = await axios.put(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`, updateRecordA);
-  // console.log('update response', updateResponse.data);
+  const updateRecord = {
+    patch: delta,
+    prev: log.last,
+    id: documentId,
+  };
+  const updateRecordToSign = sortPropertiesDeep({
+    patch: updateRecord.patch,
+    prev: { '/': updateRecord.prev.valueOf().toString() },
+    id: { '/': updateRecord.id.valueOf().toString() },
+  });
+  const jwtUpdate = await user.sign(updateRecordToSign);
+  const updateRecordA = {
+    ...updateRecordToSign,
+    iss: user.did,
+    header: jwtUpdate.header,
+    signature: jwtUpdate.signature,
+  };
+  const updateResponse = await axios.put(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`, updateRecordA);
+  console.log('update response', updateResponse.data);
 }
 
 main();

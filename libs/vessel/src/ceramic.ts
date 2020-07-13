@@ -32,15 +32,15 @@ export class Ceramic {
     const logger = options.logger;
     const threeIdResolver = new ThreeIdResolver(this.load.bind(this));
     const resolver = new Resolver(threeIdResolver.registry);
+    const cloud = new Cloud(logger, ipfs);
     const handlers = new HandlersContainer(
       new Map<string, IHandler>([
         ['3id', new ThreeIdHandler()],
         ['tile', new TileHandler(resolver)],
         [VESSEL_RULESET_DOCTYPE, new VesselAlphaRulesetHandler()],
-        [VESSEL_DOCUMENT_DOCTYPE, new VesselAlphaDocumentHandler()],
+        [VESSEL_DOCUMENT_DOCTYPE, new VesselAlphaDocumentHandler(cloud)],
       ]),
     );
-    const cloud = new Cloud(logger, ipfs);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
     const blockchainEndpoints = options.blockchainEndpoints || [];
     const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);

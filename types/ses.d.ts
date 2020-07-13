@@ -1,7 +1,11 @@
 declare module 'ses' {
-  export function lockdown(): void;
-  export class Compartment {
-    constructor(intrinsics?: any);
-    evaluate(code: string): any
+  global {
+    function lockdown(): void;
+    class Compartment {
+      constructor(intrinsics?: any);
+      evaluate(code: string): any
+    }
   }
 }
+
+// declare function lockdown(): void;
