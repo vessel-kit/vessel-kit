@@ -40,7 +40,7 @@ export class User implements ISignor {
     return this.#publicKeys;
   }
 
-  async did(value?: ThreeIdentifier): Promise<ThreeIdentifier> {
+  async did(value?: ThreeIdentifier): Promise<ThreeIdentifier | undefined> {
     if (value) {
       this.#did = value;
     }

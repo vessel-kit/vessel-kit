@@ -30,8 +30,7 @@ async function main() {
   const identityWallet = new IdentityWallet(() => true, {
     seed: '0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f',
   });
-  const user = new User(identityWallet.get3idProvider());
-  await user.auth();
+  const user = await User.build(identityWallet.get3idProvider());
 
   const ceramic = await Ceramic.build(ipfs);
 
