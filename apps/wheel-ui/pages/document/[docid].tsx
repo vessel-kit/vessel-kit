@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import {
   ExpandableTile, TileAboveTheFoldContent, TileBelowTheFoldContent
 } from 'carbon-components-react';
-import { RecordType } from '../styling/document'
-import { Header3 } from "../styling/header";
+import { RecordType } from '../../styling/document'
+import { Header3 } from "../../styling/header";
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
 const io = require('socket.io-client')

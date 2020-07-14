@@ -9,10 +9,13 @@ import {
 } from '@nestjs/common';
 import { Ceramic } from '@potter/vessel';
 import { LiveGateway } from '../live/live.gateway';
+import { DocumentRecord } from '../storage/document.record'
+import { DocumentStorage } from '../storage/document.storage'
 import { DocumentPresentation } from './document.presentation';
 import { DocumentStatePresentation } from './document-state.presentation';
 import { CeramicDocumentId } from '@potter/codec';
 import CID from 'cids';
+import { DateTime } from 'luxon';
 
 @Controller('/api/v0/ceramic')
 export class DocumentController {
@@ -20,6 +23,7 @@ export class DocumentController {
   constructor(
     private readonly ceramic: Ceramic,
     private readonly liveUpdater: LiveGateway,
+    private readonly documentStorage: DocumentStorage
   ) {}
 
   @Post('/')
@@ -29,6 +33,13 @@ export class DocumentController {
     this.logger.log(
       `Created ${document.state} document ${document.id.toString()}`,
     );
+    const record = new DocumentRecord()
+    record.cid = document.id.cid
+    record.doctype = body.doctype
+    record.payload = body.content
+    record.createdAt = DateTime.local().toJSDate()
+    record.updatedAt = DateTime.local().toJSDate()
+    await this.documentStorage.save(record)
     return new DocumentPresentation(document);
   }
 

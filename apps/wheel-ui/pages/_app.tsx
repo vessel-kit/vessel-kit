@@ -30,7 +30,6 @@ function App({ Component, pageProps }: AppProps) {
             </HeaderName>
             <HeaderNavigation>
               <HeaderMenuItem href={"/documents"}>Documents</HeaderMenuItem>
-              <HeaderMenuItem href={"/updates"}>Updates</HeaderMenuItem>
             </HeaderNavigation>
           </Header>
         </Shell.Header>

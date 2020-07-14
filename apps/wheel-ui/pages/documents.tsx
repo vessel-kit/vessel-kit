@@ -18,10 +18,9 @@ function DocumentsTable(props: { documents: any }) {
   const row = (document: any) => {
     return (
       <TableRow key={document.docId} >
-        <TableCell><Link href={`/document?docId=${document.docId}`}>{document.docId}</Link></TableCell>
-        <TableCell>{document.cid}</TableCell>
-        <TableCell><RecordType recordType={document.recordType}></RecordType></TableCell>
-        <TableCell>{DateTime.fromMillis(document.time * 1000).setZone('UTC').toLocal().toString()}</TableCell>
+        <TableCell><Link href={`/document/${document.docId}`}>{document.docId}</Link></TableCell>
+        <TableCell>{document?.log[document?.log.length - 1]}</TableCell>
+        <TableCell><RecordType recordType={document.anchor.status}></RecordType></TableCell>
       </TableRow>
     );
   };
@@ -39,7 +38,6 @@ function DocumentsTable(props: { documents: any }) {
           <TableHeader>DocId</TableHeader>
           <TableHeader>Last CID</TableHeader>
           <TableHeader>Record type</TableHeader>
-          <TableHeader>Time</TableHeader>
         </TableRow>
       </TableHead>
       <TableBody>{rows()}</TableBody>
@@ -53,7 +51,7 @@ export default function Documents() {
   const { data } = useSWR(endpoint, fetcher)
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 6 }}>
+    <Box sx={{ flexGrow: 1, padding: 4 }}>
       <h1>Documents</h1>
       <DocumentsTable documents={data} />
     </Box>
