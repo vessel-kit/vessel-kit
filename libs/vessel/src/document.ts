@@ -35,7 +35,7 @@ export class Document {
     return this.state.log.last
   }
 
-  get id() {
+  get id(): CeramicDocumentId {
     return this.#id
   }
 

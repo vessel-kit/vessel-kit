@@ -16,6 +16,7 @@ import { DocumentStatePresentation } from './document-state.presentation';
 import { CeramicDocumentId } from '@potter/codec';
 import CID from 'cids';
 import { DateTime } from 'luxon';
+import { DocumentState } from '@potter/vessel';
 
 @Controller('/api/v0/ceramic')
 export class DocumentController {
@@ -40,7 +41,7 @@ export class DocumentController {
     record.createdAt = DateTime.local().toJSDate()
     record.updatedAt = DateTime.local().toJSDate()
     await this.documentStorage.save(record)
-    return new DocumentPresentation(document);
+    return DocumentState.encode(document.state)
   }
 
   @Get('/')
@@ -52,7 +53,7 @@ export class DocumentController {
   async read(@Param('cid') cidString: string) {
     const cid = CeramicDocumentId.fromString(cidString);
     const document = await this.ceramic.load(cid);
-    return new DocumentPresentation(document);
+    return DocumentState.encode(document.state)
   }
 
   // @Get('/list/:cid')

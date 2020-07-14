@@ -38,7 +38,7 @@ const AnchorProcessing = t.type(
 
 export const AnchorState = t.union([AnchorProcessing, AnchorPending, AnchorDone], 'AnchorState');
 
-export const DocumentStateCodec = t.type(
+export const DocumentState = t.type(
   {
     doctype: t.string,
     current: t.union([t.UnknownRecord, t.null]),
@@ -49,4 +49,4 @@ export const DocumentStateCodec = t.type(
   'DocumentState',
 );
 
-export type DocumentState = t.TypeOf<typeof DocumentStateCodec>;
+export type DocumentState = t.TypeOf<typeof DocumentState>;

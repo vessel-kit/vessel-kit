@@ -5,9 +5,11 @@ import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
 import { Chain } from '../chain';
-import { ThreeIdentifier } from '../three-identifier';
+import { ThreeIdentifier, ThreeIdentifierCidCodec } from '../three-identifier';
 import { decodeThrow } from '@potter/codec';
 import { Client } from '../client';
+import { ThreeId } from '../doctypes/three-id.doctype';
+import { CeramicDocumentId } from '@potter/codec';
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -31,34 +33,12 @@ async function main() {
   });
   const user = await User.build(identityWallet.get3idProvider());
 
-  const client = new Client(REMOTE_URL)
-  await client.addSignor(user)
-  const did = await user.did()
-  console.log('did', did)
+  const client = new Client(REMOTE_URL);
+  const document = await client.addSignor(user);
+  console.log(document.state)
+  await sleep(80000);
+  // ThreeId.change(document, document.state)
 
-  //
-  // const publicKeys = await user.publicKeys();
-  // const ownerKey = publicKeys.managementKey;
-  // const signingKey = publicKeys.signingKey;
-  // const encryptionKey = publicKeys.asymEncryptionKey;
-  //
-  // const doc1 = new ThreeIdContent(
-  //   [ownerKey],
-  //   new Map([
-  //     ['signing', signingKey],
-  //     ['encryption', encryptionKey],
-  //   ]),
-  // );
-  // const content = ThreeIdContent.codec.encode(doc1);
-  // const genesisRecord = {
-  //   doctype: '3id',
-  //   ...content,
-  // };
-  // console.log('genesis record', genesisRecord);
-  // const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
-  // console.log('genesis response', genesisResponse.data);
-  // const documentId = new CID(genesisResponse.data.docId);
-  // await sleep(80000);
   // const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
   // const log = new Chain(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
   // const doc2 = doc1.clone();

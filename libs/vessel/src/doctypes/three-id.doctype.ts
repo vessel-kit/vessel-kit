@@ -2,6 +2,10 @@ import * as jose from 'jose';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
 import { BufferMultibaseCodec } from '@potter/codec';
+import { Doctype } from './doctypes';
+import { DocumentState } from '../document.state';
+import { RecordWrap } from '@potter/codec';
+import { RemoteDocument } from '../client';
 
 interface ThreeIdFreight {
   doctype: '3id';
@@ -25,41 +29,17 @@ const ThreeIdFreightJSON = t.type({
   }),
 });
 
-export class ThreeId {
+export class ThreeId implements Doctype<ThreeIdFreight> {
   static NAME = '3id';
   static FREIGHT: ThreeIdFreight;
 
   async makeGenesis(payload: ThreeIdFreight) {
-    return ThreeIdFreightJSON.encode(payload);
+    const applied = Object.assign({}, payload, { doctype: ThreeId.NAME });
+    return ThreeIdFreightJSON.encode(applied);
+  }
+
+  async applyUpdate(updateRecord: RecordWrap, state: DocumentState): Promise<DocumentState> {
+    console.log('ThreeId.applyUpdate')
+    return state;
   }
 }
-
-type Doctype = {
-  NAME: string;
-  FREIGHT: unknown;
-  new (): {
-    makeGenesis(payload: Doctype['FREIGHT']): Promise<any>;
-  };
-};
-
-function create<A extends Doctype>(t: A, c: Omit<A['FREIGHT'], 'doctype'>): void;
-function create(t: string, c: any): void;
-function create<A extends Doctype>(t: A | string, c: Omit<A['FREIGHT'], 'doctype'>): void {
-  if (typeof  t !== 'string') {
-    // const a  = new t()
-  }
-}
-
-create(ThreeId, {
-  owners: [jose.JWK.generateSync('oct')],
-  content: { publicKeys: { encryption: jose.JWK.generateSync('EC'), signing: jose.JWK.generateSync('EC') } },
-});
-
-create('3id', { owners: 3 });
-
-// create(ThreeId, {
-//   doctype: '3id',
-//   foo: 'bsd',
-//   owners: [jose.JWK.generateSync('EC')],
-//   content: { publicKeys: { encryption: jose.JWK.generateSync('EC'), signing: jose.JWK.generateSync('EC') } },
-// });
