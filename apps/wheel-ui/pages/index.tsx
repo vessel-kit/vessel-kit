@@ -29,7 +29,7 @@ export default function Home() {
   });
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 6 }}>
+    <Box sx={{ flexGrow: 1, padding: 4 }}>
       <Grid columns={[2, null, 4]} sx={{ gridAutoRows: "1fr" }}>
         <Stat
           title={"Documents"}
