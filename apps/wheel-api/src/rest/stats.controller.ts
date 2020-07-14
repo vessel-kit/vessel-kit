@@ -8,12 +8,9 @@ export class StatsController {
 
   @Get('/')
   async index() {
-    // const stats = await this.ceramic.stats()
-    // return {
-    //   documentsCount: stats.documentsCount
-    // }
+    const stats = await this.ceramic.list()
     return {
-      documentsCount: 'N/A'
+      documentsCount: stats.length
     }
   }
 }

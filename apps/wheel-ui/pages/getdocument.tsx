@@ -25,7 +25,7 @@ export default function GetDocument() {
         disabled={!docId.length}
         onClick={e => {
           e.preventDefault();
-          Router.push(`/document?docId=${docId}`);
+          Router.push(`/document/${docId}`);
         }}
       >
         Submit

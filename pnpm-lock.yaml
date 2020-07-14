@@ -182,6 +182,7 @@ importers:
       graphql-tools: 5.0.0_graphql@15.2.0
       ipfs-http-client: 44.3.0
       jose: 1.27.2
+      luxon: 1.24.1
       p-queue: 6.5.0
       reflect-metadata: 0.1.13
       rimraf: 3.0.2
@@ -191,6 +192,7 @@ importers:
       typeorm: 0.2.25
     devDependencies:
       '@nestjs/cli': 7.4.1
+      '@types/luxon': 1.24.1
     specifiers:
       '@ethersproject/hdnode': ^5.0.1
       '@hapi/joi': ^17.1.1
@@ -207,6 +209,7 @@ importers:
       '@potter/blockchain-connection-string': 'workspace:*'
       '@potter/codec': 'workspace:*'
       '@potter/vessel': 'workspace:*'
+      '@types/luxon': ^1.24.1
       axios: ^0.19.2
       cids: ^0.8.0
       cron-parser: ^2.15.0
@@ -217,6 +220,7 @@ importers:
       graphql-tools: ^5.0.0
       ipfs-http-client: ^44.0.0
       jose: ^1.27.0
+      luxon: ^1.24.1
       p-queue: ^6.4.0
       reflect-metadata: ^0.1.13
       rimraf: ^3.0.2
@@ -2992,7 +2996,6 @@ packages:
     peerDependencies:
       '@nestjs/common': ^7.0.0
       '@nestjs/core': ^7.0.0
-      class-transformer: '*'
       graphql: ^14.1.1 || ^15.0.0
       reflect-metadata: ^0.1.12
     resolution:
@@ -3688,6 +3691,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
+  /@types/luxon/1.24.1:
+    dev: true
+    resolution:
+      integrity: sha512-t93qL4l3PRxy4qQkXwiPS6qjIt7S6o90XMuCfvYDgIAQJvgSBni5qVPxkhGYPnZZPS9ASHOTeCZXRNmdiHHHcg==
   /@types/mime/2.0.2:
     dev: false
     resolution:
