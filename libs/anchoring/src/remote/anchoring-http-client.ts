@@ -10,10 +10,25 @@ import { AnchoringStatus } from '../anchoring-status';
 
 export type AnchorResponsePayloadType = t.TypeOf<typeof AnchorResponsePayload>;
 
+class NamedSchedule {
+  #tasks: Set<string> = new Set();
+
+  add(name: string, task: () => Promise<void>) {
+    if (!this.#tasks.has(name)) {
+      this.#tasks.add(name);
+      queueScheduler.schedule(async () => {
+        await task();
+        this.#tasks.delete(name);
+      });
+    }
+  }
+}
+
 export class AnchoringHttpClient {
   #observation$ = new Subject<AnchorResponsePayloadType>();
   #anchoringEndpoint: string;
   #period: number;
+  #schedule = new NamedSchedule();
 
   constructor(anchoringEndpoint: string, period: number = 5000) {
     this.#anchoringEndpoint = anchoringEndpoint;
@@ -41,15 +56,20 @@ export class AnchoringHttpClient {
   }
 
   startRequestingAnchorStatus(docId: CeramicDocumentId, cid: CID) {
-    const doRequest = async () => {
-      const status = await this.requestAnchorStatus(docId, cid);
-      if (status !== AnchoringStatus.ANCHORED) {
-        setTimeout(() => {
-          queueScheduler.schedule(() => doRequest());
-        }, this.#period);
-      }
-    };
-    queueScheduler.schedule(() => doRequest());
+    const taskName = `${docId}:${cid}`;
+    this.#schedule.add(taskName, () => {
+      return new Promise((resolve) => {
+        const doRequest = async () => {
+          const status = await this.requestAnchorStatus(docId, cid);
+          if (status === AnchoringStatus.ANCHORED) {
+            resolve()
+          } else {
+            queueScheduler.schedule(() => doRequest(), this.#period);
+          }
+        };
+        return doRequest();
+      });
+    });
   }
 
   async requestAnchorStatus(docId: CeramicDocumentId, cid: CID) {
