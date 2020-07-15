@@ -11,9 +11,8 @@ import { Ceramic } from '@potter/vessel';
 import { LiveGateway } from '../live/live.gateway';
 import { DocumentRecord } from '../storage/document.record';
 import { DocumentStorage } from '../storage/document.storage';
-import { DocumentPresentation } from './document.presentation';
 import { DocumentStatePresentation } from './document-state.presentation';
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId, CidStringCodec, DecodePipe } from '@potter/codec';
 import CID from 'cids';
 import { DateTime } from 'luxon';
 import { DocumentState } from '@potter/vessel';
@@ -100,5 +99,13 @@ export class DocumentController {
         error: e.message,
       };
     }
+  }
+
+  @Post('/:cid/anchor')
+  async requestAnchor(@Param('cid', new DecodePipe(CidStringCodec)) cid: CID) {
+    const documentId = new CeramicDocumentId(cid);
+    const document = await this.ceramic.load(documentId);
+    document.requestAnchor();
+    return DocumentState.encode(document.state);
   }
 }

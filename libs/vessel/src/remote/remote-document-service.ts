@@ -1,12 +1,14 @@
 import { FrozenSubject } from '../frozen-subject';
 import { DocumentState } from '../document.state';
-import { interval, Subscription } from 'rxjs';
+import { interval, Subscription, queueScheduler } from 'rxjs';
 import axios from 'axios';
 import * as _ from 'lodash';
 import { ISignorContext } from './client';
 import { CeramicDocumentId, decodeThrow } from '@potter/codec';
+import { IDocumentService } from '../document-service.interface';
+import CID from 'cids';
 
-export class RemoteDocumentService {
+export class RemoteDocumentService implements IDocumentService {
   #host: string;
   #context: ISignorContext;
 
@@ -31,10 +33,18 @@ export class RemoteDocumentService {
     });
   }
 
-  async update(record: any, state$: FrozenSubject<DocumentState>) {
+  async update(record: any, state$: FrozenSubject<DocumentState>): Promise<void> {
     const documentId = state$.value.log.first;
     const response = await axios.put(`${this.#host}/api/v0/ceramic/${documentId}`, record);
-    const next = decodeThrow(DocumentState, response.data)
-    state$.next(next)
+    const next = decodeThrow(DocumentState, response.data);
+    state$.next(next);
+  }
+
+  requestAnchor(docId: CeramicDocumentId, cid: CID): void {
+    queueScheduler.schedule(async () => {
+      const endpoint = `${this.#host}/api/v0/ceramic/${docId.valueOf()}/anchor`;
+      console.log(`Doing anchor request to ${endpoint}`);
+      await axios.post(endpoint);
+    });
   }
 }

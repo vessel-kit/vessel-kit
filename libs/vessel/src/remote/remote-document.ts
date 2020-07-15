@@ -39,6 +39,10 @@ export class RemoteDocument {
     this.#remoteUpdateSubscription = this.#service.requestUpdates(this.#id, this.state$);
   }
 
+  requestAnchor(): void {
+    this.#service.requestAnchor(this.#id, this.state.log.last);
+  }
+
   as<F extends WithDoctype>(doctype: Doctype<F>) {
     if (doctype.name === this.state.doctype) {
       return new TypedDocument(this, doctype, this.#service.context);

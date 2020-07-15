@@ -55,7 +55,7 @@ export class Document {
     return this.#state$
   }
 
-  requestAnchor() {
+  requestAnchor(): void {
     this.#service.requestAnchor(this.#id, this.#id.cid)
   }
 

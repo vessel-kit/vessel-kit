@@ -10,6 +10,8 @@ import { FrozenSubject } from './frozen-subject';
 import { RecordWrap, normalizeRecord } from '@potter/codec';
 import { MessageTyp } from './cloud/message-typ';
 import { filter } from 'rxjs/operators';
+import { IDocumentService } from './document-service.interface';
+import { Subscription } from 'rxjs';
 
 export class UnhandledAnchoringStatus extends Error {
   constructor(status: never) {
@@ -17,7 +19,7 @@ export class UnhandledAnchoringStatus extends Error {
   }
 }
 
-export class DocumentService {
+export class DocumentService implements IDocumentService {
   #logger: ILogger;
   #anchoring: AnchoringService;
   #updateService: DocumentUpdateService;
@@ -28,13 +30,6 @@ export class DocumentService {
     this.#anchoring = anchoring;
     this.#updateService = updateService;
     this.#cloud = cloud;
-  }
-
-  async applyHead(recordCid: CID, state$: FrozenSubject<DocumentState>) {
-    const nextState = await this.#updateService.applyHead(recordCid, state$.value);
-    if (nextState) {
-      state$.next(nextState);
-    }
   }
 
   handleUpdate(docId: CeramicDocumentId, state: DocumentState) {
@@ -78,7 +73,7 @@ export class DocumentService {
     });
   }
 
-  async update(record: any, state$: FrozenSubject<DocumentState>) {
+  async update(record: any, state$: FrozenSubject<DocumentState>): Promise<void> {
     const cid = await this.#cloud.store(normalizeRecord(record));
     const recordWrap = new RecordWrap(record, cid);
     const next = await this.#updateService.applyUpdate(recordWrap, state$.value);
@@ -87,18 +82,27 @@ export class DocumentService {
     state$.next(next);
   }
 
-  requestAnchor(docId: CeramicDocumentId, cid: CID) {
+  requestAnchor(docId: CeramicDocumentId, cid: CID): void {
     this.#logger.debug(`Requesting anchor for ${docId.toString()}?version=${cid.toString()}`);
     this.#anchoring.requestAnchor(docId, cid);
   }
 
-  requestUpdates(docId: CeramicDocumentId, state$: FrozenSubject<DocumentState>) {
+  requestUpdates(docId: CeramicDocumentId, state$: FrozenSubject<DocumentState>): Subscription {
     this.#logger.debug(`Requesting updates for ${docId}`);
     this.#cloud.bus.request(docId.toString());
-    this.#cloud.bus.message$.pipe(filter((message) => message.id === docId.toString())).subscribe(async (message) => {
-      if (message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE) {
-        await this.applyHead(message.cid, state$);
-      }
-    });
+    return this.#cloud.bus.message$
+      .pipe(filter((message) => message.id === docId.toString()))
+      .subscribe(async (message) => {
+        if (message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE) {
+          await this.applyHead(message.cid, state$);
+        }
+      });
+  }
+
+  private async applyHead(recordCid: CID, state$: FrozenSubject<DocumentState>) {
+    const nextState = await this.#updateService.applyHead(recordCid, state$.value);
+    if (nextState) {
+      state$.next(nextState);
+    }
   }
 }
