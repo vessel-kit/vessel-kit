@@ -18,6 +18,7 @@ import { ThreeIdResolver } from './resolver/three-id-resolver';
 import { VesselAlphaRulesetHandler } from './handlers/vessel-alpha-ruleset-handler';
 import { VESSEL_DOCUMENT_DOCTYPE, VESSEL_RULESET_DOCTYPE } from './handlers/vessel-freight';
 import { VesselAlphaDocumentHandler } from './handlers/vessel-alpha-document-handler';
+import { Document } from './document';
 
 export interface CeramicOptions {
   logger?: ILogger;
@@ -50,7 +51,7 @@ export class Ceramic {
     logger.log(`Constructed Ceramic instance`, options);
   }
 
-  static build(ipfs: Ipfs, options?: CeramicOptions) {
+  static build(ipfs: Ipfs, options?: CeramicOptions): Ceramic {
     const appliedOptions = Object.assign(
       {
         logger: new ConsoleLogger('Ceramic'),
@@ -62,15 +63,15 @@ export class Ceramic {
     return new Ceramic(ipfs, appliedOptions);
   }
 
-  async create(genesis: any) {
+  async create(genesis: any): Promise<Document> {
     return this.#documentRepository.create(genesis);
   }
 
-  async load(docId: CeramicDocumentId) {
+  async load(docId: CeramicDocumentId): Promise<Document> {
     return this.#documentRepository.load(docId);
   }
 
-  async list() {
+  async list(): Promise<Document[]> {
     return this.#documentRepository.list();
   }
 }
