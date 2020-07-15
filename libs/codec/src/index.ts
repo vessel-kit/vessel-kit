@@ -7,6 +7,7 @@ export * from './ceramic-document-id';
 export * from './decode-pipe';
 export * from './normalize-record';
 export * from './record-wrap';
+export * from './type-as-codec'
 
 export * from './codecs/date.number.codec';
 export * from './codecs/cid.ipld.codec';

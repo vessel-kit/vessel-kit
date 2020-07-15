@@ -1,7 +1,7 @@
 import { ISignor } from './signor/signor.interface';
 import { ThreeId } from './doctypes/three-id.doctype';
 import axios from 'axios';
-import { DoctypeA, DoctypeStatic, TypedDocument, WithDoctype } from './doctypes/doctypes';
+import { DoctypeA, TypedDocument, WithDoctype } from './doctypes/doctypes';
 import { decodeThrow } from '@potter/codec';
 import { DocumentState } from './document.state';
 import { CeramicDocumentId } from '@potter/codec';
@@ -206,7 +206,7 @@ export class Client {
       return this.load(documentId);
     } else {
       const publicKeys = await this.#signor.publicKeys();
-      const document = await this.createA(ThreeId, {
+      const document = await this.create(ThreeId, {
         owners: [publicKeys.managementKey],
         content: {
           publicKeys: {
@@ -222,30 +222,13 @@ export class Client {
     }
   }
 
-  async createA<F extends WithDoctype, A extends DoctypeA<F>>(t: A, c: Omit<F, 'doctype'>) {
+  async create<F extends WithDoctype, A extends DoctypeA<F>>(t: A, c: Omit<F, 'doctype'>) {
     const record = await t.makeGenesis(c);
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
     const state = decodeThrow(DocumentState, response.data);
     const document = new RemoteDocument(state, this.#service);
     document.requestUpdates();
     return document;
-  }
-
-  async create<A extends DoctypeStatic<F>, F extends WithDoctype>(
-    t: A,
-    c: Omit<A['FREIGHT'], 'doctype'> | F,
-  ): Promise<RemoteDocument> {
-    if (typeof t === 'string') {
-      throw new Error(`Not Implemented: Client.create(string)`);
-    } else {
-      const doctype = new t();
-      const record = await doctype.makeGenesis(c);
-      const genesisResponse = await axios.post(`${this.host}/api/v0/ceramic`, record);
-      const state = decodeThrow(DocumentState, genesisResponse.data);
-      const document = new RemoteDocument(state, this.#service);
-      document.requestUpdates();
-      return document;
-    }
   }
 
   async load(docId: CeramicDocumentId): Promise<RemoteDocument> {

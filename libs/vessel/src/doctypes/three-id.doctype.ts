@@ -1,8 +1,8 @@
 import * as jose from 'jose';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
-import { BufferMultibaseCodec } from '@potter/codec';
-import { codec, doctype } from './doctypes';
+import { BufferMultibaseCodec, typeAsCodec } from '@potter/codec';
+import { doctype } from './doctypes';
 import { DocumentState } from '../document.state';
 
 export interface ThreeIdFreight {
@@ -27,7 +27,7 @@ const ThreeIdFreightCodec = t.type({
   }),
 });
 
-export const ThreeId = doctype('3id', codec(ThreeIdFreightCodec), {
+export const ThreeId = doctype('3id', typeAsCodec(ThreeIdFreightCodec), {
   async makeGenesis(payload: Omit<ThreeIdFreight, 'doctype'>): Promise<any> {
     const applied = Object.assign({}, payload, { doctype: '3id' as '3id' });
     return ThreeIdFreightCodec.encode(applied);
