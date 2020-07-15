@@ -1,7 +1,7 @@
 import { DocumentState } from '../document.state';
 import { RecordWrap } from '@potter/codec';
 import { Codec } from '@potter/codec';
-import { IContext, RemoteDocument, UpdateRecordWaiting } from '../client';
+import { IContext, RemoteDocument, UpdateRecordWaiting } from '../remote/client';
 import jsonPatch from 'fast-json-patch';
 
 export interface WithDoctype {
@@ -9,6 +9,7 @@ export interface WithDoctype {
 }
 
 export interface Handler<Freight extends WithDoctype> {
+  // Return payload as JSON
   makeGenesis(payload: Omit<Freight, 'doctype'>): Promise<any>;
   applyUpdate(updateRecord: RecordWrap, state: DocumentState): Promise<DocumentState>;
 }

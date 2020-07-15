@@ -1,7 +1,7 @@
 import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
-import { Client } from '../client';
+import { Client } from '../remote/client';
 import { ThreeId } from '../doctypes/three-id.doctype';
 import * as jose from 'jose'
 

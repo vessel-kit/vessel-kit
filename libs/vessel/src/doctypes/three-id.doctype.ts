@@ -28,9 +28,8 @@ const ThreeIdFreightCodec = t.type({
 });
 
 export const ThreeId = doctype('3id', typeAsCodec(ThreeIdFreightCodec), {
-  async makeGenesis(payload: Omit<ThreeIdFreight, 'doctype'>): Promise<any> {
-    const applied = Object.assign({}, payload, { doctype: '3id' as '3id' });
-    return ThreeIdFreightCodec.encode(applied);
+  async makeGenesis(payload: ThreeIdFreight): Promise<any> {
+    return ThreeIdFreightCodec.encode(payload);
   },
   async applyUpdate(updateRecord, state: DocumentState): Promise<DocumentState> {
     console.log('ThreeId.applyUpdate');

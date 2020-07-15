@@ -1,16 +1,15 @@
-import { ISignor } from './signor/signor.interface';
-import { ThreeId } from './doctypes/three-id.doctype';
+import { ISignor } from '../signor/signor.interface';
+import { ThreeId } from '../doctypes/three-id.doctype';
 import axios from 'axios';
-import { DoctypeA, TypedDocument, WithDoctype } from './doctypes/doctypes';
+import { DoctypeA, WithDoctype } from '../doctypes/doctypes';
 import { decodeThrow } from '@potter/codec';
-import { DocumentState } from './document.state';
+import { DocumentState } from '../document.state';
 import { CeramicDocumentId } from '@potter/codec';
-import { ThreeIdentifier, ThreeIdentifierCidCodec } from './three-identifier';
-import { FrozenSubject } from './frozen-subject';
-import { interval, Subscription } from 'rxjs';
-import * as _ from 'lodash';
+import { ThreeIdentifier, ThreeIdentifierCidCodec } from '../three-identifier';
 import * as t from 'io-ts';
 import { CidObjectCodec, CeramicDocumentIdCidCodec, FastPatchOperationJsonCodec } from '@potter/codec';
+import { RemoteDocumentService } from './remote-document-service';
+import { RemoteDocument } from './remote-document';
 
 export const UpdateRecordWaiting = t.type({
   patch: t.array(FastPatchOperationJsonCodec),
@@ -26,90 +25,6 @@ export const SignedRecord = t.type({
 });
 
 export const UpdateRecord = t.intersection([UpdateRecordWaiting, SignedRecord]);
-
-export class RemoteDocumentService {
-  #host: string;
-  #context: ISignorContext;
-
-  constructor(host: string, context: ISignorContext) {
-    this.#host = host;
-    this.#context = context;
-  }
-
-  get context() {
-    return this.#context;
-  }
-
-  // TODO When merging with local one, return subscription too
-  requestUpdates(docId: CeramicDocumentId, state$: FrozenSubject<DocumentState>): Subscription {
-    const timer = interval(5000);
-    return timer.subscribe(async () => {
-      const response = await axios.get(`${this.#host}/api/v0/ceramic/${docId.valueOf()}`);
-      if (!_.isEqual(response.data, DocumentState.encode(state$.value))) {
-        const state = decodeThrow(DocumentState, response.data);
-        state$.next(state);
-      }
-    });
-  }
-
-  async update(record: any, state$: FrozenSubject<DocumentState>) {
-    const documentId = state$.value.log.first;
-    const response = await axios.put(`${this.#host}/api/v0/ceramic/${documentId}`, record);
-    const next = decodeThrow(DocumentState, response.data)
-    state$.next(next)
-  }
-}
-
-export class RemoteDocument {
-  #id: CeramicDocumentId;
-  #state$: FrozenSubject<DocumentState>;
-  #remoteUpdateSubscription?: Subscription;
-  #service: RemoteDocumentService;
-
-  constructor(state: DocumentState, service: RemoteDocumentService) {
-    this.#state$ = new FrozenSubject(state);
-    const genesisCid = this.#state$.value.log.first;
-    this.#id = new CeramicDocumentId(genesisCid);
-    this.#service = service;
-  }
-
-  get id(): CeramicDocumentId {
-    return this.#id;
-  }
-
-  get state() {
-    return this.#state$.value;
-  }
-
-  get current() {
-    return this.state.current || this.state.freight;
-  }
-
-  get state$() {
-    return this.#state$;
-  }
-
-  // TODO When merging with local version, do this on constructor maybe?
-  requestUpdates() {
-    this.#remoteUpdateSubscription = this.#service.requestUpdates(this.#id, this.state$);
-  }
-
-  as<F extends WithDoctype>(doctype: DoctypeA<F>) {
-    if (doctype.name === this.state.doctype) {
-      return new TypedDocument(this, doctype, this.#service.context);
-    } else {
-      throw new Error(`Can not cast ${this.state.doctype} as ${doctype.name}`);
-    }
-  }
-
-  update(record: any) {
-    return this.#service.update(record, this.state$);
-  }
-
-  close(): void {
-    this.#remoteUpdateSubscription.unsubscribe();
-  }
-}
 
 export interface ISignorContext {
   sign(payload: any, opts?: { useMgmt: boolean }): Promise<void>;
@@ -172,8 +87,9 @@ export class Client {
     }
   }
 
-  async create<F extends WithDoctype, A extends DoctypeA<F>>(t: A, c: Omit<F, 'doctype'>) {
-    const record = await t.makeGenesis(c);
+  async create<F extends WithDoctype, A extends DoctypeA<F>>(t: A, payload: Omit<F, 'doctype'>) {
+    const applied = Object.assign({}, payload, { doctype: t.name });
+    const record = await t.makeGenesis(applied);
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
     const state = decodeThrow(DocumentState, response.data);
     const document = new RemoteDocument(state, this.#service);
