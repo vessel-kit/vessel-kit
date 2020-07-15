@@ -16,7 +16,7 @@ export interface ThreeIdFreight {
   };
 }
 
-const ThreeIdFreightJSON = t.type({
+const ThreeIdFreightCodec = t.type({
   doctype: t.literal('3id'),
   owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec)),
   content: t.type({
@@ -27,10 +27,10 @@ const ThreeIdFreightJSON = t.type({
   }),
 });
 
-export const ThreeIdA = doctype('3id', codec(ThreeIdFreightJSON), {
+export const ThreeId = doctype('3id', codec(ThreeIdFreightCodec), {
   async makeGenesis(payload: Omit<ThreeIdFreight, 'doctype'>): Promise<any> {
     const applied = Object.assign({}, payload, { doctype: '3id' as '3id' });
-    return ThreeIdFreightJSON.encode(applied);
+    return ThreeIdFreightCodec.encode(applied);
   },
   async applyUpdate(updateRecord, state: DocumentState): Promise<DocumentState> {
     console.log('ThreeId.applyUpdate');

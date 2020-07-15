@@ -1,5 +1,5 @@
 import { ISignor } from './signor/signor.interface';
-import { ThreeIdA } from './doctypes/three-id.doctype';
+import { ThreeId } from './doctypes/three-id.doctype';
 import axios from 'axios';
 import { DoctypeA, DoctypeStatic, TypedDocument, WithDoctype } from './doctypes/doctypes';
 import { decodeThrow } from '@potter/codec';
@@ -206,7 +206,7 @@ export class Client {
       return this.load(documentId);
     } else {
       const publicKeys = await this.#signor.publicKeys();
-      const document = await this.createA(ThreeIdA, {
+      const document = await this.createA(ThreeId, {
         owners: [publicKeys.managementKey],
         content: {
           publicKeys: {

@@ -2,7 +2,7 @@ import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import { Client } from '../client';
-import { ThreeIdA } from '../doctypes/three-id.doctype';
+import { ThreeId } from '../doctypes/three-id.doctype';
 import * as jose from 'jose'
 
 const REMOTE_URL = 'http://localhost:3001';
@@ -15,7 +15,7 @@ async function main() {
 
   const client = new Client(REMOTE_URL);
   const document = await client.addSignor(user);
-  const threeId = document.as(ThreeIdA)
+  const threeId = document.as(ThreeId)
   console.log('initial', document.state)
   await sleep(80000);
   console.log('initial after wait', document.state)
