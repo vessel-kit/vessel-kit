@@ -10,7 +10,7 @@ import { FrozenSubject } from './frozen-subject';
 import { RecordWrap, normalizeRecord } from '@potter/codec';
 import { MessageTyp } from './cloud/message-typ';
 import { filter } from 'rxjs/operators';
-import { IDocumentService } from './document-service.interface';
+import { IDocumentService } from './document.service.interface';
 import { Subscription } from 'rxjs';
 import { IContext } from './context';
 

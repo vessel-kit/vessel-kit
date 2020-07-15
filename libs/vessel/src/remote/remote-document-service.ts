@@ -4,7 +4,7 @@ import { interval, Subscription, queueScheduler } from 'rxjs';
 import axios from 'axios';
 import * as _ from 'lodash';
 import { CeramicDocumentId, decodeThrow } from '@potter/codec';
-import { IDocumentService } from '../document-service.interface';
+import { IDocumentService } from '../document.service.interface';
 import CID from 'cids';
 import { IContext } from '../context';
 

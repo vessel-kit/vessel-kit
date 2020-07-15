@@ -3,7 +3,7 @@ import { DocumentState } from '../document.state';
 import { Subscription } from 'rxjs';
 import { Doctype, TypedDocument, WithDoctype } from '../doctypes/doctypes';
 import { CeramicDocumentId } from '@potter/codec';
-import { IDocumentService } from '../document-service.interface';
+import { IDocumentService } from '../document.service.interface';
 
 export class RemoteDocument {
   #id: CeramicDocumentId;
