@@ -3,16 +3,16 @@ import { DocumentState } from '../document.state';
 import { interval, Subscription, queueScheduler } from 'rxjs';
 import axios from 'axios';
 import * as _ from 'lodash';
-import { ISignorContext } from './client';
 import { CeramicDocumentId, decodeThrow } from '@potter/codec';
 import { IDocumentService } from '../document-service.interface';
 import CID from 'cids';
+import { IContext } from '../context';
 
 export class RemoteDocumentService implements IDocumentService {
   #host: string;
-  #context: ISignorContext;
+  #context: IContext;
 
-  constructor(host: string, context: ISignorContext) {
+  constructor(host: string, context: IContext) {
     this.#host = host;
     this.#context = context;
   }
@@ -43,7 +43,6 @@ export class RemoteDocumentService implements IDocumentService {
   requestAnchor(docId: CeramicDocumentId, cid: CID): void {
     queueScheduler.schedule(async () => {
       const endpoint = `${this.#host}/api/v0/ceramic/${docId.valueOf()}/anchor`;
-      console.log(`Doing anchor request to ${endpoint}`);
       await axios.post(endpoint);
     });
   }

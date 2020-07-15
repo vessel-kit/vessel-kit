@@ -19,6 +19,8 @@ import { VesselAlphaRulesetHandler } from './handlers/vessel-alpha-ruleset-handl
 import { VESSEL_DOCUMENT_DOCTYPE, VESSEL_RULESET_DOCTYPE } from './handlers/vessel-freight';
 import { VesselAlphaDocumentHandler } from './handlers/vessel-alpha-document-handler';
 import { Document } from './document';
+import { ISignor } from './signor/signor.interface';
+import { Context } from './context';
 
 export interface CeramicOptions {
   logger?: ILogger;
@@ -28,6 +30,7 @@ export interface CeramicOptions {
 
 export class Ceramic {
   #documentRepository: DocumentRepository;
+  #signor?: ISignor;
 
   constructor(ipfs: Ipfs, options: CeramicOptions) {
     const logger = options.logger;
@@ -46,10 +49,19 @@ export class Ceramic {
     const blockchainEndpoints = options.blockchainEndpoints || [];
     const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
     const documentUpdateService = new DocumentUpdateService(logger, handlers, anchoringService, cloud);
-    const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService);
+    const context = new Context(() => {
+      if (this.#signor) {
+        return this.#signor;
+      } else {
+        throw new Error(`No signor set`);
+      }
+    });
+    const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
     this.#documentRepository = new DocumentRepository(logger, handlers, cloud, documentService);
     logger.log(`Constructed Ceramic instance`, options);
   }
+
+  // TODO addSignor
 
   static build(ipfs: Ipfs, options?: CeramicOptions): Ceramic {
     const appliedOptions = Object.assign(

@@ -10,6 +10,7 @@ import * as t from 'io-ts';
 import { CidObjectCodec, CeramicDocumentIdCidCodec, FastPatchOperationJsonCodec } from '@potter/codec';
 import { RemoteDocumentService } from './remote-document-service';
 import { RemoteDocument } from './remote-document';
+import { Context } from '../context';
 
 export const UpdateRecordWaiting = t.type({
   patch: t.array(FastPatchOperationJsonCodec),
@@ -26,40 +27,20 @@ export const SignedRecord = t.type({
 
 export const UpdateRecord = t.intersection([UpdateRecordWaiting, SignedRecord]);
 
-export interface ISignorContext {
-  sign(payload: any, opts?: { useMgmt: boolean }): Promise<void>;
-  did(): Promise<ThreeIdentifier | undefined>;
-}
-
-export type IContext = ISignorContext;
-
 export class Client {
   #signor?: ISignor;
   #tracked: Map<string, RemoteDocument> = new Map();
   #service: RemoteDocumentService;
-  #context: ISignorContext;
 
   constructor(private readonly host: string) {
-    this.#context = {
-      sign: async (payload: any, opts?: { useMgmt: boolean }) => {
-        const did = await this.#signor.did();
-        if (did) {
-          const jwt = await this.#signor.sign(payload, opts);
-          return {
-            ...payload,
-            iss: did,
-            header: jwt.header,
-            signature: jwt.signature,
-          };
-        } else {
-          throw new Error(`No DID set for the signor`);
-        }
-      },
-      did: (): Promise<ThreeIdentifier | undefined> => {
-        return this.#signor.did();
-      },
-    };
-    this.#service = new RemoteDocumentService(host, this.#context);
+    const context = new Context(() => {
+      if (this.#signor) {
+        return this.#signor;
+      } else {
+        throw new Error(`No signor set`);
+      }
+    });
+    this.#service = new RemoteDocumentService(host, context);
   }
 
   async addSignor(signor: ISignor): Promise<RemoteDocument> {

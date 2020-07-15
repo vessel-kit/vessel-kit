@@ -12,6 +12,7 @@ import { MessageTyp } from './cloud/message-typ';
 import { filter } from 'rxjs/operators';
 import { IDocumentService } from './document-service.interface';
 import { Subscription } from 'rxjs';
+import { IContext } from './context';
 
 export class UnhandledAnchoringStatus extends Error {
   constructor(status: never) {
@@ -24,12 +25,24 @@ export class DocumentService implements IDocumentService {
   #anchoring: AnchoringService;
   #updateService: DocumentUpdateService;
   #cloud: Cloud;
+  #context: IContext;
 
-  constructor(logger: ILogger, anchoring: AnchoringService, cloud: Cloud, updateService: DocumentUpdateService) {
+  constructor(
+    logger: ILogger,
+    anchoring: AnchoringService,
+    cloud: Cloud,
+    updateService: DocumentUpdateService,
+    context: IContext,
+  ) {
     this.#logger = logger.withContext(DocumentService.name);
     this.#anchoring = anchoring;
     this.#updateService = updateService;
     this.#cloud = cloud;
+    this.#context = context;
+  }
+
+  get context() {
+    return this.#context;
   }
 
   handleUpdate(docId: CeramicDocumentId, state: DocumentState) {

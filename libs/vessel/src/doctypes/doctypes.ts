@@ -1,9 +1,10 @@
 import { DocumentState } from '../document.state';
 import { RecordWrap } from '@potter/codec';
 import { Codec } from '@potter/codec';
-import { IContext, UpdateRecordWaiting } from '../remote/client';
+import { UpdateRecordWaiting } from '../remote/client';
 import jsonPatch from 'fast-json-patch';
 import { RemoteDocument } from '../remote/remote-document';
+import { IContext } from '../context';
 
 export interface WithDoctype {
   doctype: string;
@@ -16,14 +17,14 @@ export interface Handler<Freight extends WithDoctype> {
 }
 
 export class TypedDocument<F extends WithDoctype> {
-  #document: RemoteDocument
-  #doctype: Doctype<F>
-  #context: IContext
+  #document: RemoteDocument;
+  #doctype: Doctype<F>;
+  #context: IContext;
 
   constructor(document: RemoteDocument, doctype: Doctype<F>, context: IContext) {
-    this.#document = document
-    this.#doctype = doctype
-    this.#context = context
+    this.#document = document;
+    this.#doctype = doctype;
+    this.#context = context;
   }
 
   get state(): F {
@@ -37,10 +38,10 @@ export class TypedDocument<F extends WithDoctype> {
     const payloadToSign = UpdateRecordWaiting.encode({
       patch: patch,
       prev: this.#document.state.log.last,
-      id: this.#document.id
-    })
-    const signedUpdateRecord = await this.#context.sign(payloadToSign, opts)
-    await this.#document.update(signedUpdateRecord)
+      id: this.#document.id,
+    });
+    const signedUpdateRecord = await this.#context.sign(payloadToSign, opts);
+    await this.#document.update(signedUpdateRecord);
   }
 }
 

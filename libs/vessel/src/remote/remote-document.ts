@@ -1,17 +1,17 @@
 import { FrozenSubject } from '../frozen-subject';
 import { DocumentState } from '../document.state';
 import { Subscription } from 'rxjs';
-import { RemoteDocumentService } from './remote-document-service';
 import { Doctype, TypedDocument, WithDoctype } from '../doctypes/doctypes';
 import { CeramicDocumentId } from '@potter/codec';
+import { IDocumentService } from '../document-service.interface';
 
 export class RemoteDocument {
   #id: CeramicDocumentId;
   #state$: FrozenSubject<DocumentState>;
   #remoteUpdateSubscription?: Subscription;
-  #service: RemoteDocumentService;
+  #service: IDocumentService;
 
-  constructor(state: DocumentState, service: RemoteDocumentService) {
+  constructor(state: DocumentState, service: IDocumentService) {
     this.#state$ = new FrozenSubject(state);
     const genesisCid = this.#state$.value.log.first;
     this.#id = new CeramicDocumentId(genesisCid);
