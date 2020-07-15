@@ -17,3 +17,4 @@ export * from './codecs/ceramic-document-id.cid.codec'
 export * from './codecs/ceramic-document-id.string.codec';
 export * from './codecs/buffer.multibase.codec';
 export * from './codecs/date.iso8601.codec';
+export * from './codecs/fast-patch-operation.json.codec'

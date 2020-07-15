@@ -10,60 +10,10 @@ import { FrozenSubject } from './frozen-subject';
 import { interval, Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
-import { CidObjectCodec, CeramicDocumentIdCidCodec } from '@potter/codec';
-
-const AddOperationCodec = t.type({
-  op: t.literal('add'),
-  value: t.unknown,
-  path: t.string,
-});
-
-const RemoveOperationCodec = t.type({
-  op: t.literal('remove'),
-  path: t.string,
-});
-
-const ReplaceOperationCodec = t.type({
-  op: t.literal('replace'),
-  path: t.string,
-});
-
-const MoveOperationCodec = t.type({
-  op: t.literal('move'),
-  path: t.string,
-  from: t.string,
-});
-
-const CopyOperationCodec = t.type({
-  op: t.literal('copy'),
-  path: t.string,
-  from: t.string,
-});
-
-const TestOperationCodec = t.type({
-  op: t.literal('test'),
-  path: t.string,
-  value: t.unknown,
-});
-
-const GetOperationCodec = t.type({
-  op: t.literal('_get'),
-  path: t.string,
-  value: t.unknown,
-});
-
-const FastPatchOperationCodec = t.union([
-  AddOperationCodec,
-  RemoveOperationCodec,
-  ReplaceOperationCodec,
-  MoveOperationCodec,
-  TestOperationCodec,
-  CopyOperationCodec,
-  GetOperationCodec,
-]);
+import { CidObjectCodec, CeramicDocumentIdCidCodec, FastPatchOperationJsonCodec } from '@potter/codec';
 
 export const UpdateRecordWaiting = t.type({
-  patch: t.array(FastPatchOperationCodec),
+  patch: t.array(FastPatchOperationJsonCodec),
   prev: CidObjectCodec,
   id: CidObjectCodec.pipe(CeramicDocumentIdCidCodec),
 });
