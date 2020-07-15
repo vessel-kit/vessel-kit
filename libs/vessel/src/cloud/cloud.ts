@@ -33,7 +33,7 @@ export class Cloud {
     return this.#ipfs.dag.put(content)
   }
 
-  async retrieve(cid: CID, path?: string) {
+  async retrieve(cid: CID, path?: string): Promise<any> {
     const blob = await this.#ipfs.dag.get(cid, path)
     return blob?.value
   }

@@ -2,12 +2,10 @@ import * as jose from 'jose';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
 import { BufferMultibaseCodec } from '@potter/codec';
-import { Doctype } from './doctypes';
+import { codec, doctype } from './doctypes';
 import { DocumentState } from '../document.state';
-import { RecordWrap } from '@potter/codec';
-import { RemoteDocument } from '../client';
 
-interface ThreeIdFreight {
+export interface ThreeIdFreight {
   doctype: '3id';
   owners: jose.JWK.Key[];
   content: {
@@ -29,17 +27,13 @@ const ThreeIdFreightJSON = t.type({
   }),
 });
 
-export class ThreeId implements Doctype<ThreeIdFreight> {
-  static NAME = '3id';
-  static FREIGHT: ThreeIdFreight;
-
-  async makeGenesis(payload: ThreeIdFreight) {
-    const applied = Object.assign({}, payload, { doctype: ThreeId.NAME });
+export const ThreeIdA = doctype('3id', codec(ThreeIdFreightJSON), {
+  async makeGenesis(payload: Omit<ThreeIdFreight, 'doctype'>): Promise<any> {
+    const applied = Object.assign({}, payload, { doctype: '3id' as '3id' });
     return ThreeIdFreightJSON.encode(applied);
-  }
-
-  async applyUpdate(updateRecord: RecordWrap, state: DocumentState): Promise<DocumentState> {
-    console.log('ThreeId.applyUpdate')
+  },
+  async applyUpdate(updateRecord, state: DocumentState): Promise<DocumentState> {
+    console.log('ThreeId.applyUpdate');
     return state;
-  }
-}
+  },
+});
