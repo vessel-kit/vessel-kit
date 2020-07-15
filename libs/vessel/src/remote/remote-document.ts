@@ -2,7 +2,7 @@ import { FrozenSubject } from '../frozen-subject';
 import { DocumentState } from '../document.state';
 import { Subscription } from 'rxjs';
 import { RemoteDocumentService } from './remote-document-service';
-import { DoctypeA, TypedDocument, WithDoctype } from '../doctypes/doctypes';
+import { Doctype, TypedDocument, WithDoctype } from '../doctypes/doctypes';
 import { CeramicDocumentId } from '@potter/codec';
 
 export class RemoteDocument {
@@ -39,7 +39,7 @@ export class RemoteDocument {
     this.#remoteUpdateSubscription = this.#service.requestUpdates(this.#id, this.state$);
   }
 
-  as<F extends WithDoctype>(doctype: DoctypeA<F>) {
+  as<F extends WithDoctype>(doctype: Doctype<F>) {
     if (doctype.name === this.state.doctype) {
       return new TypedDocument(this, doctype, this.#service.context);
     } else {

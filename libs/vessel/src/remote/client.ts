@@ -1,7 +1,7 @@
 import { ISignor } from '../signor/signor.interface';
 import { ThreeId } from '../doctypes/three-id.doctype';
 import axios from 'axios';
-import { DoctypeA, WithDoctype } from '../doctypes/doctypes';
+import { Doctype, WithDoctype } from '../doctypes/doctypes';
 import { decodeThrow } from '@potter/codec';
 import { DocumentState } from '../document.state';
 import { CeramicDocumentId } from '@potter/codec';
@@ -87,7 +87,7 @@ export class Client {
     }
   }
 
-  async create<F extends WithDoctype, A extends DoctypeA<F>>(t: A, payload: Omit<F, 'doctype'>) {
+  async create<F extends WithDoctype, A extends Doctype<F>>(t: A, payload: Omit<F, 'doctype'>) {
     const applied = Object.assign({}, payload, { doctype: t.name });
     const record = await t.makeGenesis(applied);
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
