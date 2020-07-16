@@ -4,25 +4,31 @@ import { Subscription } from 'rxjs';
 import { Doctype, TypedDocument, WithDoctype } from '../doctypes/doctypes';
 import { CeramicDocumentId } from '@potter/codec';
 import { IDocumentService } from '../document.service.interface';
+import { IDocument } from '../document.interface';
+import CID from 'cids';
 
-export class RemoteDocument {
+export class RemoteDocument implements IDocument {
   #id: CeramicDocumentId;
   #state$: FrozenSubject<DocumentState>;
-  #remoteUpdateSubscription?: Subscription;
+  #external$S: Subscription;
   #service: IDocumentService;
 
   constructor(state: DocumentState, service: IDocumentService) {
+    this.#id = new CeramicDocumentId(state.log.first);
     this.#state$ = new FrozenSubject(state);
-    const genesisCid = this.#state$.value.log.first;
-    this.#id = new CeramicDocumentId(genesisCid);
     this.#service = service;
+    this.#external$S = this.#service.externalUpdates$(this.#id, this.#state$).subscribe(this.state$);
   }
 
   get id(): CeramicDocumentId {
     return this.#id;
   }
 
-  get state() {
+  get head(): CID {
+    return this.state.log.last;
+  }
+
+  get state(): DocumentState {
     return this.#state$.value;
   }
 
@@ -32,11 +38,6 @@ export class RemoteDocument {
 
   get state$() {
     return this.#state$;
-  }
-
-  // TODO When merging with local version, do this on constructor maybe?
-  requestUpdates() {
-    this.#remoteUpdateSubscription = this.#service.requestUpdates(this.#id, this.state$);
   }
 
   requestAnchor(): void {
@@ -56,6 +57,6 @@ export class RemoteDocument {
   }
 
   close(): void {
-    this.#remoteUpdateSubscription.unsubscribe();
+    this.#external$S.unsubscribe();
   }
 }

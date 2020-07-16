@@ -73,17 +73,13 @@ export class Client {
     const record = await t.makeGenesis(applied);
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
     const state = decodeThrow(DocumentState, response.data);
-    const document = new RemoteDocument(state, this.#service);
-    document.requestUpdates();
-    return document;
+    return new RemoteDocument(state, this.#service);
   }
 
   async load(docId: CeramicDocumentId): Promise<RemoteDocument> {
     const genesisResponse = await axios.get(`${this.host}/api/v0/ceramic/${docId.valueOf()}`);
     const state = decodeThrow(DocumentState, genesisResponse.data);
-    const document = new RemoteDocument(state, this.#service);
-    document.requestUpdates();
-    return document;
+    return new RemoteDocument(state, this.#service);
   }
 
   close() {
