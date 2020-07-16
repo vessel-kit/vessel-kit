@@ -9,9 +9,9 @@ import { DocumentUpdateService } from './document-update.service';
 import { FrozenSubject, FrozenSubjectRead } from './frozen-subject';
 import { RecordWrap, normalizeRecord } from '@potter/codec';
 import { MessageTyp } from './cloud/message-typ';
-import { filter, map, mergeAll, mergeMap } from 'rxjs/operators';
+import { filter, mergeMap } from 'rxjs/operators';
 import { IDocumentService } from './document.service.interface';
-import { merge, Observable, Subscription } from 'rxjs';
+import { merge, Observable } from 'rxjs';
 import { IContext } from './context';
 
 export class UnhandledAnchoringStatus extends Error {

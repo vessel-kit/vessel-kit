@@ -4,7 +4,10 @@ import { DocumentState } from './document.state';
 import { FrozenSubject } from './frozen-subject';
 import CID from 'cids';
 import { IDocumentService } from './document.service.interface';
-import { Doctype, IDocument, TypedDocument, WithDoctype } from './doctypes/doctypes';
+import { IWithDoctype } from './doctypes/with-doctype.interface';
+import { IDoctype } from './doctypes/doctype.interface';
+import { IDocument, ITypedDocument } from './doctypes/document.interface';
+import { TypedDocument } from './doctypes/typed-document';
 
 export class Document implements IDocument {
   #id: CeramicDocumentId;
@@ -52,10 +55,9 @@ export class Document implements IDocument {
     this.#service.requestAnchor(this.#id, this.state.log.last);
   }
 
-  as<F extends WithDoctype>(doctype: Doctype<F>): TypedDocument<F> {
+  as<F extends IWithDoctype>(doctype: IDoctype<F>): ITypedDocument<F> {
     if (doctype.name === this.state.doctype) {
-      throw new Error(`NOPE`)
-      // return new TypedDocument(this, doctype, this.#service.context);
+      return new TypedDocument(this, doctype, this.#service.context);
     } else {
       throw new Error(`Can not cast ${this.state.doctype} as ${doctype.name}`);
     }

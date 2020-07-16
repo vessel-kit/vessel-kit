@@ -1,7 +1,6 @@
 import { ISignor } from '../signor/signor.interface';
 import { ThreeId } from '../doctypes/three-id.doctype';
 import axios from 'axios';
-import { Doctype, IDocument, WithDoctype } from '../doctypes/doctypes';
 import { decodeThrow } from '@potter/codec';
 import { DocumentState } from '../document.state';
 import { CeramicDocumentId } from '@potter/codec';
@@ -11,6 +10,9 @@ import { CidObjectCodec, CeramicDocumentIdCidCodec, FastPatchOperationJsonCodec 
 import { RemoteDocumentService } from './remote-document-service';
 import { Context } from '../context';
 import { Document } from '../document';
+import { IWithDoctype } from '../doctypes/with-doctype.interface';
+import { IDoctype } from '../doctypes/doctype.interface';
+import { IDocument } from '../doctypes/document.interface';
 
 export const UpdateRecordWaiting = t.type({
   patch: t.array(FastPatchOperationJsonCodec),
@@ -68,7 +70,7 @@ export class Client {
     }
   }
 
-  async create<F extends WithDoctype, A extends Doctype<F>>(t: A, payload: Omit<F, 'doctype'>) {
+  async create<F extends IWithDoctype, A extends IDoctype<F>>(t: A, payload: Omit<F, 'doctype'>) {
     const applied = Object.assign({}, payload, { doctype: t.name });
     const record = await t.makeGenesis(applied);
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);

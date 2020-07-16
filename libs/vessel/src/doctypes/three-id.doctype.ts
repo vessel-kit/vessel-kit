@@ -2,7 +2,7 @@ import * as jose from 'jose';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
 import { BufferMultibaseCodec, typeAsCodec } from '@potter/codec';
-import { doctype } from './doctypes';
+import { doctype } from './doctype';
 import { DocumentState } from '../document.state';
 
 export interface ThreeIdFreight {

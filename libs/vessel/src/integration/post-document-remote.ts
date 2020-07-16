@@ -19,11 +19,11 @@ async function main() {
   console.log('initial', document.state)
   await sleep(80000);
   console.log('initial after wait', document.state)
-  await threeId.change({
-    ...threeId.state,
+  await threeId.update({
+    ...threeId.freight,
     content: {
       publicKeys: {
-        ...threeId.state.content.publicKeys,
+        ...threeId.freight.content.publicKeys,
         encryption: jose.JWK.generateSync('OKP', 'X25519')
       }
     }

@@ -68,7 +68,7 @@ export class DocumentUpdateService {
     const remoteState = await this.applyLog(remoteLog, nonConflictingState)
     if (remoteState.anchor.status ===  AnchoringStatus.ANCHORED && localState.anchor.status === AnchoringStatus.ANCHORED &&
       remoteState.anchor.proof.timestamp < localState.anchor.proof.timestamp) {
-      // if the remote state is anchored before the local,
+      // if the remote freight is anchored before the local,
       // apply the remote log to our local state
       return remoteState
     }
