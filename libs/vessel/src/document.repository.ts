@@ -7,17 +7,18 @@ import { HandlersContainer } from './handlers/handlers.container';
 import { MessageTyp } from './cloud/message-typ';
 import { Chain } from './util/chain';
 import { AnchoringStatus } from '@potter/anchoring';
+import { DoctypesContainer } from './doctypes-container';
 
 export class DocumentRepository {
   #logger: ILogger;
-  #handlers: HandlersContainer;
+  #doctypes: DoctypesContainer;
   #cloud: Cloud;
   #documentService: DocumentService;
   #documentCache: Map<string, Document>;
 
-  constructor(logger: ILogger, handlers: HandlersContainer, cloud: Cloud, documentService: DocumentService) {
+  constructor(logger: ILogger, doctypes: DoctypesContainer, cloud: Cloud, documentService: DocumentService) {
     this.#logger = logger.withContext(DocumentRepository.name);
-    this.#handlers = handlers;
+    this.#doctypes = doctypes;
     this.#cloud = cloud;
     this.#documentService = documentService;
     this.#logger.log(`Constructed DocumentService instance`);
@@ -36,7 +37,7 @@ export class DocumentRepository {
   async create(genesis: any): Promise<Document> {
     this.#logger.debug(`Creating document from genesis record`, genesis);
     const doctype = genesis.doctype;
-    const handler = this.#handlers.get(doctype);
+    const handler = this.#doctypes.get(doctype);
     this.#logger.debug(`Found handler for doctype "${doctype}"`);
     const record = await handler.makeGenesis(genesis);
     this.#logger.debug(`Genesis record is valid for doctype "${doctype}"`);
@@ -56,17 +57,8 @@ export class DocumentRepository {
       this.#logger.log(`Loading document ${documentId}...`);
       const genesis = await this.#cloud.retrieve(documentId.cid);
       this.#logger.debug(`Loaded genesis record for ${documentId}`);
-      const handler = this.#handlers.get(genesis.doctype);
-      const genesisRecord = await handler.applyGenesis(genesis);
-      const state = {
-        doctype: genesisRecord.doctype,
-        current: null,
-        freight: genesisRecord,
-        anchor: {
-          status: AnchoringStatus.NOT_REQUESTED as AnchoringStatus.NOT_REQUESTED,
-        },
-        log: new Chain([documentId.cid]),
-      };
+      const doctype = this.#doctypes.get(genesis.doctype);
+      const state = await doctype.applyGenesis(documentId, genesis);
       const document = new Document(state, this.#documentService);
       this.#documentCache.set(documentId.toString(), document);
       return document;
