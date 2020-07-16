@@ -1,7 +1,7 @@
 import { ISignor } from '../signor/signor.interface';
 import { ThreeId } from '../doctypes/three-id.doctype';
 import axios from 'axios';
-import { Doctype, WithDoctype } from '../doctypes/doctypes';
+import { Doctype, IDocument, WithDoctype } from '../doctypes/doctypes';
 import { decodeThrow } from '@potter/codec';
 import { DocumentState } from '../document.state';
 import { CeramicDocumentId } from '@potter/codec';
@@ -9,8 +9,8 @@ import { ThreeIdentifier, ThreeIdentifierCidCodec } from '../three-identifier';
 import * as t from 'io-ts';
 import { CidObjectCodec, CeramicDocumentIdCidCodec, FastPatchOperationJsonCodec } from '@potter/codec';
 import { RemoteDocumentService } from './remote-document-service';
-import { RemoteDocument } from './remote-document';
 import { Context } from '../context';
+import { Document } from '../document';
 
 export const UpdateRecordWaiting = t.type({
   patch: t.array(FastPatchOperationJsonCodec),
@@ -29,7 +29,7 @@ export const UpdateRecord = t.intersection([UpdateRecordWaiting, SignedRecord]);
 
 export class Client {
   #signor?: ISignor;
-  #tracked: Map<string, RemoteDocument> = new Map();
+  #tracked: Map<string, Document> = new Map();
   #service: RemoteDocumentService;
 
   constructor(private readonly host: string) {
@@ -43,7 +43,7 @@ export class Client {
     this.#service = new RemoteDocumentService(host, context);
   }
 
-  async addSignor(signor: ISignor): Promise<RemoteDocument> {
+  async addSignor(signor: ISignor): Promise<IDocument> {
     this.#signor = signor;
     const did = await this.#signor.did();
     if (did) {
@@ -73,13 +73,13 @@ export class Client {
     const record = await t.makeGenesis(applied);
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
     const state = decodeThrow(DocumentState, response.data);
-    return new RemoteDocument(state, this.#service);
+    return new Document(state, this.#service);
   }
 
-  async load(docId: CeramicDocumentId): Promise<RemoteDocument> {
+  async load(docId: CeramicDocumentId): Promise<Document> {
     const genesisResponse = await axios.get(`${this.host}/api/v0/ceramic/${docId.valueOf()}`);
     const state = decodeThrow(DocumentState, genesisResponse.data);
-    return new RemoteDocument(state, this.#service);
+    return new Document(state, this.#service);
   }
 
   close() {
