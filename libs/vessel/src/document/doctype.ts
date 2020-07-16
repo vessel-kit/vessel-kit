@@ -2,7 +2,7 @@ import { Codec } from '@potter/codec';
 import { IWithDoctype } from './with-doctype.interface';
 import { IHandler } from './handler.interface';
 
-export interface IDoctype<Freight extends IWithDoctype> extends IHandler<Freight> {
+export interface IDoctype<Freight extends IWithDoctype = IWithDoctype> extends IHandler<Freight> {
   _doctype: true;
   name: string;
   json: Codec<Freight>;

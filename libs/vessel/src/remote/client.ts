@@ -1,5 +1,5 @@
 import { ISignor } from '../signor/signor.interface';
-import { ThreeId } from '../doctypes/three-id.doctype';
+import { ThreeId } from '../doctypes/three-id';
 import axios from 'axios';
 import { decodeThrow } from '@potter/codec';
 import { DocumentState } from '../document/document.state';

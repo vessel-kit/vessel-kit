@@ -21,6 +21,8 @@ import { VesselAlphaDocumentHandler } from './handlers/vessel-alpha-document-han
 import { Document } from './document/document';
 import { ISignor } from './signor/signor.interface';
 import { Context } from './context';
+import { DoctypesContainer } from './doctypes-container';
+import { ThreeId } from './doctypes/three-id';
 
 export interface CeramicOptions {
   logger?: ILogger;
@@ -45,10 +47,11 @@ export class Ceramic {
         [VESSEL_DOCUMENT_DOCTYPE, new VesselAlphaDocumentHandler(cloud)],
       ]),
     );
+    const doctypes = new DoctypesContainer([ThreeId]);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
     const blockchainEndpoints = options.blockchainEndpoints || [];
     const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
-    const documentUpdateService = new DocumentUpdateService(logger, handlers, anchoringService, cloud);
+    const documentUpdateService = new DocumentUpdateService(logger, doctypes, anchoringService, cloud);
     const context = new Context(() => {
       if (this.#signor) {
         return this.#signor;

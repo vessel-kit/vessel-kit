@@ -7,5 +7,3 @@ declare module 'ses' {
     }
   }
 }
-
-// declare function lockdown(): void;
