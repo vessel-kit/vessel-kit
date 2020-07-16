@@ -2,17 +2,17 @@ import { ISignor } from '../signor/signor.interface';
 import { ThreeId } from '../doctypes/three-id.doctype';
 import axios from 'axios';
 import { decodeThrow } from '@potter/codec';
-import { DocumentState } from '../document.state';
+import { DocumentState } from '../document/document.state';
 import { CeramicDocumentId } from '@potter/codec';
 import { ThreeIdentifier, ThreeIdentifierCidCodec } from '../three-identifier';
 import * as t from 'io-ts';
 import { CidObjectCodec, CeramicDocumentIdCidCodec, FastPatchOperationJsonCodec } from '@potter/codec';
 import { RemoteDocumentService } from './remote-document-service';
 import { Context } from '../context';
-import { Document } from '../document';
-import { IWithDoctype } from '../doctypes/with-doctype.interface';
-import { IDoctype } from '../doctypes/doctype.interface';
-import { IDocument } from '../doctypes/document.interface';
+import { Document } from '../document/document';
+import { IWithDoctype } from '../document/with-doctype.interface';
+import { IDocument } from '../document/document.interface';
+import { IDoctype } from '../document/doctype';
 
 export const UpdateRecordWaiting = t.type({
   patch: t.array(FastPatchOperationJsonCodec),

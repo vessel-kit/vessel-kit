@@ -1,14 +1,10 @@
 import CID from 'cids';
-import { DocumentState } from '../document.state';
-import { FrozenSubject } from '../frozen-subject';
+import { DocumentState } from './document.state';
+import { FrozenSubject } from '../util/frozen-subject';
 import { IWithDoctype } from './with-doctype.interface';
-import { IDoctype } from './doctype.interface';
 import { CeramicDocumentId } from '@potter/codec';
-
-export interface ITypedDocument<F extends IWithDoctype> {
-  freight: F;
-  update(next: F, opts?: { useMgmt: boolean }): Promise<void>;
-}
+import { ITypedDocument } from './typed-document.interface';
+import { IDoctype } from './doctype';
 
 export interface IDocument {
   id: CeramicDocumentId;

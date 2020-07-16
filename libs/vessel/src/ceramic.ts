@@ -18,7 +18,7 @@ import { ThreeIdResolver } from './resolver/three-id-resolver';
 import { VesselAlphaRulesetHandler } from './handlers/vessel-alpha-ruleset-handler';
 import { VESSEL_DOCUMENT_DOCTYPE, VESSEL_RULESET_DOCTYPE } from './handlers/vessel-freight';
 import { VesselAlphaDocumentHandler } from './handlers/vessel-alpha-document-handler';
-import { Document } from './document';
+import { Document } from './document/document';
 import { ISignor } from './signor/signor.interface';
 import { Context } from './context';
 

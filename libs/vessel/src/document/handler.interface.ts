@@ -1,5 +1,5 @@
 import { IWithDoctype } from './with-doctype.interface';
-import { DocumentState } from '../document.state';
+import { DocumentState } from './document.state';
 import { RecordWrap } from '@potter/codec';
 
 export interface IHandler<Freight extends IWithDoctype> {

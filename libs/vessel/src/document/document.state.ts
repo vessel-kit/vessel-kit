@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import { AnchoringStatus } from '@potter/anchoring';
-import { ChainCidArrayCodec } from './chain';
+import { ChainCidArrayCodec } from '../util/chain';
 import { CidStringCodec, DateISO8601Codec } from '@potter/codec';
 
 const AnchorDone = t.type(

@@ -1,5 +1,5 @@
 import { IHandler } from './handler.interface';
-import { DocumentState } from '../document.state';
+import { DocumentState } from '../document/document.state';
 import { TileContent } from '../tile.content';
 import { validatePromise } from '@potter/codec';
 import produce from 'immer';

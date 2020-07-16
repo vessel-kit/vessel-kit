@@ -2,7 +2,7 @@ import { IHandler } from './handler.interface';
 import * as t from 'io-ts';
 import base64url from 'base64url';
 import { ThreeIdContent } from '..';
-import { DocumentState } from '../document.state';
+import { DocumentState } from '../document/document.state';
 import { RecordWrap, BufferMultibaseCodec, validatePromise } from '@potter/codec';
 import produce from 'immer';
 import * as _ from 'lodash';

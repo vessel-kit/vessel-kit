@@ -4,7 +4,7 @@ import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
-import { Chain } from '../chain';
+import { Chain } from '../util/chain';
 import { ThreeIdentifier } from '../three-identifier';
 import { decodeThrow } from '@potter/codec';
 

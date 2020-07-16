@@ -1,10 +1,10 @@
-import { FrozenSubject, FrozenSubjectRead } from '../frozen-subject';
-import { DocumentState } from '../document.state';
+import { FrozenSubject, FrozenSubjectRead } from '../util/frozen-subject';
+import { DocumentState } from '../document/document.state';
 import { interval, queueScheduler, Observable } from 'rxjs';
 import axios from 'axios';
 import * as _ from 'lodash';
 import { CeramicDocumentId, decodeThrow } from '@potter/codec';
-import { IDocumentService } from '../document.service.interface';
+import { IDocumentService } from '../document/document.service.interface';
 import CID from 'cids';
 import { IContext } from '../context';
 import { filter, map, mergeMap } from 'rxjs/operators';

@@ -1,9 +1,9 @@
-import { FrozenSubject, FrozenSubjectRead } from './frozen-subject';
+import { FrozenSubject, FrozenSubjectRead } from '../util/frozen-subject';
 import { DocumentState } from './document.state';
 import { Observable } from 'rxjs';
 import { CeramicDocumentId } from '@potter/codec';
 import CID from 'cids';
-import { IContext } from './context';
+import { IContext } from '../context';
 
 export interface IDocumentService {
   context: IContext;

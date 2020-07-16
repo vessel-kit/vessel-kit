@@ -1,9 +1,10 @@
 import { IWithDoctype } from './with-doctype.interface';
-import { IDocument, ITypedDocument } from './document.interface';
-import { IDoctype } from './doctype.interface';
+import { IDocument } from './document.interface';
 import { IContext } from '../context';
 import jsonPatch from 'fast-json-patch';
 import { UpdateRecordWaiting } from '../remote/client';
+import { ITypedDocument } from './typed-document.interface';
+import { IDoctype } from './doctype';
 
 export class TypedDocument<F extends IWithDoctype> implements ITypedDocument<F> {
   #document: IDocument;

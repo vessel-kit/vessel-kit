@@ -1,5 +1,5 @@
 import { RecordWrap } from '@potter/codec';
-import { DocumentState } from '../document.state';
+import { DocumentState } from '../document/document.state';
 import { AnchorProof } from '@potter/anchoring';
 
 export interface IHandler {

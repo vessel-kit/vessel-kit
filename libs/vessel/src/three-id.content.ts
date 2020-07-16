@@ -1,7 +1,7 @@
 import jose from 'jose';
 import { BufferMultibaseCodec } from '@potter/codec';
 import * as t from 'io-ts';
-import { MapCodec } from './codec/map-codec';
+import { MapCodec } from './util/map-codec';
 import { isEmpty, lefts, rights } from 'fp-ts/lib/Array';
 import { isRight } from 'fp-ts/lib/Either';
 import jsonPatch from 'fast-json-patch';

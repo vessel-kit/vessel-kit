@@ -1,5 +1,5 @@
 import { IHandler } from './handler.interface';
-import { DocumentState } from '../document.state';
+import { DocumentState } from '../document/document.state';
 import { VesselDocument } from './vessel-freight';
 import { decodePromise } from '@potter/codec';
 import produce from 'immer';

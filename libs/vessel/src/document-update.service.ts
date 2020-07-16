@@ -1,7 +1,7 @@
 import { Cloud } from './cloud/cloud';
-import { Chain } from './chain';
+import { Chain } from './util/chain';
 import CID from 'cids';
-import { DocumentState } from './document.state';
+import { DocumentState } from './document/document.state';
 import { ILogger } from './logger/logger.interface';
 import { RecordWrap } from '@potter/codec';
 import { AnchoringService } from './anchoring.service';

@@ -1,13 +1,14 @@
 import { CeramicDocumentId } from '@potter/codec';
 import { Subscription } from 'rxjs';
 import { DocumentState } from './document.state';
-import { FrozenSubject } from './frozen-subject';
+import { FrozenSubject } from '../util/frozen-subject';
 import CID from 'cids';
 import { IDocumentService } from './document.service.interface';
-import { IWithDoctype } from './doctypes/with-doctype.interface';
-import { IDoctype } from './doctypes/doctype.interface';
-import { IDocument, ITypedDocument } from './doctypes/document.interface';
-import { TypedDocument } from './doctypes/typed-document';
+import { IWithDoctype } from './with-doctype.interface';
+import { IDocument } from './document.interface';
+import { TypedDocument } from './typed-document';
+import { ITypedDocument } from './typed-document.interface';
+import { IDoctype } from './doctype';
 
 export class Document implements IDocument {
   #id: CeramicDocumentId;
