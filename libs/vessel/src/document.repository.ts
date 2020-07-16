@@ -68,7 +68,6 @@ export class DocumentRepository {
         log: new Chain([documentId.cid]),
       };
       const document = new Document(state, this.#documentService);
-      // document.subscribeExternalUpdates();
       this.#documentCache.set(documentId.toString(), document);
       return document;
     }

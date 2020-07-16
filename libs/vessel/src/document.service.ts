@@ -45,13 +45,52 @@ export class DocumentService implements IDocumentService {
     return this.#context;
   }
 
-  handleUpdate(docId: CeramicDocumentId, state: DocumentState) {
+  handleUpdate(docId: CeramicDocumentId, state: DocumentState): void {
     if (!docId.cid.equals(state.log.last)) {
       this.#cloud.bus.publishHead(docId, state.log.last);
     }
   }
 
-  anchorUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>): Observable<DocumentState> {
+  async update(record: any, state$: FrozenSubject<DocumentState>): Promise<void> {
+    const cid = await this.#cloud.store(normalizeRecord(record));
+    const recordWrap = new RecordWrap(record, cid);
+    const next = await this.#updateService.applyUpdate(recordWrap, state$.value);
+    const documentId = new CeramicDocumentId(state$.value.log.first);
+    this.#anchoring.requestAnchor(documentId, cid);
+    state$.next(next);
+  }
+
+  requestAnchor(docId: CeramicDocumentId, cid: CID): void {
+    this.#logger.debug(`Requesting anchor for ${docId.toString()}?version=${cid.toString()}`);
+    this.#anchoring.requestAnchor(docId, cid);
+  }
+
+  externalUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>) {
+    this.#cloud.bus.request(docId.toString());
+    return merge(this.cloudUpdates$(docId, state$), this.anchorUpdates$(docId, state$))
+  }
+
+  private cloudUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>): Observable<DocumentState> {
+    return this.#cloud.bus.message$.pipe(
+      filter((message) => message.id === docId.toString()),
+      mergeMap(async (message) => {
+        if (message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE) {
+          return this.applyHead(message.cid, state$);
+        }
+      }),
+    );
+  }
+
+  private async applyHead(recordCid: CID, state$: FrozenSubjectRead<DocumentState>): Promise<DocumentState> {
+    const nextState = await this.#updateService.applyHead(recordCid, state$.value);
+    if (nextState) {
+      return nextState;
+    } else {
+      return state$.value;
+    }
+  }
+
+  private anchorUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>): Observable<DocumentState> {
     return this.#anchoring.anchorStatus$(docId).pipe(
       mergeMap(async (observation) => {
         this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation);
@@ -86,44 +125,5 @@ export class DocumentService implements IDocumentService {
         }
       }),
     );
-  }
-
-  async update(record: any, state$: FrozenSubject<DocumentState>): Promise<void> {
-    const cid = await this.#cloud.store(normalizeRecord(record));
-    const recordWrap = new RecordWrap(record, cid);
-    const next = await this.#updateService.applyUpdate(recordWrap, state$.value);
-    const documentId = new CeramicDocumentId(state$.value.log.first);
-    this.#anchoring.requestAnchor(documentId, cid);
-    state$.next(next);
-  }
-
-  requestAnchor(docId: CeramicDocumentId, cid: CID): void {
-    this.#logger.debug(`Requesting anchor for ${docId.toString()}?version=${cid.toString()}`);
-    this.#anchoring.requestAnchor(docId, cid);
-  }
-
-  cloudUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>): Observable<DocumentState> {
-    return this.#cloud.bus.message$.pipe(
-      filter((message) => message.id === docId.toString()),
-      mergeMap(async (message) => {
-        if (message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE) {
-          return this.applyHead(message.cid, state$);
-        }
-      }),
-    );
-  }
-
-  externalUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>) {
-    this.#cloud.bus.request(docId.toString());
-    return merge(this.cloudUpdates$(docId, state$), this.anchorUpdates$(docId, state$))
-  }
-
-  private async applyHead(recordCid: CID, state$: FrozenSubjectRead<DocumentState>): Promise<DocumentState> {
-    const nextState = await this.#updateService.applyHead(recordCid, state$.value);
-    if (nextState) {
-      return nextState;
-    } else {
-      return state$.value;
-    }
   }
 }

@@ -1,6 +1,6 @@
 import { FrozenSubject, FrozenSubjectRead } from '../frozen-subject';
 import { DocumentState } from '../document.state';
-import { interval, Subscription, queueScheduler, Observable, OperatorFunction } from 'rxjs';
+import { interval, queueScheduler, Observable } from 'rxjs';
 import axios from 'axios';
 import * as _ from 'lodash';
 import { CeramicDocumentId, decodeThrow } from '@potter/codec';
@@ -27,6 +27,10 @@ export class RemoteDocumentService implements IDocumentService {
     const response = await axios.put(`${this.#host}/api/v0/ceramic/${documentId}`, record);
     const next = decodeThrow(DocumentState, response.data);
     state$.next(next);
+  }
+
+  handleUpdate(docId: CeramicDocumentId, state: DocumentState) {
+    // Noop
   }
 
   requestAnchor(docId: CeramicDocumentId, cid: CID): void {

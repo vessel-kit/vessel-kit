@@ -1,64 +1,72 @@
 import { CeramicDocumentId } from '@potter/codec';
-import { DocumentService } from './document.service';
 import { Subscription } from 'rxjs';
 import { DocumentState } from './document.state';
 import { FrozenSubject } from './frozen-subject';
-import { IDocument } from './document.interface';
 import CID from 'cids';
+import { IDocumentService } from './document.service.interface';
+import { Doctype, IDocument, TypedDocument, WithDoctype } from './doctypes/doctypes';
 
 export class Document implements IDocument {
   #id: CeramicDocumentId;
-  #service: DocumentService;
+  #service: IDocumentService;
   #state$: FrozenSubject<DocumentState>;
-  // #anchoringSubscription: Subscription;
-  #internal$S: Subscription;
   #external$S: Subscription;
+  #internal$S: Subscription;
 
-  constructor(state: DocumentState, documentService: DocumentService) {
+  constructor(state: DocumentState, service: IDocumentService) {
     this.#id = new CeramicDocumentId(state.log.first);
     this.#state$ = new FrozenSubject(state);
-    this.#service = documentService;
+    this.#service = service;
 
     this.#external$S = this.#service.externalUpdates$(this.#id, this.#state$).subscribe(this.state$);
-    // this.#anchoringSubscription = this.#service.handleAnchorStatusUpdate(this.#id, this.#state$);
     this.#internal$S = this.state$.subscribe((update) => {
-      this.#service.handleUpdate(this.id, update);
+      this.#service.handleUpdate(this.#id, update);
     });
-  }
-
-  get head(): CID {
-    return this.state.log.last;
   }
 
   get id(): CeramicDocumentId {
     return this.#id;
   }
 
-  get current() {
-    return this.state.current || this.state.freight;
-  }
-
-  update(record: any) {
-    return this.#service.update(record, this.state$);
+  get head(): CID {
+    return this.state.log.last;
   }
 
   get state() {
     return this.#state$.value;
   }
 
-  get state$() {
+  get current(): any {
+    return this.state.current || this.state.freight;
+  }
+
+  get state$(): FrozenSubject<DocumentState> {
     return this.#state$;
   }
 
-  requestAnchor(): void {
-    this.#service.requestAnchor(this.#id, this.#id.cid);
+  update(record: any): Promise<void> {
+    return this.#service.update(record, this.state$);
   }
 
-  // subscribeExternalUpdates() {
-  //   this.#service.requestUpdates(this.#id, this.state$);
-  // }
+  requestAnchor(): void {
+    this.#service.requestAnchor(this.#id, this.state.log.last);
+  }
 
-  toJSON() {
+  as<F extends WithDoctype>(doctype: Doctype<F>): TypedDocument<F> {
+    if (doctype.name === this.state.doctype) {
+      throw new Error(`NOPE`)
+      // return new TypedDocument(this, doctype, this.#service.context);
+    } else {
+      throw new Error(`Can not cast ${this.state.doctype} as ${doctype.name}`);
+    }
+  }
+
+  close(): void {
+    this.#internal$S.unsubscribe()
+    this.#external$S.unsubscribe();
+  }
+
+  toJSON(): any {
     return {
       docId: this.#id.valueOf(),
       ...this.#state$.value,

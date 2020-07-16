@@ -1,10 +1,23 @@
 import { DocumentState } from '../document.state';
-import { RecordWrap } from '@potter/codec';
-import { Codec } from '@potter/codec';
+import { RecordWrap, CeramicDocumentId, Codec } from '@potter/codec';
 import { UpdateRecordWaiting } from '../remote/client';
 import jsonPatch from 'fast-json-patch';
-import { RemoteDocument } from '../remote/remote-document';
 import { IContext } from '../context';
+import CID from 'cids';
+import { FrozenSubject } from '../frozen-subject';
+
+export interface IDocument {
+  id: CeramicDocumentId;
+  head: CID;
+  state: DocumentState;
+  current: any;
+  state$: FrozenSubject<DocumentState>;
+  update(record: any): Promise<void>;
+  requestAnchor(): void;
+  as<F extends WithDoctype>(doctype: Doctype<F>): TypedDocument<F>;
+  close(): void;
+  toJSON(): any;
+}
 
 export interface WithDoctype {
   doctype: string;
@@ -17,11 +30,11 @@ export interface Handler<Freight extends WithDoctype> {
 }
 
 export class TypedDocument<F extends WithDoctype> {
-  #document: RemoteDocument;
+  #document: IDocument;
   #doctype: Doctype<F>;
   #context: IContext;
 
-  constructor(document: RemoteDocument, doctype: Doctype<F>, context: IContext) {
+  constructor(document: IDocument, doctype: Doctype<F>, context: IContext) {
     this.#document = document;
     this.#doctype = doctype;
     this.#context = context;

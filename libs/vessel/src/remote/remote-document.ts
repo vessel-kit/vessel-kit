@@ -1,23 +1,27 @@
 import { FrozenSubject } from '../frozen-subject';
 import { DocumentState } from '../document.state';
 import { Subscription } from 'rxjs';
-import { Doctype, TypedDocument, WithDoctype } from '../doctypes/doctypes';
+import { Doctype, IDocument, TypedDocument, WithDoctype } from '../doctypes/doctypes';
 import { CeramicDocumentId } from '@potter/codec';
 import { IDocumentService } from '../document.service.interface';
-import { IDocument } from '../document.interface';
 import CID from 'cids';
 
 export class RemoteDocument implements IDocument {
   #id: CeramicDocumentId;
+  #service: IDocumentService;
   #state$: FrozenSubject<DocumentState>;
   #external$S: Subscription;
-  #service: IDocumentService;
+  #internal$S: Subscription;
 
   constructor(state: DocumentState, service: IDocumentService) {
     this.#id = new CeramicDocumentId(state.log.first);
     this.#state$ = new FrozenSubject(state);
     this.#service = service;
+
     this.#external$S = this.#service.externalUpdates$(this.#id, this.#state$).subscribe(this.state$);
+    this.#internal$S = this.state$.subscribe((update) => {
+      this.#service.handleUpdate(this.#id, update);
+    });
   }
 
   get id(): CeramicDocumentId {
@@ -32,12 +36,16 @@ export class RemoteDocument implements IDocument {
     return this.#state$.value;
   }
 
-  get current() {
+  get current(): any {
     return this.state.current || this.state.freight;
   }
 
-  get state$() {
+  get state$(): FrozenSubject<DocumentState> {
     return this.#state$;
+  }
+
+  update(record: any): Promise<void> {
+    return this.#service.update(record, this.state$);
   }
 
   requestAnchor(): void {
@@ -52,11 +60,15 @@ export class RemoteDocument implements IDocument {
     }
   }
 
-  update(record: any) {
-    return this.#service.update(record, this.state$);
+  close(): void {
+    this.#internal$S.unsubscribe()
+    this.#external$S.unsubscribe();
   }
 
-  close(): void {
-    this.#external$S.unsubscribe();
+  toJSON(): any {
+    return {
+      docId: this.#id.valueOf(),
+      ...this.#state$.value,
+    };
   }
 }
