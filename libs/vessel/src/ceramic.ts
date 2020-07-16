@@ -1,6 +1,6 @@
-import { ILogger } from './logger/logger.interface';
+import { ILogger } from './util/logger.interface';
 import { Ipfs } from 'ipfs';
-import { ConsoleLogger } from './logger/console-logger';
+import { ConsoleLogger } from './util/console-logger';
 import { DocumentRepository } from './document.repository';
 import { Cloud } from './cloud/cloud';
 import { DocumentService } from './document.service';

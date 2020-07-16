@@ -2,7 +2,7 @@ import { Cloud } from './cloud/cloud';
 import { Chain } from './util/chain';
 import CID from 'cids';
 import { DocumentState } from './document/document.state';
-import { ILogger } from './logger/logger.interface';
+import { ILogger } from './util/logger.interface';
 import { RecordWrap } from '@potter/codec';
 import { AnchoringService } from './anchoring.service';
 import { HandlersContainer } from './handlers/handlers.container';

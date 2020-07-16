@@ -1,6 +1,6 @@
 import { Ipfs } from 'ipfs';
 import CID from 'cids';
-import { ILogger } from '../logger/logger.interface';
+import { ILogger } from '../util/logger.interface';
 import { CloudBus } from './cloud-bus';
 
 export class UnknownMessageError extends Error {

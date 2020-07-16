@@ -1,4 +1,4 @@
-import { ILogger } from './logger/logger.interface';
+import { ILogger } from './util/logger.interface';
 import { CeramicDocumentId } from '@potter/codec';
 import CID from 'cids';
 import { AnchoringStatus } from '@potter/anchoring';

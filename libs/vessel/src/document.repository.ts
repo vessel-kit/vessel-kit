@@ -1,4 +1,4 @@
-import { ILogger } from './logger/logger.interface';
+import { ILogger } from './util/logger.interface';
 import { Cloud } from './cloud/cloud';
 import { CeramicDocumentId } from '@potter/codec';
 import { Document } from './document/document';
