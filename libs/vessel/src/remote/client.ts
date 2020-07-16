@@ -70,9 +70,9 @@ export class Client {
     }
   }
 
-  async create<F extends IWithDoctype, A extends IDoctype<F>>(t: A, payload: Omit<F, 'doctype'>) {
-    const applied = Object.assign({}, payload, { doctype: t.name });
-    const record = await t.makeGenesis(applied);
+  async create<F extends IWithDoctype>(t: IDoctype<F>, payload: Omit<F, 'doctype'>) {
+    const applied = Object.assign({}, payload, { doctype: t.name }) as F;
+    const record = await t.json.encode(applied);
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
     const state = decodeThrow(DocumentState, response.data);
     return new Document(state, this.#service);

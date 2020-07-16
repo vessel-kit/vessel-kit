@@ -100,8 +100,8 @@ export class DocumentUpdateService {
 
   async applyUpdate(updateRecord: RecordWrap, state: DocumentState) {
     if (state.log.last.equals(updateRecord.load.prev)) {
-      const handler = this.#doctypes.get(state.doctype);
-      return handler.applyUpdate(updateRecord, state);
+      const doctype = this.#doctypes.get(state.doctype);
+      return doctype.applyUpdate(updateRecord, state);
     } else {
       throw new Error(`Update should reference last log entry ${state.log.last}, got ${updateRecord.load.prev}`);
     }

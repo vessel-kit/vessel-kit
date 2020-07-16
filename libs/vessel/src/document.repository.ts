@@ -34,12 +34,11 @@ export class DocumentRepository {
     });
   }
 
-  async create(genesis: any): Promise<Document> {
-    this.#logger.debug(`Creating document from genesis record`, genesis);
-    const doctype = genesis.doctype;
-    const handler = this.#doctypes.get(doctype);
-    this.#logger.debug(`Found handler for doctype "${doctype}"`);
-    const record = await handler.makeGenesis(genesis);
+  async create(genesisRecord: any): Promise<Document> {
+    this.#logger.debug(`Creating document from genesis record`, genesisRecord);
+    const doctype = this.#doctypes.get(genesisRecord.doctype);
+    this.#logger.debug(`Found handler for doctype "${genesisRecord.doctype}"`);
+    const record = await doctype.makeGenesis(genesisRecord);
     this.#logger.debug(`Genesis record is valid for doctype "${doctype}"`);
     const cid = await this.#cloud.store(record);
     this.#logger.debug(`Stored record to IPFS as ${cid.toString()}`);
