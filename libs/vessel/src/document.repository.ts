@@ -39,7 +39,7 @@ export class DocumentRepository {
     const doctype = this.#doctypes.get(genesisRecord.doctype);
     this.#logger.debug(`Found handler for doctype "${genesisRecord.doctype}"`);
     const record = await doctype.makeGenesis(genesisRecord);
-    this.#logger.debug(`Genesis record is valid for doctype "${doctype}"`);
+    this.#logger.debug(`Genesis record is valid for doctype "${doctype.name}"`);
     const cid = await this.#cloud.store(record);
     this.#logger.debug(`Stored record to IPFS as ${cid.toString()}`);
     const documentId = new CeramicDocumentId(cid);

@@ -3,11 +3,10 @@ import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
 import {
   BufferMultibaseCodec,
-  typeAsCodec,
   RecordWrap,
+  SimpleCodec,
   CeramicDocumentId,
   decodeThrow,
-  validatePromise,
 } from '@potter/codec';
 import { doctype } from '../document/doctype';
 import { DocumentState } from '../document/document.state';
@@ -21,7 +20,6 @@ import { DIDDocument } from 'did-resolver';
 import * as multicodec from 'multicodec';
 import { decodeJWT, verifyJWT } from 'did-jwt';
 import jsonPatch from 'fast-json-patch';
-import { ThreeIdFreight } from '../handlers/three-id-handler';
 
 export class InvalidDocumentUpdateLinkError extends Error {}
 
@@ -137,17 +135,17 @@ const ThreeIdFreightCodec = t.type({
   }),
 });
 
-export const ThreeId = doctype('3id', typeAsCodec(ThreeIdFreightCodec), {
+export const ThreeId = doctype('3id', new SimpleCodec(ThreeIdFreightCodec), {
   async makeGenesis(payload: any): Promise<t.OutputOf<typeof ThreeIdFreightCodec>> {
-    await validatePromise(ThreeIdFreight, payload);
+    await this.json.assertValid(payload);
     return payload;
   },
   async applyGenesis(documentId: CeramicDocumentId, genesis: any): Promise<DocumentState> {
-    await validatePromise(ThreeIdFreightCodec, genesis);
+    const payload = await this.makeGenesis(genesis);
     return {
-      doctype: genesis.doctype,
+      doctype: payload.doctype,
       current: null,
-      freight: genesis,
+      freight: payload,
       anchor: {
         status: AnchoringStatus.NOT_REQUESTED as AnchoringStatus.NOT_REQUESTED,
       },
@@ -188,7 +186,7 @@ export const ThreeId = doctype('3id', typeAsCodec(ThreeIdFreightCodec), {
     const threeIdContent = decodeThrow(ThreeIdFreightCodec, freight);
     await verifyThreeId(jwt, `did:3:${state.log.first.toString()}`, threeIdContent);
     const next = jsonPatch.applyPatch(state.current || state.freight, payloadObject.patch, false, false);
-    return  {
+    return {
       ...state,
       current: next.newDocument,
       log: state.log.concat(updateRecord.cid),

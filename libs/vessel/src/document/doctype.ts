@@ -1,4 +1,4 @@
-import { Codec } from '@potter/codec';
+import { ISimpleCodec } from '@potter/codec';
 import { IWithDoctype } from './with-doctype.interface';
 import { EMPTY_CONTEXT, IContext } from '../context';
 import { DocumentState } from './document.state';
@@ -8,22 +8,22 @@ import { AnchorProof } from '@potter/anchoring';
 export interface IDoctype<Freight extends IWithDoctype = IWithDoctype> {
   _doctype: true;
   name: string;
-  json: Codec<Freight>;
+  json: ISimpleCodec<Freight>;
   context: IContext;
 
   // Return payload as JSON
-  makeGenesis(genesisRecord: any): Promise<any & IWithDoctype>;
+  makeGenesis(this: IDoctype<Freight>, genesisRecord: any): Promise<any & IWithDoctype>;
 
-  applyGenesis(documentId: CeramicDocumentId, genesis: any): Promise<DocumentState>;
-  applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: DocumentState): Promise<DocumentState>;
-  applyUpdate(updateRecord: RecordWrap, state: DocumentState): Promise<DocumentState>;
+  applyGenesis(this: IDoctype<Freight>, documentId: CeramicDocumentId, genesis: any): Promise<DocumentState>;
+  applyAnchor(this: IDoctype<Freight>, anchorRecord: RecordWrap, proof: AnchorProof, state: DocumentState): Promise<DocumentState>;
+  applyUpdate(this: IDoctype<Freight>, updateRecord: RecordWrap, state: DocumentState): Promise<DocumentState>;
 }
 
 type IDoctypeInput<Freight extends IWithDoctype> = Omit<IDoctype<Freight>, '_doctype' | 'name' | 'json' | 'context'>;
 
 export function doctype<Freight extends IWithDoctype>(
   name: string,
-  json: Codec<Freight>,
+  json: ISimpleCodec<Freight>,
   handler: IDoctypeInput<Freight>,
 ): IDoctype<Freight> {
   return {
