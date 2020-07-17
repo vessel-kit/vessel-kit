@@ -2,16 +2,21 @@ import { CeramicDocumentId } from '@potter/codec';
 import { Document } from '../document/document';
 import { DIDDocument, DIDResolver, ParsedDID } from 'did-resolver';
 import CID from 'cids';
-import { wrapThreeId } from '../handlers/verify-three-did';
-import { ThreeIdContentJSONCodec } from '../three-id.content';
+import { ThreeIdContent, ThreeIdContentJSONCodec } from '../three-id.content';
 import { decodeThrow } from '@potter/codec';
+import { DidPresentation } from '../did.presentation';
 
-interface ILoad {
+export interface ILoad {
   (docId: CeramicDocumentId): Promise<Document>;
 }
 
 interface ResolverRegistry {
   [index: string]: DIDResolver;
+}
+
+export function wrapThreeId(id: string, content: ThreeIdContent): DIDDocument {
+  const presentation = new DidPresentation(id, content)
+  return presentation.toJSON()
 }
 
 export class ThreeIdResolver {

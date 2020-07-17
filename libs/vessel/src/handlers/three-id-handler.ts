@@ -7,11 +7,13 @@ import { RecordWrap, BufferMultibaseCodec, validatePromise } from '@potter/codec
 import produce from 'immer';
 import * as _ from 'lodash';
 import sortKeys from 'sort-keys';
-import { verifyThreeId } from './verify-three-did';
 import jsonPatch from 'fast-json-patch';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
 import { decodePromise } from '@potter/codec';
+import { decodeJWT, verifyJWT } from 'did-jwt';
+import { DIDDocument } from 'did-resolver';
+import { DidPresentation } from '../did.presentation';
 
 export const ThreeIdFreight = t.type({
   doctype: t.literal('3id'),
@@ -25,6 +27,35 @@ export const ThreeIdFreight = t.type({
 });
 
 export class InvalidDocumentUpdateLinkError extends Error {}
+export class InvalidSignatureError extends Error {}
+
+function withNormalizedHeader(jwt: string) {
+  const { header } = decodeJWT(jwt);
+  const correctHeader = { typ: header.typ, alg: header.alg };
+  const encodedCorrectHeader = base64url(JSON.stringify(correctHeader));
+  const parts = jwt.split('.');
+  return [encodedCorrectHeader, parts[1], parts[2]].join('.');
+}
+
+export function wrapThreeId(id: string, content: ThreeIdContent): DIDDocument {
+  const presentation = new DidPresentation(id, content)
+  return presentation.toJSON()
+}
+
+export async function verifyThreeId(jwt: string, id: string, content: ThreeIdContent): Promise<void> {
+  const didPresentation = wrapThreeId(id, content);
+  const normalized = withNormalizedHeader(jwt);
+  try {
+    await verifyJWT(normalized, {
+      resolver: {
+        resolve: async () => didPresentation,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+    throw new InvalidSignatureError(`Invalid signature for ${id}`);
+  }
+}
 
 export class ThreeIdHandler implements IHandler {
   async makeGenesis(genesis: any): Promise<any> {
