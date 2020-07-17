@@ -1,4 +1,5 @@
-import { IDoctype } from './document/doctype';
+import { IDoctype, withContext } from './document/doctype';
+import { IContext } from './context';
 
 export class UnknownDoctypeError extends Error {
   constructor(doctype: string) {
@@ -9,9 +10,10 @@ export class UnknownDoctypeError extends Error {
 export class DoctypesContainer {
   #container: Map<string, IDoctype> = new Map();
 
-  constructor(doctypes: IDoctype[] = []) {
+  constructor(doctypes: IDoctype[] = [], context?: IContext) {
     doctypes.forEach((d) => {
-      this.#container.set(d.name, d);
+      const contextful = context ? withContext(d, context) : d;
+      this.#container.set(d.name, contextful);
     });
   }
 

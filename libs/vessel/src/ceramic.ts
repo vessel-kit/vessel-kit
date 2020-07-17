@@ -47,11 +47,6 @@ export class Ceramic {
     //     [VESSEL_DOCUMENT_DOCTYPE, new VesselAlphaDocumentHandler(cloud)],
     //   ]),
     // );
-    const doctypes = new DoctypesContainer([ThreeId]);
-    const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
-    const blockchainEndpoints = options.blockchainEndpoints || [];
-    const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
-    const documentUpdateService = new DocumentUpdateService(logger, doctypes, anchoringService, cloud);
     const context = new Context(() => {
       if (this.#signor) {
         return this.#signor;
@@ -59,6 +54,11 @@ export class Ceramic {
         throw new Error(`No signor set`);
       }
     });
+    const doctypes = new DoctypesContainer([ThreeId], context);
+    const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
+    const blockchainEndpoints = options.blockchainEndpoints || [];
+    const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
+    const documentUpdateService = new DocumentUpdateService(logger, doctypes, anchoringService, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
     this.#documentRepository = new DocumentRepository(logger, doctypes, cloud, documentService);
     logger.log(`Constructed Ceramic instance`, options);

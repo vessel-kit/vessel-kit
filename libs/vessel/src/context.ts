@@ -34,3 +34,18 @@ export class Context implements IContext {
     return signor.did();
   }
 }
+
+export class EmptyContextError extends Error {
+  constructor(method: string) {
+    super(`Empty context: no ${method} available`);
+  }
+}
+
+export const EMPTY_CONTEXT: IContext = {
+  did: () => {
+    throw new EmptyContextError('did');
+  },
+  sign: () => {
+    throw new EmptyContextError('sign');
+  },
+};
