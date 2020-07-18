@@ -7,6 +7,7 @@ import CID from 'cids';
 import { Chain } from '../util/chain';
 import { ThreeIdentifier } from '../three-identifier';
 import { decodeThrow } from '@potter/codec';
+import { DocumentState } from '..';
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -49,11 +50,13 @@ async function main() {
   };
   console.log('genesis record', genesisRecord);
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
+  const genesisState = decodeThrow(DocumentState, genesisResponse.data);
   console.log('genesis response', genesisResponse.data);
-  const documentId = new CID(genesisResponse.data.docId);
+  const documentId = genesisState.log.first;
   await sleep(80000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
-  const log = new Chain(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
+  const state = decodeThrow(DocumentState, anchoredGenesisResponse.data);
+  const log = state.log;
   const doc2 = doc1.clone();
   doc2.publicKeys.set('foocryption', signingKey);
   const delta = doc2.delta(doc1);
@@ -62,17 +65,17 @@ async function main() {
     prev: log.last,
     id: documentId,
   };
-  const updateRecordToSign = sortPropertiesDeep({
+  const updateRecordToSign = {
     patch: updateRecord.patch,
     prev: { '/': updateRecord.prev.valueOf().toString() },
     id: { '/': updateRecord.id.valueOf().toString() },
-  });
+  };
   await user.did(decodeThrow(ThreeIdentifier, `did:3:${documentId.valueOf()}`));
   console.log('signing payload', updateRecordToSign);
   const jwt = await user.sign(updateRecordToSign, { useMgmt: true });
   const updateRecordA = {
     ...updateRecordToSign,
-    iss: user.did,
+    iss: await user.did(),
     header: jwt.header,
     signature: jwt.signature,
   };
