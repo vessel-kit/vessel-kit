@@ -7,7 +7,7 @@ import { ValidationError } from './validate-promise';
 export interface ISimpleCodec<A> {
   encode(a: A): any;
   decode(input: unknown): A;
-  assertValid(input: unknown): Promise<void>;
+  assertValid(input: unknown): void;
 }
 
 export class SimpleCodec<A> implements ISimpleCodec<A> {
@@ -25,7 +25,7 @@ export class SimpleCodec<A> implements ISimpleCodec<A> {
     return decodeThrow(this.#ttype, input);
   }
 
-  async assertValid(input: unknown): Promise<void> {
+  assertValid(input: unknown): void {
     const validationResult = this.#ttype.validate(input, []);
     if (isLeft(validationResult)) {
       const message = PathReporter.report(validationResult).join('\n');

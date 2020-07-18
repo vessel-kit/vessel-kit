@@ -134,7 +134,7 @@ export const ThreeId = doctype('3id', new SimpleCodec(ThreeIdFreightCodec), {
     return this.json.encode(applied);
   },
   async makeGenesis(payload: any): Promise<t.OutputOf<typeof ThreeIdFreightCodec>> {
-    await this.json.assertValid(payload);
+    this.json.assertValid(payload);
     return payload;
   },
   async update(document, next) {
