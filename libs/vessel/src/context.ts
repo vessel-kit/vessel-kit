@@ -1,16 +1,29 @@
 import { ThreeIdentifier } from './three-identifier';
 import { ISignor } from './signor/signor.interface';
+import _ from 'lodash';
+import base64url from 'base64url';
+import * as didJwt from 'did-jwt';
+import { ILoad, ThreeIdResolver } from './resolver/three-id-resolver';
+import { Resolver } from 'did-resolver';
+import { sortKeys } from './util/sort-keys';
+import { InvalidSignatureError } from './invalid-signature.error';
 
 export interface IContext {
   sign(payload: any, opts?: { useMgmt: boolean }): Promise<void>;
   did(): Promise<ThreeIdentifier | undefined>;
+  assertSignature(payload: any): Promise<void>;
 }
 
 export class Context implements IContext {
   readonly #signorP: () => ISignor;
+  readonly #load: ILoad;
+  readonly #resolver: Resolver;
 
-  constructor(signorP: () => ISignor) {
+  constructor(signorP: () => ISignor, load: ILoad) {
     this.#signorP = signorP;
+    this.#load = load;
+    const threeIdResolver = new ThreeIdResolver(this.#load);
+    this.#resolver = new Resolver(threeIdResolver.registry);
   }
 
   async sign(payload: any, opts?: { useMgmt: boolean }) {
@@ -33,6 +46,22 @@ export class Context implements IContext {
     const signor = await this.#signorP();
     return signor.did();
   }
+
+  async assertSignature(record: any): Promise<void> {
+    const payloadObject = _.omit(record, ['header', 'signature']);
+    payloadObject.prev = payloadObject.prev ? { '/': payloadObject.prev.toString() } : undefined;
+    payloadObject.id = payloadObject.id ? { '/': payloadObject.id.toString() } : undefined;
+    const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject)));
+    const header = { typ: record.header.typ, alg: record.header.alg };
+    const encodedHeader = base64url(JSON.stringify(header));
+    const encodedSignature = record.signature;
+    const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');
+    try {
+      await didJwt.verifyJWT(jwt, { resolver: this.#resolver });
+    } catch (e) {
+      throw new InvalidSignatureError(e.message);
+    }
+  }
 }
 
 export class EmptyContextError extends Error {
@@ -47,5 +76,8 @@ export const EMPTY_CONTEXT: IContext = {
   },
   sign: () => {
     throw new EmptyContextError('sign');
+  },
+  assertSignature: () => {
+    throw new EmptyContextError('assertSignature');
   },
 };
