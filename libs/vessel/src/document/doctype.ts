@@ -4,6 +4,7 @@ import { EMPTY_CONTEXT, IContext } from '../context';
 import { DocumentState } from './document.state';
 import { CeramicDocumentId, RecordWrap } from '@potter/codec';
 import { AnchorProof } from '@potter/anchoring';
+import { IDocument } from './document.interface';
 
 export interface IDoctype<Freight extends IWithDoctype = IWithDoctype> {
   _doctype: true;
@@ -12,8 +13,12 @@ export interface IDoctype<Freight extends IWithDoctype = IWithDoctype> {
   context: IContext;
 
   // Return payload as JSON
+  // Genesis record from JSON
   makeGenesis(this: IDoctype<Freight>, genesisRecord: any): Promise<any & IWithDoctype>;
+  // Genesis record from typed payload
   genesisFromFreight(this: IDoctype<Freight>, payload: Omit<Freight, 'doctype'>): Promise<any & IWithDoctype>;
+  // Return signed payload based on current and next freight
+  update?(this: IDoctype<Freight>, document: IDocument, next: Freight): Promise<any & IWithDoctype>;
 
   applyGenesis(this: IDoctype<Freight>, documentId: CeramicDocumentId, genesis: any): Promise<DocumentState>;
   applyAnchor(

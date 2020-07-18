@@ -4,9 +4,7 @@ import axios from 'axios';
 import { decodeThrow } from '@potter/codec';
 import { DocumentState } from '../document/document.state';
 import { CeramicDocumentId } from '@potter/codec';
-import { ThreeIdentifier, ThreeIdentifierCidCodec } from '../three-identifier';
-import * as t from 'io-ts';
-import { CidObjectCodec, CeramicDocumentIdCidCodec, FastPatchOperationJsonCodec } from '@potter/codec';
+import { ThreeIdentifierCidCodec } from '../three-identifier';
 import { RemoteDocumentService } from './remote-document-service';
 import { Context } from '../context';
 import { Document } from '../document/document';
@@ -15,21 +13,6 @@ import { IDocument } from '../document/document.interface';
 import { IDoctype, withContext } from '../document/doctype';
 import { DoctypesContainer } from '../doctypes-container';
 import { Tile } from '../doctypes/tile';
-
-export const UpdateRecordWaiting = t.type({
-  patch: t.array(FastPatchOperationJsonCodec),
-  prev: CidObjectCodec,
-  id: CidObjectCodec.pipe(CeramicDocumentIdCidCodec),
-});
-
-export const SignedRecord = t.type({
-  iss: t.string.pipe(ThreeIdentifier),
-  iat: t.undefined,
-  header: t.UnknownRecord,
-  signature: t.string,
-});
-
-export const UpdateRecord = t.intersection([UpdateRecordWaiting, SignedRecord]);
 
 export class Client {
   #signor?: ISignor;

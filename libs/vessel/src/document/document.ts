@@ -8,7 +8,7 @@ import { IWithDoctype } from './with-doctype.interface';
 import { IDocument } from './document.interface';
 import { TypedDocument } from './typed-document';
 import { ITypedDocument } from './typed-document.interface';
-import { IDoctype } from './doctype';
+import { IDoctype, withContext } from './doctype';
 
 export class Document implements IDocument {
   #id: CeramicDocumentId;
@@ -58,7 +58,7 @@ export class Document implements IDocument {
 
   as<F extends IWithDoctype>(doctype: IDoctype<F>): ITypedDocument<F> {
     if (doctype.name === this.state.doctype) {
-      return new TypedDocument(this, doctype, this.#service.context);
+      return new TypedDocument(this, withContext(doctype, this.#service.context));
     } else {
       throw new Error(`Can not cast ${this.state.doctype} as ${doctype.name}`);
     }

@@ -16,6 +16,7 @@ import jsonPatch from 'fast-json-patch';
 import { sortKeys } from '../util/sort-keys';
 import { InvalidSignatureError } from '../invalid-signature.error';
 import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
+import { UpdateRecordWaiting } from '../util/update-record.codec';
 
 function publicKeyHex(key: jose.JWK.Key): string {
   const multicodecBuffer = JWKMulticodecCodec.encode(key);
@@ -135,6 +136,17 @@ export const ThreeId = doctype('3id', new SimpleCodec(ThreeIdFreightCodec), {
   async makeGenesis(payload: any): Promise<t.OutputOf<typeof ThreeIdFreightCodec>> {
     await this.json.assertValid(payload);
     return payload;
+  },
+  async update(document, next) {
+    const nextJSON = this.json.encode(next);
+    const currentJSON = document.current;
+    const patch = jsonPatch.compare(nextJSON, currentJSON);
+    const payloadToSign = UpdateRecordWaiting.encode({
+      patch: patch,
+      prev: document.state.log.last,
+      id: document.id,
+    });
+    return this.context.sign(payloadToSign, { useMgmt: true });
   },
   async applyGenesis(documentId: CeramicDocumentId, genesis: any): Promise<DocumentState> {
     const payload = await this.makeGenesis(genesis);
