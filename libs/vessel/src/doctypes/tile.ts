@@ -13,12 +13,6 @@ interface TileFreight {
   doctype: 'tile';
   owners: ThreeIdentifier[];
   content: any;
-  iss: ThreeIdentifier;
-  header: {
-    typ: 'JWT';
-    alg: string;
-  };
-  signature: string;
 }
 
 const TileCodec = t.type({
@@ -34,6 +28,11 @@ const TileCodec = t.type({
 });
 
 export const Tile = doctype<TileFreight>('tile', new SimpleCodec(TileCodec), {
+  async genesisFromFreight(payload) {
+    const applied = Object.assign({}, payload, { doctype: this.name }) as TileFreight;
+    const encoded = this.json.encode(applied);
+    return this.context.sign(encoded);
+  },
   async makeGenesis(payload: any): Promise<t.OutputOf<typeof TileCodec>> {
     await validatePromise(TileCodec, payload);
     await this.context.assertSignature(payload);

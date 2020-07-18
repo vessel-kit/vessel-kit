@@ -1,13 +1,7 @@
 import * as jose from 'jose';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
-import {
-  BufferMultibaseCodec,
-  RecordWrap,
-  SimpleCodec,
-  CeramicDocumentId,
-  decodeThrow,
-} from '@potter/codec';
+import { BufferMultibaseCodec, RecordWrap, SimpleCodec, CeramicDocumentId, decodeThrow } from '@potter/codec';
 import { doctype } from '../document/doctype';
 import { DocumentState } from '../document/document.state';
 import produce from 'immer';
@@ -134,6 +128,10 @@ const ThreeIdFreightCodec = t.type({
 });
 
 export const ThreeId = doctype('3id', new SimpleCodec(ThreeIdFreightCodec), {
+  async genesisFromFreight(payload) {
+    const applied = Object.assign({}, payload, { doctype: this.name }) as ThreeIdFreight;
+    return this.json.encode(applied);
+  },
   async makeGenesis(payload: any): Promise<t.OutputOf<typeof ThreeIdFreightCodec>> {
     await this.json.assertValid(payload);
     return payload;

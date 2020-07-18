@@ -17,13 +17,17 @@ export class TypedDocument<F extends IWithDoctype> implements ITypedDocument<F> 
     this.#context = context;
   }
 
-  get freight(): F {
+  get current(): F {
     return this.#doctype.json.decode(this.#document.current);
+  }
+
+  get document(): IDocument {
+    return this.#document;
   }
 
   async update(next: F, opts?: { useMgmt: boolean }) {
     const nextJSON = this.#doctype.json.encode(next);
-    const currentJSON = this.#doctype.json.encode(this.freight);
+    const currentJSON = this.#doctype.json.encode(this.current);
     const patch = jsonPatch.compare(nextJSON, currentJSON);
     const payloadToSign = UpdateRecordWaiting.encode({
       patch: patch,
@@ -32,5 +36,13 @@ export class TypedDocument<F extends IWithDoctype> implements ITypedDocument<F> 
     });
     const signedUpdateRecord = await this.#context.sign(payloadToSign, opts);
     await this.#document.update(signedUpdateRecord);
+  }
+
+  [Symbol.for('nodejs.util.inspect.custom')]() {
+    return this.toJSON()
+  }
+
+  toJSON() {
+    return this.#document.toJSON();
   }
 }

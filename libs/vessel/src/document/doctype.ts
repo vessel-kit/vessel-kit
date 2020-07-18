@@ -13,9 +13,15 @@ export interface IDoctype<Freight extends IWithDoctype = IWithDoctype> {
 
   // Return payload as JSON
   makeGenesis(this: IDoctype<Freight>, genesisRecord: any): Promise<any & IWithDoctype>;
+  genesisFromFreight(this: IDoctype<Freight>, payload: Omit<Freight, 'doctype'>): Promise<any & IWithDoctype>;
 
   applyGenesis(this: IDoctype<Freight>, documentId: CeramicDocumentId, genesis: any): Promise<DocumentState>;
-  applyAnchor(this: IDoctype<Freight>, anchorRecord: RecordWrap, proof: AnchorProof, state: DocumentState): Promise<DocumentState>;
+  applyAnchor(
+    this: IDoctype<Freight>,
+    anchorRecord: RecordWrap,
+    proof: AnchorProof,
+    state: DocumentState,
+  ): Promise<DocumentState>;
   applyUpdate(this: IDoctype<Freight>, updateRecord: RecordWrap, state: DocumentState): Promise<DocumentState>;
 }
 
