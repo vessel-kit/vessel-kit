@@ -41,7 +41,7 @@ export class Client {
       } else {
         throw new Error(`No signor set`);
       }
-    });
+    }, this.load.bind(this));
     this.#service = new RemoteDocumentService(host, context);
   }
 

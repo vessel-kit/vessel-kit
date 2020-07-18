@@ -65,7 +65,7 @@ export class Document implements IDocument {
   }
 
   close(): void {
-    this.#internal$S.unsubscribe()
+    this.#internal$S.unsubscribe();
     this.#external$S.unsubscribe();
   }
 

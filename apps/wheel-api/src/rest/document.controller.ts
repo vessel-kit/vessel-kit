@@ -31,7 +31,7 @@ export class DocumentController {
     this.logger.log(`Handling CREATE`);
     const document = await this.ceramic.create(body);
     this.logger.log(
-      `Created ${document.state} document ${document.id.toString()}`,
+      `Created ${document.state.doctype} document ${document.id.toString()}`,
     );
     const record = new DocumentRecord();
     record.cid = document.id.cid;

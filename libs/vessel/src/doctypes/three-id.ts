@@ -15,11 +15,12 @@ import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 import { Chain } from '..';
 import * as _ from 'lodash';
 import base64url from 'base64url';
-import sortKeys from 'sort-keys';
 import { DIDDocument } from 'did-resolver';
 import * as multicodec from 'multicodec';
 import { decodeJWT, verifyJWT } from 'did-jwt';
 import jsonPatch from 'fast-json-patch';
+import { sortKeys } from '../util/sort-keys';
+import { InvalidSignatureError } from '../invalid-signature.error';
 
 export class InvalidDocumentUpdateLinkError extends Error {}
 
@@ -32,8 +33,6 @@ function publicKeyBase64(key: jose.JWK.Key): string {
   const multicodecBuffer = JWKMulticodecCodec.encode(key);
   return multicodec.rmPrefix(multicodecBuffer).toString('base64');
 }
-
-export class InvalidSignatureError extends Error {}
 
 export class DidPresentation {
   private readonly id: string;
@@ -178,7 +177,7 @@ export const ThreeId = doctype('3id', new SimpleCodec(ThreeIdFreightCodec), {
     const payloadObject = _.omit(updateRecord.load, ['header', 'signature']);
     payloadObject.prev = { '/': payloadObject.prev.toString() };
     payloadObject.id = { '/': payloadObject.id.toString() };
-    const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject, { deep: true })));
+    const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject)));
     const encodedHeader = base64url(JSON.stringify(updateRecord.load.header));
     const encodedSignature = updateRecord.load.signature;
     const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');

@@ -1,6 +1,5 @@
 import * as multicodec from 'multicodec';
 import { ethers } from 'ethers';
-import sortKeys from 'sort-keys';
 import { IProvider } from './provider.interface';
 import { IdentityProviderWrap } from './identity-provider.wrap';
 import jose from 'jose';
@@ -9,6 +8,7 @@ import { decodePromise } from '@potter/codec';
 import { JWTPayload } from './jwt-payload';
 import { ISignor } from './signor.interface';
 import { ThreeIdentifier } from '../three-identifier';
+import { sortKeys } from '../util/sort-keys';
 
 function secp256k1PubKeyFromCompressed(compressedHex: string) {
   const publicKey = ethers.utils.computePublicKey('0x' + compressedHex.replace('0x', ''));
@@ -67,11 +67,11 @@ export class User implements ISignor {
   }
 
   async sign(payload: any, opts: { useMgmt: boolean } = { useMgmt: false }): Promise<JWTPayload> {
-    if (!this.did) throw new EmptyDIDSigningError(`Can not sign payload without DID`);
-    payload.iss = this.did;
+    const did = await this.did()
+    if (!did) throw new EmptyDIDSigningError(`Can not sign payload without DID`);
+    payload.iss = did;
     payload.iat = undefined; // did-jwt is quite opinionated
-    const sortedPayload = sortKeys(payload, { deep: true });
-    const did = await this.did();
+    const sortedPayload = sortKeys(payload);
     const claimParams = { payload: sortedPayload, did: did.toString(), useMgmt: opts.useMgmt };
     const jwtComponents = await this.#identityProvider.signClaim(claimParams);
     const header = jwtComponents.header;

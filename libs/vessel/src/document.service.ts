@@ -67,7 +67,7 @@ export class DocumentService implements IDocumentService {
 
   externalUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>) {
     this.#cloud.bus.request(docId.toString());
-    return merge(this.cloudUpdates$(docId, state$), this.anchorUpdates$(docId, state$))
+    return merge(this.cloudUpdates$(docId, state$), this.anchorUpdates$(docId, state$));
   }
 
   private cloudUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>): Observable<DocumentState> {
@@ -90,7 +90,10 @@ export class DocumentService implements IDocumentService {
     }
   }
 
-  private anchorUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>): Observable<DocumentState> {
+  private anchorUpdates$(
+    docId: CeramicDocumentId,
+    state$: FrozenSubjectRead<DocumentState>,
+  ): Observable<DocumentState> {
     return this.#anchoring.anchorStatus$(docId).pipe(
       mergeMap(async (observation) => {
         this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation);

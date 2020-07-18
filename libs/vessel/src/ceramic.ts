@@ -23,6 +23,7 @@ import { ISignor } from './signor/signor.interface';
 import { Context } from './context';
 import { DoctypesContainer } from './doctypes-container';
 import { ThreeId } from './doctypes/three-id';
+import { Tile } from './doctypes/tile';
 
 export interface CeramicOptions {
   logger?: ILogger;
@@ -53,8 +54,8 @@ export class Ceramic {
       } else {
         throw new Error(`No signor set`);
       }
-    });
-    const doctypes = new DoctypesContainer([ThreeId], context);
+    }, this.load.bind(this));
+    const doctypes = new DoctypesContainer([ThreeId, Tile], context);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
     const blockchainEndpoints = options.blockchainEndpoints || [];
     const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
