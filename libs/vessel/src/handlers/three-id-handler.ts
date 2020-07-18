@@ -15,6 +15,7 @@ import { decodeJWT, verifyJWT } from 'did-jwt';
 import { DIDDocument } from 'did-resolver';
 import { DidPresentation } from '../did.presentation';
 import { InvalidSignatureError } from '../invalid-signature.error';
+import { InvalidDocumentUpdateLinkError } from '../doctypes/invalid-document-update-link.error';
 
 export const ThreeIdFreight = t.type({
   doctype: t.literal('3id'),
@@ -26,8 +27,6 @@ export const ThreeIdFreight = t.type({
     }),
   }),
 });
-
-export class InvalidDocumentUpdateLinkError extends Error {}
 
 function withNormalizedHeader(jwt: string) {
   const { header } = decodeJWT(jwt);

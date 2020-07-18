@@ -7,8 +7,7 @@ import produce from 'immer';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
-
-export class InvalidDocumentUpdateLinkError extends Error {}
+import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
 
 interface TileFreight {
   doctype: 'tile';

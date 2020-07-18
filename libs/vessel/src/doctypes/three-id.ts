@@ -21,8 +21,7 @@ import { decodeJWT, verifyJWT } from 'did-jwt';
 import jsonPatch from 'fast-json-patch';
 import { sortKeys } from '../util/sort-keys';
 import { InvalidSignatureError } from '../invalid-signature.error';
-
-export class InvalidDocumentUpdateLinkError extends Error {}
+import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
 
 function publicKeyHex(key: jose.JWK.Key): string {
   const multicodecBuffer = JWKMulticodecCodec.encode(key);

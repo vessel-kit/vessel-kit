@@ -9,8 +9,8 @@ import base64url from 'base64url';
 import sortKeys from 'sort-keys';
 import * as didJwt from 'did-jwt';
 import { Resolver } from 'did-resolver';
-import { InvalidDocumentUpdateLinkError } from './three-id-handler';
 import jsonPatch from 'fast-json-patch';
+import { InvalidDocumentUpdateLinkError } from '../doctypes/invalid-document-update-link.error';
 
 export class TileHandler implements IHandler {
   constructor(readonly resolver: Resolver) {}
