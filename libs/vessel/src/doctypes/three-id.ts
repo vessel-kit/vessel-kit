@@ -6,7 +6,6 @@ import { DoctypeHandler } from '../document/doctype';
 import { DocumentState } from '../document/document.state';
 import * as _ from 'lodash';
 import base64url from 'base64url';
-import { DIDDocument } from 'did-resolver';
 import * as multicodec from 'multicodec';
 import { decodeJWT, verifyJWT } from 'did-jwt';
 import jsonPatch from 'fast-json-patch';
@@ -75,11 +74,6 @@ export class DidPresentation {
   }
 }
 
-export function wrapThreeId(id: string, content: ThreeIdFreight): DIDDocument {
-  const presentation = new DidPresentation(id, content);
-  return presentation.toJSON();
-}
-
 function withNormalizedHeader(jwt: string) {
   const { header } = decodeJWT(jwt);
   const correctHeader = { typ: header.typ, alg: header.alg };
@@ -89,7 +83,7 @@ function withNormalizedHeader(jwt: string) {
 }
 
 export async function verifyThreeId(jwt: string, id: string, content: ThreeIdFreight): Promise<void> {
-  const didPresentation = wrapThreeId(id, content);
+  const didPresentation = new DidPresentation(id, content).toJSON();
   const normalized = withNormalizedHeader(jwt);
   try {
     await verifyJWT(normalized, {

@@ -9,8 +9,6 @@ import { DocumentUpdateService } from './document-update.service';
 import { CeramicDocumentId } from '@potter/codec';
 import { AnchoringHttpClient } from '@potter/anchoring';
 import { ConnectionString } from '@potter/blockchain-connection-string';
-import { Resolver } from 'did-resolver';
-import { ThreeIdResolver } from './resolver/three-id-resolver';
 import { Document } from './document/document';
 import { ISignor } from './signor/signor.interface';
 import { Context } from './context';
@@ -30,17 +28,7 @@ export class Ceramic {
 
   constructor(ipfs: Ipfs, options: CeramicOptions) {
     const logger = options.logger;
-    const threeIdResolver = new ThreeIdResolver(this.load.bind(this));
-    const resolver = new Resolver(threeIdResolver.registry);
     const cloud = new Cloud(logger, ipfs);
-    // const handlers = new HandlersContainer(
-    //   new Map<string, IHandler>([
-    //     ['3id', new ThreeIdHandler()],
-    //     ['tile', new TileHandler(resolver)],
-    //     [VESSEL_RULESET_DOCTYPE, new VesselAlphaRulesetHandler()],
-    //     [VESSEL_DOCUMENT_DOCTYPE, new VesselAlphaDocumentHandler(cloud)],
-    //   ]),
-    // );
     const context = new Context(() => {
       if (this.#signor) {
         return this.#signor;
