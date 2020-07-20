@@ -2,8 +2,7 @@ import { CeramicDocumentId } from '@potter/codec';
 import { Document } from '../document/document';
 import { DIDDocument, DIDResolver, ParsedDID } from 'did-resolver';
 import CID from 'cids';
-import { ThreeIdContentJSONCodec } from '../three-id.content';
-import { decodeThrow } from '@potter/codec';
+import { ThreeId } from '../doctypes/three-id';
 import { DidPresentation } from '../did.presentation';
 
 export interface ILoad {
@@ -22,9 +21,8 @@ export class ThreeIdResolver {
       '3': async (did: string, parsed: ParsedDID): Promise<DIDDocument | null> => {
         const docId = new CeramicDocumentId(new CID(parsed.id));
         const document = await this.load(docId);
-        const threeId = decodeThrow(ThreeIdContentJSONCodec, document.current);
-        const presentation = new DidPresentation(did, threeId);
-        return presentation.toJSON();
+        const t = ThreeId.json.decode(document.current);
+        return new DidPresentation(did, t);
       },
     };
   }

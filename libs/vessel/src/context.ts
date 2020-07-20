@@ -1,12 +1,8 @@
 import { ThreeIdentifier } from './three-identifier';
 import { ISignor } from './signor/signor.interface';
-import _ from 'lodash';
-import base64url from 'base64url';
-import * as didJwt from 'did-jwt';
 import { ILoad, ThreeIdResolver } from './resolver/three-id-resolver';
 import { Resolver } from 'did-resolver';
-import { sortKeys } from './util/sort-keys';
-import { InvalidSignatureError } from './invalid-signature.error';
+import { assertSignature } from './assert-signature';
 
 export interface IContext {
   sign(payload: any, opts?: { useMgmt: boolean }): Promise<void>;
@@ -48,19 +44,7 @@ export class Context implements IContext {
   }
 
   async assertSignature(record: any): Promise<void> {
-    const payloadObject = _.omit(record, ['header', 'signature']);
-    payloadObject.prev = payloadObject.prev ? { '/': payloadObject.prev.toString() } : undefined;
-    payloadObject.id = payloadObject.id ? { '/': payloadObject.id.toString() } : undefined;
-    const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject)));
-    const header = { typ: record.header.typ, alg: record.header.alg };
-    const encodedHeader = base64url(JSON.stringify(header));
-    const encodedSignature = record.signature;
-    const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');
-    try {
-      await didJwt.verifyJWT(jwt, { resolver: this.#resolver });
-    } catch (e) {
-      throw new InvalidSignatureError(e.message);
-    }
+    return assertSignature(record, this.#resolver);
   }
 }
 

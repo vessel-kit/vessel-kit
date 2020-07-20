@@ -3,10 +3,7 @@ import { Cloud } from './cloud/cloud';
 import { CeramicDocumentId } from '@potter/codec';
 import { Document } from './document/document';
 import { DocumentService } from './document.service';
-import { HandlersContainer } from './handlers/handlers.container';
 import { MessageTyp } from './cloud/message-typ';
-import { Chain } from './util/chain';
-import { AnchoringStatus } from '@potter/anchoring';
 import { DoctypesContainer } from './doctypes-container';
 
 export class DocumentRepository {

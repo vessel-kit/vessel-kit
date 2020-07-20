@@ -4,98 +4,11 @@ import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
 import { BufferMultibaseCodec, SimpleCodec } from '@potter/codec';
 import { DoctypeHandler } from '../document/doctype';
 import { DocumentState } from '../document/document.state';
-import * as _ from 'lodash';
-import base64url from 'base64url';
-import * as multicodec from 'multicodec';
-import { decodeJWT, verifyJWT } from 'did-jwt';
 import jsonPatch from 'fast-json-patch';
-import { sortKeys } from '../util/sort-keys';
-import { InvalidSignatureError } from '../invalid-signature.error';
 import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
 import { UpdateRecordWaiting } from '../util/update-record.codec';
-
-function publicKeyHex(key: jose.JWK.Key): string {
-  const multicodecBuffer = JWKMulticodecCodec.encode(key);
-  return '04' + multicodec.rmPrefix(multicodecBuffer).toString('hex');
-}
-
-function publicKeyBase64(key: jose.JWK.Key): string {
-  const multicodecBuffer = JWKMulticodecCodec.encode(key);
-  return multicodec.rmPrefix(multicodecBuffer).toString('base64');
-}
-
-export class DidPresentation {
-  private readonly id: string;
-
-  constructor(id: string, private readonly document: ThreeIdFreight) {
-    this.id = id;
-  }
-
-  toJSON() {
-    const document: any = {
-      '@context': 'https://w3id.org/did/v1',
-      id: this.id,
-      publicKey: [
-        {
-          id: `${this.id}#signingKey`,
-          type: 'Secp256k1VerificationKey2018',
-          owner: this.id,
-          publicKeyHex: publicKeyHex(this.document.content.publicKeys.signing),
-        },
-        {
-          id: `${this.id}#encryptionKey`,
-          type: 'Curve25519EncryptionPublicKey',
-          owner: this.id,
-          publicKeyBase64: publicKeyBase64(this.document.content.publicKeys.encryption),
-        },
-      ],
-      authentication: [
-        {
-          type: 'Secp256k1SignatureAuthentication2018',
-          publicKey: `${this.id}#signingKey`,
-        },
-      ],
-    };
-
-    this.document.owners.forEach((ownerKey, i) => {
-      document.publicKey.push({
-        id: `${this.id}#managementKey_${i}`,
-        type: 'Secp256k1VerificationKey2018',
-        owner: this.id,
-        publicKeyHex: publicKeyHex(ownerKey),
-      });
-      document.authentication.push({
-        type: 'Secp256k1SignatureAuthentication2018',
-        publicKey: `${this.id}#managementKey_${i}`,
-      });
-    });
-
-    return document;
-  }
-}
-
-function withNormalizedHeader(jwt: string) {
-  const { header } = decodeJWT(jwt);
-  const correctHeader = { typ: header.typ, alg: header.alg };
-  const encodedCorrectHeader = base64url(JSON.stringify(correctHeader));
-  const parts = jwt.split('.');
-  return [encodedCorrectHeader, parts[1], parts[2]].join('.');
-}
-
-export async function verifyThreeId(jwt: string, id: string, content: ThreeIdFreight): Promise<void> {
-  const didPresentation = new DidPresentation(id, content).toJSON();
-  const normalized = withNormalizedHeader(jwt);
-  try {
-    await verifyJWT(normalized, {
-      resolver: {
-        resolve: async () => didPresentation,
-      },
-    });
-  } catch (e) {
-    console.error(e);
-    throw new InvalidSignatureError(`Invalid signature for ${id}`);
-  }
-}
+import { DidPresentation } from '../did.presentation';
+import { assertSignature } from '../assert-signature';
 
 export interface ThreeIdFreight {
   doctype: '3id';
@@ -139,17 +52,13 @@ class ThreeIdHandler extends DoctypeHandler<ThreeIdFreight> {
     if (!(updateRecord.load.id && updateRecord.load.id.equals(state.log.first))) {
       throw new InvalidDocumentUpdateLinkError(`Expected ${state.log.first} id while got ${updateRecord.load.id}`);
     }
-    const payloadObject = _.omit(updateRecord.load, ['header', 'signature']);
-    payloadObject.prev = { '/': payloadObject.prev.toString() };
-    payloadObject.id = { '/': payloadObject.id.toString() };
-    const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject)));
-    const encodedHeader = base64url(JSON.stringify(updateRecord.load.header));
-    const encodedSignature = updateRecord.load.signature;
-    const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');
-    const freight = state.freight;
-    const threeIdContent = this.json.decode(freight);
-    await verifyThreeId(jwt, `did:3:${state.log.first.toString()}`, threeIdContent);
-    const next = jsonPatch.applyPatch(state.current || state.freight, payloadObject.patch, false, false);
+    const threeIdContent = this.json.decode(state.freight);
+    const didPresentation = new DidPresentation(`did:3:${state.log.first.toString()}`, threeIdContent, true);
+    const resolver = {
+      resolve: async () => didPresentation,
+    };
+    await assertSignature(updateRecord.load, resolver);
+    const next = jsonPatch.applyPatch(state.current || state.freight, updateRecord.load.patch, false, false);
     return {
       ...state,
       current: next.newDocument,
