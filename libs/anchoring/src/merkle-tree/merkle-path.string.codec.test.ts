@@ -1,7 +1,7 @@
 import { MerklePath } from './merkle-path';
 import { PathDirection } from './path-direction';
 import { MerklePathStringCodec } from './merkle-path.string.codec';
-import { decodePromise } from '@potter/codec';
+import { decodeThrow } from '@potter/codec';
 
 test('encode', () => {
   const merklePath = new MerklePath([PathDirection.R, PathDirection.L, PathDirection.R]);
@@ -15,20 +15,22 @@ test('encode empty', () => {
   expect(asString).toEqual('');
 });
 
-test('decode', async () => {
-  const merklePath = await decodePromise<MerklePath, string, unknown>(MerklePathStringCodec, 'R/L/R');
+test('decode', () => {
+  const merklePath = decodeThrow(MerklePathStringCodec, 'R/L/R');
   expect(merklePath).toBeInstanceOf(MerklePath);
   expect(merklePath.steps).toEqual([PathDirection.R, PathDirection.L, PathDirection.R]);
 });
 
-test('decode empty', async () => {
-  const merklePath = await decodePromise<MerklePath, string, unknown>(MerklePathStringCodec, '');
+test('decode empty', () => {
+  const merklePath = decodeThrow(MerklePathStringCodec, '');
   expect(merklePath).toBeInstanceOf(MerklePath);
   expect(merklePath.steps).toEqual([]);
 });
 
-test('decode garbage', async () => {
-  await expect(decodePromise(MerklePathStringCodec, 'R/as/L')).rejects.toThrow();
+test('decode garbage', () => {
+  expect(() => {
+    decodeThrow(MerklePathStringCodec, 'R/as/L');
+  }).toThrow();
 });
 
 describe('validate', () => {

@@ -1,6 +1,6 @@
 import { IHandler } from './handler.interface';
 import { DocumentState } from '../document/document.state';
-import { decodePromise } from '@potter/codec';
+import { decodeThrow } from '@potter/codec';
 import { VesselRuleset } from './vessel-freight';
 import produce from 'immer';
 import { AnchoringStatus } from '@potter/anchoring';
@@ -35,7 +35,7 @@ export class VesselAlphaRulesetHandler implements IHandler {
   }
 
   async makeGenesis(content: any): Promise<any> {
-    await decodePromise(VesselRuleset, content);
+    decodeThrow(VesselRuleset, content);
     return content;
   }
 }

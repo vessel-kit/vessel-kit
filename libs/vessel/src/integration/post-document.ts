@@ -7,7 +7,7 @@ import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import { ThreeIdentifier } from '../three-identifier';
-import { decodePromise } from '@potter/codec';
+import { decodeThrow } from '@potter/codec';
 
 const IPFS_URL = 'http://localhost:5001';
 const ipfs = ipfsClient(IPFS_URL);
@@ -72,7 +72,7 @@ async function main() {
     prev: { '/': document.state.log.last.toString() },
     id: { '/': document.id.valueOf() },
   });
-  const did = await decodePromise(ThreeIdentifier, `did:3:${document.id.valueOf()}`);
+  const did = decodeThrow(ThreeIdentifier, `did:3:${document.id.valueOf()}`);
   await user.did(did);
   const a = await user.sign(updateRecordToSign, { useMgmt: true });
   const updateRecordA = {

@@ -1,6 +1,5 @@
 export * from './enum-of';
 export * from './split-string';
-export * from './decode-promise';
 export * from './decode-throw';
 export * from './validate-promise';
 export * from './ceramic-document-id';

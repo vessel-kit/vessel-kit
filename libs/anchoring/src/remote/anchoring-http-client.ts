@@ -2,7 +2,7 @@ import { Observable, queueScheduler, Subject } from 'rxjs';
 import CID from 'cids';
 import { filter } from 'rxjs/operators';
 import axios from 'axios';
-import { CeramicDocumentId, decodePromise } from '@potter/codec';
+import { CeramicDocumentId, decodeThrow } from '@potter/codec';
 import * as t from 'io-ts';
 import { AnchorResponsePayload } from './anchor-response-payload';
 import { AnchorRequestPayload } from './anchor-request-payload';
@@ -49,7 +49,7 @@ export class AnchoringHttpClient {
         cid,
       });
       const response = await axios.post(endpoint, payload);
-      const decoded = await decodePromise(AnchorResponsePayload, response.data);
+      const decoded = decodeThrow(AnchorResponsePayload, response.data);
       this.#observation$.next(decoded);
       this.startRequestingAnchorStatus(docId, cid);
     });
@@ -62,7 +62,7 @@ export class AnchoringHttpClient {
         const doRequest = async () => {
           const status = await this.requestAnchorStatus(docId, cid);
           if (status === AnchoringStatus.ANCHORED) {
-            resolve()
+            resolve();
           } else {
             queueScheduler.schedule(() => doRequest(), this.#period);
           }
@@ -76,7 +76,7 @@ export class AnchoringHttpClient {
     try {
       const endpoint = `${this.#anchoringEndpoint}/api/v0/requests/${cid.toString()}`;
       const response = await axios.get(endpoint);
-      const decoded = await decodePromise(AnchorResponsePayload, response.data);
+      const decoded = decodeThrow(AnchorResponsePayload, response.data);
       const status = response.data.status as AnchoringStatus;
       this.#observation$.next(decoded);
       return status;
