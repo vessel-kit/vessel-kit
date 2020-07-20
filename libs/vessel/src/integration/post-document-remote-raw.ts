@@ -3,27 +3,11 @@ import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import axios from 'axios';
-import CID from 'cids';
-import { Chain } from '../util/chain';
 import { ThreeIdentifier } from '../three-identifier';
 import { decodeThrow } from '@potter/codec';
 import { DocumentState } from '..';
 
 const REMOTE_URL = 'http://localhost:3001';
-
-const cborSortCompareFn = (a: string, b: string): number => a.length - b.length || a.localeCompare(b);
-
-function sortPropertiesDeep(obj: any, compareFn: (a: any, b: any) => number = cborSortCompareFn): any {
-  if (typeof obj !== 'object' || Array.isArray(obj)) {
-    return obj;
-  }
-  return Object.keys(obj)
-    .sort(compareFn)
-    .reduce<Record<string, any>>((acc, prop) => {
-      acc[prop] = sortPropertiesDeep(obj[prop], compareFn);
-      return acc;
-    }, {});
-}
 
 async function main() {
   const identityWallet = new IdentityWallet(() => true, {
