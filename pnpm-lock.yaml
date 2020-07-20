@@ -180,7 +180,6 @@ importers:
       fast-json-patch: 3.0.0-1
       graphql: 15.2.0
       graphql-tools: 5.0.0_graphql@15.2.0
-      io-ts: 2.2.8
       ipfs-http-client: 44.3.0
       jose: 1.27.2
       luxon: 1.24.1
@@ -219,7 +218,6 @@ importers:
       fast-json-patch: ^3.0.0-1
       graphql: ^15.0.0
       graphql-tools: ^5.0.0
-      io-ts: ^2.2.8
       ipfs-http-client: ^44.0.0
       jose: ^1.27.0
       luxon: ^1.24.1
@@ -3000,6 +2998,7 @@ packages:
     peerDependencies:
       '@nestjs/common': ^7.0.0
       '@nestjs/core': ^7.0.0
+      class-transformer: '*'
       graphql: ^14.1.1 || ^15.0.0
       reflect-metadata: ^0.1.12
     resolution:
@@ -9167,12 +9166,6 @@ packages:
       fp-ts: ^2.0.0
     resolution:
       integrity: sha512-kCusyu/Fa0oax5ue2Id/ZqVLEk5JOWyrXHcLbD4kHoVM50MhDEWUtcHlN7RrD94I8OrWILcVltM6OllnZiHJmg==
-  /io-ts/2.2.8:
-    dev: false
-    peerDependencies:
-      fp-ts: ^2.0.0
-    resolution:
-      integrity: sha512-kMpEM7iqomjg3DkpMrdXEhhiL/67oxtMH5185AVGyja0MQP3JONw/w4/51RHZuHaYu3gsWM2zAFzkHETy5eyGw==
   /ip-address/6.3.0:
     dependencies:
       jsbn: 1.1.0
