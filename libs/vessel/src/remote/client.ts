@@ -10,7 +10,7 @@ import { Context } from '../context';
 import { Document } from '../document/document';
 import { IWithDoctype } from '../document/with-doctype.interface';
 import { IDocument } from '../document/document.interface';
-import { IDoctype, withContext } from '../document/doctype';
+import { IDoctype } from '../document/doctype';
 import { DoctypesContainer } from '../doctypes-container';
 import { Tile } from '../doctypes/tile';
 
@@ -67,7 +67,7 @@ export class Client {
   }
 
   async createAs<F extends IWithDoctype>(doctype: IDoctype<F>, payload: Omit<F, 'doctype'>) {
-    const effectiveDoctype = withContext(doctype, this.#service.context);
+    const effectiveDoctype = doctype.withContext(this.#service.context);
     const record = await effectiveDoctype.genesisFromFreight(payload);
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
     const state = decodeThrow(DocumentState, response.data);

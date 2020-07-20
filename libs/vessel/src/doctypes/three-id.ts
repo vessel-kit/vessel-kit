@@ -1,12 +1,9 @@
 import * as jose from 'jose';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
-import { BufferMultibaseCodec, RecordWrap, SimpleCodec, CeramicDocumentId, decodeThrow } from '@potter/codec';
-import { doctype } from '../document/doctype';
+import { BufferMultibaseCodec, SimpleCodec } from '@potter/codec';
+import { DoctypeHandler } from '../document/doctype';
 import { DocumentState } from '../document/document.state';
-import produce from 'immer';
-import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
-import { Chain } from '..';
 import * as _ from 'lodash';
 import base64url from 'base64url';
 import { DIDDocument } from 'did-resolver';
@@ -117,26 +114,21 @@ export interface ThreeIdFreight {
   };
 }
 
-const ThreeIdFreightCodec = t.type({
-  doctype: t.literal('3id'),
-  owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec)),
-  content: t.type({
-    publicKeys: t.type({
-      encryption: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
-      signing: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
+class ThreeIdHandler extends DoctypeHandler<ThreeIdFreight> {
+  name = '3id';
+  json = new SimpleCodec(
+    t.type({
+      doctype: t.literal('3id'),
+      owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec)),
+      content: t.type({
+        publicKeys: t.type({
+          encryption: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
+          signing: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
+        }),
+      }),
     }),
-  }),
-});
+  );
 
-export const ThreeId = doctype('3id', new SimpleCodec(ThreeIdFreightCodec), {
-  async genesisFromFreight(payload) {
-    const applied = Object.assign({}, payload, { doctype: this.name }) as ThreeIdFreight;
-    return this.json.encode(applied);
-  },
-  async makeGenesis(payload: any): Promise<t.OutputOf<typeof ThreeIdFreightCodec>> {
-    this.json.assertValid(payload);
-    return payload;
-  },
   async update(document, next) {
     const nextJSON = this.json.encode(next);
     const currentJSON = document.current;
@@ -147,38 +139,8 @@ export const ThreeId = doctype('3id', new SimpleCodec(ThreeIdFreightCodec), {
       id: document.id,
     });
     return this.context.sign(payloadToSign, { useMgmt: true });
-  },
-  async applyGenesis(documentId: CeramicDocumentId, genesis: any): Promise<DocumentState> {
-    const payload = await this.makeGenesis(genesis);
-    return {
-      doctype: payload.doctype,
-      current: null,
-      freight: payload,
-      anchor: {
-        status: AnchoringStatus.NOT_REQUESTED as AnchoringStatus.NOT_REQUESTED,
-      },
-      log: new Chain([documentId.cid]),
-    };
-  },
-  async applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: DocumentState): Promise<DocumentState> {
-    return produce(state, async (next) => {
-      next.log = next.log.concat(anchorRecord.cid);
-      if (next.current) {
-        next.freight = next.current;
-        next.current = null;
-      }
-      next.anchor = {
-        status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
-        proof: {
-          chainId: proof.chainId.toString(),
-          blockNumber: proof.blockNumber,
-          timestamp: new Date(proof.blockTimestamp * 1000),
-          txHash: proof.txHash,
-          root: proof.root,
-        },
-      };
-    });
-  },
+  }
+
   async applyUpdate(updateRecord, state: DocumentState): Promise<DocumentState> {
     if (!(updateRecord.load.id && updateRecord.load.id.equals(state.log.first))) {
       throw new InvalidDocumentUpdateLinkError(`Expected ${state.log.first} id while got ${updateRecord.load.id}`);
@@ -191,7 +153,7 @@ export const ThreeId = doctype('3id', new SimpleCodec(ThreeIdFreightCodec), {
     const encodedSignature = updateRecord.load.signature;
     const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');
     const freight = state.freight;
-    const threeIdContent = decodeThrow(ThreeIdFreightCodec, freight);
+    const threeIdContent = this.json.decode(freight);
     await verifyThreeId(jwt, `did:3:${state.log.first.toString()}`, threeIdContent);
     const next = jsonPatch.applyPatch(state.current || state.freight, payloadObject.patch, false, false);
     return {
@@ -199,5 +161,7 @@ export const ThreeId = doctype('3id', new SimpleCodec(ThreeIdFreightCodec), {
       current: next.newDocument,
       log: state.log.concat(updateRecord.cid),
     };
-  },
-});
+  }
+}
+
+export const ThreeId = new ThreeIdHandler();
