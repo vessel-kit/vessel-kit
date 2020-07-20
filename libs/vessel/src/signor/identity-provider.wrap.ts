@@ -1,5 +1,6 @@
-import { IdentityProvider } from './identity-provider.interface';
+import { IProvider } from './provider.interface';
 import { decodeJWT } from 'did-jwt';
+import { JWTDecoded } from './jwt-payload';
 
 function openRpcCall(method: string, params: any) {
   return {
@@ -18,31 +19,6 @@ export interface AuthenticateResponse {
   };
 }
 
-export interface JWTHeader {
-  typ: 'JWT';
-  alg: string;
-  [x: string]: any;
-}
-
-export interface JWTDecoded {
-  header: JWTHeader;
-  payload: JWTPayload;
-  signature: string;
-  data: string;
-}
-
-export interface JWTPayload {
-  iss?: string;
-  sub?: string;
-  aud?: string | string[];
-  iat?: number;
-  nbf?: number;
-  type?: string;
-  exp?: number;
-  rexp?: number;
-  [x: string]: any;
-}
-
 export interface ClaimParams {
   payload: any;
   did: string;
@@ -50,9 +26,9 @@ export interface ClaimParams {
 }
 
 export class IdentityProviderWrap {
-  #identityProvider: IdentityProvider;
+  #identityProvider: IProvider;
 
-  constructor(identityProvider: IdentityProvider) {
+  constructor(identityProvider: IProvider) {
     this.#identityProvider = identityProvider;
   }
 
@@ -67,8 +43,8 @@ export class IdentityProviderWrap {
 
   async ask<A>(method: string, params: any): Promise<A> {
     const response = await this.#identityProvider.send<A>(openRpcCall(method, params));
-    if (response.errors) {
-      throw new Error(`Got errors: ${JSON.stringify(response.errors)}`);
+    if (response.error) {
+      throw new Error(`Got errors: ${JSON.stringify(response.error)}`);
     } else {
       return response.result;
     }

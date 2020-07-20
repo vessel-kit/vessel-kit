@@ -1,13 +1,11 @@
 import { CeramicDocumentId } from '@potter/codec';
-import { Document } from '../document';
+import { Document } from '../document/document';
 import { DIDDocument, DIDResolver, ParsedDID } from 'did-resolver';
-import { ThreeIdentifier } from '../three-identifier';
 import CID from 'cids';
-import { wrapThreeId } from '../handlers/verify-three-did';
-import { ThreeIdContentJSONCodec } from '../three-id.content';
-import { decodePromise } from '@potter/codec';
+import { ThreeId } from '../doctypes/three-id';
+import { DidPresentation } from '../did.presentation';
 
-interface ILoad {
+export interface ILoad {
   (docId: CeramicDocumentId): Promise<Document>;
 }
 
@@ -21,12 +19,10 @@ export class ThreeIdResolver {
   constructor(private readonly load: ILoad) {
     this.registry = {
       '3': async (did: string, parsed: ParsedDID): Promise<DIDDocument | null> => {
-        const threeIdentifier = ThreeIdentifier.fromString(did);
-        const docId = new CeramicDocumentId(new CID(threeIdentifier.address));
+        const docId = new CeramicDocumentId(new CID(parsed.id));
         const document = await this.load(docId);
-        const threeId = await decodePromise(ThreeIdContentJSONCodec, document.current);
-        const didPresentation = wrapThreeId(threeIdentifier.toString(), threeId);
-        return didPresentation;
+        const t = ThreeId.json.decode(document.current);
+        return new DidPresentation(did, t);
       },
     };
   }

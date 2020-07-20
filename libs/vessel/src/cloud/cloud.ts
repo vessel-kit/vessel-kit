@@ -1,6 +1,6 @@
 import { Ipfs } from 'ipfs';
 import CID from 'cids';
-import { ILogger } from '../logger/logger.interface';
+import { ILogger } from '../util/logger.interface';
 import { CloudBus } from './cloud-bus';
 
 export class UnknownMessageError extends Error {
@@ -33,7 +33,7 @@ export class Cloud {
     return this.#ipfs.dag.put(content)
   }
 
-  async retrieve(cid: CID, path?: string) {
+  async retrieve(cid: CID, path?: string): Promise<any> {
     const blob = await this.#ipfs.dag.get(cid, path)
     return blob?.value
   }

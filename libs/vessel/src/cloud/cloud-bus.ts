@@ -1,5 +1,5 @@
 import { Ipfs } from "ipfs";
-import { ILogger } from '../logger/logger.interface';
+import { ILogger } from '../util/logger.interface';
 import { queueScheduler, Subject } from 'rxjs';
 import { CloudMessage } from './cloud-message';
 import { MessageTyp } from './message-typ';

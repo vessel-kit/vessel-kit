@@ -4,8 +4,10 @@ import { ThreeIdContent } from '../three-id.content';
 import { waitUntil } from './wait.util';
 import { AnchoringStatus } from '@potter/anchoring';
 import IdentityWallet from 'identity-wallet';
-import { Signor } from '../person/signor';
+import { User } from '../signor/user';
 import { sleep } from './sleep.util';
+import { ThreeIdentifier } from '../three-identifier';
+import { decodeThrow } from '@potter/codec';
 
 const IPFS_URL = 'http://localhost:5001';
 const ipfs = ipfsClient(IPFS_URL);
@@ -28,14 +30,14 @@ async function main() {
   const identityWallet = new IdentityWallet(() => true, {
     seed: '0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f',
   });
-  const user = new Signor(identityWallet.get3idProvider());
-  await user.auth();
+  const user = await User.build(identityWallet.get3idProvider());
 
   const ceramic = await Ceramic.build(ipfs);
 
-  const ownerKey = user.publicKeys.managementKey;
-  const signingKey = user.publicKeys.signingKey;
-  const encryptionKey = user.publicKeys.asymEncryptionKey;
+  const publicKeys = await user.publicKeys();
+  const ownerKey = publicKeys.managementKey;
+  const signingKey = publicKeys.signingKey;
+  const encryptionKey = publicKeys.asymEncryptionKey;
 
   const doc1 = new ThreeIdContent(
     [ownerKey],
@@ -70,7 +72,8 @@ async function main() {
     prev: { '/': document.state.log.last.toString() },
     id: { '/': document.id.valueOf() },
   });
-  user.did = `did:3:${document.id.valueOf()}`;
+  const did = decodeThrow(ThreeIdentifier, `did:3:${document.id.valueOf()}`);
+  await user.did(did);
   const a = await user.sign(updateRecordToSign, { useMgmt: true });
   const updateRecordA = {
     ...updateRecord,
@@ -79,7 +82,7 @@ async function main() {
     signature: a.signature,
   };
   await document.update(updateRecordA);
-  await sleep(20000)
+  await sleep(20000);
   // localUser.signManagement(updateRecord);
 }
 

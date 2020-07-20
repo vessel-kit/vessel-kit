@@ -9,13 +9,13 @@ import {
 } from '@nestjs/common';
 import { Ceramic } from '@potter/vessel';
 import { LiveGateway } from '../live/live.gateway';
-import { DocumentRecord } from '../storage/document.record'
-import { DocumentStorage } from '../storage/document.storage'
-import { DocumentPresentation } from './document.presentation';
+import { DocumentRecord } from '../storage/document.record';
+import { DocumentStorage } from '../storage/document.storage';
 import { DocumentStatePresentation } from './document-state.presentation';
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId, CidStringCodec, DecodePipe } from '@potter/codec';
 import CID from 'cids';
 import { DateTime } from 'luxon';
+import { DocumentState } from '@potter/vessel';
 
 @Controller('/api/v0/ceramic')
 export class DocumentController {
@@ -23,7 +23,7 @@ export class DocumentController {
   constructor(
     private readonly ceramic: Ceramic,
     private readonly liveUpdater: LiveGateway,
-    private readonly documentStorage: DocumentStorage
+    private readonly documentStorage: DocumentStorage,
   ) {}
 
   @Post('/')
@@ -31,16 +31,16 @@ export class DocumentController {
     this.logger.log(`Handling CREATE`);
     const document = await this.ceramic.create(body);
     this.logger.log(
-      `Created ${document.state} document ${document.id.toString()}`,
+      `Created ${document.state.doctype} document ${document.id.toString()}`,
     );
-    const record = new DocumentRecord()
-    record.cid = document.id.cid
-    record.doctype = body.doctype
-    record.payload = body.content
-    record.createdAt = DateTime.local().toJSDate()
-    record.updatedAt = DateTime.local().toJSDate()
-    await this.documentStorage.save(record)
-    return new DocumentPresentation(document);
+    const record = new DocumentRecord();
+    record.cid = document.id.cid;
+    record.doctype = body.doctype;
+    record.payload = body.content;
+    record.createdAt = DateTime.local().toJSDate();
+    record.updatedAt = DateTime.local().toJSDate();
+    await this.documentStorage.save(record);
+    return DocumentState.encode(document.state);
   }
 
   @Get('/')
@@ -52,7 +52,7 @@ export class DocumentController {
   async read(@Param('cid') cidString: string) {
     const cid = CeramicDocumentId.fromString(cidString);
     const document = await this.ceramic.load(cid);
-    return new DocumentPresentation(document);
+    return DocumentState.encode(document.state);
   }
 
   // @Get('/list/:cid')
@@ -84,7 +84,7 @@ export class DocumentController {
     const document = await this.ceramic.load(documentId);
     await document.update(body);
     this.liveUpdater.sendUpdate(cidString, body.content);
-    return;
+    return DocumentState.encode(document.state);
   }
 
   @Get('/:cid/state')
@@ -99,5 +99,13 @@ export class DocumentController {
         error: e.message,
       };
     }
+  }
+
+  @Post('/:cid/anchor')
+  async requestAnchor(@Param('cid', new DecodePipe(CidStringCodec)) cid: CID) {
+    const documentId = new CeramicDocumentId(cid);
+    const document = await this.ceramic.load(documentId);
+    document.requestAnchor();
+    return DocumentState.encode(document.state);
   }
 }

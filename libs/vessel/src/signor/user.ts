@@ -1,48 +1,50 @@
 import * as multicodec from 'multicodec';
-import * as tPromise from 'io-ts-promise';
-import { PublicKey } from './public-key';
 import { ethers } from 'ethers';
-import sortKeys from 'sort-keys';
-import { IdentityProvider } from './identity-provider.interface';
+import { IProvider } from './provider.interface';
 import { IdentityProviderWrap } from './identity-provider.wrap';
-import { PublicKeyMulticodecCodec } from './public-key.multicodec.codec';
+import jose from 'jose';
+import { JWKMulticodecCodec } from './jwk.multicodec.codec';
+import { decodeThrow } from '@potter/codec';
+import { JWTPayload } from './jwt-payload';
+import { ISignor } from './signor.interface';
+import { ThreeIdentifier } from '../three-identifier';
+import { sortKeys } from '../util/sort-keys';
 
 function secp256k1PubKeyFromCompressed(compressedHex: string) {
   const publicKey = ethers.utils.computePublicKey('0x' + compressedHex.replace('0x', ''));
   const asBuffer = Buffer.from(publicKey.replace('0x04', ''), 'hex');
   // It is secp256k1 public key
   const encoded = multicodec.addPrefix(Buffer.from('e7', 'hex'), asBuffer);
-  return tPromise.decode(PublicKeyMulticodecCodec, encoded);
+  return decodeThrow(JWKMulticodecCodec, encoded);
 }
 
 async function x25519publicKey(base64: string) {
   const encryptionKeyBuffer = Buffer.from(base64, 'base64');
   const encoded = multicodec.addPrefix(Buffer.from('ec', 'hex'), encryptionKeyBuffer);
-  return tPromise.decode(PublicKeyMulticodecCodec, encoded);
+  return decodeThrow(JWKMulticodecCodec, encoded);
 }
 
 export class EmptyDIDSigningError extends Error {}
 
-export class Signor {
+export class User implements ISignor {
   readonly #identityProvider: IdentityProviderWrap;
-  #publicKeys: Record<string, PublicKey>;
-  #did?: string;
+  #publicKeys: Record<string, jose.JWK.Key>;
+  #did?: ThreeIdentifier;
 
-  constructor(identityProvider: IdentityProvider) {
+  constructor(identityProvider: IProvider) {
     this.#identityProvider = new IdentityProviderWrap(identityProvider);
     this.#publicKeys = {};
   }
 
-  get publicKeys() {
+  async publicKeys(): Promise<Record<string, jose.JWK.Key>> {
     return this.#publicKeys;
   }
 
-  get did() {
+  async did(value?: ThreeIdentifier): Promise<ThreeIdentifier | undefined> {
+    if (value) {
+      this.#did = value;
+    }
     return this.#did;
-  }
-
-  set did(value: string) {
-    this.#did = value;
   }
 
   async auth(): Promise<void> {
@@ -58,18 +60,19 @@ export class Signor {
     };
   }
 
-  static async build(identityProvider: IdentityProvider) {
-    const signor = new Signor(identityProvider);
+  static async build(identityProvider: IProvider) {
+    const signor = new User(identityProvider);
     await signor.auth();
     return signor;
   }
 
-  async sign(payload: any, opts: { useMgmt: boolean } = { useMgmt: false }) {
-    if (!this.did) throw new EmptyDIDSigningError(`Can not sign payload without DID`);
-    payload.iss = this.did;
+  async sign(payload: any, opts: { useMgmt: boolean } = { useMgmt: false }): Promise<JWTPayload> {
+    const did = await this.did()
+    if (!did) throw new EmptyDIDSigningError(`Can not sign payload without DID`);
+    payload.iss = did;
     payload.iat = undefined; // did-jwt is quite opinionated
-    const sortedPayload = sortKeys(payload, { deep: true });
-    const claimParams = { payload: sortedPayload, did: this.did, useMgmt: opts.useMgmt };
+    const sortedPayload = sortKeys(payload);
+    const claimParams = { payload: sortedPayload, did: did.toString(), useMgmt: opts.useMgmt };
     const jwtComponents = await this.#identityProvider.signClaim(claimParams);
     const header = jwtComponents.header;
     const signature = jwtComponents.signature;

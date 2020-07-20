@@ -2,11 +2,10 @@ import { IBlockchainReaderHandler } from './blockchain-reader-handler.interface'
 import { Ipfs } from 'ipfs';
 import { AnchorProof, AnchorProofIpldCodec } from './anchor-proof';
 import { AnchorLeaf, AnchorLeafIpldCodec } from './anchor-leaf';
-import { RecordWrap, decodePromise } from '@potter/codec';
+import { RecordWrap, decodeThrow } from '@potter/codec';
 import CID from 'cids';
 import { MerklePathStringCodec } from './merkle-tree/merkle-path.string.codec';
 import { ChainID } from 'caip';
-import { EthereumWriter } from './ethereum/ethereum-writer';
 import { EthereumReader } from './ethereum/ethereum-reader';
 import { ConnectionString } from '@potter/blockchain-connection-string';
 
@@ -55,11 +54,11 @@ export class BlockchainReader implements IBlockchainReader {
   }
 
   async verify(recordWrap: RecordWrap<any>): Promise<AnchorProof> {
-    const anchorLeaf = await decodePromise(AnchorLeafIpldCodec, recordWrap.load);
+    const anchorLeaf = decodeThrow(AnchorLeafIpldCodec, recordWrap.load);
     const anchorLeafWrap = new RecordWrap<AnchorLeaf>(anchorLeaf, recordWrap.cid);
     await this.verifyPrev(anchorLeafWrap);
     const anchorProofRecord = await this.retrieve(anchorLeaf.proof);
-    const anchorProof = await decodePromise(AnchorProofIpldCodec, anchorProofRecord);
+    const anchorProof = decodeThrow(AnchorProofIpldCodec, anchorProofRecord);
     await this.validateChainInclusion(anchorProof);
     return anchorProof;
   }

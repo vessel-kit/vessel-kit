@@ -1,13 +1,13 @@
 import { ThreeIdContent } from '../three-id.content';
 import IdentityWallet from 'identity-wallet';
-import { Signor } from '../person/signor';
+import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
-import { Chain } from '../chain';
-import { TileContent } from '../tile.content';
-import { ThreeIdentifier } from '../three-identifier';
+import { Chain } from '../util/chain';
 import jsonPatch from 'fast-json-patch';
+import { ThreeIdentifier } from '../three-identifier';
+import { decodeThrow } from '@potter/codec';
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -29,11 +29,12 @@ async function createUser(seed: string) {
   const identityWallet = new IdentityWallet(() => true, {
     seed: seed,
   });
-  const user = await Signor.build(identityWallet.get3idProvider());
+  const user = await User.build(identityWallet.get3idProvider());
 
-  const ownerKey = user.publicKeys.managementKey;
-  const signingKey = user.publicKeys.signingKey;
-  const encryptionKey = user.publicKeys.asymEncryptionKey;
+  const publicKeys = await user.publicKeys();
+  const ownerKey = publicKeys.managementKey;
+  const signingKey = publicKeys.signingKey;
+  const encryptionKey = publicKeys.asymEncryptionKey;
 
   const doc1 = new ThreeIdContent(
     [ownerKey],
@@ -49,7 +50,7 @@ async function createUser(seed: string) {
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
   const documentId = new CID(genesisResponse.data.docId);
-  user.did = `did:3:${documentId.valueOf()}`;
+  await user.did(decodeThrow(ThreeIdentifier, `did:3:${documentId.valueOf()}`));
   return user;
 }
 
@@ -85,14 +86,14 @@ async function main() {
   const genesisSignedDocument = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, signedDocument);
   const documentId = new CID(genesisSignedDocument.data.docId);
 
-  await sleep(80000)
+  await sleep(80000);
   const anchoredDocument = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
   const log = new Chain(anchoredDocument.data.log.map((cid) => new CID(cid)));
-  const anchoredDocumentId = new CID(anchoredDocument.data.docId)
+  const anchoredDocumentId = new CID(anchoredDocument.data.docId);
 
-  const doc2: any = JSON.parse(JSON.stringify(doc1))
-  doc2.content.num = 2
-  console.log('prepatch', doc1, doc2)
+  const doc2: any = JSON.parse(JSON.stringify(doc1));
+  doc2.content.num = 2;
+  console.log('prepatch', doc1, doc2);
   const delta = jsonPatch.compare(doc1, doc2);
   const updateRecord = {
     patch: delta,

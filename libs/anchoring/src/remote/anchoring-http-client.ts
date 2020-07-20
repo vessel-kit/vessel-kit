@@ -2,7 +2,7 @@ import { Observable, queueScheduler, Subject } from 'rxjs';
 import CID from 'cids';
 import { filter } from 'rxjs/operators';
 import axios from 'axios';
-import { CeramicDocumentId, decodePromise } from '@potter/codec';
+import { CeramicDocumentId, decodeThrow } from '@potter/codec';
 import * as t from 'io-ts';
 import { AnchorResponsePayload } from './anchor-response-payload';
 import { AnchorRequestPayload } from './anchor-request-payload';
@@ -10,10 +10,25 @@ import { AnchoringStatus } from '../anchoring-status';
 
 export type AnchorResponsePayloadType = t.TypeOf<typeof AnchorResponsePayload>;
 
+class NamedSchedule {
+  #tasks: Set<string> = new Set();
+
+  add(name: string, task: () => Promise<void>) {
+    if (!this.#tasks.has(name)) {
+      this.#tasks.add(name);
+      queueScheduler.schedule(async () => {
+        await task();
+        this.#tasks.delete(name);
+      });
+    }
+  }
+}
+
 export class AnchoringHttpClient {
   #observation$ = new Subject<AnchorResponsePayloadType>();
   #anchoringEndpoint: string;
   #period: number;
+  #schedule = new NamedSchedule();
 
   constructor(anchoringEndpoint: string, period: number = 5000) {
     this.#anchoringEndpoint = anchoringEndpoint;
@@ -34,29 +49,34 @@ export class AnchoringHttpClient {
         cid,
       });
       const response = await axios.post(endpoint, payload);
-      const decoded = await decodePromise(AnchorResponsePayload, response.data);
+      const decoded = decodeThrow(AnchorResponsePayload, response.data);
       this.#observation$.next(decoded);
       this.startRequestingAnchorStatus(docId, cid);
     });
   }
 
   startRequestingAnchorStatus(docId: CeramicDocumentId, cid: CID) {
-    const doRequest = async () => {
-      const status = await this.requestAnchorStatus(docId, cid);
-      if (status !== AnchoringStatus.ANCHORED) {
-        setTimeout(() => {
-          queueScheduler.schedule(() => doRequest());
-        }, this.#period);
-      }
-    };
-    queueScheduler.schedule(() => doRequest());
+    const taskName = `${docId}:${cid}`;
+    this.#schedule.add(taskName, () => {
+      return new Promise((resolve) => {
+        const doRequest = async () => {
+          const status = await this.requestAnchorStatus(docId, cid);
+          if (status === AnchoringStatus.ANCHORED) {
+            resolve();
+          } else {
+            queueScheduler.schedule(() => doRequest(), this.#period);
+          }
+        };
+        return doRequest();
+      });
+    });
   }
 
   async requestAnchorStatus(docId: CeramicDocumentId, cid: CID) {
     try {
       const endpoint = `${this.#anchoringEndpoint}/api/v0/requests/${cid.toString()}`;
       const response = await axios.get(endpoint);
-      const decoded = await decodePromise(AnchorResponsePayload, response.data);
+      const decoded = decodeThrow(AnchorResponsePayload, response.data);
       const status = response.data.status as AnchoringStatus;
       this.#observation$.next(decoded);
       return status;

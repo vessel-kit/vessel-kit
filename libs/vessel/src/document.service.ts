@@ -1,15 +1,18 @@
-import { ILogger } from './logger/logger.interface';
+import { ILogger } from './util/logger.interface';
 import { CeramicDocumentId } from '@potter/codec';
 import CID from 'cids';
 import { AnchoringStatus } from '@potter/anchoring';
-import { DocumentState } from './document.state';
+import { DocumentState } from './document/document.state';
 import { Cloud } from './cloud/cloud';
 import { AnchoringService } from './anchoring.service';
 import { DocumentUpdateService } from './document-update.service';
-import { FrozenSubject } from './frozen-subject';
+import { FrozenSubject, FrozenSubjectRead } from './util/frozen-subject';
 import { RecordWrap, normalizeRecord } from '@potter/codec';
 import { MessageTyp } from './cloud/message-typ';
-import { filter } from 'rxjs/operators';
+import { filter, mergeMap } from 'rxjs/operators';
+import { IDocumentService } from './document/document.service.interface';
+import { merge, Observable } from 'rxjs';
+import { IContext } from './context';
 
 export class UnhandledAnchoringStatus extends Error {
   constructor(status: never) {
@@ -17,68 +20,38 @@ export class UnhandledAnchoringStatus extends Error {
   }
 }
 
-export class DocumentService {
+export class DocumentService implements IDocumentService {
   #logger: ILogger;
   #anchoring: AnchoringService;
   #updateService: DocumentUpdateService;
   #cloud: Cloud;
+  #context: IContext;
 
-  constructor(logger: ILogger, anchoring: AnchoringService, cloud: Cloud, updateService: DocumentUpdateService) {
+  constructor(
+    logger: ILogger,
+    anchoring: AnchoringService,
+    cloud: Cloud,
+    updateService: DocumentUpdateService,
+    context: IContext,
+  ) {
     this.#logger = logger.withContext(DocumentService.name);
     this.#anchoring = anchoring;
     this.#updateService = updateService;
     this.#cloud = cloud;
+    this.#context = context;
   }
 
-  async applyHead(recordCid: CID, state$: FrozenSubject<DocumentState>) {
-    const nextState = await this.#updateService.applyHead(recordCid, state$.value);
-    if (nextState) {
-      state$.next(nextState);
-    }
+  get context() {
+    return this.#context;
   }
 
-  handleUpdate(docId: CeramicDocumentId, state: DocumentState) {
+  handleUpdate(docId: CeramicDocumentId, state: DocumentState): void {
     if (!docId.cid.equals(state.log.last)) {
       this.#cloud.bus.publishHead(docId, state.log.last);
     }
   }
 
-  handleAnchorStatusUpdate(docId: CeramicDocumentId, state$: FrozenSubject<DocumentState>) {
-    return this.#anchoring.anchorStatus$(docId).subscribe(async (observation) => {
-      this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation);
-      switch (observation.status) {
-        case AnchoringStatus.ANCHORED:
-          const anchorRecordCID = observation.anchorRecord;
-          return this.applyHead(anchorRecordCID, state$);
-        case AnchoringStatus.PENDING:
-          return state$.next({
-            ...state$.value,
-            anchor: {
-              status: AnchoringStatus.PENDING,
-              scheduledAt: observation.scheduledAt,
-            },
-          });
-        case AnchoringStatus.PROCESSING:
-          return state$.next({
-            ...state$.value,
-            anchor: {
-              status: AnchoringStatus.PROCESSING,
-            },
-          });
-        case AnchoringStatus.FAILED:
-          return state$.next({
-            ...state$.value,
-            anchor: {
-              status: AnchoringStatus.FAILED,
-            },
-          });
-        default:
-          throw new UnhandledAnchoringStatus(observation);
-      }
-    });
-  }
-
-  async update(record: any, state$: FrozenSubject<DocumentState>) {
+  async update(record: any, state$: FrozenSubject<DocumentState>): Promise<void> {
     const cid = await this.#cloud.store(normalizeRecord(record));
     const recordWrap = new RecordWrap(record, cid);
     const next = await this.#updateService.applyUpdate(recordWrap, state$.value);
@@ -87,18 +60,73 @@ export class DocumentService {
     state$.next(next);
   }
 
-  requestAnchor(docId: CeramicDocumentId, cid: CID) {
+  requestAnchor(docId: CeramicDocumentId, cid: CID): void {
     this.#logger.debug(`Requesting anchor for ${docId.toString()}?version=${cid.toString()}`);
     this.#anchoring.requestAnchor(docId, cid);
   }
 
-  requestUpdates(docId: CeramicDocumentId, state$: FrozenSubject<DocumentState>) {
-    this.#logger.debug(`Requesting updates for ${docId}`);
+  externalUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>) {
     this.#cloud.bus.request(docId.toString());
-    this.#cloud.bus.message$.pipe(filter((message) => message.id === docId.toString())).subscribe(async (message) => {
-      if (message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE) {
-        await this.applyHead(message.cid, state$);
-      }
-    });
+    return merge(this.cloudUpdates$(docId, state$), this.anchorUpdates$(docId, state$));
+  }
+
+  private cloudUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>): Observable<DocumentState> {
+    return this.#cloud.bus.message$.pipe(
+      filter((message) => message.id === docId.toString()),
+      mergeMap(async (message) => {
+        if (message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE) {
+          return this.applyHead(message.cid, state$);
+        }
+      }),
+    );
+  }
+
+  private async applyHead(recordCid: CID, state$: FrozenSubjectRead<DocumentState>): Promise<DocumentState> {
+    const nextState = await this.#updateService.applyHead(recordCid, state$.value);
+    if (nextState) {
+      return nextState;
+    } else {
+      return state$.value;
+    }
+  }
+
+  private anchorUpdates$(
+    docId: CeramicDocumentId,
+    state$: FrozenSubjectRead<DocumentState>,
+  ): Observable<DocumentState> {
+    return this.#anchoring.anchorStatus$(docId).pipe(
+      mergeMap(async (observation) => {
+        this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation);
+        switch (observation.status) {
+          case AnchoringStatus.ANCHORED:
+            const anchorRecordCID = observation.anchorRecord;
+            return await this.applyHead(anchorRecordCID, state$);
+          case AnchoringStatus.PENDING:
+            return {
+              ...state$.value,
+              anchor: {
+                status: AnchoringStatus.PENDING as AnchoringStatus.PENDING,
+                scheduledAt: observation.scheduledAt,
+              },
+            };
+          case AnchoringStatus.PROCESSING:
+            return {
+              ...state$.value,
+              anchor: {
+                status: AnchoringStatus.PROCESSING as AnchoringStatus.PROCESSING,
+              },
+            };
+          case AnchoringStatus.FAILED:
+            return {
+              ...state$.value,
+              anchor: {
+                status: AnchoringStatus.FAILED as AnchoringStatus.FAILED,
+              },
+            };
+          default:
+            throw new UnhandledAnchoringStatus(observation);
+        }
+      }),
+    );
   }
 }
