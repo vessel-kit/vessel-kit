@@ -15,6 +15,9 @@ import { Context } from './context';
 import { DoctypesContainer } from './doctypes-container';
 import { ThreeId } from './doctypes/three-id';
 import { Tile } from './doctypes/tile';
+import { VesselRulesetAlpha } from './doctypes/vessel-ruleset-alpha';
+import { VesselDocumentAlpha } from './doctypes/vessel-document-alpha';
+import CID from 'cids';
 
 export interface CeramicOptions {
   logger?: ILogger;
@@ -29,14 +32,18 @@ export class Ceramic {
   constructor(ipfs: Ipfs, options: CeramicOptions) {
     const logger = options.logger;
     const cloud = new Cloud(logger, ipfs);
-    const context = new Context(() => {
-      if (this.#signor) {
-        return this.#signor;
-      } else {
-        throw new Error(`No signor set`);
-      }
-    }, this.load.bind(this));
-    const doctypes = new DoctypesContainer([ThreeId, Tile], context);
+    const context = new Context(
+      () => {
+        if (this.#signor) {
+          return this.#signor;
+        } else {
+          throw new Error(`No signor set`);
+        }
+      },
+      this.load.bind(this),
+      cloud.retrieve.bind(cloud),
+    );
+    const doctypes = new DoctypesContainer([ThreeId, Tile, VesselRulesetAlpha, VesselDocumentAlpha], context);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
     const blockchainEndpoints = options.blockchainEndpoints || [];
     const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);

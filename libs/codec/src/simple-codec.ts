@@ -2,6 +2,7 @@ import * as t from 'io-ts';
 import { decodeThrow } from './decode-throw';
 import { isLeft } from 'fp-ts/lib/Either';
 import { PathReporter } from 'io-ts/lib/PathReporter';
+import { bind } from 'decko';
 
 export interface ISimpleCodec<A> {
   encode(a: A): any;
@@ -20,14 +21,17 @@ export class SimpleCodec<A> implements ISimpleCodec<A> {
     this.#ttype = type;
   }
 
+  @bind()
   encode(a: A): any {
     return this.#ttype.encode(a);
   }
 
+  @bind()
   decode(input: unknown): A {
     return decodeThrow(this.#ttype, input);
   }
 
+  @bind()
   assertValid(input: unknown): void {
     const validationResult = this.#ttype.validate(input, []);
     if (isLeft(validationResult)) {
