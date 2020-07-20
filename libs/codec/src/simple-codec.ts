@@ -2,12 +2,15 @@ import * as t from 'io-ts';
 import { decodeThrow } from './decode-throw';
 import { isLeft } from 'fp-ts/lib/Either';
 import { PathReporter } from 'io-ts/lib/PathReporter';
-import { ValidationError } from './validate-promise';
 
 export interface ISimpleCodec<A> {
   encode(a: A): any;
   decode(input: unknown): A;
   assertValid(input: unknown): void;
+}
+
+export class ValidationError extends Error {
+  name = 'ValidationError';
 }
 
 export class SimpleCodec<A> implements ISimpleCodec<A> {
