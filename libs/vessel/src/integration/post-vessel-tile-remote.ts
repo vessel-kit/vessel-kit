@@ -4,9 +4,23 @@ import { sleep } from './sleep.util';
 import { Client } from '../remote/client';
 import { VesselRulesetAlpha } from '../doctypes/vessel-ruleset-alpha';
 import { VesselDocumentAlpha } from '../doctypes/vessel-document-alpha';
+import { IContext } from '../context';
+import toSource from 'tosource';
 
 const REMOTE_URL = 'http://localhost:3001';
 const client = new Client(REMOTE_URL);
+
+class Ruleset {
+  constructor(readonly context: IContext) {}
+
+  canApply(current, next) {
+    if (current && current.content) {
+      return next.content.num > current.content.num;
+    } else {
+      return true;
+    }
+  }
+}
 
 async function main() {
   const identityWallet = new IdentityWallet(() => true, {
@@ -15,10 +29,11 @@ async function main() {
   const user = await User.build(identityWallet.get3idProvider());
   await client.addSignor(user);
 
+  const source = toSource({ default: Ruleset });
   const ruleset = await client.createAs(VesselRulesetAlpha, {
     content: {
       type: 'application/javascript',
-      main: `function canApply(current, next) { if (current && current.content) { return next.content.num > current.content.num; } else { return true} } module.exports = {canApply: canApply}`,
+      main: `module.exports = ${source}`,
     },
   });
   const document = await client.createAs(VesselDocumentAlpha, {

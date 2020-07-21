@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import { DoctypeHandler } from '../document/doctype';
-import { SimpleCodec, CidStringCodec, CeramicDocumentId } from '@potter/codec';
+import { SimpleCodec, CidStringCodec } from '@potter/codec';
 import { VesselRulesetAlpha } from './vessel-ruleset-alpha';
 import { DocumentState } from '..';
 import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
@@ -34,6 +34,7 @@ class Handler extends DoctypeHandler<Freight> {
     const ruleset = VesselRulesetAlpha.json.decode(rulesetJSON);
     const canApply = ruleset.canApply(current, next);
     if (!canApply) {
+      console.error('Can not apply', current, next)
       throw new Error(`Can not apply`);
     }
   }
