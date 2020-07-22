@@ -13,7 +13,7 @@ const DOCTYPE = 'vessel/document/1.0.0';
 
 const json = t.type({
   doctype: t.literal(DOCTYPE),
-  governance: t.string.pipe(CidStringCodec),
+  ruleset: t.string.pipe(CidStringCodec),
   content: t.UnknownRecord,
 });
 
@@ -24,12 +24,12 @@ class Handler extends DoctypeHandler<Freight> {
   readonly json = new SimpleCodec(json);
 
   async makeGenesis(record: any): Promise<any> {
-    await this.canApply({}, record, this.json.decode(record).governance);
+    await this.canApply({}, record, this.json.decode(record).ruleset);
     return record;
   }
 
   async canApply(current: any, next: any, rulesetCID?: CID) {
-    const effectiveRulesetCid = rulesetCID || this.json.decode(current).governance;
+    const effectiveRulesetCid = rulesetCID || this.json.decode(current).ruleset;
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid);
     const ruleset = VesselRulesetAlpha.json.decode(rulesetJSON);
     const canApply = ruleset.canApply(current, next);

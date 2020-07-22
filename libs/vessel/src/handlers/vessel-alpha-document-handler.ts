@@ -38,7 +38,7 @@ export class VesselAlphaDocumentHandler implements IHandler {
 
   async applyUpdate(updateRecord, state: DocumentState) {
     const s = state.current || state.freight;
-    const governance = s.governance;
+    const governance = s.ruleset;
     if (governance && typeof governance == 'string') {
       const governanceCID = new CID(governance);
       const governanceDoc = await this.cloud.retrieve(governanceCID);

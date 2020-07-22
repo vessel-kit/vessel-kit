@@ -37,7 +37,7 @@ async function main() {
     },
   });
   const document = await client.createAs(VesselDocumentAlpha, {
-    governance: ruleset.document.id.cid,
+    ruleset: ruleset.document.id.cid,
     content: {
       num: 100,
     },
