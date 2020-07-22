@@ -4,6 +4,11 @@ import { SimpleCodec } from '@potter/codec';
 import './ses';
 import { IContext } from '../context';
 
+import * as fs from 'fs';
+import path from 'path';
+import terser from 'terser';
+import * as ts from 'typescript';
+
 const DOCTYPE = 'vessel/ruleset/1.0.0';
 
 const json = t.type({
@@ -29,10 +34,13 @@ class Freight implements t.TypeOf<typeof json> {
 
   canApply(prev: any, next: any) {
     const compartment = new Compartment({
-      module: {},
+      exports: {},
       console: console,
     });
-    const Ruleset = compartment.evaluate(this.content.main).default;
+    console.log('comp', compartment.evaluate(this.content.main))
+    console.log('exports', exports)
+    const Ruleset = compartment.evaluate(this.content.main);
+    console.log('Ruleset', Ruleset)
     const ruleset = new Ruleset(this.context);
     return ruleset.canApply(prev, next);
   }
@@ -47,6 +55,20 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<Freight> {
       return new Freight(jsonCodec.decode(i), this.context);
     },
   };
+
+  async genesisFromRulesetFile(filename: string) {
+    const source = await fs.promises.readFile(filename).then((s) => s.toString());
+    const outputText = ts.transpileModule(source, {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017 },
+    }).outputText;
+    const main = terser.minify(outputText, { mangle: false }).code;
+    return {
+      content: {
+        type: 'application/javascript' as 'application/javascript',
+        main: main,
+      },
+    };
+  }
 }
 
 export const VesselRulesetAlpha = new VesselRulesetAlphaHandler();

@@ -375,7 +375,7 @@ importers:
       rxjs: 6.6.0
       ses: 0.8.0
       sort-keys: 4.0.0
-      tosource: 2.0.0-alpha.2
+      terser: 4.8.0
       typestub-multihashes: 0.0.1
     devDependencies:
       '@types/jest': 26.0.3
@@ -413,7 +413,7 @@ importers:
       rxjs: ^6.5.5
       ses: ^0.8.0
       sort-keys: ^4.0.0
-      tosource: ^2.0.0-alpha.2
+      terser: ^4.8.0
       typestub-multihashes: ^0.0.1
 lockfileVersion: 5.1
 packages:
@@ -16663,12 +16663,6 @@ packages:
       node: '>=0.1.98'
     resolution:
       integrity: sha512-WWvu8sGK8/ZmGusekZJJ5NM6rRVTTDO7/bahz4NGiSDb/XsmdYBn6a1N/bymUHuWYTWeuLUg98wUzvE4jPdCZw==
-  /tosource/2.0.0-alpha.2:
-    dev: false
-    engines:
-      node: '>=10'
-    resolution:
-      integrity: sha512-WR68bGIDsg1eBF2uHV4bIYYoAeXD3GGj9mToy3AGKnelZgsfuhCrE5xKFvLp7G66N5gTMWkDzN/+iyMrvsVxSA==
   /tough-cookie/2.5.0:
     dependencies:
       psl: 1.8.0

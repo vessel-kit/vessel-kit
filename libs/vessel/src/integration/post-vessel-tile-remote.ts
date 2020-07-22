@@ -4,23 +4,10 @@ import { sleep } from './sleep.util';
 import { Client } from '../remote/client';
 import { VesselRulesetAlpha } from '../doctypes/vessel-ruleset-alpha';
 import { VesselDocumentAlpha } from '../doctypes/vessel-document-alpha';
-import { IContext } from '../context';
-import toSource from 'tosource';
+import * as path from 'path';
 
 const REMOTE_URL = 'http://localhost:3001';
 const client = new Client(REMOTE_URL);
-
-class Ruleset {
-  constructor(readonly context: IContext) {}
-
-  canApply(current, next) {
-    if (current && current.content) {
-      return next.content.num > current.content.num;
-    } else {
-      return true;
-    }
-  }
-}
 
 async function main() {
   const identityWallet = new IdentityWallet(() => true, {
@@ -29,26 +16,25 @@ async function main() {
   const user = await User.build(identityWallet.get3idProvider());
   await client.addSignor(user);
 
-  const source = toSource({ default: Ruleset });
-  const ruleset = await client.createAs(VesselRulesetAlpha, {
-    content: {
-      type: 'application/javascript',
-      main: `module.exports = ${source}`,
-    },
-  });
+  const rulesetFile = path.join(__dirname, './tmp-ruleset.ts');
+  const props = await VesselRulesetAlpha.genesisFromRulesetFile(rulesetFile);
+  console.log('props', props)
+  const ruleset = await client.createAs(VesselRulesetAlpha, props);
   const document = await client.createAs(VesselDocumentAlpha, {
     ruleset: ruleset.document.id.cid,
     content: {
       num: 100,
     },
   });
-  await sleep(10000);
+  console.log('published', document.current)
+  await sleep(61000);
   await document.update({
     ...document.current,
     content: {
       num: 200,
     },
   });
+  console.log('updated', document.current)
   client.close();
 }
 
