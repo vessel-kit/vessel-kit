@@ -7,7 +7,6 @@ import { bind } from 'decko';
 export interface ISimpleCodec<A> {
   encode(a: A): any;
   decode(input: unknown): A;
-  assertValid(input: unknown): void;
 }
 
 export class ValidationError extends Error {
@@ -31,12 +30,13 @@ export class SimpleCodec<A> implements ISimpleCodec<A> {
     return decodeThrow(this.#ttype, input);
   }
 
-  @bind()
-  assertValid(input: unknown): void {
-    const validationResult = this.#ttype.validate(input, []);
-    if (isLeft(validationResult)) {
-      const message = PathReporter.report(validationResult).join('\n');
-      throw new ValidationError(message);
-    }
-  }
+  // TODO Validation
+  // @bind()
+  // assertValid(input: unknown): void {
+  //   const validationResult = this.#ttype.validate(input, []);
+  //   if (isLeft(validationResult)) {
+  //     const message = PathReporter.report(validationResult).join('\n');
+  //     throw new ValidationError(message);
+  //   }
+  // }
 }

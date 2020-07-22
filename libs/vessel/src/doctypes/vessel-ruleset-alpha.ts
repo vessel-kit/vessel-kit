@@ -41,7 +41,7 @@ class Freight implements t.TypeOf<typeof json> {
 class VesselRulesetAlphaHandler extends DoctypeHandler<Freight> {
   readonly name = DOCTYPE;
   readonly json = {
-    assertValid: jsonCodec.assertValid,
+    // assertValid: jsonCodec.assertValid,
     encode: jsonCodec.encode,
     decode: (i: unknown) => {
       return new Freight(jsonCodec.decode(i), this.context);
