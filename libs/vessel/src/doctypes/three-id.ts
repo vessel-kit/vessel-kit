@@ -42,7 +42,7 @@ class ThreeIdHandler extends DoctypeHandler<ThreeIdFreight> {
     const patch = jsonPatch.compare(nextJSON, currentJSON);
     const payloadToSign = UpdateRecordWaiting.encode({
       patch: patch,
-      prev: document.state.log.last,
+      prev: document.log.last,
       id: document.id,
     });
     return this.context.sign(payloadToSign, { useMgmt: true });

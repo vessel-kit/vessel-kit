@@ -5,13 +5,14 @@ import { Document } from './document/document';
 import { DocumentService } from './document.service';
 import { MessageTyp } from './cloud/message-typ';
 import { DoctypesContainer } from './doctypes-container';
+import { IDocument } from './document/document.interface';
 
 export class DocumentRepository {
   #logger: ILogger;
   #doctypes: DoctypesContainer;
   #cloud: Cloud;
   #documentService: DocumentService;
-  #documentCache: Map<string, Document>;
+  #documentCache: Map<string, IDocument>;
 
   constructor(logger: ILogger, doctypes: DoctypesContainer, cloud: Cloud, documentService: DocumentService) {
     this.#logger = logger.withContext(DocumentRepository.name);
@@ -25,13 +26,13 @@ export class DocumentRepository {
       if (message.typ === MessageTyp.REQUEST) {
         const found = this.#documentCache.get(message.id);
         if (found) {
-          this.#cloud.bus.publishResponse(found.id, found.head);
+          this.#cloud.bus.publishResponse(found.id, found.log.last);
         }
       }
     });
   }
 
-  async create(genesisRecord: any): Promise<Document> {
+  async create(genesisRecord: any): Promise<IDocument> {
     this.#logger.debug(`Creating document from genesis record`, genesisRecord);
     const doctype = this.#doctypes.get(genesisRecord.doctype);
     this.#logger.debug(`Found handler for doctype "${genesisRecord.doctype}"`);
@@ -45,7 +46,7 @@ export class DocumentRepository {
     return document;
   }
 
-  async load(documentId: CeramicDocumentId): Promise<Document> {
+  async load(documentId: CeramicDocumentId): Promise<IDocument> {
     const found = this.#documentCache.get(documentId.toString());
     if (found) {
       return found;
@@ -61,7 +62,7 @@ export class DocumentRepository {
     }
   }
 
-  async list(): Promise<Document[]> {
+  async list(): Promise<IDocument[]> {
     return Array.from(this.#documentCache.values());
   }
 }

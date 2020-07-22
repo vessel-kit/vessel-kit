@@ -9,7 +9,6 @@ import { DocumentUpdateService } from './document-update.service';
 import { CeramicDocumentId } from '@potter/codec';
 import { AnchoringHttpClient } from '@potter/anchoring';
 import { ConnectionString } from '@potter/blockchain-connection-string';
-import { Document } from './document/document';
 import { ISignor } from './signor/signor.interface';
 import { Context } from './context';
 import { DoctypesContainer } from './doctypes-container';
@@ -17,7 +16,7 @@ import { ThreeId } from './doctypes/three-id';
 import { Tile } from './doctypes/tile';
 import { VesselRulesetAlpha } from './doctypes/vessel-ruleset-alpha';
 import { VesselDocumentAlpha } from './doctypes/vessel-document-alpha';
-import CID from 'cids';
+import { IDocument } from './document/document.interface';
 
 export interface CeramicOptions {
   logger?: ILogger;
@@ -67,15 +66,15 @@ export class Ceramic {
     return new Ceramic(ipfs, appliedOptions);
   }
 
-  async create(genesis: any): Promise<Document> {
+  async create(genesis: any): Promise<IDocument> {
     return this.#documentRepository.create(genesis);
   }
 
-  async load(docId: CeramicDocumentId): Promise<Document> {
+  async load(docId: CeramicDocumentId): Promise<IDocument> {
     return this.#documentRepository.load(docId);
   }
 
-  async list(): Promise<Document[]> {
+  async list(): Promise<IDocument[]> {
     return this.#documentRepository.list();
   }
 }

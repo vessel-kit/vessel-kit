@@ -1,8 +1,6 @@
 import { Ceramic } from '../ceramic';
 import ipfsClient from 'ipfs-http-client';
 import { ThreeIdContent } from '../three-id.content';
-import { waitUntil } from './wait.util';
-import { AnchoringStatus } from '@potter/anchoring';
 import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
@@ -52,23 +50,21 @@ async function main() {
     ...content,
   };
   const document = await ceramic.create(genesisRecord);
-  console.log('Present state', document.state);
+  console.log('Present state', document);
   console.log('Waiting some time for anchoring...');
-  await waitUntil(5000, async () => {
-    return document.state.anchor.status === AnchoringStatus.ANCHORED;
-  });
-  console.log(`Present state`, document.state);
+  await sleep(61000)
+  console.log(`Present state`, document);
   const doc2 = doc1.clone();
   doc2.publicKeys.set('foocryption', signingKey);
   const delta = doc2.delta(doc1);
   const updateRecord = {
     patch: delta,
-    prev: document.state.log.last,
+    prev: document.log.last,
     id: document.id.cid,
   };
   const updateRecordToSign = sortPropertiesDeep({
     patch: delta,
-    prev: { '/': document.state.log.last.toString() },
+    prev: { '/': document.log.last.toString() },
     id: { '/': document.id.valueOf() },
   });
   const did = decodeThrow(ThreeIdentifier, `did:3:${document.id.valueOf()}`);

@@ -47,6 +47,7 @@ export class Chain {
     return this.#set.has(cid.toString())
   }
 
+
   concat(cid: CID) {
     return new Chain(this.log.concat(cid))
   }
@@ -58,6 +59,10 @@ export class Chain {
   get [Symbol.toStringTag]() {
     const log = this.#log.map(cid => cid.toString()).join(', ')
     return `<Chain log: [${log}]>`;
+  }
+
+  [Symbol.for('nodejs.util.inspect.custom')]() {
+    return this[Symbol.toStringTag]
   }
 
   toJSON() {
