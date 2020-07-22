@@ -61,7 +61,6 @@ async function main() {
   const doc2 = doc1.clone();
   doc2.publicKeys.set('foocryption', signingKey);
   const delta = doc2.delta(doc1);
-  // TODO Signature encoding
   const updateRecord = {
     patch: delta,
     prev: document.state.log.last,

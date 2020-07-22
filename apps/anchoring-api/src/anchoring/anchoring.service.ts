@@ -66,7 +66,7 @@ export class AnchoringService {
   }
 
   async markRecordsFailed(records: RequestRecord[]) {
-    await this.requestStorage.updateStatus(records, AnchoringStatus.FAILED); // TODO Subscription for states
+    await this.requestStorage.updateStatus(records, AnchoringStatus.FAILED);
   }
 
   separateRecordsByTime(records: RequestRecord[]) {
