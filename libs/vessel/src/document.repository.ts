@@ -64,4 +64,16 @@ export class DocumentRepository {
   async list(): Promise<Document[]> {
     return Array.from(this.#documentCache.values());
   }
+
+  async history(documentId: CeramicDocumentId): Promise<any[]> {
+    const result = []
+    let currentCID = documentId.cid
+    let currentElement = await this.#cloud.retrieve(currentCID)
+    while (currentElement.prev) {
+      currentCID = currentElement.prev.toString()
+      currentElement = await this.#cloud.retrieve(currentCID)
+      result.push({ ...currentElement, cid: currentCID})
+    }
+    return result
+  }
 }

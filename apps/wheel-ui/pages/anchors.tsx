@@ -54,7 +54,7 @@ export default function Anchors() {
   }, [anchors.length]);
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 6 }}>
+    <Box sx={{ flexGrow: 1, padding: 4 }}>
       <h1>Anchors</h1>
       <AnchorsTable anchors={anchors} />
     </Box>
