@@ -5,11 +5,12 @@ import { RequestRecord } from '../storage/request.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { UnreachableCaseError } from '../unreachable-case.error';
 import { AnchorRecord } from '../storage/anchor.record';
-import { dateAsTimestamp } from '../api/date-as-timestamp';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
-import { AnchoringStatus } from '@potter/anchoring';
+import { AnchoringStatus, AnchorResponsePayload } from '@potter/anchoring';
+import { CeramicDocumentId } from '@potter/codec';
 
 export class RequestPresentation {
+  readonly docId = CeramicDocumentId.fromString(this.request.docId);
   constructor(
     private readonly request: RequestRecord,
     private readonly anchor: AnchorRecord | undefined,
@@ -19,53 +20,36 @@ export class RequestPresentation {
   toJSON() {
     switch (this.request.status) {
       case AnchoringStatus.ANCHORED:
-        return {
+        return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
-          status: this.request.status.toString(),
-          cid: this.request.cid.toString(),
-          docId: this.request.docId,
-          createdAt: dateAsTimestamp(this.request.createdAt),
-          updatedAt: dateAsTimestamp(this.request.updatedAt),
-          anchorRecord: this.anchor.cid.toString(),
-          // anchorRecord: {
-          //   cid: this.anchor.cid.toString(),
-          //   content: {
-          //     path: this.anchor.path,
-          //     prev: this.request.cid.toString(),
-          //     proof: this.anchor.proofCid.toString(),
-          //   },
-          // },
-        };
+          status: this.request.status,
+          cid: this.request.cid,
+          docId: this.docId,
+          createdAt: this.request.createdAt,
+          updatedAt: this.request.updatedAt,
+          anchorRecord: this.anchor.cid,
+        });
+      case AnchoringStatus.PROCESSING:
       case AnchoringStatus.PENDING:
-        return {
+        return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
-          status: this.request.status.toString(),
-          cid: this.request.cid.toString(),
-          docId: this.request.docId,
-          createdAt: dateAsTimestamp(this.request.createdAt),
-          updatedAt: dateAsTimestamp(this.request.updatedAt),
-          scheduledAt: dateAsTimestamp(this.nextAnchoring),
-        };
+          status: this.request.status,
+          cid: this.request.cid,
+          docId: this.docId,
+          createdAt: this.request.createdAt,
+          updatedAt: this.request.updatedAt,
+          scheduledAt: this.nextAnchoring,
+        });
       case AnchoringStatus.FAILED:
       case AnchoringStatus.NOT_REQUESTED:
-        return {
+        return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
-          status: this.request.status.toString(),
-          cid: this.request.cid.toString(),
-          docId: this.request.docId,
-          createdAt: dateAsTimestamp(this.request.createdAt),
-          updatedAt: dateAsTimestamp(this.request.updatedAt),
-        };
-      case AnchoringStatus.PROCESSING:
-        return {
-          id: this.request.id.toString(),
-          status: this.request.status.toString(),
-          cid: this.request.cid.toString(),
-          docId: this.request.docId,
-          createdAt: dateAsTimestamp(this.request.createdAt),
-          updatedAt: dateAsTimestamp(this.request.updatedAt),
-          scheduledAt: dateAsTimestamp(this.nextAnchoring),
-        };
+          status: this.request.status,
+          cid: this.request.cid,
+          docId: this.docId,
+          createdAt: this.request.createdAt,
+          updatedAt: this.request.updatedAt,
+        });
       default:
         throw new UnreachableCaseError(this.request.status);
     }
