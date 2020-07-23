@@ -9,11 +9,16 @@ export interface IRetrieve {
   (cid: CID, path?: string): Promise<any>
 }
 
+export interface IStore {
+  (record: unknown): Promise<CID>
+}
+
 export interface IContext {
   sign(payload: any, opts?: { useMgmt: boolean }): Promise<void>;
   did(): Promise<ThreeIdentifier | undefined>;
   assertSignature(payload: any): Promise<void>;
   retrieve: IRetrieve
+  store: IStore
 }
 
 export class Context implements IContext {
@@ -21,13 +26,19 @@ export class Context implements IContext {
   readonly #load: ILoad;
   readonly #resolver: Resolver;
   readonly #retrieve: IRetrieve
+  readonly #store: IStore
 
-  constructor(signorP: () => ISignor, load: ILoad, retrieve: IRetrieve) {
+  constructor(signorP: () => ISignor, load: ILoad, retrieve: IRetrieve, store: IStore) {
     this.#signorP = signorP;
     this.#load = load;
     const threeIdResolver = new ThreeIdResolver(this.#load);
     this.#resolver = new Resolver(threeIdResolver.registry);
     this.#retrieve = retrieve
+    this.#store = store
+  }
+
+  get store () {
+    return this.#store
   }
 
   async retrieve(cid: CID, path?: string): Promise<any> {
@@ -75,6 +86,9 @@ export const EMPTY_CONTEXT: IContext = {
   },
   retrieve: () => {
     throw new EmptyContextError('retrieve');
+  },
+  store: () => {
+    throw new EmptyContextError('store');
   },
   assertSignature: () => {
     throw new EmptyContextError('assertSignature');

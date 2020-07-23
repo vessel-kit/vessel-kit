@@ -3,6 +3,17 @@ import { AnchoringStatus } from '@potter/anchoring';
 import { HistoryCodec } from '../util/history';
 import { CidStringCodec, DateISO8601Codec } from '@potter/codec';
 
+export interface AnchorDone {
+  status: AnchoringStatus.ANCHORED,
+  proof: {
+    chainId: string,
+    blockNumber: number,
+    timestamp: string,
+    txHash: string,
+    root: string
+  }
+}
+
 const AnchorDone = t.type(
   {
     status: t.literal(AnchoringStatus.ANCHORED),
@@ -17,6 +28,11 @@ const AnchorDone = t.type(
   'AnchorDone',
 );
 
+export interface AnchorPending {
+  status: AnchoringStatus.PENDING,
+  scheduledAt: string
+}
+
 const AnchorPending = t.type(
   {
     status: t.literal(AnchoringStatus.PENDING),
@@ -24,6 +40,10 @@ const AnchorPending = t.type(
   },
   'AnchorPending',
 );
+
+export interface AnchorProcessing {
+  status: AnchoringStatus.PROCESSING | AnchoringStatus.NOT_REQUESTED | AnchoringStatus.FAILED
+}
 
 const AnchorProcessing = t.type(
   {
@@ -35,6 +55,8 @@ const AnchorProcessing = t.type(
   },
   'AnchorProcessing',
 );
+
+export type AnchorState = AnchorProcessing | AnchorPending | AnchorDone
 
 export const AnchorState = t.union([AnchorProcessing, AnchorPending, AnchorDone], 'AnchorState');
 

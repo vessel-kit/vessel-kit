@@ -1,22 +1,30 @@
 import { History } from '../util/history';
 import CID from 'cids';
 
-export type IWithHistory = { log: History };
+export interface IWithHistory<A> {
+  data: A;
+  log: History;
+}
 
-export interface IReducer<A extends IWithHistory> {
+export interface IReducer<A> {
   (current: A, pointer: CID): Promise<A>;
 }
 
-export class Reducible<A extends IWithHistory> {
-  constructor(readonly view: A, readonly reducer: IReducer<A>) {}
+export class Reducible<A> {
+  constructor(readonly state: IWithHistory<A>, readonly reducer: IReducer<A>) {}
 
   get log(): History {
-    return this.view.log
+    return this.state.log;
   }
 
   async apply(history: History): Promise<Reducible<A>> {
     return history.reduce<Reducible<A>>(async (acc, pointer) => {
-      const next = await this.reducer(acc.view, pointer);
+      const nextData = await this.reducer(acc.state.data, pointer);
+      const next = {
+        ...acc.state,
+        data: nextData,
+        log: acc.state.log.concat(pointer),
+      };
       return new Reducible(next, this.reducer);
     }, this);
   }

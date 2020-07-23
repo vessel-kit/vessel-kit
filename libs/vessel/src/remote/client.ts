@@ -30,6 +30,10 @@ export class Client {
       const response = await axios.get(url.toString());
       return JSON.parse(response.data);
     };
+    const store = async (record: unknown) => {
+      const response = await axios.post(`${this.host}/api/v0/cloud/`, record);
+      return JSON.parse(response.data);
+    };
     const context = new Context(
       () => {
         if (this.#signor) {
@@ -40,6 +44,7 @@ export class Client {
       },
       this.load.bind(this),
       retrieve,
+      store,
     );
     this.#doctypes = new DoctypesContainer([Tile, ThreeId], context);
     this.#service = new RemoteDocumentService(host, context);

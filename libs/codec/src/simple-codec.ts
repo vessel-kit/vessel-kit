@@ -9,9 +9,9 @@ export interface ISimpleCodec<A> {
   decode(input: unknown): A;
 }
 
-export class ValidationError extends Error {
-  name = 'ValidationError';
-}
+// export class ValidationError extends Error {
+//   name = 'ValidationError';
+// }
 
 export class SimpleCodec<A> implements ISimpleCodec<A> {
   #ttype: t.Type<A, any, unknown>;
