@@ -31,7 +31,7 @@ async function main() {
   await document.update({
     ...document.current,
     content: {
-      num: 200,
+      num: 20,
     },
   });
   console.log('updated', document.current)
