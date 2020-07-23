@@ -1,7 +1,7 @@
-import { JWKMulticodecCodec } from './signor/jwk.multicodec.codec';
+import { JWKMulticodecCodec } from '../../signor/jwk.multicodec.codec';
 import * as jose from 'jose';
 import * as multicodec from 'multicodec';
-import { ThreeIdFreight } from './doctypes/three-id';
+import { ThreeIdFreight } from './three-id';
 import { DIDDocument, PublicKey } from 'did-resolver';
 import { Authentication } from 'did-resolver/src/resolver';
 

@@ -12,7 +12,7 @@ import { ConnectionString } from '@potter/blockchain-connection-string';
 import { ISignor } from './signor/signor.interface';
 import { Context } from './context';
 import { DoctypesContainer } from './doctypes-container';
-import { ThreeId } from './doctypes/three-id';
+import { ThreeId } from './doctypes/three-id/three-id';
 import { Tile } from './doctypes/tile';
 import { VesselRulesetAlpha } from './doctypes/vessel-ruleset-alpha';
 import { VesselDocumentAlpha } from './doctypes/vessel-document-alpha';

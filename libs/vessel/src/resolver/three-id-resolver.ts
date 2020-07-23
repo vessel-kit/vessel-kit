@@ -2,8 +2,8 @@ import { CeramicDocumentId } from '@potter/codec';
 import { Document } from '../document/document';
 import { DIDDocument, DIDResolver, ParsedDID } from 'did-resolver';
 import CID from 'cids';
-import { ThreeId } from '../doctypes/three-id';
-import { DidPresentation } from '../did.presentation';
+import { ThreeId } from '../doctypes/three-id/three-id';
+import { DidPresentation } from '../doctypes/three-id/did.presentation';
 
 export interface ILoad {
   (docId: CeramicDocumentId): Promise<Document>;

@@ -1,16 +1,16 @@
 import * as jose from 'jose';
 import * as t from 'io-ts';
-import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
+import { JWKMulticodecCodec } from '../../signor/jwk.multicodec.codec';
 import { BufferMultibaseCodec, SimpleCodec } from '@potter/codec';
-import { DoctypeHandler } from '../document/doctype';
-import { DocumentState } from '../document/document.state';
+import { DoctypeHandler } from '../../document/doctype';
+import { AnchorState, DocumentState } from '../../document/document.state';
 import jsonPatch from 'fast-json-patch';
-import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
-import { UpdateRecordWaiting } from '../util/update-record.codec';
-import { DidPresentation } from '../did.presentation';
-import { assertSignature } from '../assert-signature';
+import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.error';
+import { UpdateRecordWaiting } from '../../util/update-record.codec';
+import { DidPresentation } from './did.presentation';
+import { assertSignature } from '../../assert-signature';
 
-const DOCTYPE = '3id';
+const DOCTYPE = '3id'
 
 export interface ThreeIdFreight {
   doctype: typeof DOCTYPE;

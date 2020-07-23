@@ -25,7 +25,9 @@ abstract class GenericHandler<Freight extends IWithDoctype> {
   }
 }
 
-export abstract class DoctypeHandler<Freight extends IWithDoctype = IWithDoctype> extends GenericHandler<Freight> {
+export abstract class DoctypeHandler<Freight extends IWithDoctype = IWithDoctype, State = any> extends GenericHandler<Freight> {
+  // abstract init(genesisRecord: unknown): Promise<State>
+
   async makeGenesis(record: any): Promise<any> {
     // this.json.assertValid(record); TODO Validation
     return record;

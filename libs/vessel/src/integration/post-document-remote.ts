@@ -2,7 +2,7 @@ import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import { Client } from '../remote/client';
-import { ThreeId } from '../doctypes/three-id';
+import { ThreeId } from '../doctypes/three-id/three-id';
 import * as jose from 'jose';
 
 const REMOTE_URL = 'http://localhost:3001';
