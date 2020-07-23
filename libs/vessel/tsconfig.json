@@ -11,7 +11,8 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "resolveJsonModule": true
   },
   "include": ["./src", "./types"],
   "exclude": ["node_modules", "dist"]

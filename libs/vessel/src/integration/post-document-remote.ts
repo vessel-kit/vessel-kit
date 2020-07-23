@@ -16,7 +16,7 @@ async function main() {
   const client = new Client(REMOTE_URL);
   const document = await client.addSignor(user);
   const threeId = document.as(ThreeId);
-  console.log('initial', document);
+  console.log('initial', JSON.stringify(document));
   await sleep(61000);
   console.log('initial after wait', document);
   await threeId.update({

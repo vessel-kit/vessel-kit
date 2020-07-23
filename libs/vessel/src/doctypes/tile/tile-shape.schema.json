@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://potter.ukstv.me/tile.schema.json#",
+  "title": "Tile Shape",
+  "description": "JSON Schema for Tile file",
+  "definitions": {
+    "three-identifier": {
+      "type": "string"
+    },
+    "publicKey-x25519": {
+      "type": "string"
+    },
+    "base": {
+      "title": "Tile Shape Base",
+      "type": "object",
+      "properties": {
+        "doctype": {
+          "type": "string",
+          "const": "tile"
+        },
+        "owners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/three-identifier"
+          }
+        },
+        "content": {
+          "type": "object"
+        }
+      },
+      "required": ["doctype", "owners", "content"],
+      "additionalProperties": false
+    },
+    "with-signature": {
+      "type": "object",
+      "properties": {
+        "doctype": {
+          "type": "string",
+          "const": "tile"
+        },
+        "owners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/three-identifier"
+          }
+        },
+        "content": {
+          "type": "object"
+        },
+        "iss": {
+          "$ref": "#/definitions/three-identifier"
+        },
+        "header": {
+          "type": "object",
+          "properties": {
+            "typ": {
+              "type": "string",
+              "const": "JWT"
+            },
+            "alg": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "signature": {
+          "type": "string"
+        }
+      },
+      "required": ["iss", "header", "signature", "doctype", "owners", "content"]
+    }
+  },
+  "anyOf": [
+    { "$ref": "#/definitions/base" },
+    { "$ref": "#/definitions/with-signature" }
+  ]
+}

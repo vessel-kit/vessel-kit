@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://potter.ukstv.me/three-id-shape.schema.json#",
+  "title": "ThreeId Shape",
+  "description": "JSON Schema for 3id file",
+  "definitions": {
+    "publicKey-secp256k1": {
+      "type": "string"
+    },
+    "publicKey-x25519": {
+      "type": "string"
+    }
+  },
+  "properties": {
+    "doctype": {
+      "type": "string",
+      "const": "3id"
+    },
+    "owners": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/publicKey-secp256k1"
+      }
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "publicKeys": {
+          "type": "object",
+          "properties": {
+            "encryption": {
+              "$ref": "#/definitions/publicKey-x25519"
+            },
+            "signing": {
+              "$ref": "#/definitions/publicKey-secp256k1"
+            }
+          },
+          "required": ["encryption", "signing"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["publicKeys"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["owners", "content", "doctype"],
+  "additionalProperties": false
+}

@@ -25,13 +25,12 @@ abstract class GenericHandler<Freight extends IWithDoctype> {
   }
 }
 
-export abstract class DoctypeHandler<Freight extends IWithDoctype = IWithDoctype, State = any> extends GenericHandler<Freight> {
-  // abstract init(genesisRecord: unknown): Promise<State>
-
-  async makeGenesis(record: any): Promise<any> {
-    // this.json.assertValid(record); TODO Validation
-    return record;
-  }
+export abstract class DoctypeHandler<
+  Freight extends IWithDoctype = IWithDoctype,
+  State extends DoctypeState<Shape> = any,
+  Shape = any
+> extends GenericHandler<Freight> {
+  abstract knead(genesisRecord: unknown): Promise<State>;
 
   async genesisFromFreight(payload: Omit<Freight, 'doctype'>): Promise<any & IWithDoctype> {
     const applied = Object.assign({}, payload, { doctype: this.name }) as Freight;
@@ -51,11 +50,10 @@ export abstract class DoctypeHandler<Freight extends IWithDoctype = IWithDoctype
   }
 
   async applyGenesis(documentId: CeramicDocumentId, genesis: any): Promise<DocumentState> {
-    const payload = await this.makeGenesis(genesis);
     return {
-      doctype: payload.doctype,
+      doctype: genesis.doctype,
       current: null,
-      freight: payload,
+      freight: genesis,
       anchor: {
         status: AnchoringStatus.NOT_REQUESTED as AnchoringStatus.NOT_REQUESTED,
       },
@@ -101,16 +99,21 @@ export abstract class DoctypeHandler<Freight extends IWithDoctype = IWithDoctype
   }
 }
 
-export interface IDoctype<Freight extends IWithDoctype = IWithDoctype> {
+export interface DoctypeState<Shape> {
+  cone(): Shape;
+}
+
+export interface IDoctype<
+  State extends DoctypeState<Shape> = any,
+  Freight extends IWithDoctype = IWithDoctype,
+  Shape = any
+> {
   name: string;
   json: ISimpleCodec<Freight>;
   context: IContext;
 
   withContext(context: IContext): this;
 
-  // Return payload as JSON
-  // Genesis record from JSON
-  makeGenesis(genesisRecord: any): Promise<any & IWithDoctype>;
   // Genesis record from typed payload
   genesisFromFreight(payload: Omit<Freight, 'doctype'>): Promise<any & IWithDoctype>;
   // Return signed payload based on current and next freight
@@ -119,4 +122,6 @@ export interface IDoctype<Freight extends IWithDoctype = IWithDoctype> {
   applyGenesis(documentId: CeramicDocumentId, genesis: any): Promise<DocumentState>;
   applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: DocumentState): Promise<DocumentState>;
   applyUpdate(updateRecord: RecordWrap, state: DocumentState): Promise<DocumentState>;
+
+  knead(genesisRecord: unknown): Promise<State>;
 }

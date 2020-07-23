@@ -5,7 +5,6 @@ import './ses';
 import { IContext } from '../context';
 
 import * as fs from 'fs';
-import path from 'path';
 import terser from 'terser';
 import * as ts from 'typescript';
 
@@ -37,10 +36,10 @@ class Freight implements t.TypeOf<typeof json> {
       exports: {},
       console: console,
     });
-    console.log('comp', compartment.evaluate(this.content.main))
-    console.log('exports', exports)
+    console.log('comp', compartment.evaluate(this.content.main));
+    console.log('exports', exports);
     const Ruleset = compartment.evaluate(this.content.main);
-    console.log('Ruleset', Ruleset)
+    console.log('Ruleset', Ruleset);
     const ruleset = new Ruleset(this.context);
     return ruleset.canApply(prev, next);
   }
@@ -68,6 +67,14 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<Freight> {
         main: main,
       },
     };
+  }
+
+  async knead(genesisRecord: unknown): Promise<any> {
+    throw new Error(`Not implemented TODO`);
+  }
+
+  cone(state: any): Promise<any> {
+    throw new Error(`Not implemented TODO`);
   }
 }
 

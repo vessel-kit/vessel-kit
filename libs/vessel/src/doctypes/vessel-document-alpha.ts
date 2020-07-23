@@ -23,18 +23,13 @@ class Handler extends DoctypeHandler<Freight> {
   readonly name = DOCTYPE;
   readonly json = new SimpleCodec(json);
 
-  async makeGenesis(record: any): Promise<any> {
-    await this.canApply({}, record, this.json.decode(record).ruleset);
-    return record;
-  }
-
   async canApply(current: any, next: any, rulesetCID?: CID) {
     const effectiveRulesetCid = rulesetCID || this.json.decode(current).ruleset;
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid);
     const ruleset = VesselRulesetAlpha.json.decode(rulesetJSON);
     const canApply = ruleset.canApply(current, next);
     if (!canApply) {
-      console.error('Can not apply', current, next)
+      console.error('Can not apply', current, next);
       throw new Error(`Can not apply`);
     }
   }
@@ -56,6 +51,17 @@ class Handler extends DoctypeHandler<Freight> {
         status: AnchoringStatus.NOT_REQUESTED,
       },
     };
+  }
+
+  knead(genesisRecord: unknown): Promise<any> {
+    // From make genesis
+    // await this.canApply({}, record, this.json.decode(record).ruleset);
+    //     return record;
+    throw new Error(`Not implemented TODO`);
+  }
+
+  cone(state: any): Promise<any> {
+    throw new Error(`Not implemented TODO`);
   }
 }
 

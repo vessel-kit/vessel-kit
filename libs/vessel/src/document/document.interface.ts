@@ -14,7 +14,7 @@ export interface IDocument {
   state$: FrozenSubject<DocumentState>;
   update(record: any): Promise<void>;
   requestAnchor(): void;
-  as<F extends IWithDoctype>(doctype: IDoctype<F>): ITypedDocument<F>;
+  as<F extends IWithDoctype>(doctype: IDoctype<any, F>): ITypedDocument<F>;
   close(): void;
   toJSON(): any;
 }

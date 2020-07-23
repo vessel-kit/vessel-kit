@@ -5,9 +5,9 @@ import { IDoctype } from './doctype';
 
 export class TypedDocument<F extends IWithDoctype> implements ITypedDocument<F> {
   #document: IDocument;
-  #doctype: IDoctype<F>;
+  #doctype: IDoctype<any, F>;
 
-  constructor(document: IDocument, doctype: IDoctype<F>) {
+  constructor(document: IDocument, doctype: IDoctype<any, F>) {
     this.#document = document;
     this.#doctype = doctype;
   }

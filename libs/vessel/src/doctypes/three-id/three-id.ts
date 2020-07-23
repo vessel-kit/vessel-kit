@@ -2,15 +2,19 @@ import * as jose from 'jose';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../../signor/jwk.multicodec.codec';
 import { BufferMultibaseCodec, SimpleCodec } from '@potter/codec';
-import { DoctypeHandler } from '../../document/doctype';
+import { DoctypeHandler, DoctypeState } from '../../document/doctype';
 import { AnchorState, DocumentState } from '../../document/document.state';
 import jsonPatch from 'fast-json-patch';
 import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.error';
 import { UpdateRecordWaiting } from '../../util/update-record.codec';
 import { DidPresentation } from './did.presentation';
 import { assertSignature } from '../../assert-signature';
+import Ajv from 'ajv';
+import * as ThreeIdShapeSchema from './three-id-shape.schema.json';
+import { ThreeIdShape } from './three-id-shape';
+import { AnchoringStatus } from '@potter/anchoring';
 
-const DOCTYPE = '3id'
+const DOCTYPE = '3id';
 
 export interface ThreeIdFreight {
   doctype: typeof DOCTYPE;
@@ -36,9 +40,40 @@ const json = new SimpleCodec<ThreeIdFreight>(
   }),
 );
 
-class ThreeIdHandler extends DoctypeHandler<ThreeIdFreight> {
+class State implements DoctypeState<ThreeIdShape> {
+  current: ThreeIdShape | null;
+  freight: ThreeIdShape;
+  anchor: AnchorState;
+
+  cone() {
+    return this.current || this.freight;
+  }
+}
+
+const validate = new Ajv().compile(ThreeIdShapeSchema);
+function isShape(genesis: any): genesis is ThreeIdShape {
+  return Boolean(validate(genesis));
+}
+
+class ThreeIdHandler extends DoctypeHandler<ThreeIdFreight, State, ThreeIdShape> {
   name = DOCTYPE;
   json = json;
+
+  validate = new Ajv().compile(ThreeIdShapeSchema);
+
+  async knead(genesis: unknown): Promise<State> {
+    if (isShape(genesis)) {
+      const state = new State();
+      state.current = null;
+      state.freight = genesis;
+      state.anchor = {
+        status: AnchoringStatus.NOT_REQUESTED,
+      };
+      return state;
+    } else {
+      throw new Error('Invalid');
+    }
+  }
 
   async update(document, next) {
     const nextJSON = this.json.encode(next);

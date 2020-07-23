@@ -1,4 +1,4 @@
-import { DIDDocument } from 'did-resolver';
+import { DIDDocument, PublicKey } from 'did-resolver';
 import base64url from 'base64url';
 import { InvalidSignatureError } from './invalid-signature.error';
 import _ from 'lodash';
@@ -13,6 +13,10 @@ export async function assertSignature(record: any, resolvable: Resolvable): Prom
   const payloadObject = _.omit(record, ['header', 'signature']);
   payloadObject.prev = payloadObject.prev ? { '/': payloadObject.prev.toString() } : undefined;
   payloadObject.id = payloadObject.id ? { '/': payloadObject.id.toString() } : undefined;
+
+  if (!(payloadObject.owners as string[]).includes(payloadObject.iss)) {
+    throw new InvalidSignatureError(`Invalid issuer`);
+  }
 
   const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject)));
   const header = { typ: record.header.typ, alg: record.header.alg };

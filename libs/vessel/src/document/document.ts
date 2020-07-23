@@ -61,7 +61,7 @@ export class Document implements IDocument {
     this.#service.requestAnchor(this.#id, this.log.last);
   }
 
-  as<F extends IWithDoctype>(doctype: IDoctype<F>): ITypedDocument<F> {
+  as<F extends IWithDoctype>(doctype: IDoctype<any, F>): ITypedDocument<F> {
     if (doctype.name === this.doctype) {
       return new TypedDocument(this, doctype.withContext(this.#service.context));
     } else {

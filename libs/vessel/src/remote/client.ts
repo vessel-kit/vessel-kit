@@ -12,7 +12,7 @@ import { IWithDoctype } from '../document/with-doctype.interface';
 import { IDocument } from '../document/document.interface';
 import { IDoctype } from '../document/doctype';
 import { DoctypesContainer } from '../doctypes-container';
-import { Tile } from '../doctypes/tile';
+import { Tile } from '../doctypes/tile/tile';
 import CID from 'cids';
 
 export class Client {
@@ -71,15 +71,15 @@ export class Client {
 
   async create<A extends IWithDoctype>(payload: A) {
     const doctype = this.#doctypes.get(payload.doctype);
-    const record = await doctype.makeGenesis(payload);
-    const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
-    const state = decodeThrow(DocumentState, response.data);
-    const document = new Document(state, this.#service);
+    const state = await doctype.knead(payload);
+    const response = await axios.post(`${this.host}/api/v0/ceramic`, state.cone());
+    const documentState = decodeThrow(DocumentState, response.data);
+    const document = new Document(documentState, this.#service);
     this.#tracked.set(document.id.valueOf(), document);
     return document;
   }
 
-  async createAs<F extends IWithDoctype>(doctype: IDoctype<F>, payload: Omit<F, 'doctype'>) {
+  async createAs<F extends IWithDoctype>(doctype: IDoctype<any, F>, payload: Omit<F, 'doctype'>) {
     const effectiveDoctype = doctype.withContext(this.#service.context);
     const record = await effectiveDoctype.genesisFromFreight(payload);
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
