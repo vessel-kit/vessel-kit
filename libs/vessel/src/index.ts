@@ -4,4 +4,4 @@ export * from './ceramic';
 export * from './document/document';
 export * from './document/document.state';
 export * from './document/document.interface';
-export * from './util/chain';
+export * from './util/history';

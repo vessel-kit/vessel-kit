@@ -8,7 +8,7 @@ import { IDocument } from './document.interface';
 import { TypedDocument } from './typed-document';
 import { ITypedDocument } from './typed-document.interface';
 import { IDoctype } from './doctype';
-import { Chain } from '../util/chain';
+import { History } from '../util/history';
 
 export class Document implements IDocument {
   #id: CeramicDocumentId;
@@ -36,7 +36,7 @@ export class Document implements IDocument {
     return this.#id;
   }
 
-  get log(): Chain {
+  get log(): History {
     return this.#state$.value.log;
   }
 

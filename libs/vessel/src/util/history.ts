@@ -1,7 +1,8 @@
 import CID from 'cids';
 import * as t from 'io-ts';
+import { CidStringCodec } from '@potter/codec';
 
-export class Chain {
+export class History {
   #log: CID[];
   #set: Set<string>
   #first: CID
@@ -32,7 +33,7 @@ export class Chain {
 
   slice(index: number) {
     const next = this.log.slice(index)
-    return new Chain(next)
+    return new History(next)
   }
 
   async reduce<A>(f: (acc: A, item: CID) => Promise<A>, initial: A) {
@@ -49,7 +50,7 @@ export class Chain {
 
 
   concat(cid: CID) {
-    return new Chain(this.log.concat(cid))
+    return new History(this.log.concat(cid))
   }
 
   isEmpty() {
@@ -70,11 +71,13 @@ export class Chain {
   }
 }
 
-export const ChainCidArrayCodec = new t.Type<Chain, CID[], CID[]>(
+export const HistoryCidArrayCodec = new t.Type<History, CID[], CID[]>(
   'Chain-Array<CID>',
-  (input: unknown): input is Chain => input instanceof Chain,
+  (input: unknown): input is History => input instanceof History,
   input => {
-    return t.success(new Chain(input));
+    return t.success(new History(input));
   },
-  (a: Chain) => a.log,
+  (a: History) => a.log,
 );
+
+export const HistoryCodec = t.array(t.string.pipe(CidStringCodec)).pipe(HistoryCidArrayCodec)

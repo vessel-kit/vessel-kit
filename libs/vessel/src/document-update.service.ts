@@ -1,5 +1,5 @@
 import { Cloud } from './cloud/cloud';
-import { Chain } from './util/chain';
+import { History } from './util/history';
 import CID from 'cids';
 import { DocumentState } from './document/document.state';
 import { ILogger } from './util/logger.interface';
@@ -28,9 +28,9 @@ export class DocumentUpdateService {
     this.#doctypes = doctypes;
   }
 
-  async tail(local: Chain, tip: CID, log: CID[] = []): Promise<Chain> {
+  async tail(local: History, tip: CID, log: CID[] = []): Promise<History> {
     if (local.has(tip)) {
-      return new Chain(log.reverse());
+      return new History(log.reverse());
     } else {
       const record = await this.#cloud.retrieve(tip);
       const prev = record.prev as CID | null;
@@ -38,7 +38,7 @@ export class DocumentUpdateService {
         const nextLog = log.concat(tip);
         return this.tail(local, prev, nextLog);
       } else {
-        return new Chain([]);
+        return new History([]);
       }
     }
   }
@@ -78,7 +78,7 @@ export class DocumentUpdateService {
     }
   }
 
-  async applyLog(log: Chain, state: DocumentState): Promise<DocumentState> {
+  async applyLog(log: History, state: DocumentState): Promise<DocumentState> {
     return log.reduce(async (state, entry) => {
       const content = await this.#cloud.retrieve(entry);
       const record = new RecordWrap(content, entry);

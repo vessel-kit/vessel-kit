@@ -4,7 +4,7 @@ import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
-import { Chain } from '../util/chain';
+import { History } from '../util/history';
 import { TileContent } from '../tile.content';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
@@ -67,7 +67,7 @@ async function main() {
   const documentId = state.log.first;
   await sleep(61000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
-  const log = new Chain(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
+  const log = new History(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
   const doc2 = Object.assign({}, tile);
   doc2.content = {
     foo: '33',

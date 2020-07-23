@@ -7,7 +7,7 @@ import { AnchorProof, AnchoringStatus } from '@potter/anchoring';
 import { IDocument } from './document.interface';
 import jsonPatch from 'fast-json-patch';
 import { UpdateRecordWaiting } from '../util/update-record.codec';
-import { Chain } from '../util/chain';
+import { History } from '../util/history';
 import produce from 'immer';
 import { InvalidDocumentUpdateLinkError } from '../doctypes/invalid-document-update-link.error';
 
@@ -57,7 +57,7 @@ export abstract class DoctypeHandler<Freight extends IWithDoctype = IWithDoctype
       anchor: {
         status: AnchoringStatus.NOT_REQUESTED as AnchoringStatus.NOT_REQUESTED,
       },
-      log: new Chain([documentId.cid]),
+      log: new History([documentId.cid]),
     };
   }
 

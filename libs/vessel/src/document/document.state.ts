@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import { AnchoringStatus } from '@potter/anchoring';
-import { ChainCidArrayCodec } from '../util/chain';
+import { HistoryCodec } from '../util/history';
 import { CidStringCodec, DateISO8601Codec } from '@potter/codec';
 
 const AnchorDone = t.type(
@@ -44,7 +44,7 @@ export const DocumentState = t.type(
     current: t.union([t.UnknownRecord, t.null]),
     freight: t.UnknownRecord,
     anchor: AnchorState,
-    log: t.array(t.string.pipe(CidStringCodec)).pipe(ChainCidArrayCodec),
+    log: HistoryCodec,
   },
   'DocumentState',
 );

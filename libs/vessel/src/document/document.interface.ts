@@ -4,11 +4,11 @@ import { IWithDoctype } from './with-doctype.interface';
 import { CeramicDocumentId } from '@potter/codec';
 import { ITypedDocument } from './typed-document.interface';
 import { IDoctype } from './doctype';
-import { Chain } from '../util/chain';
+import { History } from '../util/history';
 
 export interface IDocument {
   id: CeramicDocumentId;
-  log: Chain;
+  log: History;
   state: DocumentState;
   current: any;
   state$: FrozenSubject<DocumentState>;

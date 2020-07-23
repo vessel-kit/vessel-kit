@@ -98,6 +98,8 @@ export class DocumentService implements IDocumentService {
       mergeMap(async (observation) => {
         this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation);
         switch (observation.status) {
+          case AnchoringStatus.NOT_REQUESTED:
+            return state$.value;
           case AnchoringStatus.ANCHORED:
             const anchorRecordCID = observation.anchorRecord;
             return await this.applyHead(anchorRecordCID, state$);
