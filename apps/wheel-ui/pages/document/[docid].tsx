@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { Box } from "@theme-ui/components";
 import React, { useEffect, useState } from "react";
 import {
@@ -10,23 +9,6 @@ import { useRouter } from 'next/router'
 import useSWR from 'swr'
 const io = require('socket.io-client')
 
-function convertRecordStatusNaming(status: string): string {
-  let result
-  switch (status) {
-    case "COMPLETED": {
-      result = "ANCHOR"
-    } break;
-    case "PENDING":
-    case "PROCESSING":
-    case "FAILED":{
-      result = "UPDATE"
-    } break;
-    default: {}
-  }
-
-  return result
-}
-
 function DocumentHistoryTiles(props: {historyData: any}) {
 
   const renderContent = (content) => {
@@ -35,7 +17,7 @@ function DocumentHistoryTiles(props: {historyData: any}) {
     } else {
       return (
         <>
-          Content: <code>{JSON.stringify(content)}</code>
+          <code>{JSON.stringify(content, null, 2)}</code>
         </>
       )
     }
@@ -54,7 +36,7 @@ function DocumentHistoryTiles(props: {historyData: any}) {
         >
           <TileAboveTheFoldContent>
             <div style={{ height: '34px'}}>
-              CID: {cid}, Record type:  <RecordType recordType={type}></RecordType>
+              CID: {cid} <RecordType recordType={type}></RecordType>
             </div>
           </TileAboveTheFoldContent>
           <TileBelowTheFoldContent>
@@ -66,11 +48,12 @@ function DocumentHistoryTiles(props: {historyData: any}) {
       );
     }
 
-    return props.historyData.sort(
-      (firstEl, secondEl) =>
-        DateTime.fromJSDate(firstEl).toMillis() < DateTime.fromJSDate(secondEl).toMillis() ? 1 : -1 ).map(r => {
-      const type = convertRecordStatusNaming(r.status)
-      return renderTile(r.cid, type, r.content)
+    return props.historyData.map((r, index) => {
+      if (index < props.historyData.length - 1) {
+        return renderTile(r.cid, 'ANCHOR', r.content)
+      } else {
+        return renderTile(r.cid, 'GENESIS', r.content)
+      }
     })
   }
 
@@ -79,24 +62,23 @@ function DocumentHistoryTiles(props: {historyData: any}) {
 export default function Document() {
   const router = useRouter()
   const [contentSocket, setContentSocket] = useState('')
-  const { docId } = router.query
+  const { docid } = router.query
   const socket = io.connect(process.env.WHEEL_SOCKETIO_URL);
   socket.on('connect', (data) => {
-    if (docId && docId !== "undefined") {
-      socket.emit('room', docId)
+    if (docid && docid !== "undefined") {
+      socket.emit('room', docid)
     }
   })
 
   socket.on("live-update", (msg) => setContentSocket(msg));
 
-  const endpointHistory = `${process.env.WHEEL_URL}/api/v0/ceramic/list/${docId}`;
-  const endpointContent = `${process.env.WHEEL_URL}/api/v0/ceramic/content/${docId}`;
+  const endpointHistory = `${process.env.WHEEL_URL}/api/v0/ceramic/${docid}/history`;
+  const endpointContent = `${process.env.WHEEL_URL}/api/v0/ceramic/${docid}/content`;
   const fetcher = url => fetch(url).then(r => r.json())
   const { data: dataHistory } = useSWR(endpointHistory, fetcher)
   const { data: dataContent } = useSWR(endpointContent, fetcher)
-  const status = convertRecordStatusNaming(dataHistory?.sort( (firstEl, secondEl) =>
-    DateTime.fromJSDate(firstEl).toMillis() < DateTime.fromJSDate(secondEl).toMillis() ? 1 : -1 )[0].status)
 
+  console.log(dataContent)
 
   useEffect(() => {
     setContentSocket(dataContent?.content)
@@ -104,16 +86,16 @@ export default function Document() {
 
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 6 }}>
+    <Box sx={{ flexGrow: 1, padding: 4 }}>
       <h1>Document</h1>
       <Header3>Doc ID</Header3>
-      <code>ceramic://{docId}</code>
+      <code>ceramic://{docid}</code>
       <Header3>History</Header3>
       <DocumentHistoryTiles historyData={dataHistory}/>
       <Header3>Current content</Header3>
-      <code>{contentSocket}</code>
-      <Header3>Last Record State</Header3>
-      <RecordType recordType={status}></RecordType>
+      <code>{JSON.stringify(contentSocket)}</code>
+      {/*<Header3>Last Record State</Header3>*/}
+      {/*<RecordType recordType={status}></RecordType>*/}
     </Box>
   );
 }
