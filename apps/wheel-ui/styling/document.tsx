@@ -6,10 +6,10 @@ export function RecordType(
 ) {
   let color
   switch (props.recordType) {
-    case "ANCHOR": {
+    case "GENESIS": {
       color = "green"
     } break;
-    case "UPDATE": {
+    case "ANCHOR": {
       color = "cyan"
     } break;
     default: {

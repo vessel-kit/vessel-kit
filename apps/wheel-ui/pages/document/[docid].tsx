@@ -23,8 +23,8 @@ function DocumentHistoryTiles(props: {historyData: any}) {
     }
   }
 
-  if (!props.historyData) {
-    return <></>
+  if (!props.historyData || !props.historyData.length) {
+    return (<><span>No history yet!</span></>)
   } else {
     const renderTile = (cid, type, content) => {
       return (

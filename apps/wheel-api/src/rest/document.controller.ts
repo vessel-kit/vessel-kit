@@ -71,7 +71,7 @@ export class DocumentController {
     const cid = new CID(cidString);
     const document = await this.ceramic.load(new CeramicDocumentId(cid));
     return {
-      content: document
+      content: document.toJSON().freight?.content
     };
   }
 
