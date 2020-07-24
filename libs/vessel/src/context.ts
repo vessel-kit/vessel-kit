@@ -3,23 +3,35 @@ import { ISignor } from './signor/signor.interface';
 import { ILoad, ThreeIdResolver } from './resolver/three-id-resolver';
 import { Resolver } from 'did-resolver';
 import { assertSignature } from './assert-signature';
+import CID from 'cids';
+
+export interface IRetrieve {
+  (cid: CID, path?: string): Promise<any>
+}
 
 export interface IContext {
   sign(payload: any, opts?: { useMgmt: boolean }): Promise<void>;
   did(): Promise<ThreeIdentifier | undefined>;
   assertSignature(payload: any): Promise<void>;
+  retrieve: IRetrieve
 }
 
 export class Context implements IContext {
   readonly #signorP: () => ISignor;
   readonly #load: ILoad;
   readonly #resolver: Resolver;
+  readonly #retrieve: IRetrieve
 
-  constructor(signorP: () => ISignor, load: ILoad) {
+  constructor(signorP: () => ISignor, load: ILoad, retrieve: IRetrieve) {
     this.#signorP = signorP;
     this.#load = load;
     const threeIdResolver = new ThreeIdResolver(this.#load);
     this.#resolver = new Resolver(threeIdResolver.registry);
+    this.#retrieve = retrieve
+  }
+
+  async retrieve(cid: CID, path?: string): Promise<any> {
+    return this.#retrieve(cid, path)
   }
 
   async sign(payload: any, opts?: { useMgmt: boolean }) {
@@ -60,6 +72,9 @@ export const EMPTY_CONTEXT: IContext = {
   },
   sign: () => {
     throw new EmptyContextError('sign');
+  },
+  retrieve: () => {
+    throw new EmptyContextError('retrieve');
   },
   assertSignature: () => {
     throw new EmptyContextError('assertSignature');

@@ -1,14 +1,14 @@
-import CID from 'cids';
 import { DocumentState } from './document.state';
 import { FrozenSubject } from '../util/frozen-subject';
 import { IWithDoctype } from './with-doctype.interface';
 import { CeramicDocumentId } from '@potter/codec';
 import { ITypedDocument } from './typed-document.interface';
 import { IDoctype } from './doctype';
+import { Chain } from '../util/chain';
 
 export interface IDocument {
   id: CeramicDocumentId;
-  head: CID;
+  log: Chain;
   state: DocumentState;
   current: any;
   state$: FrozenSubject<DocumentState>;

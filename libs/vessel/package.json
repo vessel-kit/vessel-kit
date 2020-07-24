@@ -38,6 +38,7 @@
     "rxjs": "^6.5.5",
     "ses": "^0.8.0",
     "sort-keys": "^4.0.0",
+    "terser": "^4.8.0",
     "typestub-multihashes": "^0.0.1"
   },
   "devDependencies": {

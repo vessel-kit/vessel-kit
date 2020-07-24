@@ -31,7 +31,7 @@ export class TileHandler extends DoctypeHandler<TileFreight> {
     return this.context.sign(encoded);
   }
   async makeGenesis(payload: any): Promise<any> {
-    this.json.assertValid(payload);
+    // this.json.assertValid(payload); TODO Validation
     await this.context.assertSignature(payload);
     return payload;
   }

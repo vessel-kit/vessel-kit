@@ -10,8 +10,10 @@ import { UpdateRecordWaiting } from '../util/update-record.codec';
 import { DidPresentation } from '../did.presentation';
 import { assertSignature } from '../assert-signature';
 
+const DOCTYPE = '3id';
+
 export interface ThreeIdFreight {
-  doctype: '3id';
+  doctype: typeof DOCTYPE;
   owners: jose.JWK.Key[];
   content: {
     publicKeys: {
@@ -21,20 +23,22 @@ export interface ThreeIdFreight {
   };
 }
 
-class ThreeIdHandler extends DoctypeHandler<ThreeIdFreight> {
-  name = '3id';
-  json = new SimpleCodec(
-    t.type({
-      doctype: t.literal('3id'),
-      owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec)),
-      content: t.type({
-        publicKeys: t.type({
-          encryption: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
-          signing: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
-        }),
+const json = new SimpleCodec<ThreeIdFreight>(
+  t.type({
+    doctype: t.literal(DOCTYPE),
+    owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec)),
+    content: t.type({
+      publicKeys: t.type({
+        encryption: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
+        signing: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
       }),
     }),
-  );
+  }),
+);
+
+class ThreeIdHandler extends DoctypeHandler<ThreeIdFreight> {
+  name = DOCTYPE;
+  json = json;
 
   async update(document, next) {
     const nextJSON = this.json.encode(next);
@@ -42,7 +46,7 @@ class ThreeIdHandler extends DoctypeHandler<ThreeIdFreight> {
     const patch = jsonPatch.compare(nextJSON, currentJSON);
     const payloadToSign = UpdateRecordWaiting.encode({
       patch: patch,
-      prev: document.state.log.last,
+      prev: document.log.last,
       id: document.id,
     });
     return this.context.sign(payloadToSign, { useMgmt: true });

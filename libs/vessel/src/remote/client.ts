@@ -13,6 +13,7 @@ import { IDocument } from '../document/document.interface';
 import { IDoctype } from '../document/doctype';
 import { DoctypesContainer } from '../doctypes-container';
 import { Tile } from '../doctypes/tile';
+import CID from 'cids';
 
 export class Client {
   #signor?: ISignor;
@@ -21,13 +22,25 @@ export class Client {
   #doctypes: DoctypesContainer;
 
   constructor(private readonly host: string) {
-    const context = new Context(() => {
-      if (this.#signor) {
-        return this.#signor;
-      } else {
-        throw new Error(`No signor set`);
+    const retrieve = async (cid: CID, path?: string) => {
+      const url = new URL(`${this.host}/api/v0/cloud/${cid}`);
+      if (path) {
+        url.searchParams.append('path', path);
       }
-    }, this.load.bind(this));
+      const response = await axios.get(url.toString());
+      return JSON.parse(response.data);
+    };
+    const context = new Context(
+      () => {
+        if (this.#signor) {
+          return this.#signor;
+        } else {
+          throw new Error(`No signor set`);
+        }
+      },
+      this.load.bind(this),
+      retrieve,
+    );
     this.#doctypes = new DoctypesContainer([Tile, ThreeId], context);
     this.#service = new RemoteDocumentService(host, context);
   }

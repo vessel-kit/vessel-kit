@@ -13,10 +13,6 @@
     "incremental": true,
     "types": ["node", "jest"]
   },
-  "include": [
-    "./src",
-    "./types",
-    "../../../../../../Library/Application Support/JetBrains/WebStorm2020.1/javascript/nodejs/14.2.0/node-typings/node_modules/@types/node/globals.d.ts"
-  ],
+  "include": ["./src", "./types"],
   "exclude": ["node_modules", "dist"]
 }

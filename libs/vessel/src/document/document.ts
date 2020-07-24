@@ -2,13 +2,13 @@ import { CeramicDocumentId } from '@potter/codec';
 import { Subscription } from 'rxjs';
 import { DocumentState } from './document.state';
 import { FrozenSubject } from '../util/frozen-subject';
-import CID from 'cids';
 import { IDocumentService } from './document.service.interface';
 import { IWithDoctype } from './with-doctype.interface';
 import { IDocument } from './document.interface';
 import { TypedDocument } from './typed-document';
 import { ITypedDocument } from './typed-document.interface';
 import { IDoctype } from './doctype';
+import { Chain } from '../util/chain';
 
 export class Document implements IDocument {
   #id: CeramicDocumentId;
@@ -28,12 +28,16 @@ export class Document implements IDocument {
     });
   }
 
+  get doctype() {
+    return this.#state$.value.doctype;
+  }
+
   get id(): CeramicDocumentId {
     return this.#id;
   }
 
-  get head(): CID {
-    return this.state.log.last;
+  get log(): Chain {
+    return this.#state$.value.log;
   }
 
   get state() {
@@ -41,7 +45,8 @@ export class Document implements IDocument {
   }
 
   get current(): any {
-    return this.state.current || this.state.freight;
+    const state = this.#state$.value;
+    return state.current || state.freight;
   }
 
   get state$(): FrozenSubject<DocumentState> {
@@ -53,14 +58,14 @@ export class Document implements IDocument {
   }
 
   requestAnchor(): void {
-    this.#service.requestAnchor(this.#id, this.state.log.last);
+    this.#service.requestAnchor(this.#id, this.log.last);
   }
 
   as<F extends IWithDoctype>(doctype: IDoctype<F>): ITypedDocument<F> {
-    if (doctype.name === this.state.doctype) {
+    if (doctype.name === this.doctype) {
       return new TypedDocument(this, doctype.withContext(this.#service.context));
     } else {
-      throw new Error(`Can not cast ${this.state.doctype} as ${doctype.name}`);
+      throw new Error(`Can not cast ${this.doctype} as ${doctype.name}`);
     }
   }
 
@@ -68,6 +73,10 @@ export class Document implements IDocument {
     this.#internal$S.unsubscribe();
     this.#external$S.unsubscribe();
     this.#state$.complete();
+  }
+
+  [Symbol.for('nodejs.util.inspect.custom')]() {
+    return this.toJSON();
   }
 
   toJSON(): any {

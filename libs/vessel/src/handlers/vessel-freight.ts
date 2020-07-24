@@ -14,6 +14,6 @@ export const VesselRuleset = t.type({
 
 export const VesselDocument = t.type({
   doctype: t.literal(VESSEL_DOCUMENT_DOCTYPE),
-  governance: t.string.pipe(CidStringCodec),
+  ruleset: t.string.pipe(CidStringCodec),
   content: t.UnknownRecord,
 });

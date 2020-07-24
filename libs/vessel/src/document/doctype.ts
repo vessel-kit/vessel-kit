@@ -26,9 +26,9 @@ abstract class GenericHandler<Freight extends IWithDoctype> {
 }
 
 export abstract class DoctypeHandler<Freight extends IWithDoctype = IWithDoctype> extends GenericHandler<Freight> {
-  async makeGenesis(payload: any): Promise<any> {
-    this.json.assertValid(payload);
-    return payload;
+  async makeGenesis(record: any): Promise<any> {
+    // this.json.assertValid(record); TODO Validation
+    return record;
   }
 
   async genesisFromFreight(payload: Omit<Freight, 'doctype'>): Promise<any & IWithDoctype> {
@@ -39,13 +39,13 @@ export abstract class DoctypeHandler<Freight extends IWithDoctype = IWithDoctype
   async update(document: IDocument, next: Freight) {
     const nextJSON = this.json.encode(next);
     const currentJSON = document.current;
-    const patch = jsonPatch.compare(nextJSON, currentJSON);
+    const patch = jsonPatch.compare(currentJSON, nextJSON);
     const payloadToSign = UpdateRecordWaiting.encode({
       patch: patch,
-      prev: document.state.log.last,
+      prev: document.log.last,
       id: document.id,
     });
-    return this.context.sign(payloadToSign, { useMgmt: true });
+    return this.context.sign(payloadToSign);
   }
 
   async applyGenesis(documentId: CeramicDocumentId, genesis: any): Promise<DocumentState> {
@@ -86,10 +86,11 @@ export abstract class DoctypeHandler<Freight extends IWithDoctype = IWithDoctype
       throw new InvalidDocumentUpdateLinkError(`Expected ${state.log.first} id while got ${updateRecord.load.id}`);
     }
     await this.context.assertSignature(updateRecord.load);
-    const next = jsonPatch.applyPatch(state.current || state.freight, updateRecord.load.patch, false, false);
+    const next = jsonPatch.applyPatch(state.current || state.freight, updateRecord.load.patch, false, false)
+      .newDocument;
     return {
       ...state,
-      current: next.newDocument,
+      current: next,
       log: state.log.concat(updateRecord.cid),
       anchor: {
         status: AnchoringStatus.NOT_REQUESTED,
