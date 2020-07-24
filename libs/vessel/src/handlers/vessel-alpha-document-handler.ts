@@ -43,11 +43,12 @@ export class VesselAlphaDocumentHandler implements IHandler {
       const governanceCID = new CID(governance);
       const governanceDoc = await this.cloud.retrieve(governanceCID);
       // lockdown();
-      const compartment = new Compartment({
-        module: {},
-      });
-      const main = compartment.evaluate(governanceDoc.content.main);
-      // const main = eval(governanceDoc.main)
+      // const compartment = new Compartment({
+      //   module: {},
+      // });
+      // const main = compartment.evaluate(governanceDoc.content.main);
+
+      const main = eval(governanceDoc.main)
       const canApply = main.canApply;
       const next = jsonPatch.applyPatch(s, updateRecord.load.patch, false, false).newDocument;
       const canApplyResult = canApply(s, next);

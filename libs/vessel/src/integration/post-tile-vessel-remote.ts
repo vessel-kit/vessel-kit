@@ -60,7 +60,9 @@ async function main() {
     doctype: 'vessel/ruleset/0.0.1',
     content: {
       type: 'application/javascript',
-      main: `function canApply(a, b) { return b.content.num > a.content.num; }; module.exports = {canApply: canApply}`,
+      main: `function canApply(a, b) {
+          return b.content.payload.num > a.content.payload.num;
+        }; module.exports = {canApply: canApply}`,
     },
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, ruleset);
@@ -73,7 +75,14 @@ async function main() {
     owners: [user.did],
     governance: rulesetId.toString(),
     content: {
-      num: 1,
+      payload: {
+        num: 1
+      },
+      partyA: {
+        iss: 'did:3:bafyreibedfxqj6e2lhj6fmrxpxvkn3qogzh65247udaz7vq5jb3os4cnxe',
+        header: {typ: 'JWK', alg: 'ES256K'},
+        signature: 'xxxx'
+      }
     },
   };
   const jwt = await user.sign(sortPropertiesDeep(doc1));
@@ -92,7 +101,7 @@ async function main() {
   const anchoredDocumentId = new CID(anchoredDocument.data.docId);
 
   const doc2: any = JSON.parse(JSON.stringify(doc1));
-  doc2.content.num = 2;
+  doc2.content.payload.num = 2;
   console.log('prepatch', doc1, doc2);
   const delta = jsonPatch.compare(doc1, doc2);
   const updateRecord = {
