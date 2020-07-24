@@ -14,9 +14,10 @@ export async function assertSignature(record: any, resolvable: Resolvable): Prom
   payloadObject.prev = payloadObject.prev ? { '/': payloadObject.prev.toString() } : undefined;
   payloadObject.id = payloadObject.id ? { '/': payloadObject.id.toString() } : undefined;
 
-  if (!(payloadObject.owners as string[]).includes(payloadObject.iss)) {
-    throw new InvalidSignatureError(`Invalid issuer`);
-  }
+  // TODO Check signor
+  // if (!(payloadObject.owners as string[]).includes(payloadObject.iss)) {
+  //   throw new InvalidSignatureError(`Invalid issuer`);
+  // }
 
   const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject)));
   const header = { typ: record.header.typ, alg: record.header.alg };

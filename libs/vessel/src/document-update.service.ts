@@ -90,8 +90,9 @@ export class DocumentUpdateService {
           const proof = await this.#anchoring.verify(content, entry);
           return handler.applyAnchor(record, proof, state);
         case RecordWrap.Kind.GENESIS:
-          const documentId = new CeramicDocumentId(entry);
-          return handler.applyGenesis(documentId, content);
+          throw new Error(`Not applicable genesis`);
+        // const documentId = new CeramicDocumentId(entry);
+        // return handler.applyGenesis(documentId, content);
         default:
           throw new UnidentifiedRecordKindError(record.kind);
       }
