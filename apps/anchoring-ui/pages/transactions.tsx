@@ -54,7 +54,7 @@ export default function Transactions() {
   }, [transactions.length]);
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 6 }}>
+    <Box sx={{ flexGrow: 1, padding: 4 }}>
       <Head>
         <title>Transactions - Ceramic Anchoring</title>
       </Head>

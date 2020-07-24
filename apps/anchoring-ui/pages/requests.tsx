@@ -81,7 +81,7 @@ function RequestsTable(props: { requests: RequestRecord[] }) {
   };
 
   const rows = () => {
-    return props.requests.map(r => {
+    return props.requests?.map(r => {
       return row(r);
     });
   };
@@ -141,10 +141,10 @@ export default function Requests() {
       const data: FetchResponse = await response.json();
       setRequests(data.requests);
     });
-  }, [requests.length]);
+  }, []);
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 6 }}>
+    <Box sx={{ flexGrow: 1, padding: 4 }}>
       <Head>
         <title>Requests - Ceramic Anchoring</title>
       </Head>
