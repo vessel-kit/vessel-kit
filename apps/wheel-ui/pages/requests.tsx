@@ -62,7 +62,7 @@ export default function Requests() {
   }, [requests.length]);
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 6 }}>
+    <Box sx={{ flexGrow: 1, padding: 4 }}>
       <h1>Requests</h1>
       <RequestsTable requests={requests} />
     </Box>

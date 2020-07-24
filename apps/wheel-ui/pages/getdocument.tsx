@@ -8,7 +8,7 @@ export default function GetDocument() {
   const [docId, setDocId] = useState('');
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 6 }}>
+    <Box sx={{ flexGrow: 1, padding: 4 }}>
       <h1>Document Request</h1>
       <FormGroup legendText={''}>
         <TextInput

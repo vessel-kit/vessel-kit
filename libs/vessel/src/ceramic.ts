@@ -74,6 +74,10 @@ export class Ceramic {
     return this.#documentRepository.load(docId);
   }
 
+  async history(docId: CeramicDocumentId): Promise<any> {
+    return this.#documentRepository.history(docId);
+  }
+
   async list(): Promise<IDocument[]> {
     return this.#documentRepository.list();
   }

@@ -50,32 +50,29 @@ export class DocumentController {
 
   @Get('/:cid')
   async read(@Param('cid') cidString: string) {
-    const cid = CeramicDocumentId.fromString(cidString);
-    const document = await this.ceramic.load(cid);
-    return DocumentState.encode(document.state);
+    if (cidString === 'undefined') {
+      return {}
+    } else {
+      const cid = CeramicDocumentId.fromString(cidString);
+      const document = await this.ceramic.load(cid);
+      return DocumentState.encode(document.state);
+    }
   }
 
-  // @Get('/list/:cid')
-  // async readMany(@Param('cid') cidString: string) {
-  //   const cid = new CID(cidString);
-  //   const documents = await this.ceramic.loadMany(cid);
-  //   return documents.map(d => {
-  //     return {
-  //       cid: d.cid,
-  //       status: d.status,
-  //       content: d.anchorRecord?.content,
-  //       updatedAt: d.updatedAt,
-  //     };
-  //   });
-  // }
+  @Get('/:cid/history')
+  async readMany(@Param('cid') cidString: string) {
+    const cid = new CID(cidString);
+    const documents = await this.ceramic.history(new CeramicDocumentId(cid));
+    return JSON.stringify(documents);
+  }
 
-  @Get('/content/:cid')
+  @Get('/:cid/content')
   async readContent(@Param('cid') cidString: string) {
     const cid = new CID(cidString);
-    // const content = await this.ceramic.content(cid);
-    // return {
-    //   content: content,
-    // };
+    const document = await this.ceramic.load(new CeramicDocumentId(cid));
+    return {
+      content: document.toJSON().freight?.content
+    };
   }
 
   @Put('/:cid')
