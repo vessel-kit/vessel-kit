@@ -1,13 +1,14 @@
 import * as t from 'io-ts';
-import { DoctypeHandler } from '../document/doctype';
-import { SimpleCodec, CidStringCodec } from '@potter/codec';
+import { DoctypeHandler, Ordering } from '../document/doctype';
+import { CidStringCodec } from '@potter/codec';
 import { VesselRulesetAlpha } from './vessel-ruleset-alpha';
-import { DocumentState } from '..';
 import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
 import jsonPatch from 'fast-json-patch';
 import { RecordWrap } from '@potter/codec';
-import { AnchoringStatus } from '@potter/anchoring';
+import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 import CID from 'cids';
+import produce from 'immer';
+import { CeramicDocumentId, decodeThrow } from '@potter/codec';
 
 const DOCTYPE = 'vessel/document/1.0.0';
 
@@ -17,14 +18,14 @@ const json = t.type({
   content: t.UnknownRecord,
 });
 
-type Freight = t.TypeOf<typeof json>;
+type State = any
+type Shape = any
 
-class Handler extends DoctypeHandler<Freight> {
+class Handler extends DoctypeHandler<State, Shape> {
   readonly name = DOCTYPE;
-  readonly json = new SimpleCodec(json);
 
   async canApply(current: any, next: any, rulesetCID?: CID) {
-    const effectiveRulesetCid = rulesetCID || this.json.decode(current).ruleset;
+    const effectiveRulesetCid = rulesetCID || decodeThrow(json, current).ruleset;
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid);
     const ruleset = VesselRulesetAlpha.json.decode(rulesetJSON);
     const canApply = ruleset.canApply(current, next);
@@ -34,23 +35,19 @@ class Handler extends DoctypeHandler<Freight> {
     }
   }
 
-  async applyUpdate(updateRecord: RecordWrap, state: DocumentState): Promise<DocumentState> {
-    if (!(updateRecord.load.id && updateRecord.load.id.equals(state.log.first))) {
-      throw new InvalidDocumentUpdateLinkError(`Expected ${state.log.first} id while got ${updateRecord.load.id}`);
+  async applyUpdate(updateRecord: RecordWrap, state: any, docId: CeramicDocumentId): Promise<any> {
+    if (!(updateRecord.load.id && updateRecord.load.id.equals(docId.cid))) {
+      throw new InvalidDocumentUpdateLinkError(`Expected ${docId.cid} id while got ${updateRecord.load.id}`);
     }
     await this.context.assertSignature(updateRecord.load);
-    const current = state.current || state.freight;
     const next = jsonPatch.applyPatch(state.current || state.freight, updateRecord.load.patch, false, false)
       .newDocument;
-    await this.canApply(current, next);
-    return {
-      ...state,
-      current: next,
-      log: state.log.concat(updateRecord.cid),
-      anchor: {
-        status: AnchoringStatus.NOT_REQUESTED,
-      },
+    await this.canApply(state, next);
+    state.current = next;
+    state.anchor = {
+      status: AnchoringStatus.NOT_REQUESTED,
     };
+    return state;
   }
 
   knead(genesisRecord: unknown): Promise<any> {
@@ -62,6 +59,41 @@ class Handler extends DoctypeHandler<Freight> {
 
   cone(state: any): Promise<any> {
     throw new Error(`Not implemented TODO`);
+  }
+
+  async order(a: any, b: any): Promise<Ordering> {
+    if (
+      a.anchor.status === AnchoringStatus.ANCHORED &&
+      b.anchor.status === AnchoringStatus.ANCHORED &&
+      a.anchor.proof.timestamp < b.anchor.proof.timestamp
+    ) {
+      return Ordering.LT;
+    } else {
+      return Ordering.GT;
+    }
+  }
+
+  async applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: any): Promise<any> {
+    return produce(state, async (next) => {
+      if (next.current) {
+        next.freight = next.current;
+        next.current = null;
+      }
+      next.anchor = {
+        status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
+        proof: {
+          chainId: proof.chainId.toString(),
+          blockNumber: proof.blockNumber,
+          timestamp: new Date(proof.blockTimestamp * 1000).toISOString(),
+          txHash: proof.txHash.toString(),
+          root: proof.root.toString(),
+        },
+      };
+    });
+  }
+
+  async canonical(state: any): Promise<any> {
+    return state.current | state.freight;
   }
 }
 

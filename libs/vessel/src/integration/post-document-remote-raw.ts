@@ -5,7 +5,9 @@ import { sleep } from './sleep.util';
 import axios from 'axios';
 import { ThreeIdentifier } from '../three-identifier';
 import { decodeThrow } from '@potter/codec';
-import { DocumentState } from '..';
+import { DocumentState } from '../document/document.state';
+import { SnapshotCodec } from '../document/document.interface';
+import * as t from 'io-ts'
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -34,13 +36,15 @@ async function main() {
   };
   console.log('genesis record', genesisRecord);
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
-  const genesisState = decodeThrow(DocumentState, genesisResponse.data);
-  console.log('genesis response', genesisResponse.data);
-  const documentId = genesisState.log.first;
+  console.log('genesisResponse', genesisResponse.data)
+  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
+
+  const documentId = snapshot.log.first;
   await sleep(80000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
-  const state = decodeThrow(DocumentState, anchoredGenesisResponse.data);
-  const log = state.log;
+  console.log('anchoredGenesisResponse', anchoredGenesisResponse.data)
+  const genesisSnapshot = decodeThrow(SnapshotCodec(t.unknown), anchoredGenesisResponse.data)
+  const log = genesisSnapshot.log;
   const doc2 = doc1.clone();
   doc2.publicKeys.set('foocryption', signingKey);
   const delta = doc2.delta(doc1);

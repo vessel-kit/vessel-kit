@@ -38,6 +38,7 @@ export class IdentityProviderWrap {
 
   async signClaim(claimParams: ClaimParams): Promise<JWTDecoded> {
     const jwt = await this.ask<string>('3id_signClaim', claimParams);
+    console.log('signClaim', jwt)
     return decodeJWT(jwt) as JWTDecoded;
   }
 

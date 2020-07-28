@@ -7,7 +7,7 @@ import { TileContent } from '../tile.content';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
 import { decodeThrow } from '@potter/codec';
-import { DocumentState } from '..';
+import { DocumentState } from '../document/document.state';
 
 const REMOTE_URL = 'http://localhost:3001';
 

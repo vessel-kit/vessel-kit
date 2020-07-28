@@ -40,7 +40,7 @@ export class DocumentController {
     record.createdAt = DateTime.local().toJSDate();
     record.updatedAt = DateTime.local().toJSDate();
     await this.documentStorage.save(record);
-    return DocumentState.encode(document.state);
+    return document.state;
   }
 
   @Get('/')
@@ -51,11 +51,11 @@ export class DocumentController {
   @Get('/:cid')
   async read(@Param('cid') cidString: string) {
     if (cidString === 'undefined') {
-      return {}
+      return {};
     } else {
       const cid = CeramicDocumentId.fromString(cidString);
       const document = await this.ceramic.load(cid);
-      return DocumentState.encode(document.state);
+      return document.state;
     }
   }
 
@@ -71,7 +71,7 @@ export class DocumentController {
     const cid = new CID(cidString);
     const document = await this.ceramic.load(new CeramicDocumentId(cid));
     return {
-      content: document
+      content: document,
     };
   }
 
@@ -81,7 +81,7 @@ export class DocumentController {
     const document = await this.ceramic.load(documentId);
     await document.update(body);
     this.liveUpdater.sendUpdate(cidString, body.content);
-    return DocumentState.encode(document.state);
+    return document.state;
   }
 
   @Get('/:cid/state')
@@ -103,6 +103,6 @@ export class DocumentController {
     const documentId = new CeramicDocumentId(cid);
     const document = await this.ceramic.load(documentId);
     document.requestAnchor();
-    return DocumentState.encode(document.state);
+    return document.state;
   }
 }

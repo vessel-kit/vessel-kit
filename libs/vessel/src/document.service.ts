@@ -2,7 +2,6 @@ import { ILogger } from './util/logger.interface';
 import { CeramicDocumentId } from '@potter/codec';
 import CID from 'cids';
 import { AnchoringStatus } from '@potter/anchoring';
-import { DocumentState } from './document/document.state';
 import { Cloud } from './cloud/cloud';
 import { AnchoringService } from './anchoring.service';
 import { DocumentUpdateService } from './document-update.service';
@@ -13,6 +12,8 @@ import { filter, mergeMap } from 'rxjs/operators';
 import { IDocumentService } from './document/document.service.interface';
 import { merge, Observable } from 'rxjs';
 import { IContext } from './context';
+import { Snapshot } from './document/document.interface';
+import { IDoctype } from './document/doctype';
 
 export class UnhandledAnchoringStatus extends Error {
   constructor(status: never) {
@@ -45,16 +46,20 @@ export class DocumentService implements IDocumentService {
     return this.#context;
   }
 
-  handleUpdate(docId: CeramicDocumentId, state: DocumentState): void {
+  handleUpdate<A>(docId: CeramicDocumentId, state: Snapshot<A>): void {
     if (!docId.cid.equals(state.log.last)) {
       this.#cloud.bus.publishHead(docId, state.log.last);
     }
   }
 
-  async update(record: any, state$: FrozenSubject<DocumentState>): Promise<void> {
+  async update<State, Shape>(
+    record: any,
+    handler: IDoctype<State, Shape>,
+    state$: FrozenSubject<Snapshot<State>>,
+  ): Promise<void> {
     const cid = await this.#cloud.store(normalizeRecord(record));
     const recordWrap = new RecordWrap(record, cid);
-    const next = await this.#updateService.applyUpdate(recordWrap, state$.value);
+    const next = await this.#updateService.applyUpdate(recordWrap, handler, state$.value);
     const documentId = new CeramicDocumentId(state$.value.log.first);
     this.#anchoring.requestAnchor(documentId, cid);
     state$.next(next);
@@ -65,24 +70,36 @@ export class DocumentService implements IDocumentService {
     this.#anchoring.requestAnchor(docId, cid);
   }
 
-  externalUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>) {
+  externalUpdates$<State, Shape>(
+    docId: CeramicDocumentId,
+    handler: IDoctype<State, Shape>,
+    state$: FrozenSubjectRead<Snapshot<State>>,
+  ): Observable<Snapshot<State>> {
     this.#cloud.bus.request(docId.toString());
-    return merge(this.cloudUpdates$(docId, state$), this.anchorUpdates$(docId, state$));
+    return merge(this.cloudUpdates$(docId, handler, state$), this.anchorUpdates$(docId, handler, state$));
   }
 
-  private cloudUpdates$(docId: CeramicDocumentId, state$: FrozenSubjectRead<DocumentState>): Observable<DocumentState> {
+  private cloudUpdates$<State, Shape>(
+    docId: CeramicDocumentId,
+    handler: IDoctype<State, Shape>,
+    state$: FrozenSubjectRead<Snapshot<State>>,
+  ): Observable<Snapshot<State>> {
     return this.#cloud.bus.message$.pipe(
       filter((message) => message.id === docId.toString()),
       mergeMap(async (message) => {
         if (message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE) {
-          return this.applyHead(message.cid, state$);
+          return this.applyHead(message.cid, handler, state$);
         }
       }),
     );
   }
 
-  private async applyHead(recordCid: CID, state$: FrozenSubjectRead<DocumentState>): Promise<DocumentState> {
-    const nextState = await this.#updateService.applyHead(recordCid, state$.value);
+  private async applyHead<State, Shape>(
+    recordCid: CID,
+    handler: IDoctype<State, Shape>,
+    state$: FrozenSubjectRead<Snapshot<State>>,
+  ): Promise<Snapshot<State>> {
+    const nextState = await this.#updateService.applyHead(recordCid, handler, state$.value);
     if (nextState) {
       return nextState;
     } else {
@@ -90,10 +107,12 @@ export class DocumentService implements IDocumentService {
     }
   }
 
-  private anchorUpdates$(
+  // TODO Fix anchoring, not quite working as should
+  private anchorUpdates$<State, Shape>(
     docId: CeramicDocumentId,
-    state$: FrozenSubjectRead<DocumentState>,
-  ): Observable<DocumentState> {
+    handler: IDoctype<State, Shape>,
+    state$: FrozenSubjectRead<Snapshot<State>>,
+  ): Observable<Snapshot<State>> {
     return this.#anchoring.anchorStatus$(docId).pipe(
       mergeMap(async (observation) => {
         this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation);
@@ -102,7 +121,7 @@ export class DocumentService implements IDocumentService {
             return state$.value;
           case AnchoringStatus.ANCHORED:
             const anchorRecordCID = observation.anchorRecord;
-            return await this.applyHead(anchorRecordCID, state$);
+            return await this.applyHead(anchorRecordCID, handler, state$);
           case AnchoringStatus.PENDING:
             return {
               ...state$.value,

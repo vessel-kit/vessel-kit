@@ -1,12 +1,11 @@
 import { Cloud } from './cloud/cloud';
 import { History } from './util/history';
 import CID from 'cids';
-import { DocumentState } from './document/document.state';
 import { ILogger } from './util/logger.interface';
 import { RecordWrap } from '@potter/codec';
 import { AnchoringService } from './anchoring.service';
-import { AnchoringStatus } from '@potter/anchoring';
-import { DoctypesContainer } from './doctypes-container';
+import { Snapshot } from './document/document.interface';
+import { IDoctype, Ordering } from './document/doctype';
 import { CeramicDocumentId } from '@potter/codec';
 
 export class UnidentifiedRecordKindError extends Error {
@@ -15,17 +14,21 @@ export class UnidentifiedRecordKindError extends Error {
   }
 }
 
+export class InvalidOrdering extends Error {
+  constructor(ordering: never) {
+    super(`Received invalid ordering ${ordering}`);
+  }
+}
+
 export class DocumentUpdateService {
   #cloud: Cloud;
   #logger: ILogger;
   #anchoring: AnchoringService;
-  #doctypes: DoctypesContainer;
 
-  constructor(logger: ILogger, doctypes: DoctypesContainer, anchoring: AnchoringService, cloud: Cloud) {
+  constructor(logger: ILogger, anchoring: AnchoringService, cloud: Cloud) {
     this.#logger = logger.withContext(DocumentUpdateService.name);
     this.#cloud = cloud;
     this.#anchoring = anchoring;
-    this.#doctypes = doctypes;
   }
 
   async tail(local: History, tip: CID, log: CID[] = []): Promise<History> {
@@ -43,20 +46,20 @@ export class DocumentUpdateService {
     }
   }
 
-  async applyHead(recordCid: CID, state: DocumentState): Promise<DocumentState | null> {
+  async applyHead<State, Shape>(recordCid: CID, handler: IDoctype<State, Shape>, state: Snapshot<State>): Promise<Snapshot<State>> {
     this.#logger.debug(`Applying head ${recordCid.toString()}`);
     const localLog = state.log;
     const remoteLog = await this.tail(localLog, recordCid);
     // Case 1: Log is fully applied
     if (remoteLog.isEmpty() || remoteLog.last.equals(localLog.last)) {
       this.#logger.debug(`Detected ${recordCid} is fully applied`);
-      return null;
+      return state;
     }
     // Case 2: Direct continuation
     const remoteStart = await this.#cloud.retrieve(remoteLog.first);
     if (remoteStart?.prev?.equals(localLog.last)) {
       this.#logger.debug(`Detected direct continuation for ${recordCid}`);
-      return await this.applyLog(remoteLog, state);
+      return await this.applyLog(remoteLog, handler, state);
     }
     // Case 3: Merge
     // const conflictIdx = localLog.log.findIndex(x => x.equals(record.prev)) + 1
@@ -64,31 +67,39 @@ export class DocumentUpdateService {
     const record = await this.#cloud.retrieve(remoteLog.first);
     const conflictIdx = localLog.findIndex((x) => x.equals(record.prev));
     const nonConflictingLog = localLog.slice(conflictIdx + 1);
-    const nonConflictingState = await this.applyLog(nonConflictingLog, state);
-    const localState = await this.applyLog(localLog, nonConflictingState);
-    const remoteState = await this.applyLog(remoteLog, nonConflictingState);
-    if (
-      remoteState.anchor.status === AnchoringStatus.ANCHORED &&
-      localState.anchor.status === AnchoringStatus.ANCHORED &&
-      remoteState.anchor.proof.timestamp < localState.anchor.proof.timestamp
-    ) {
-      // if the remote freight is anchored before the local,
-      // apply the remote log to our local state
-      return remoteState;
+    const nonConflictingState = await this.applyLog(nonConflictingLog, handler, state);
+    const localState = await this.applyLog(localLog, handler, nonConflictingState);
+    const remoteState = await this.applyLog(remoteLog, handler, nonConflictingState);
+    const ordering = await handler.order(localState.view, remoteState.view);
+    switch (ordering) {
+      case Ordering.LT:
+        return remoteState;
+      case Ordering.GT:
+        return localState;
+      default:
+        throw new InvalidOrdering(ordering);
     }
   }
 
-  async applyLog(log: History, state: DocumentState): Promise<DocumentState> {
+  async applyLog<State, Shape>(log: History, handler: IDoctype<State, Shape>, state: Snapshot<State>): Promise<Snapshot<State>> {
     return log.reduce(async (state, entry) => {
       const content = await this.#cloud.retrieve(entry);
       const record = new RecordWrap(content, entry);
-      const handler = this.#doctypes.get(state.doctype);
       switch (record.kind) {
         case RecordWrap.Kind.SIGNED:
-          return handler.applyUpdate(record, state);
+          const docId = new CeramicDocumentId(state.log.first);
+          return {
+            ...state,
+            view: await handler.applyUpdate(record, state.view, docId),
+            log: state.log.concat(entry),
+          };
         case RecordWrap.Kind.ANCHOR:
           const proof = await this.#anchoring.verify(content, entry);
-          return handler.applyAnchor(record, proof, state);
+          return {
+            ...state,
+            view: await handler.applyAnchor(record, proof, state.view),
+            log: state.log.concat(entry),
+          };
         case RecordWrap.Kind.GENESIS:
           throw new Error(`Not applicable genesis`);
         // const documentId = new CeramicDocumentId(entry);
@@ -99,10 +110,15 @@ export class DocumentUpdateService {
     }, state);
   }
 
-  async applyUpdate(updateRecord: RecordWrap, state: DocumentState) {
+  async applyUpdate<State, Shape>(updateRecord: RecordWrap, handler: IDoctype<State, Shape>, state: Snapshot<State>): Promise<Snapshot<State>> {
     if (state.log.last.equals(updateRecord.load.prev)) {
-      const doctype = this.#doctypes.get(state.doctype);
-      return doctype.applyUpdate(updateRecord, state);
+      const docId = new CeramicDocumentId(state.log.first);
+      const next = await handler.applyUpdate(updateRecord, state.view, docId);
+      return {
+        ...state,
+        log: state.log.concat(updateRecord.cid),
+        view: next,
+      };
     } else {
       throw new Error(`Update should reference last log entry ${state.log.last}, got ${updateRecord.load.prev}`);
     }

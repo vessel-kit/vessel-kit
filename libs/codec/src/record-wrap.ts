@@ -7,6 +7,7 @@ enum RecordKind {
   ANCHOR,
 }
 
+// TODO Remove kinds
 function detectRecordKind(record: any): RecordKind {
   if (record.prev) {
     if (record.proof) {

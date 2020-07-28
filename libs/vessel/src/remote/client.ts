@@ -14,10 +14,11 @@ import { IDoctype } from '../document/doctype';
 import { DoctypesContainer } from '../doctypes-container';
 import { Tile } from '../doctypes/tile/tile';
 import CID from 'cids';
+import { ThreeIdShape } from '../doctypes/three-id/three-id-shape';
 
 export class Client {
   #signor?: ISignor;
-  #tracked: Map<string, IDocument> = new Map();
+  #tracked: Map<string, IDocument<unknown>> = new Map();
   #service: RemoteDocumentService;
   #doctypes: DoctypesContainer;
 
@@ -45,60 +46,71 @@ export class Client {
     this.#service = new RemoteDocumentService(host, context);
   }
 
-  async addSignor(signor: ISignor): Promise<IDocument> {
+  async addSignor(signor: ISignor): Promise<IDocument<ThreeIdShape>> {
     this.#signor = signor;
     const did = await this.#signor.did();
     if (did) {
       const cid = ThreeIdentifierCidCodec.encode(did);
       const documentId = new CeramicDocumentId(cid);
-      return this.load(documentId);
+      throw new Error('client.addSignor, yes did')
+      // FIXME Loading work
+      // return this.load(documentId);
     } else {
-      const publicKeys = await this.#signor.publicKeys();
-      const threeId = await this.createAs(ThreeId, {
-        owners: [publicKeys.managementKey],
-        content: {
-          publicKeys: {
-            encryption: publicKeys.asymEncryptionKey,
-            signing: publicKeys.signingKey,
-          },
-        },
-      });
-      const did = decodeThrow(ThreeIdentifierCidCodec, threeId.document.id.cid);
-      await this.#signor.did(did);
-      return threeId.document;
+      throw new Error(`client.addSignor`);
+      // FIXME Typed work
+      // const publicKeys = await this.#signor.publicKeys();
+      // const threeId = await this.createAs(ThreeId, {
+      //   owners: [publicKeys.managementKey],
+      //   content: {
+      //     publicKeys: {
+      //       encryption: publicKeys.asymEncryptionKey,
+      //       signing: publicKeys.signingKey,
+      //     },
+      //   },
+      // });
+      // const did = decodeThrow(ThreeIdentifierCidCodec, threeId.document.id.cid);
+      // await this.#signor.did(did);
+      // return threeId.document;
     }
   }
 
   async create<A extends IWithDoctype>(payload: A) {
     const doctype = this.#doctypes.get(payload.doctype);
-    const state = await doctype.knead(payload);
-    const response = await axios.post(`${this.host}/api/v0/ceramic`, state.cone());
-    const documentState = decodeThrow(DocumentState, response.data);
-    const document = new Document(documentState, this.#service);
-    this.#tracked.set(document.id.valueOf(), document);
-    return document;
+    const knead = await doctype.knead(payload);
+    const canonical = await doctype.canonical(knead)
+    const response = await axios.post(`${this.host}/api/v0/ceramic`, canonical);
+    console.log('client.create.response', response.data);
+    throw new Error(`client.create.response`);
+    // FIXME Typed work
+    // const documentState = decodeThrow(DocumentState, response.data);
+    // const document = new Document(documentState, this.#service);
+    // this.#tracked.set(document.id.valueOf(), document);
+    // return document;
   }
 
-  async createAs<F extends IWithDoctype>(doctype: IDoctype<any, F>, payload: Omit<F, 'doctype'>) {
-    const effectiveDoctype = doctype.withContext(this.#service.context);
-    const record = await effectiveDoctype.genesisFromFreight(payload);
-    const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
-    const state = decodeThrow(DocumentState, response.data);
-    const document = new Document(state, this.#service);
-    this.#tracked.set(document.id.valueOf(), document);
-    return document.as(effectiveDoctype);
-  }
+  // FIXME Typed work
+  // async createAs<F extends IWithDoctype>(doctype: IDoctype<any, F>, payload: Omit<F, 'doctype'>) {
+  //   const effectiveDoctype = doctype.withContext(this.#service.context);
+  //   const record = await effectiveDoctype.genesisFromFreight(payload);
+  //   const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
+  //   const state = decodeThrow(DocumentState, response.data);
+  //   const document = new Document(state, this.#service);
+  //   this.#tracked.set(document.id.valueOf(), document);
+  //   return document.as(effectiveDoctype);
+  // }
 
-  async load(docId: CeramicDocumentId): Promise<IDocument> {
+  async load(docId: CeramicDocumentId): Promise<IDocument<unknown>> {
     const present = this.#tracked.get(docId.valueOf());
     if (present) {
       return present;
     } else {
       const genesisResponse = await axios.get(`${this.host}/api/v0/ceramic/${docId.valueOf()}`);
-      const state = decodeThrow(DocumentState, genesisResponse.data);
-      const document = new Document(state, this.#service);
-      this.#tracked.set(document.id.valueOf(), document);
-      return document;
+      console.log('client.load.response', genesisResponse.data);
+      throw new Error('client.load.response');
+      // const state = decodeThrow(DocumentState, genesisResponse.data);
+      // const document = new Document(state, this.#service);
+      // this.#tracked.set(document.id.valueOf(), document);
+      // return document;
     }
   }
 

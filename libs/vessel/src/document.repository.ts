@@ -6,13 +6,15 @@ import { DocumentService } from './document.service';
 import { MessageTyp } from './cloud/message-typ';
 import { DoctypesContainer } from './doctypes-container';
 import { IDocument } from './document/document.interface';
+import { IWithDoctype } from './document/with-doctype.interface';
+import { History } from './util/history';
 
 export class DocumentRepository {
   #logger: ILogger;
   #doctypes: DoctypesContainer;
   #cloud: Cloud;
   #documentService: DocumentService;
-  #documentCache: Map<string, IDocument>;
+  #documentCache: Map<string, IDocument<unknown>>;
 
   constructor(logger: ILogger, doctypes: DoctypesContainer, cloud: Cloud, documentService: DocumentService) {
     this.#logger = logger.withContext(DocumentRepository.name);
@@ -32,13 +34,14 @@ export class DocumentRepository {
     });
   }
 
-  async create(genesisRecord: any): Promise<IDocument> {
+  async create(genesisRecord: any): Promise<IDocument<unknown>> {
     this.#logger.debug(`Creating document from genesis record`, genesisRecord);
     const doctype = this.#doctypes.get(genesisRecord.doctype);
     this.#logger.debug(`Found handler for doctype "${genesisRecord.doctype}"`);
     const knead = await doctype.knead(genesisRecord);
+    const canonical = await doctype.canonical(knead);
     this.#logger.debug(`Genesis record is valid for doctype "${doctype.name}"`);
-    const cid = await this.#cloud.store(knead.cone());
+    const cid = await this.#cloud.store(canonical);
     this.#logger.debug(`Stored record to IPFS as ${cid.toString()}`);
     const documentId = new CeramicDocumentId(cid);
     const document = await this.load(documentId);
@@ -46,7 +49,7 @@ export class DocumentRepository {
     return document;
   }
 
-  async load(documentId: CeramicDocumentId): Promise<IDocument> {
+  async load(documentId: CeramicDocumentId): Promise<IDocument<unknown>> {
     const found = this.#documentCache.get(documentId.toString());
     if (found) {
       return found;
@@ -54,27 +57,36 @@ export class DocumentRepository {
       this.#logger.log(`Loading document ${documentId}...`);
       const genesis = await this.#cloud.retrieve(documentId.cid);
       this.#logger.debug(`Loaded genesis record for ${documentId}`);
-      const doctype = this.#doctypes.get(genesis.doctype);
-      const state = await doctype.applyGenesis(documentId, genesis);
-      const document = new Document(state, this.#documentService);
-      this.#documentCache.set(documentId.toString(), document);
-      return document;
+      if (IWithDoctype.is(genesis)) {
+        const handler = this.#doctypes.get(genesis.doctype);
+        const knead = await handler.knead(genesis);
+        const init = {
+          doctype: genesis.doctype,
+          view: knead,
+          log: new History([documentId.cid]),
+        };
+        const document = new Document(init, handler, this.#documentService);
+        this.#documentCache.set(documentId.toString(), document);
+        return document;
+      } else {
+        throw new Error(`Expected genesis record, got garbage on ${documentId}`);
+      }
     }
   }
 
-  async list(): Promise<IDocument[]> {
+  async list(): Promise<IDocument<unknown>[]> {
     return Array.from(this.#documentCache.values());
   }
 
   async history(documentId: CeramicDocumentId): Promise<any[]> {
-    const result = []
-    let currentCID = documentId.cid
-    let currentElement = await this.#cloud.retrieve(currentCID)
+    const result = [];
+    let currentCID = documentId.cid;
+    let currentElement = await this.#cloud.retrieve(currentCID);
     while (currentElement.prev) {
-      currentCID = currentElement.prev.toString()
-      currentElement = await this.#cloud.retrieve(currentCID)
-      result.push({ ...currentElement, cid: currentCID})
+      currentCID = currentElement.prev.toString();
+      currentElement = await this.#cloud.retrieve(currentCID);
+      result.push({ ...currentElement, cid: currentCID });
     }
-    return result
+    return result;
   }
 }

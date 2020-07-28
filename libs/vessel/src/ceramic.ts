@@ -46,7 +46,7 @@ export class Ceramic {
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
     const blockchainEndpoints = options.blockchainEndpoints || [];
     const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
-    const documentUpdateService = new DocumentUpdateService(logger, doctypes, anchoringService, cloud);
+    const documentUpdateService = new DocumentUpdateService(logger, anchoringService, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
     this.#documentRepository = new DocumentRepository(logger, doctypes, cloud, documentService);
     logger.log(`Constructed Ceramic instance`, options);
@@ -66,11 +66,11 @@ export class Ceramic {
     return new Ceramic(ipfs, appliedOptions);
   }
 
-  async create(genesis: any): Promise<IDocument> {
+  async create(genesis: any): Promise<IDocument<unknown>> {
     return this.#documentRepository.create(genesis);
   }
 
-  async load(docId: CeramicDocumentId): Promise<IDocument> {
+  async load(docId: CeramicDocumentId): Promise<IDocument<unknown>> {
     return this.#documentRepository.load(docId);
   }
 
@@ -78,7 +78,7 @@ export class Ceramic {
     return this.#documentRepository.history(docId);
   }
 
-  async list(): Promise<IDocument[]> {
+  async list(): Promise<IDocument<unknown>[]> {
     return this.#documentRepository.list();
   }
 }

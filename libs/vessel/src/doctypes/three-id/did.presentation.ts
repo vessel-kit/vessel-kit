@@ -1,9 +1,13 @@
 import { JWKMulticodecCodec } from '../../signor/jwk.multicodec.codec';
 import * as jose from 'jose';
 import * as multicodec from 'multicodec';
-import { ThreeIdFreight } from './three-id';
 import { DIDDocument, PublicKey } from 'did-resolver';
 import { Authentication } from 'did-resolver/src/resolver';
+import { ThreeIdShape } from './three-id-shape';
+import { BufferMultibaseCodec, decodeThrow } from '@potter/codec';
+import * as t from 'io-ts';
+
+const jwkCodec = t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec);
 
 function publicKeyHex(key: jose.JWK.Key): string {
   const multicodecBuffer = JWKMulticodecCodec.encode(key);
@@ -21,15 +25,15 @@ export class DidPresentation implements DIDDocument {
   readonly publicKey: PublicKey[] = [];
   readonly authentication: Authentication[] = [];
 
-  constructor(id: string, private readonly document: ThreeIdFreight, useMgmt: boolean = false) {
+  constructor(id: string, document: ThreeIdShape, useMgmt: boolean = false) {
     this.id = id;
     if (useMgmt) {
-      this.document.owners.forEach((ownerKey, i) => {
+      document.owners.forEach((ownerKey, i) => {
         this.publicKey.push({
           id: `${this.id}#managementKey_${i}`,
           type: 'Secp256k1VerificationKey2018',
           owner: this.id,
-          publicKeyHex: publicKeyHex(ownerKey),
+          publicKeyHex: publicKeyHex(decodeThrow(jwkCodec, ownerKey)),
         });
         this.authentication.push({
           type: 'Secp256k1SignatureAuthentication2018',
@@ -41,13 +45,13 @@ export class DidPresentation implements DIDDocument {
         id: `${this.id}#signingKey`,
         type: 'Secp256k1VerificationKey2018',
         owner: this.id,
-        publicKeyHex: publicKeyHex(this.document.content.publicKeys.signing),
+        publicKeyHex: publicKeyHex(decodeThrow(jwkCodec, document.content.publicKeys.signing)),
       });
       this.publicKey.push({
         id: `${this.id}#encryptionKey`,
         type: 'Curve25519EncryptionPublicKey',
         owner: this.id,
-        publicKeyBase64: publicKeyBase64(this.document.content.publicKeys.encryption),
+        publicKeyBase64: publicKeyBase64(decodeThrow(jwkCodec, document.content.publicKeys.encryption)),
       });
       this.authentication.push({
         type: 'Secp256k1SignatureAuthentication2018',

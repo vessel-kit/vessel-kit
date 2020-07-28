@@ -1,28 +1,26 @@
 import { CeramicDocumentId } from '@potter/codec';
 import { Subscription } from 'rxjs';
-import { DocumentState } from './document.state';
 import { FrozenSubject } from '../util/frozen-subject';
 import { IDocumentService } from './document.service.interface';
-import { IWithDoctype } from './with-doctype.interface';
-import { IDocument } from './document.interface';
-import { TypedDocument } from './typed-document';
-import { ITypedDocument } from './typed-document.interface';
+import { IDocument, Snapshot } from './document.interface';
 import { IDoctype } from './doctype';
 import { History } from '../util/history';
 
-export class Document implements IDocument {
+export class Document<State, Shape> implements IDocument<State> {
   #id: CeramicDocumentId;
   #service: IDocumentService;
-  #state$: FrozenSubject<DocumentState>;
+  #state$: FrozenSubject<Snapshot<State>>;
   #external$S: Subscription;
   #internal$S: Subscription;
+  #handler: IDoctype<State, Shape>
 
-  constructor(state: DocumentState, service: IDocumentService) {
-    this.#id = new CeramicDocumentId(state.log.first);
-    this.#state$ = new FrozenSubject(state);
+  constructor(snapshot: Snapshot<State>, handler: IDoctype<State, Shape>, service: IDocumentService) {
+    this.#id = new CeramicDocumentId(snapshot.log.first);
+    this.#state$ = new FrozenSubject(snapshot);
     this.#service = service;
+    this.#handler = handler
 
-    this.#external$S = this.#service.externalUpdates$(this.#id, this.#state$).subscribe(this.state$);
+    this.#external$S = this.#service.externalUpdates$(this.#id, this.#handler, this.#state$).subscribe(this.state$);
     this.#internal$S = this.state$.subscribe((update) => {
       this.#service.handleUpdate(this.#id, update);
     });
@@ -44,29 +42,25 @@ export class Document implements IDocument {
     return this.#state$.value;
   }
 
-  get current(): any {
-    const state = this.#state$.value;
-    return state.current || state.freight;
+  // TODO Rename to view
+  get current(): State {
+    return this.#state$.value.view;
   }
 
-  get state$(): FrozenSubject<DocumentState> {
+  async canonical(): Promise<Shape> {
+    return this.#handler.canonical(this.state.view)
+  }
+
+  get state$(): FrozenSubject<Snapshot<State>> {
     return this.#state$;
   }
 
   update(record: any): Promise<void> {
-    return this.#service.update(record, this.state$);
+    return this.#service.update(record, this.#handler, this.state$);
   }
 
   requestAnchor(): void {
     this.#service.requestAnchor(this.#id, this.log.last);
-  }
-
-  as<F extends IWithDoctype>(doctype: IDoctype<any, F>): ITypedDocument<F> {
-    if (doctype.name === this.doctype) {
-      return new TypedDocument(this, doctype.withContext(this.#service.context));
-    } else {
-      throw new Error(`Can not cast ${this.doctype} as ${doctype.name}`);
-    }
   }
 
   close(): void {

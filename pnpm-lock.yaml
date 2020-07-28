@@ -9137,6 +9137,7 @@ packages:
     resolution:
       integrity: sha512-0boeaQbqRUV+7edgdkDDNl8/m0bzFbBEfM3tC0Prro2ZE7N9dtcIDh/cW812P/22Gjhlj1J7KIn0mPzbO4HjPQ==
   /interface-datastore/1.0.4:
+    bundledDependencies: []
     dependencies:
       buffer: 5.6.0
       class-is: 1.1.0
@@ -11195,6 +11196,7 @@ packages:
     resolution:
       integrity: sha512-KXPvOm8K9IJKFM0bmdn8QXh7udDh1g/giieX0NLCaMnb4hEiVFqnop2ImTXCc5e0/oHz3LTqmHGtExn5hfMkOA==
   /jsondiffpatch/0.4.1:
+    bundledDependencies: []
     dependencies:
       chalk: 2.4.2
       diff-match-patch: 1.0.5

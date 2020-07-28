@@ -1,12 +1,14 @@
 import * as t from 'io-ts';
-import { DoctypeHandler } from '../document/doctype';
-import { SimpleCodec } from '@potter/codec';
+import { DoctypeHandler, Ordering } from '../document/doctype';
+import { SimpleCodec, RecordWrap } from '@potter/codec';
 import './ses';
 import { IContext } from '../context';
 
 import * as fs from 'fs';
 import terser from 'terser';
 import * as ts from 'typescript';
+import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
+import produce from 'immer';
 
 const DOCTYPE = 'vessel/ruleset/1.0.0';
 
@@ -45,7 +47,10 @@ class Freight implements t.TypeOf<typeof json> {
   }
 }
 
-class VesselRulesetAlphaHandler extends DoctypeHandler<Freight> {
+type State = any;
+type Shape = any;
+
+class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
   readonly name = DOCTYPE;
   readonly json = {
     // assertValid: jsonCodec.assertValid,
@@ -75,6 +80,45 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<Freight> {
 
   cone(state: any): Promise<any> {
     throw new Error(`Not implemented TODO`);
+  }
+
+  async order(a: any, b: any): Promise<Ordering> {
+    if (
+      a.anchor.status === AnchoringStatus.ANCHORED &&
+      b.anchor.status === AnchoringStatus.ANCHORED &&
+      a.anchor.proof.timestamp < b.anchor.proof.timestamp
+    ) {
+      return Ordering.LT;
+    } else {
+      return Ordering.GT;
+    }
+  }
+
+  async applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: any): Promise<any> {
+    return produce(state, async (next) => {
+      if (next.current) {
+        next.freight = next.current;
+        next.current = null;
+      }
+      next.anchor = {
+        status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
+        proof: {
+          chainId: proof.chainId.toString(),
+          blockNumber: proof.blockNumber,
+          timestamp: new Date(proof.blockTimestamp * 1000).toISOString(),
+          txHash: proof.txHash.toString(),
+          root: proof.root.toString(),
+        },
+      };
+    });
+  }
+
+  applyUpdate(updateRecord, state: any, docId): Promise<any> {
+    throw new Error(`Not implemented`);
+  }
+
+  async canonical(state: any): Promise<any> {
+    return state.current | state.freight;
   }
 }
 
