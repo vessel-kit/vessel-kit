@@ -1,5 +1,4 @@
 import { DoctypeHandler } from '../../document/doctype';
-import { AnchorState } from '../../document/document.state';
 import jsonPatch from 'fast-json-patch';
 import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.error';
 import { DidPresentation } from './did.presentation';
@@ -11,12 +10,7 @@ import { AnchoringStatus } from '@potter/anchoring';
 import produce from 'immer';
 import { RecordWrap } from '@potter/codec';
 import { Ordering } from '../../document/ordering';
-
-type State = {
-  current: ThreeIdShape | null;
-  freight: ThreeIdShape;
-  anchor: AnchorState;
-};
+import { State } from './state';
 
 const validate = new Ajv().compile(ThreeIdShapeSchema);
 function isShape(genesis: any): genesis is ThreeIdShape {
