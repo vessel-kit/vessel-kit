@@ -4,6 +4,9 @@ import { ILoad, ThreeIdResolver } from './resolver/three-id-resolver';
 import { Resolver } from 'did-resolver';
 import { assertSignature } from './assert-signature';
 import CID from 'cids';
+import { RecordWrap } from '@potter/codec';
+import { AnchorProof } from '@potter/anchoring';
+import { AnchoringService } from './anchoring.service';
 
 export interface IRetrieve {
   (cid: CID, path?: string): Promise<any>;
@@ -13,6 +16,7 @@ export interface IContext {
   sign(payload: any, opts?: { useMgmt: boolean }): Promise<void>;
   did(): Promise<ThreeIdentifier | undefined>;
   assertSignature(payload: any): Promise<void>;
+  verifyAnchor(anchorRecord: RecordWrap): Promise<AnchorProof>;
   retrieve: IRetrieve;
 }
 
@@ -21,13 +25,15 @@ export class Context implements IContext {
   readonly #load: ILoad;
   readonly #resolver: Resolver;
   readonly #retrieve: IRetrieve;
+  readonly #anchoring?: AnchoringService
 
-  constructor(signorP: () => ISignor, load: ILoad, retrieve: IRetrieve) {
+  constructor(signorP: () => ISignor, load: ILoad, retrieve: IRetrieve, anchoring?: AnchoringService) {
     this.#signorP = signorP;
     this.#load = load;
     const threeIdResolver = new ThreeIdResolver(this.#load);
     this.#resolver = new Resolver(threeIdResolver.registry);
     this.#retrieve = retrieve;
+    this.#anchoring = anchoring
   }
 
   async retrieve(cid: CID, path?: string): Promise<any> {
@@ -58,6 +64,15 @@ export class Context implements IContext {
   async assertSignature(record: any): Promise<void> {
     return assertSignature(record, this.#resolver);
   }
+
+  async verifyAnchor(anchorRecord: RecordWrap): Promise<AnchorProof> {
+    // TODO Make way to verify anchor on client side
+    if (this.#anchoring) {
+      return this.#anchoring.verify(anchorRecord.load, anchorRecord.cid)
+    } else {
+      throw new Error(`Context.verifyAnchor: not implemented`)
+    }
+  }
 }
 
 export class EmptyContextError extends Error {
@@ -79,4 +94,7 @@ export const EMPTY_CONTEXT: IContext = {
   assertSignature: () => {
     throw new EmptyContextError('assertSignature');
   },
+  verifyAnchor: () => {
+    throw new EmptyContextError(`verifyAnchor`)
+  }
 };

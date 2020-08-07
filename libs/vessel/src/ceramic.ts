@@ -31,6 +31,9 @@ export class Ceramic {
   constructor(ipfs: Ipfs, options: CeramicOptions) {
     const logger = options.logger;
     const cloud = new Cloud(logger, ipfs);
+    const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
+    const blockchainEndpoints = options.blockchainEndpoints || [];
+    const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
     const context = new Context(
       () => {
         if (this.#signor) {
@@ -41,11 +44,9 @@ export class Ceramic {
       },
       this.load.bind(this),
       cloud.retrieve.bind(cloud),
+      anchoringService
     );
     const doctypes = new DoctypesContainer([ThreeId, Tile, VesselRulesetAlpha, VesselDocumentAlpha], context);
-    const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
-    const blockchainEndpoints = options.blockchainEndpoints || [];
-    const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
     const documentUpdateService = new DocumentUpdateService(logger, anchoringService, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
     this.#documentRepository = new DocumentRepository(logger, doctypes, cloud, documentService);

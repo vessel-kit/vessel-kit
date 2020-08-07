@@ -120,6 +120,10 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
   async canonical(state: any): Promise<any> {
     return state.current | state.freight;
   }
+
+  async apply(recordWrap, state: State, docId): Promise<State> {
+    throw new Error(`VesselRulesetAlpha.apply: not implemented`)
+  }
 }
 
 export const VesselRulesetAlpha = new VesselRulesetAlphaHandler();

@@ -115,6 +115,10 @@ export class TileHandler extends DoctypeHandler<State, TileShapeBase> {
   async canonical(state: State): Promise<TileShapeBase> {
     return state.current || state.freight;
   }
+
+  async apply(recordWrap, state: State, docId): Promise<State> {
+    throw new Error(`Tile.apply: not implemented`)
+  }
 }
 
 export const Tile = new TileHandler();

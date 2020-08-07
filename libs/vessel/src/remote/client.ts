@@ -40,7 +40,7 @@ export class Client {
         }
       },
       this.load.bind(this),
-      retrieve,
+      retrieve
     );
     this.#doctypes = new DoctypesContainer([Tile, ThreeId], context);
     this.#service = new RemoteDocumentService(host, context);

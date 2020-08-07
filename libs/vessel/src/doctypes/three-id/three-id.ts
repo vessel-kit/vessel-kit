@@ -1,12 +1,7 @@
-import * as jose from 'jose';
-import * as t from 'io-ts';
-import { JWKMulticodecCodec } from '../../signor/jwk.multicodec.codec';
-import { BufferMultibaseCodec, SimpleCodec } from '@potter/codec';
 import { DoctypeHandler, Ordering } from '../../document/doctype';
 import { AnchorState } from '../../document/document.state';
 import jsonPatch from 'fast-json-patch';
 import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.error';
-import { UpdateRecordWaiting } from '../../util/update-record.codec';
 import { DidPresentation } from './did.presentation';
 import { assertSignature } from '../../assert-signature';
 import Ajv from 'ajv';
@@ -18,30 +13,6 @@ import { RecordWrap, CeramicDocumentId } from '@potter/codec';
 import { AnchorProof } from '@potter/anchoring';
 
 const DOCTYPE = '3id';
-
-// export interface ThreeIdFreight {
-//   doctype: typeof DOCTYPE;
-//   owners: jose.JWK.Key[];
-//   content: {
-//     publicKeys: {
-//       signing: jose.JWK.Key;
-//       encryption: jose.JWK.Key;
-//     };
-//   };
-// }
-
-// const json = new SimpleCodec<ThreeIdFreight>(
-//   t.type({
-//     doctype: t.literal(DOCTYPE),
-//     owners: t.array(t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec)),
-//     content: t.type({
-//       publicKeys: t.type({
-//         encryption: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
-//         signing: t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec),
-//       }),
-//     }),
-//   }),
-// );
 
 type State = {
   current: ThreeIdShape | null;
@@ -85,18 +56,6 @@ class ThreeIdHandler extends DoctypeHandler<State, ThreeIdShape> {
     }
   }
 
-  // async update(document, next) {
-  //   const nextJSON = json.encode(next);
-  //   const currentJSON = document.current;
-  //   const patch = jsonPatch.compare(nextJSON, currentJSON);
-  //   const payloadToSign = UpdateRecordWaiting.encode({
-  //     patch: patch,
-  //     prev: document.log.last,
-  //     id: document.id,
-  //   });
-  //   return this.context.sign(payloadToSign, { useMgmt: true });
-  // }
-
   async applyUpdate(updateRecord: RecordWrap, state: State, docId: CeramicDocumentId): Promise<State> {
     if (!(updateRecord.load.id && updateRecord.load.id.equals(docId.cid))) {
       throw new InvalidDocumentUpdateLinkError(`Expected ${docId.cid} id while got ${updateRecord.load.id}`);
@@ -135,6 +94,48 @@ class ThreeIdHandler extends DoctypeHandler<State, ThreeIdShape> {
 
   async canonical(state: State): Promise<ThreeIdShape> {
     return state.current || state.freight;
+  }
+
+  async apply(recordWrap: RecordWrap, state: State, docId): Promise<State> {
+    const record = recordWrap.load
+    if (record.prev) {
+      if (record.proof) {
+        const proof = await this.context.verifyAnchor(recordWrap)
+        return produce(state, async (next) => {
+          if (next.current) {
+            next.freight = next.current;
+            next.current = null;
+          }
+          next.anchor = {
+            status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
+            proof: {
+              chainId: proof.chainId.toString(),
+              blockNumber: proof.blockNumber,
+              timestamp: new Date(proof.blockTimestamp * 1000).toISOString(),
+              txHash: proof.txHash.toString(),
+              root: proof.root.toString(),
+            },
+          };
+        });
+      } else {
+        if (!(recordWrap.load.id && recordWrap.load.id.equals(docId.cid))) {
+          throw new InvalidDocumentUpdateLinkError(`Expected ${docId.cid} id while got ${recordWrap.load.id}`);
+        }
+        const didPresentation = new DidPresentation(`did:3:${docId.cid.toString()}`, state.freight, true);
+        const resolver = {
+          resolve: async () => didPresentation,
+        };
+        await assertSignature(recordWrap.load, resolver);
+        const next = jsonPatch.applyPatch(state.current || state.freight, recordWrap.load.patch, false, false)
+          .newDocument;
+        return {
+          ...state,
+          current: next,
+        };
+      }
+    } else {
+      throw new Error(`Can not apply genesis`)
+    }
   }
 }
 

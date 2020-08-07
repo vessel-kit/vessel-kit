@@ -8,12 +8,6 @@ import { Snapshot } from './document/document.interface';
 import { IDoctype, Ordering } from './document/doctype';
 import { CeramicDocumentId } from '@potter/codec';
 
-export class UnidentifiedRecordKindError extends Error {
-  constructor(kind: never) {
-    super(`Unhandled kind of record: ${kind}`);
-  }
-}
-
 export class InvalidOrdering extends Error {
   constructor(ordering: never) {
     super(`Received invalid ordering ${ordering}`);
@@ -85,27 +79,12 @@ export class DocumentUpdateService {
     return log.reduce(async (state, entry) => {
       const content = await this.#cloud.retrieve(entry);
       const record = new RecordWrap(content, entry);
-      switch (record.kind) {
-        case RecordWrap.Kind.SIGNED:
-          const docId = new CeramicDocumentId(state.log.first);
-          return {
-            ...state,
-            view: await handler.applyUpdate(record, state.view, docId),
-            log: state.log.concat(entry),
-          };
-        case RecordWrap.Kind.ANCHOR:
-          const proof = await this.#anchoring.verify(content, entry);
-          return {
-            ...state,
-            view: await handler.applyAnchor(record, proof, state.view),
-            log: state.log.concat(entry),
-          };
-        case RecordWrap.Kind.GENESIS:
-          throw new Error(`Not applicable genesis`);
-        // const documentId = new CeramicDocumentId(entry);
-        // return handler.applyGenesis(documentId, content);
-        default:
-          throw new UnidentifiedRecordKindError(record.kind);
+      const docId = new CeramicDocumentId(state.log.first);
+      const next = await handler.apply(record, state.view, docId)
+      return {
+        ...state,
+        view: next,
+        log: state.log.concat(entry)
       }
     }, state);
   }
@@ -113,7 +92,7 @@ export class DocumentUpdateService {
   async applyUpdate<State, Shape>(updateRecord: RecordWrap, handler: IDoctype<State, Shape>, state: Snapshot<State>): Promise<Snapshot<State>> {
     if (state.log.last.equals(updateRecord.load.prev)) {
       const docId = new CeramicDocumentId(state.log.first);
-      const next = await handler.applyUpdate(updateRecord, state.view, docId);
+      const next = await handler.apply(updateRecord, state.view, docId);
       return {
         ...state,
         log: state.log.concat(updateRecord.cid),
