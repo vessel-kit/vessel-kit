@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { DoctypeHandler, Ordering } from '../document/doctype';
+import { DoctypeHandler } from '../document/doctype';
 import { SimpleCodec, RecordWrap } from '@potter/codec';
 import './ses';
 import { IContext } from '../context';
@@ -9,6 +9,7 @@ import terser from 'terser';
 import * as ts from 'typescript';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 import produce from 'immer';
+import { Ordering } from '../document/ordering';
 
 const DOCTYPE = 'vessel/ruleset/1.0.0';
 

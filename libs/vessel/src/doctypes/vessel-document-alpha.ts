@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { DoctypeHandler, Ordering } from '../document/doctype';
+import { DoctypeHandler } from '../document/doctype';
 import { CidStringCodec } from '@potter/codec';
 import { VesselRulesetAlpha } from './vessel-ruleset-alpha';
 import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
@@ -9,6 +9,7 @@ import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 import CID from 'cids';
 import produce from 'immer';
 import { CeramicDocumentId, decodeThrow } from '@potter/codec';
+import { Ordering } from '../document/ordering';
 
 const DOCTYPE = 'vessel/document/1.0.0';
 

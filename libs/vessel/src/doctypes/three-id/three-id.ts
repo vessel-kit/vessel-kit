@@ -1,4 +1,4 @@
-import { DoctypeHandler, Ordering } from '../../document/doctype';
+import { DoctypeHandler } from '../../document/doctype';
 import { AnchorState } from '../../document/document.state';
 import jsonPatch from 'fast-json-patch';
 import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.error';
@@ -9,10 +9,8 @@ import * as ThreeIdShapeSchema from './three-id-shape.schema.json';
 import { ThreeIdShape } from './three-id-shape';
 import { AnchoringStatus } from '@potter/anchoring';
 import produce from 'immer';
-import { RecordWrap, CeramicDocumentId } from '@potter/codec';
-import { AnchorProof } from '@potter/anchoring';
-
-const DOCTYPE = '3id';
+import { RecordWrap } from '@potter/codec';
+import { Ordering } from '../../document/ordering';
 
 type State = {
   current: ThreeIdShape | null;
@@ -26,9 +24,7 @@ function isShape(genesis: any): genesis is ThreeIdShape {
 }
 
 class ThreeIdHandler extends DoctypeHandler<State, ThreeIdShape> {
-  name = DOCTYPE;
-
-  validate = new Ajv().compile(ThreeIdShapeSchema);
+  name = '3id';
 
   async knead(genesis: unknown): Promise<State> {
     if (isShape(genesis)) {
@@ -54,42 +50,6 @@ class ThreeIdHandler extends DoctypeHandler<State, ThreeIdShape> {
     } else {
       return Ordering.GT;
     }
-  }
-
-  async applyUpdate(updateRecord: RecordWrap, state: State, docId: CeramicDocumentId): Promise<State> {
-    if (!(updateRecord.load.id && updateRecord.load.id.equals(docId.cid))) {
-      throw new InvalidDocumentUpdateLinkError(`Expected ${docId.cid} id while got ${updateRecord.load.id}`);
-    }
-    const didPresentation = new DidPresentation(`did:3:${docId.cid.toString()}`, state.freight, true);
-    const resolver = {
-      resolve: async () => didPresentation,
-    };
-    await assertSignature(updateRecord.load, resolver);
-    const next = jsonPatch.applyPatch(state.current || state.freight, updateRecord.load.patch, false, false)
-      .newDocument;
-    return {
-      ...state,
-      current: next,
-    };
-  }
-
-  async applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: State): Promise<State> {
-    return produce(state, async (next) => {
-      if (next.current) {
-        next.freight = next.current;
-        next.current = null;
-      }
-      next.anchor = {
-        status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
-        proof: {
-          chainId: proof.chainId.toString(),
-          blockNumber: proof.blockNumber,
-          timestamp: new Date(proof.blockTimestamp * 1000).toISOString(),
-          txHash: proof.txHash.toString(),
-          root: proof.root.toString(),
-        },
-      };
-    });
   }
 
   async canonical(state: State): Promise<ThreeIdShape> {

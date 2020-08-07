@@ -1,5 +1,6 @@
 import { EMPTY_CONTEXT, IContext } from '../context';
 import { CeramicDocumentId, RecordWrap } from '@potter/codec';
+import { Ordering } from './ordering';
 
 abstract class GenericHandler {
   abstract readonly name: string;
@@ -25,9 +26,4 @@ export abstract class DoctypeHandler<State, Shape> extends GenericHandler implem
   abstract canonical(state: State): Promise<Shape>;
   abstract order(a: State, b: State): Promise<Ordering>;
   abstract apply(recordWrap: RecordWrap, state: State, docId: CeramicDocumentId): Promise<State>;
-}
-
-export enum Ordering {
-  LT = -1,
-  GT = 1,
 }

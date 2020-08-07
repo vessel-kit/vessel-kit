@@ -5,8 +5,9 @@ import { ILogger } from './util/logger.interface';
 import { RecordWrap } from '@potter/codec';
 import { AnchoringService } from './anchoring.service';
 import { Snapshot } from './document/document.interface';
-import { IDoctype, Ordering } from './document/doctype';
+import { IDoctype } from './document/doctype';
 import { CeramicDocumentId } from '@potter/codec';
+import { Ordering } from './document/ordering';
 
 export class InvalidOrdering extends Error {
   constructor(ordering: never) {

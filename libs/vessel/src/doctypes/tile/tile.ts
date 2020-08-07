@@ -1,7 +1,7 @@
 import { SimpleCodec } from '@potter/codec';
 import * as t from 'io-ts';
 import { ThreeIdentifier } from '../../three-identifier';
-import { DoctypeHandler, Ordering } from '../../document/doctype';
+import { DoctypeHandler } from '../../document/doctype';
 import { TileShapeBase, TileShape } from './tile-shape';
 import { AnchorState } from '../../document/document.state';
 import Ajv from 'ajv';
@@ -13,6 +13,7 @@ import { RecordWrap } from '@potter/codec';
 import { AnchorProof } from '@potter/anchoring';
 import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.error';
 import jsonPatch from 'fast-json-patch';
+import { Ordering } from '../../document/ordering';
 
 interface TileFreight {
   doctype: 'tile';
