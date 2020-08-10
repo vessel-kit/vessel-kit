@@ -5,7 +5,6 @@ import { sleep } from './sleep.util';
 import axios from 'axios';
 import { ThreeIdentifier } from '../three-identifier';
 import { decodeThrow } from '@potter/codec';
-import { DocumentState } from '../document/document.state';
 import { SnapshotCodec } from '../document/document.interface';
 import * as t from 'io-ts'
 
