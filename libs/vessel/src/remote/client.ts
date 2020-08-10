@@ -12,7 +12,7 @@ import { IWithDoctype } from '../document/with-doctype.interface';
 import { IDocument, SnapshotCodec } from '../document/document.interface';
 import { IDoctype } from '../document/doctype';
 import { DoctypesContainer } from '../doctypes-container';
-import { Tile } from '../doctypes/tile/tile';
+import { TileDoctype } from '../doctypes/tile/tile-doctype';
 import CID from 'cids';
 import { ThreeIdShape } from '../doctypes/three-id/three-id-shape';
 import { ThreeIdState } from '../doctypes/three-id/three-id-state';
@@ -53,7 +53,7 @@ export class Client {
       this.load.bind(this),
       retrieve
     );
-    this.#doctypes = new DoctypesContainer([Tile, ThreeIdDoctype], context);
+    this.#doctypes = new DoctypesContainer([TileDoctype, ThreeIdDoctype], context);
     this.#service = new RemoteDocumentService(host, context);
   }
 

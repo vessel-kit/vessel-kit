@@ -120,4 +120,4 @@ export class TileHandler extends DoctypeHandler<State, TileShapeBase> {
   }
 }
 
-export const Tile = new TileHandler();
+export const TileDoctype = new TileHandler();

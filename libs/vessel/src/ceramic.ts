@@ -13,7 +13,7 @@ import { ISignor } from './signor/signor.interface';
 import { Context } from './context';
 import { DoctypesContainer } from './doctypes-container';
 import { ThreeIdDoctype } from './doctypes/three-id/three-id-doctype';
-import { Tile } from './doctypes/tile/tile';
+import { TileDoctype } from './doctypes/tile/tile-doctype';
 import { VesselRulesetAlpha } from './doctypes/vessel-ruleset-alpha';
 import { VesselDocumentAlpha } from './doctypes/vessel-document-alpha';
 import { IDocument } from './document/document.interface';
@@ -46,7 +46,7 @@ export class Ceramic {
       cloud.retrieve.bind(cloud),
       anchoringService
     );
-    const doctypes = new DoctypesContainer([ThreeIdDoctype, Tile, VesselRulesetAlpha, VesselDocumentAlpha], context);
+    const doctypes = new DoctypesContainer([ThreeIdDoctype, TileDoctype, VesselRulesetAlpha, VesselDocumentAlpha], context);
     const documentUpdateService = new DocumentUpdateService(logger, anchoringService, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
     this.#documentRepository = new DocumentRepository(logger, doctypes, cloud, documentService);
