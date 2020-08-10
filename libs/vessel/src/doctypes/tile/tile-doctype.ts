@@ -13,13 +13,7 @@ import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.
 import jsonPatch from 'fast-json-patch';
 import { Ordering } from '../../document/ordering';
 
-interface TileFreight {
-  doctype: 'tile';
-  owners: ThreeIdentifier[];
-  content: any;
-}
-
-type State = {
+export type TileState = {
   current: TileShapeBase | null;
   freight: TileShape;
   anchor: AnchorState;
@@ -42,7 +36,7 @@ const json = t.type({
   signature: t.string,
 });
 
-export class TileHandler extends DoctypeHandler<State, TileShapeBase> {
+export class TileHandler extends DoctypeHandler<TileState, TileShapeBase> {
   readonly name = 'tile';
 
   async genesisFromFreight(payload) {
@@ -51,7 +45,7 @@ export class TileHandler extends DoctypeHandler<State, TileShapeBase> {
     return this.context.sign(encoded);
   }
 
-  async knead(genesisRecord: unknown): Promise<State> {
+  async knead(genesisRecord: unknown): Promise<TileState> {
     if (isShape(genesisRecord)) {
       await this.context.assertSignature(genesisRecord);
       return {
@@ -66,7 +60,7 @@ export class TileHandler extends DoctypeHandler<State, TileShapeBase> {
     }
   }
 
-  async order(a: State, b: State): Promise<Ordering> {
+  async order(a: TileState, b: TileState): Promise<Ordering> {
     if (
       a.anchor.status === AnchoringStatus.ANCHORED &&
       b.anchor.status === AnchoringStatus.ANCHORED &&
@@ -78,7 +72,7 @@ export class TileHandler extends DoctypeHandler<State, TileShapeBase> {
     }
   }
 
-  async applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: State): Promise<State> {
+  async applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: TileState): Promise<TileState> {
     return produce(state, async (next) => {
       if (next.current) {
         next.freight = next.current;
@@ -97,7 +91,7 @@ export class TileHandler extends DoctypeHandler<State, TileShapeBase> {
     });
   }
 
-  async applyUpdate(updateRecord, state: State, docId): Promise<State> {
+  async applyUpdate(updateRecord, state: TileState, docId): Promise<TileState> {
     if (!(updateRecord.load.id && updateRecord.load.id.equals(docId.cid))) {
       throw new InvalidDocumentUpdateLinkError(`Expected ${docId.cid} id while got ${updateRecord.load.id}`);
     }
@@ -111,11 +105,11 @@ export class TileHandler extends DoctypeHandler<State, TileShapeBase> {
     return state;
   }
 
-  async canonical(state: State): Promise<TileShapeBase> {
+  async canonical(state: TileState): Promise<TileShapeBase> {
     return state.current || state.freight;
   }
 
-  async apply(recordWrap, state: State, docId): Promise<State> {
+  async apply(recordWrap, state: TileState, docId): Promise<TileState> {
     throw new Error(`Tile.apply: not implemented`)
   }
 }

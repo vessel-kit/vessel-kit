@@ -2,6 +2,7 @@ import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import { Client } from '../remote/client';
+import { Tile } from '../doctypes/tile/tile';
 // import { Tile } from '../doctypes/tile/tile';
 
 const REMOTE_URL = 'http://localhost:3001';
@@ -13,6 +14,10 @@ async function main() {
   });
   const user = await User.build(identityWallet.get3idProvider());
   await client.addSignor(user);
+  const tile = await Tile.create(client.create, {
+    owners: [await user.did()],
+    content: {}
+  })
 //   const tile = await client.createAs(Tile, {
 //     owners: [await user.did()],
 //     content: {},
@@ -28,7 +33,7 @@ async function main() {
 //     },
 //   });
 //   await sleep(61000);
-//   client.close();
+  client.close();
 }
 
 main()

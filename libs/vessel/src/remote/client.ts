@@ -10,7 +10,6 @@ import { Context } from '../context';
 import { Document } from '../document/document';
 import { IWithDoctype } from '../document/with-doctype.interface';
 import { IDocument, SnapshotCodec } from '../document/document.interface';
-import { IDoctype } from '../document/doctype';
 import { DoctypesContainer } from '../doctypes-container';
 import { TileDoctype } from '../doctypes/tile/tile-doctype';
 import CID from 'cids';
