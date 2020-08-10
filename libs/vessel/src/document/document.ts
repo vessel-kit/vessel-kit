@@ -6,7 +6,7 @@ import { IDocument, Snapshot } from './document.interface';
 import { IDoctype } from './doctype';
 import { History } from '../util/history';
 
-export class Document<State, Shape> implements IDocument<State> {
+export class Document<State, Shape> implements IDocument<State, Shape> {
   #id: CeramicDocumentId;
   #service: IDocumentService;
   #state$: FrozenSubject<Snapshot<State>>;
@@ -26,6 +26,10 @@ export class Document<State, Shape> implements IDocument<State> {
     });
   }
 
+  get context() {
+    return this.#service.context
+  }
+
   get doctype() {
     return this.#state$.value.doctype;
   }
@@ -42,8 +46,7 @@ export class Document<State, Shape> implements IDocument<State> {
     return this.#state$.value;
   }
 
-  // TODO Rename to view
-  get current(): State {
+  get view(): State {
     return this.#state$.value.view;
   }
 

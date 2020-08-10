@@ -108,6 +108,8 @@ export class DocumentService implements IDocumentService {
   }
 
   // TODO Fix anchoring, not quite working as should
+  // ...anchor does not contribute to State
+  // See Anchoring controlled by doctype
   private anchorUpdates$<State, Shape>(
     docId: CeramicDocumentId,
     handler: IDoctype<State, Shape>,
@@ -121,7 +123,7 @@ export class DocumentService implements IDocumentService {
             return state$.value;
           case AnchoringStatus.ANCHORED:
             const anchorRecordCID = observation.anchorRecord;
-            return await this.applyHead(anchorRecordCID, handler, state$);
+            return this.applyHead(anchorRecordCID, handler, state$);
           case AnchoringStatus.PENDING:
             return {
               ...state$.value,

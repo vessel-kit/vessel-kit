@@ -15,7 +15,7 @@ import { DocumentStatePresentation } from './document-state.presentation';
 import { CeramicDocumentId, CidStringCodec, DecodePipe } from '@potter/codec';
 import CID from 'cids';
 import { DateTime } from 'luxon';
-import { DocumentState } from '@potter/vessel';
+import { IDocument } from '@potter/vessel';
 
 @Controller('/api/v0/ceramic')
 export class DocumentController {
@@ -54,8 +54,8 @@ export class DocumentController {
       return {};
     } else {
       const cid = CeramicDocumentId.fromString(cidString);
-      const document = await this.ceramic.load(cid);
-      return document.state;
+      const document: IDocument<unknown, unknown> = await this.ceramic.load(cid);
+      return document.state
     }
   }
 

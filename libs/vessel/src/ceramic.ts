@@ -12,7 +12,7 @@ import { ConnectionString } from '@potter/blockchain-connection-string';
 import { ISignor } from './signor/signor.interface';
 import { Context } from './context';
 import { DoctypesContainer } from './doctypes-container';
-import { ThreeId } from './doctypes/three-id/three-id';
+import { ThreeIdDoctype } from './doctypes/three-id/three-id-doctype';
 import { Tile } from './doctypes/tile/tile';
 import { VesselRulesetAlpha } from './doctypes/vessel-ruleset-alpha';
 import { VesselDocumentAlpha } from './doctypes/vessel-document-alpha';
@@ -46,7 +46,7 @@ export class Ceramic {
       cloud.retrieve.bind(cloud),
       anchoringService
     );
-    const doctypes = new DoctypesContainer([ThreeId, Tile, VesselRulesetAlpha, VesselDocumentAlpha], context);
+    const doctypes = new DoctypesContainer([ThreeIdDoctype, Tile, VesselRulesetAlpha, VesselDocumentAlpha], context);
     const documentUpdateService = new DocumentUpdateService(logger, anchoringService, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
     this.#documentRepository = new DocumentRepository(logger, doctypes, cloud, documentService);
@@ -67,11 +67,11 @@ export class Ceramic {
     return new Ceramic(ipfs, appliedOptions);
   }
 
-  async create(genesis: any): Promise<IDocument<unknown>> {
+  async create(genesis: any): Promise<IDocument<unknown, unknown>> {
     return this.#documentRepository.create(genesis);
   }
 
-  async load(docId: CeramicDocumentId): Promise<IDocument<unknown>> {
+  async load(docId: CeramicDocumentId): Promise<IDocument<unknown, unknown>> {
     return this.#documentRepository.load(docId);
   }
 
@@ -79,7 +79,7 @@ export class Ceramic {
     return this.#documentRepository.history(docId);
   }
 
-  async list(): Promise<IDocument<unknown>[]> {
+  async list(): Promise<IDocument<unknown, unknown>[]> {
     return this.#documentRepository.list();
   }
 }

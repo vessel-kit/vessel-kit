@@ -78,7 +78,6 @@ async function main() {
   };
   await document.update(updateRecordA);
   await sleep(20000);
-  // localUser.signManagement(updateRecord);
 }
 
 main();

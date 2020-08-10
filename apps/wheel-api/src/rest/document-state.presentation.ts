@@ -1,7 +1,7 @@
 import { IDocument } from '@potter/vessel';
 
 export class DocumentStatePresentation {
-  constructor(private readonly document: IDocument<unknown>) {}
+  constructor(private readonly document: IDocument<unknown, unknown>) {}
 
   toJSON() {
     return {

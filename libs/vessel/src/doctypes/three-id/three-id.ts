@@ -1,96 +1,62 @@
-import { DoctypeHandler } from '../../document/doctype';
-import jsonPatch from 'fast-json-patch';
-import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.error';
-import { DidPresentation } from './did.presentation';
-import { assertSignature } from '../../assert-signature';
-import Ajv from 'ajv';
-import * as ThreeIdShapeSchema from './three-id-shape.schema.json';
+import { IDocument } from '../..';
+import { ThreeIdState } from './three-id-state';
 import { ThreeIdShape } from './three-id-shape';
-import { AnchoringStatus } from '@potter/anchoring';
-import produce from 'immer';
-import { RecordWrap } from '@potter/codec';
-import { Ordering } from '../../document/ordering';
-import { State } from './state';
+import * as t from 'io-ts';
+import { JWKMulticodecCodec } from '../../signor/jwk.multicodec.codec';
+import { BufferMultibaseCodec, decodeThrow } from '@potter/codec';
+import jose from 'jose';
+import * as _ from 'lodash';
+import jsonPatch from 'fast-json-patch';
+import { UpdateRecordWaiting } from '../../util/update-record.codec';
 
-const validate = new Ajv().compile(ThreeIdShapeSchema);
-function isShape(genesis: any): genesis is ThreeIdShape {
-  return Boolean(validate(genesis));
-}
+const jwkCodec = t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec);
 
-class ThreeIdHandler extends DoctypeHandler<State, ThreeIdShape> {
-  name = '3id';
+type PublicKeys = { encryption: jose.JWK.Key; signing: jose.JWK.Key }
 
-  async knead(genesis: unknown): Promise<State> {
-    if (isShape(genesis)) {
-      return {
-        current: null,
-        freight: genesis,
-        anchor: {
-          status: AnchoringStatus.NOT_REQUESTED,
-        },
-      };
-    } else {
-      throw new Error('Invalid');
-    }
+export class ThreeId {
+  readonly #document: IDocument<ThreeIdState, ThreeIdShape>;
+  #canonical: ThreeIdShape
+
+  constructor(document: IDocument<ThreeIdState, ThreeIdShape>, canonical: ThreeIdShape) {
+    this.#document = document;
+    this.#canonical = canonical;
+    this.#document.state$.subscribe(async () => {
+      this.#canonical = await this.#document.canonical()
+    })
   }
 
-  async order(a: State, b: State): Promise<Ordering> {
-    if (
-      a.anchor.status === AnchoringStatus.ANCHORED &&
-      b.anchor.status === AnchoringStatus.ANCHORED &&
-      a.anchor.proof.timestamp < b.anchor.proof.timestamp
-    ) {
-      return Ordering.LT;
-    } else {
-      return Ordering.GT;
-    }
+  static async fromDocument(document: IDocument<ThreeIdState, ThreeIdShape>) {
+    const canonical = await document.canonical()
+    return new ThreeId(document, canonical)
   }
 
-  async canonical(state: State): Promise<ThreeIdShape> {
-    return state.current || state.freight;
+  get canonical() {
+    return this.#canonical
   }
 
-  async apply(recordWrap: RecordWrap, state: State, docId): Promise<State> {
-    const record = recordWrap.load
-    if (record.prev) {
-      if (record.proof) {
-        const proof = await this.context.verifyAnchor(recordWrap)
-        return produce(state, async (next) => {
-          if (next.current) {
-            next.freight = next.current;
-            next.current = null;
-          }
-          next.anchor = {
-            status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
-            proof: {
-              chainId: proof.chainId.toString(),
-              blockNumber: proof.blockNumber,
-              timestamp: new Date(proof.blockTimestamp * 1000).toISOString(),
-              txHash: proof.txHash.toString(),
-              root: proof.root.toString(),
-            },
-          };
-        });
-      } else {
-        if (!(recordWrap.load.id && recordWrap.load.id.equals(docId.cid))) {
-          throw new InvalidDocumentUpdateLinkError(`Expected ${docId.cid} id while got ${recordWrap.load.id}`);
-        }
-        const didPresentation = new DidPresentation(`did:3:${docId.cid.toString()}`, state.freight, true);
-        const resolver = {
-          resolve: async () => didPresentation,
-        };
-        await assertSignature(recordWrap.load, resolver);
-        const next = jsonPatch.applyPatch(state.current || state.freight, recordWrap.load.patch, false, false)
-          .newDocument;
-        return {
-          ...state,
-          current: next,
-        };
+  get owners(): jose.JWK.Key[] {
+    return this.canonical.owners.map((publicKey) => decodeThrow(jwkCodec, publicKey));
+  }
+
+  get publicKeys(): PublicKeys {
+    return _.mapValues(this.canonical.content.publicKeys, (key) => decodeThrow(jwkCodec, key));
+  }
+
+  async updatePublicKeys(publicKeys: PublicKeys) {
+    const encoded = _.mapValues(publicKeys, key => jwkCodec.encode(key))
+    const next = {
+      ...this.canonical,
+      content: {
+        publicKeys: encoded
       }
-    } else {
-      throw new Error(`Can not apply genesis`)
     }
+    const patch = jsonPatch.compare(this.canonical, next)
+    const payloadToSign = UpdateRecordWaiting.encode({
+      patch: patch,
+      prev: this.#document.log.last,
+      id: this.#document.id,
+    })
+    const signed = await this.#document.context.sign(payloadToSign, {useMgmt: true})
+    return this.#document.update(signed)
   }
 }
-
-export const ThreeId = new ThreeIdHandler();

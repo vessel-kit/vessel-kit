@@ -22,7 +22,7 @@
 //   });
 //   await sleep(61000);
 //   await tile.update({
-//     ...tile.current,
+//     ...tile.view,
 //     content: {
 //       foo: 33,
 //     },

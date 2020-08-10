@@ -26,15 +26,15 @@
 //       num: 100,
 //     },
 //   });
-//   console.log('published', document.current)
+//   console.log('published', document.view)
 //   await sleep(61000);
 //   await document.update({
-//     ...document.current,
+//     ...document.view,
 //     content: {
 //       num: 20,
 //     },
 //   });
-//   console.log('updated', document.current)
+//   console.log('updated', document.view)
 //   client.close();
 // }
 //

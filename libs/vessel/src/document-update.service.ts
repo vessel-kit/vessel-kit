@@ -91,6 +91,7 @@ export class DocumentUpdateService {
   }
 
   async applyUpdate<State, Shape>(updateRecord: RecordWrap, handler: IDoctype<State, Shape>, state: Snapshot<State>): Promise<Snapshot<State>> {
+    console.log('apply-update', state.log, updateRecord.load)
     if (state.log.last.equals(updateRecord.load.prev)) {
       const docId = new CeramicDocumentId(state.log.first);
       const next = await handler.apply(updateRecord, state.view, docId);

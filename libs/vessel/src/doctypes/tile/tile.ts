@@ -1,4 +1,3 @@
-import { SimpleCodec } from '@potter/codec';
 import * as t from 'io-ts';
 import { ThreeIdentifier } from '../../three-identifier';
 import { DoctypeHandler } from '../../document/doctype';
@@ -7,7 +6,6 @@ import { AnchorState } from '../../document/document.state';
 import Ajv from 'ajv';
 import * as TileShapeSchema from './tile-shape.schema.json';
 import { AnchoringStatus } from '@potter/anchoring';
-import { Snapshot } from '../..';
 import produce from 'immer';
 import { RecordWrap } from '@potter/codec';
 import { AnchorProof } from '@potter/anchoring';

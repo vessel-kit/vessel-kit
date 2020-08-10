@@ -5,7 +5,6 @@ export * from './ceramic-document-id';
 export * from './decode-pipe';
 export * from './normalize-record';
 export * from './record-wrap';
-export * from './simple-codec'
 export * from './validate-throw'
 
 export * from './codecs/date.number.codec';

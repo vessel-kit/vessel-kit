@@ -94,7 +94,7 @@ export default function Document() {
       <DocumentHistoryTiles historyData={dataHistory}/>
       <Header3>Current content</Header3>
       <code>{JSON.stringify(contentSocket)}</code>
-      {/*<Header3>Last Record State</Header3>*/}
+      {/*<Header3>Last Record ThreeIdState</Header3>*/}
       {/*<RecordType recordType={status}></RecordType>*/}
     </Box>
   );

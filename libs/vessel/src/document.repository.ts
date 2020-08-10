@@ -14,7 +14,7 @@ export class DocumentRepository {
   #doctypes: DoctypesContainer;
   #cloud: Cloud;
   #documentService: DocumentService;
-  #documentCache: Map<string, IDocument<unknown>>;
+  #documentCache: Map<string, IDocument<unknown, unknown>>;
 
   constructor(logger: ILogger, doctypes: DoctypesContainer, cloud: Cloud, documentService: DocumentService) {
     this.#logger = logger.withContext(DocumentRepository.name);
@@ -34,7 +34,7 @@ export class DocumentRepository {
     });
   }
 
-  async create(genesisRecord: any): Promise<IDocument<unknown>> {
+  async create(genesisRecord: any): Promise<IDocument<unknown, unknown>> {
     this.#logger.debug(`Creating document from genesis record`, genesisRecord);
     const doctype = this.#doctypes.get(genesisRecord.doctype);
     this.#logger.debug(`Found handler for doctype "${genesisRecord.doctype}"`);
@@ -49,7 +49,7 @@ export class DocumentRepository {
     return document;
   }
 
-  async load(documentId: CeramicDocumentId): Promise<IDocument<unknown>> {
+  async load(documentId: CeramicDocumentId): Promise<IDocument<unknown, unknown>> {
     const found = this.#documentCache.get(documentId.toString());
     if (found) {
       return found;
@@ -74,7 +74,7 @@ export class DocumentRepository {
     }
   }
 
-  async list(): Promise<IDocument<unknown>[]> {
+  async list(): Promise<IDocument<unknown, unknown>[]> {
     return Array.from(this.#documentCache.values());
   }
 

@@ -1,10 +1,8 @@
 import { FrozenSubject } from '../util/frozen-subject';
-import { IWithDoctype } from './with-doctype.interface';
 import { CeramicDocumentId } from '@potter/codec';
-// import { ITypedDocument } from './typed-document.interface';
-import { IDoctype } from './doctype';
 import { History, HistoryCodec } from '../util/history';
 import * as t from 'io-ts'
+import { IContext } from '../context';
 
 export interface Snapshot<A> {
   doctype: string;
@@ -20,16 +18,16 @@ export function SnapshotCodec<A>(codec: t.Type<A, unknown, any>) {
   })
 }
 
-export interface IDocument<State> {
+export interface IDocument<State, Shape> {
   id: CeramicDocumentId;
   log: History;
   state: Snapshot<State>;
   state$: FrozenSubject<Snapshot<State>>;
-  current: State;
+  view: State;
+  context: IContext
   update(record: any): Promise<void>;
   requestAnchor(): void;
-  // TODO Typed work
-  // as<F extends IWithDoctype>(doctype: IDoctype<any, F>): ITypedDocument<F>;
   close(): void;
   toJSON(): any;
+  canonical(): Promise<Shape>
 }

@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import { DoctypeHandler } from '../document/doctype';
-import { SimpleCodec, RecordWrap } from '@potter/codec';
+import { decodeThrow, RecordWrap } from '@potter/codec';
 import './ses';
 import { IContext } from '../context';
 
@@ -20,8 +20,6 @@ const json = t.type({
     main: t.string,
   }),
 });
-
-const jsonCodec = new SimpleCodec(json);
 
 class Freight implements t.TypeOf<typeof json> {
   doctype: typeof DOCTYPE = DOCTYPE;
@@ -55,9 +53,9 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
   readonly name = DOCTYPE;
   readonly json = {
     // assertValid: jsonCodec.assertValid,
-    encode: jsonCodec.encode,
+    encode: json.encode,
     decode: (i: unknown) => {
-      return new Freight(jsonCodec.decode(i), this.context);
+      return new Freight(decodeThrow(json, i), this.context);
     },
   };
 
