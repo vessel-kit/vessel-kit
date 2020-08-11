@@ -24,15 +24,20 @@ class Handler extends DoctypeHandler<Freight> {
   readonly json = new SimpleCodec(json);
 
   async makeGenesis(record: any): Promise<any> {
+    console.log('***** Document::makeGenesis')
     await this.canApply({}, record, this.json.decode(record).ruleset);
     return record;
   }
 
   async canApply(current: any, next: any, rulesetCID?: CID) {
+    console.log('***** Document::canApply')
+    console.log(this.context)
     const effectiveRulesetCid = rulesetCID || this.json.decode(current).ruleset;
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid);
-    const ruleset = VesselRulesetAlpha.json.decode(rulesetJSON);
-    const canApply = ruleset.canApply(current, next);
+    const ruleset = VesselRulesetAlpha.withContext(this.context).json.decode(rulesetJSON);
+    console.log('+++ current = ' + JSON.stringify(current))
+    console.log('+++ next = ' + JSON.stringify(next))
+    const canApply = await ruleset.canApply(current, next);
     if (!canApply) {
       console.error('Can not apply', current, next)
       throw new Error(`Can not apply`);

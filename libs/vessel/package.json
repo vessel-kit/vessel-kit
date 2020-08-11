@@ -32,6 +32,7 @@
     "ipfs": "^0.47.0",
     "ipfs-http-client": "^44.3.0",
     "jose": "^1.27.0",
+    "js-sha256": "^0.9.0",
     "lodash": "^4.17.15",
     "multibase": "^0.7.0",
     "multicodec": "^1.0.1",

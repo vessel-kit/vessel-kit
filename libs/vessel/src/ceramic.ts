@@ -42,7 +42,7 @@ export class Ceramic {
       this.load.bind(this),
       cloud.retrieve.bind(cloud),
     );
-    const doctypes = new DoctypesContainer([ThreeId, Tile, VesselRulesetAlpha, VesselDocumentAlpha], context);
+    const doctypes = new DoctypesContainer([ThreeId, Tile, VesselRulesetAlpha as any, VesselDocumentAlpha], context);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
     const blockchainEndpoints = options.blockchainEndpoints || [];
     const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);

@@ -41,6 +41,7 @@ export class Client {
       this.load.bind(this),
       retrieve,
     );
+    console.log('++ context in constructor ' + JSON.stringify(context))
     this.#doctypes = new DoctypesContainer([Tile, ThreeId], context);
     this.#service = new RemoteDocumentService(host, context);
   }
@@ -80,10 +81,15 @@ export class Client {
   }
 
   async createAs<F extends IWithDoctype>(doctype: IDoctype<F>, payload: Omit<F, 'doctype'>) {
+    // console.log('++ Context from client: ' + JSON.stringify(this.#service.context))
     const effectiveDoctype = doctype.withContext(this.#service.context);
     const record = await effectiveDoctype.genesisFromFreight(payload);
+    console.log('+++createAs==' + JSON.stringify(record))
+    console.log(`${this.host}/api/v0/ceramic`)
     const response = await axios.post(`${this.host}/api/v0/ceramic`, record);
+    console.log('++++-- response.data : ' + JSON.stringify(response.data))
     const state = decodeThrow(DocumentState, response.data);
+    console.log('++++--state : ' + JSON.stringify(state))
     const document = new Document(state, this.#service);
     this.#tracked.set(document.id.valueOf(), document);
     return document.as(effectiveDoctype);

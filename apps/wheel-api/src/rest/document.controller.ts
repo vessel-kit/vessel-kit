@@ -39,7 +39,9 @@ export class DocumentController {
     record.payload = body.content;
     record.createdAt = DateTime.local().toJSDate();
     record.updatedAt = DateTime.local().toJSDate();
+    console.log('BEFORE JUST SAVED CREATE')
     await this.documentStorage.save(record);
+    console.log('JUST SAVED CREATE')
     return DocumentState.encode(document.state);
   }
 

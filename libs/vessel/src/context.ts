@@ -2,7 +2,7 @@ import { ThreeIdentifier } from './three-identifier';
 import { ISignor } from './signor/signor.interface';
 import { ILoad, ThreeIdResolver } from './resolver/three-id-resolver';
 import { Resolver } from 'did-resolver';
-import { assertSignature } from './assert-signature';
+import { assertSignature, assertSignature2 } from './assert-signature';
 import CID from 'cids';
 
 export interface IRetrieve {
@@ -13,6 +13,7 @@ export interface IContext {
   sign(payload: any, opts?: { useMgmt: boolean }): Promise<void>;
   did(): Promise<ThreeIdentifier | undefined>;
   assertSignature(payload: any): Promise<void>;
+  assertSignature2(payload: any): Promise<void>;
   retrieve: IRetrieve
 }
 
@@ -58,6 +59,10 @@ export class Context implements IContext {
   async assertSignature(record: any): Promise<void> {
     return assertSignature(record, this.#resolver);
   }
+
+  async assertSignature2(record: any): Promise<void> {
+    return assertSignature2(record, this.#resolver);
+  }
 }
 
 export class EmptyContextError extends Error {
@@ -78,5 +83,8 @@ export const EMPTY_CONTEXT: IContext = {
   },
   assertSignature: () => {
     throw new EmptyContextError('assertSignature');
+  },
+  assertSignature2: () => {
+    throw new EmptyContextError('assertSignature2');
   },
 };

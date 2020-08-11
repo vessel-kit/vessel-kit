@@ -30,26 +30,29 @@ class Freight implements t.TypeOf<typeof json> {
 
   constructor(params: t.TypeOf<typeof json>, readonly context: IContext) {
     this.content = params.content;
+    console.log('++ Contxt from Ruleset:' + JSON.stringify(context))
   }
 
-  canApply(prev: any, next: any) {
+  async canApply(prev: any, next: any) {
     const compartment = new Compartment({
       exports: {},
       console: console,
+      context: this.context
     });
     console.log('comp', compartment.evaluate(this.content.main))
     console.log('exports', exports)
     const Ruleset = compartment.evaluate(this.content.main);
     console.log('Ruleset', Ruleset)
+    console.log('this.context === ' + JSON.stringify(this.context))
     const ruleset = new Ruleset(this.context);
-    return ruleset.canApply(prev, next);
+    return await ruleset.canApply(prev, next);
   }
 }
 
 class VesselRulesetAlphaHandler extends DoctypeHandler<Freight> {
   readonly name = DOCTYPE;
   readonly json = {
-    // assertValid: jsonCodec.assertValid,
+    assertValid: undefined,
     encode: jsonCodec.encode,
     decode: (i: unknown) => {
       return new Freight(jsonCodec.decode(i), this.context);

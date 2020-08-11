@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { IContext } from './context';
-import toSource from 'tosource';
+// import toSource from 'tosource';
 import * as fs from 'fs';
 import path from 'path';
 import terser from 'terser';
