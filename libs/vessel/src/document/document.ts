@@ -5,6 +5,9 @@ import { IDocumentService } from './document.service.interface';
 import { IDocument, Snapshot } from './document.interface';
 import { IDoctype } from './doctype';
 import { History } from '../util/history';
+import debug from 'debug';
+
+const log = debug('vessel:document');
 
 export class Document<State, Shape> implements IDocument<State, Shape> {
   #id: CeramicDocumentId;
@@ -12,22 +15,25 @@ export class Document<State, Shape> implements IDocument<State, Shape> {
   #state$: FrozenSubject<Snapshot<State>>;
   #external$S: Subscription;
   #internal$S: Subscription;
-  #handler: IDoctype<State, Shape>
+  #handler: IDoctype<State, Shape>;
 
   constructor(snapshot: Snapshot<State>, handler: IDoctype<State, Shape>, service: IDocumentService) {
     this.#id = new CeramicDocumentId(snapshot.log.first);
     this.#state$ = new FrozenSubject(snapshot);
     this.#service = service;
-    this.#handler = handler
+    this.#handler = handler;
 
-    this.#external$S = this.#service.externalUpdates$(this.#id, this.#handler, this.#state$).subscribe(this.state$);
+    this.#external$S = this.#service.externalUpdates$(this.#id, this.#handler, this.#state$).subscribe({
+      next: (snapshot) => this.state$.next(snapshot),
+      error: (error) => log(error),
+    });
     this.#internal$S = this.state$.subscribe((update) => {
       this.#service.handleUpdate(this.#id, update);
     });
   }
 
   get context() {
-    return this.#service.context
+    return this.#service.context;
   }
 
   get doctype() {
@@ -51,7 +57,7 @@ export class Document<State, Shape> implements IDocument<State, Shape> {
   }
 
   async canonical(): Promise<Shape> {
-    return this.#handler.canonical(this.state.view)
+    return this.#handler.canonical(this.state.view);
   }
 
   get state$(): FrozenSubject<Snapshot<State>> {

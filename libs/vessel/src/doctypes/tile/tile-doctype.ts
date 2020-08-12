@@ -12,6 +12,7 @@ import { AnchorProof } from '@potter/anchoring';
 import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.error';
 import jsonPatch from 'fast-json-patch';
 import { Ordering } from '../../document/ordering';
+import * as _ from 'lodash';
 
 export type TileState = {
   current: TileShapeBase | null;
@@ -56,7 +57,8 @@ export class TileHandler extends DoctypeHandler<TileState, TileShapeBase> {
         },
       };
     } else {
-      throw new Error(`Invalid`);
+      console.error(`Not proper Tile shape`, genesisRecord);
+      throw new Error(`Invalid shape: expected Tile`);
     }
   }
 
@@ -110,7 +112,37 @@ export class TileHandler extends DoctypeHandler<TileState, TileShapeBase> {
   }
 
   async apply(recordWrap, state: TileState, docId): Promise<TileState> {
-    throw new Error(`Tile.apply: not implemented`)
+    const record = recordWrap.load;
+    if (record.prev) {
+      if (record.proof) {
+        const proof = await this.context.verifyAnchor(recordWrap);
+        return produce(state, async (next) => {
+          if (next.current) {
+            next.freight = next.current;
+            next.current = null;
+          }
+          next.anchor = {
+            status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
+            proof: {
+              chainId: proof.chainId.toString(),
+              blockNumber: proof.blockNumber,
+              timestamp: new Date(proof.blockTimestamp * 1000).toISOString(),
+              txHash: proof.txHash.toString(),
+              root: proof.root.toString(),
+            },
+          };
+        });
+      } else {
+        await this.context.assertSignature(record);
+        const next = jsonPatch.applyPatch(state.current || state.freight, record.patch, false, false).newDocument;
+        return {
+          ...state,
+          current: next,
+        };
+      }
+    } else {
+      throw new Error(`Can not apply genesis`);
+    }
   }
 }
 

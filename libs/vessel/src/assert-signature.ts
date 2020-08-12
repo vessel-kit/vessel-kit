@@ -10,7 +10,6 @@ export interface Resolvable {
 }
 
 export async function assertSignature(record: any, resolvable: Resolvable): Promise<void> {
-  console.log('assertSignature', record)
   const payloadObject = _.omit(record, ['header', 'signature']);
   payloadObject.prev = payloadObject.prev ? { '/': payloadObject.prev.toString() } : undefined;
   payloadObject.id = payloadObject.id ? { '/': payloadObject.id.toString() } : undefined;
@@ -26,7 +25,6 @@ export async function assertSignature(record: any, resolvable: Resolvable): Prom
   const encodedSignature = record.signature;
   const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');
 
-  console.log('assertSignature.jwt', jwt)
   try {
     await didJwt.verifyJWT(jwt, { resolver: resolvable });
   } catch (e) {

@@ -8,6 +8,7 @@ import jose from 'jose';
 import * as _ from 'lodash';
 import jsonPatch from 'fast-json-patch';
 import { UpdateRecordWaiting } from '../../util/update-record.codec';
+import produce from 'immer';
 
 const jwkCodec = t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec);
 

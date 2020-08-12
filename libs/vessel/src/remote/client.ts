@@ -6,7 +6,7 @@ import { DocumentState } from '../document/document.state';
 import { CeramicDocumentId } from '@potter/codec';
 import { ThreeIdentifierCidCodec } from '../three-identifier';
 import { RemoteDocumentService } from './remote-document-service';
-import { Context } from '../context';
+import { Context, IContext } from '../context';
 import { Document } from '../document/document';
 import { IWithDoctype } from '../document/with-doctype.interface';
 import { IDocument, SnapshotCodec } from '../document/document.interface';
@@ -17,6 +17,7 @@ import { ThreeIdShape } from '../doctypes/three-id/three-id-shape';
 import { ThreeIdState } from '../doctypes/three-id/three-id-state';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
+import { bind } from 'decko';
 
 export class NotThreeIdError extends Error {
   constructor(docId: CeramicDocumentId) {
@@ -31,6 +32,7 @@ export class Client {
   #tracked: Map<string, IDocument<unknown, unknown>> = new Map();
   #service: RemoteDocumentService;
   #doctypes: DoctypesContainer;
+  #context: IContext
 
   constructor(private readonly host: string) {
     const retrieve = async (cid: CID, path?: string) => {
@@ -41,7 +43,7 @@ export class Client {
       const response = await axios.get(url.toString());
       return JSON.parse(response.data);
     };
-    const context = new Context(
+    this.#context = new Context(
       () => {
         if (this.#signor) {
           return this.#signor;
@@ -52,10 +54,15 @@ export class Client {
       this.load.bind(this),
       retrieve
     );
-    this.#doctypes = new DoctypesContainer([TileDoctype, ThreeIdDoctype], context);
-    this.#service = new RemoteDocumentService(host, context);
+    this.#doctypes = new DoctypesContainer([TileDoctype, ThreeIdDoctype], this.#context);
+    this.#service = new RemoteDocumentService(host, this.#context);
   }
 
+  get context(): IContext {
+    return this.#context
+  }
+
+  @bind()
   async addSignor(signor: ISignor): Promise<IDocument<ThreeIdState, ThreeIdShape>> {
     this.#signor = signor;
     const did = await this.#signor.did();
@@ -87,6 +94,7 @@ export class Client {
     }
   }
 
+  @bind()
   async create<A extends IWithDoctype>(payload: A) {
     const doctype = this.#doctypes.get(payload.doctype);
     const knead = await doctype.knead(payload);
@@ -98,6 +106,7 @@ export class Client {
     return document
   }
 
+  @bind()
   async load(docId: CeramicDocumentId): Promise<IDocument<unknown, unknown>> {
     const present = this.#tracked.get(docId.valueOf());
     if (present) {
@@ -113,6 +122,7 @@ export class Client {
     }
   }
 
+  @bind()
   close() {
     this.#tracked.forEach((document) => {
       document.close();

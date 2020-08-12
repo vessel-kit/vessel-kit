@@ -14,26 +14,24 @@ async function main() {
   });
   const user = await User.build(identityWallet.get3idProvider());
   await client.addSignor(user);
-  const tile = await Tile.create(client.create, {
+  const tile = await Tile.create(client.create, client.context, {
     owners: [await user.did()],
-    content: {}
-  })
-//   const tile = await client.createAs(Tile, {
-//     owners: [await user.did()],
-//     content: {},
-//   });
-//   tile.document.state$.subscribe((state) => {
-//     console.log(new Date().toLocaleTimeString(), state);
-//   });
-//   await sleep(61000);
-//   await tile.update({
-//     ...tile.view,
-//     content: {
-//       foo: 33,
-//     },
-//   });
-//   await sleep(61000);
+    content: {},
+  });
+  tile.document.state$.subscribe((state) => {
+    console.log(new Date().toLocaleTimeString(), state);
+  });
+  await sleep(65000);
+  await tile.change( (shape) => {
+    return {
+      ...shape,
+      content: {
+        foo: 33,
+      },
+    };
+  });
+  await sleep(65000);
   client.close();
 }
 
-main()
+main();
