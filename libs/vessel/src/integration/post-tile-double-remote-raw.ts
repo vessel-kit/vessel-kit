@@ -3,7 +3,6 @@ import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import axios from 'axios';
-import { TileContent } from '../tile.content';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
 import { decodeThrow } from '@potter/codec';
@@ -11,20 +10,6 @@ import { SnapshotCodec } from '..';
 import * as t from 'io-ts';
 
 const REMOTE_URL = 'http://localhost:3001';
-
-const cborSortCompareFn = (a: string, b: string): number => a.length - b.length || a.localeCompare(b);
-
-function sortPropertiesDeep(obj: any, compareFn: (a: any, b: any) => number = cborSortCompareFn): any {
-  if (typeof obj !== 'object' || Array.isArray(obj)) {
-    return obj;
-  }
-  return Object.keys(obj)
-    .sort(compareFn)
-    .reduce<Record<string, any>>((acc, prop) => {
-      acc[prop] = sortPropertiesDeep(obj[prop], compareFn);
-      return acc;
-    }, {});
-}
 
 async function createUser(seed: string) {
   const identityWallet = new IdentityWallet(() => true, {
@@ -63,10 +48,9 @@ async function main() {
     owners: [await userA.did(), await userB.did()],
     content: {},
   };
-  const encodedTile = TileContent.encode(tile);
-  const jwt = await userA.sign(encodedTile);
+  const jwt = await userA.sign(tile);
   const signedTile = {
-    ...encodedTile,
+    ...tile,
     iss: await userA.did(),
     header: jwt.header,
     signature: jwt.signature,

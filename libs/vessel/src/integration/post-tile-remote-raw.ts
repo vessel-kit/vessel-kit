@@ -5,7 +5,6 @@ import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
 import { History } from '../util/history';
-import { TileContent } from '../tile.content';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
 import { decodeThrow } from '@potter/codec';
@@ -52,11 +51,10 @@ async function main() {
     owners: [await user.did()],
     content: {},
   };
-  const encodedTile = TileContent.encode(tile);
-  console.log('to sign', sortKeys(encodedTile))
-  const jwt = await user.sign(sortKeys(encodedTile));
+  console.log('to sign', sortKeys(tile))
+  const jwt = await user.sign(sortKeys(tile));
   const signedTile = {
-    ...encodedTile,
+    ...tile,
     iss: await user.did(),
     header: jwt.header,
     signature: jwt.signature,

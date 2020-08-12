@@ -112,12 +112,11 @@ export class Client {
       return present;
     } else {
       const genesisResponse = await axios.get(`${this.host}/api/v0/ceramic/${docId.valueOf()}`);
-      console.log('client.load.response', genesisResponse.data);
-      throw new Error('client.load.response');
-      // const state = decodeThrow(DocumentState, genesisResponse.data);
-      // const document = new Document(state, this.#service);
-      // this.#tracked.set(document.id.valueOf(), document);
-      // return document;
+      const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
+      const handler = this.#doctypes.get(snapshot.doctype)
+      const document = new Document(snapshot, handler, this.#service)
+      this.#tracked.set(document.id.valueOf(), document);
+      return document;
     }
   }
 

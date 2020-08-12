@@ -6,6 +6,10 @@ import jsonPatch from 'fast-json-patch';
 import { UpdateRecordWaiting } from '../../util/update-record.codec';
 import { IContext } from '../../context';
 
+function isTileDocument(document: IDocument<unknown, unknown>): document is IDocument<TileState, TileShape> {
+  return document.state.doctype === 'tile'
+}
+
 export class Tile {
   readonly #document: IDocument<TileState, TileShape>;
   #canonical: TileShape;
@@ -22,9 +26,13 @@ export class Tile {
     return this.#document;
   }
 
-  static async fromDocument(document: IDocument<TileState, TileShape>) {
-    const canonical = await document.canonical();
-    return new Tile(document, canonical);
+  static async fromDocument(document: IDocument<unknown, unknown>) {
+    if (isTileDocument(document)) {
+      const canonical = await document.canonical();
+      return new Tile(document, canonical);
+    } else {
+      throw new Error(`Invalid doctype: expected tile, got ${document.state.doctype}`)
+    }
   }
 
   static async create(
@@ -47,7 +55,6 @@ export class Tile {
       id: this.#document.id,
     });
     const signed = await this.#document.context.sign(payloadToSign);
-    console.log('signed payload', signed)
     await this.#document.update(signed);
   }
 }
