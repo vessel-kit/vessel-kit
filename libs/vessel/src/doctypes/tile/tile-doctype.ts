@@ -2,7 +2,7 @@ import * as t from 'io-ts';
 import { ThreeIdentifier } from '../../three-identifier';
 import { DoctypeHandler } from '../../document/doctype';
 import { TileShapeBase, TileShape } from './tile-shape';
-import { AnchorState } from '../../document/document.state';
+import { AnchorState } from '../../document/anchor-state';
 import Ajv from 'ajv';
 import * as TileShapeSchema from './tile-shape.schema.json';
 import { AnchoringStatus } from '@potter/anchoring';
@@ -12,7 +12,6 @@ import { AnchorProof } from '@potter/anchoring';
 import { InvalidDocumentUpdateLinkError } from '../invalid-document-update-link.error';
 import jsonPatch from 'fast-json-patch';
 import { Ordering } from '../../document/ordering';
-import * as _ from 'lodash';
 
 export type TileState = {
   current: TileShapeBase | null;

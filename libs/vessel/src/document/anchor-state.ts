@@ -1,6 +1,5 @@
 import * as t from 'io-ts';
 import { AnchoringStatus } from '@potter/anchoring';
-import { HistoryCodec } from '../util/history';
 import { CidStringCodec, DateISO8601Codec } from '@potter/codec';
 
 export interface AnchorDone {
@@ -59,16 +58,3 @@ const AnchorProcessing = t.type(
 export type AnchorState = AnchorProcessing | AnchorPending | AnchorDone
 
 export const AnchorState = t.union([AnchorProcessing, AnchorPending, AnchorDone], 'AnchorState');
-
-export const DocumentState = t.type(
-  {
-    doctype: t.string,
-    current: t.union([t.UnknownRecord, t.null]),
-    freight: t.UnknownRecord,
-    anchor: AnchorState,
-    log: HistoryCodec,
-  },
-  'DocumentState',
-);
-
-export type DocumentState = t.TypeOf<typeof DocumentState>;

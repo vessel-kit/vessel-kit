@@ -7,7 +7,8 @@ import { TileContent } from '../tile.content';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
 import { decodeThrow } from '@potter/codec';
-import { DocumentState } from '../document/document.state';
+import { SnapshotCodec } from '..';
+import * as t from 'io-ts';
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -49,8 +50,8 @@ async function createUser(seed: string) {
     ...content,
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
-  const state = decodeThrow(DocumentState, genesisResponse.data);
-  await user.did(decodeThrow(ThreeIdentifier, `did:3:${state.log.first}`));
+  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
+  await user.did(decodeThrow(ThreeIdentifier, `did:3:${snapshot.log.first}`));
   return user;
 }
 
@@ -71,28 +72,23 @@ async function main() {
     signature: jwt.signature,
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, signedTile);
-  const genesisState = decodeThrow(DocumentState, genesisResponse.data);
+  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
   console.log('genesis response', genesisResponse.data);
-  const documentId = genesisState.log.first
-  await sleep(61000);
+  const documentId = snapshot.log.first
+  await sleep(65000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
-  const anchoredGenesisState = decodeThrow(DocumentState, anchoredGenesisResponse.data)
-  const log = anchoredGenesisState.log
+  const anchoredSnapshot = decodeThrow(SnapshotCodec(t.unknown), anchoredGenesisResponse.data)
+  const log = anchoredSnapshot.log
   const doc2 = Object.assign({}, tile);
   doc2.content = {
     foo: '33',
   };
   const delta = jsonPatch.compare(tile, doc2);
   console.log(delta);
-  const updateRecord = {
-    patch: delta,
-    prev: log.last,
-    id: documentId,
-  };
   const updateRecordToSign = {
-    patch: updateRecord.patch,
-    prev: { '/': updateRecord.prev.valueOf().toString() },
-    id: { '/': updateRecord.id.valueOf().toString() },
+    patch: delta,
+    prev: { '/': log.last.toString() },
+    id: { '/': documentId.valueOf().toString() },
   }
   console.log('signing payload', updateRecordToSign);
   const jwtUpdate = await userB.sign(updateRecordToSign);

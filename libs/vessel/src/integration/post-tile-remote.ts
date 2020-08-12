@@ -3,7 +3,6 @@ import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import { Client } from '../remote/client';
 import { Tile } from '../doctypes/tile/tile';
-// import { Tile } from '../doctypes/tile/tile';
 
 const REMOTE_URL = 'http://localhost:3001';
 const client = new Client(REMOTE_URL);

@@ -1,5 +1,5 @@
 import { ThreeIdShape } from './three-id-shape';
-import { AnchorState } from '../../document/document.state';
+import { AnchorState } from '../../document/anchor-state';
 
 export type ThreeIdState = {
   current: ThreeIdShape | null;

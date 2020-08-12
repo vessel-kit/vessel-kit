@@ -50,7 +50,7 @@ async function createUser(seed: string) {
     ...content,
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
-  await user.did(decodeThrow(ThreeIdentifier, `did:3:${genesisResponse.data.docId}`));
+  await user.did(decodeThrow(ThreeIdentifier, `did:3:${genesisResponse.data.log[0]}`));
   return user;
 }
 
@@ -66,13 +66,13 @@ async function main() {
   const jwt = await userA.sign(sortPropertiesDeep(encodedTile));
   const signedTile = {
     ...encodedTile,
-    iss: userA.did,
+    iss: await userA.did(),
     header: jwt.header,
     signature: jwt.signature,
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, signedTile);
   console.log('genesis response', genesisResponse.data);
-  const documentId = new CID(genesisResponse.data.docId);
+  const documentId = new CID(genesisResponse.data.log[0]);
   await sleep(61000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
   const log = new History(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
@@ -96,7 +96,7 @@ async function main() {
   const jwtUpdate = await userB.sign(updateRecordToSign);
   const updateRecordA = {
     ...updateRecordToSign,
-    iss: userB.did,
+    iss: await userB.did(),
     header: jwtUpdate.header,
     signature: jwtUpdate.signature,
   };

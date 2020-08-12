@@ -9,8 +9,9 @@ import { TileContent } from '../tile.content';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
 import { decodeThrow } from '@potter/codec';
-import { DocumentState } from '../document/document.state';
 import { sortKeys } from '../util/sort-keys';
+import { SnapshotCodec } from '..';
+import * as t from 'io-ts';
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -38,8 +39,8 @@ async function createUser(seed: string) {
     ...content,
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
-  const state = decodeThrow(DocumentState, genesisResponse.data);
-  const documentId = new CID(state.log.first);
+  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
+  const documentId = new CID(snapshot.log.first);
   await user.did(decodeThrow(ThreeIdentifier, `did:3:${documentId.valueOf()}`));
   return user;
 }
@@ -63,8 +64,8 @@ async function main() {
   console.log('posting', signedTile)
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, signedTile);
   console.log('genesis response', genesisResponse.data);
-  const state = decodeThrow(DocumentState, genesisResponse.data);
-  const documentId = state.log.first;
+  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
+  const documentId = snapshot.log.first;
   await sleep(61000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
   const log = new History(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
