@@ -72,12 +72,15 @@ async function main() {
   const a = await user.sign(updateRecordToSign, { useMgmt: true });
   const updateRecordA = {
     ...updateRecord,
-    iss: user.did,
+    iss: await user.did(),
     header: a.header,
     signature: a.signature,
   };
   await document.update(updateRecordA);
+  console.log('Sleeping for 20 seconds...')
   await sleep(20000);
+  console.log('slept')
+  ceramic.close()
 }
 
 main();

@@ -44,9 +44,12 @@ export class Ceramic {
       },
       this.load.bind(this),
       cloud.retrieve.bind(cloud),
-      anchoringService
+      anchoringService,
     );
-    const doctypes = new DoctypesContainer([ThreeIdDoctype, TileDoctype, VesselRulesetAlpha, VesselDocumentAlpha], context);
+    const doctypes = new DoctypesContainer(
+      [ThreeIdDoctype, TileDoctype, VesselRulesetAlpha, VesselDocumentAlpha],
+      context,
+    );
     const documentUpdateService = new DocumentUpdateService(logger, anchoringService, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
     this.#documentRepository = new DocumentRepository(logger, doctypes, cloud, documentService);
@@ -81,5 +84,9 @@ export class Ceramic {
 
   async list(): Promise<IDocument<unknown, unknown>[]> {
     return this.#documentRepository.list();
+  }
+
+  close(): void {
+    this.#documentRepository.close();
   }
 }

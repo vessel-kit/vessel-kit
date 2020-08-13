@@ -89,4 +89,10 @@ export class DocumentRepository {
     }
     return result;
   }
+
+  close(): void {
+    this.#documentCache.forEach((document) => {
+      document.close();
+    });
+  }
 }
