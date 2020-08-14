@@ -4,11 +4,16 @@ import { VesselDocumentShape, VesselDocumentState } from '../doctypes/vessel-doc
 export default class Ruleset {
   constructor(readonly context: IContext) {}
 
-  canApply(current: VesselDocumentState, next: VesselDocumentShape) {
+  async canApply(current: VesselDocumentState, next: VesselDocumentShape): Promise<boolean> {
     if (current && next) {
+      const toCheck = {
+        ...next.content.payload,
+        ...next.content.party
+      }
+      await this.context.assertSignature(toCheck)
       const currentContent = current.current || current.freight;
       if (currentContent && next) {
-        return currentContent.content.num < next.content.num;
+        return currentContent.content.payload.num < next.content.payload.num;
       } else {
         throw new Error(`No currentContent && nextContent`)
       }

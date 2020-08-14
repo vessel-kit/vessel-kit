@@ -3,8 +3,9 @@ import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import { Client } from '../remote/client';
 import { VesselRulesetAlphaDoctype } from '../doctypes/vessel-ruleset-alpha-doctype';
-import { VesselDocument, VesselDocumentAlphaDoctype } from '../doctypes/vessel-document-alpha-doctype';
+import { VesselDocument, VesselDocumentShapeBase } from '../doctypes/vessel-document-alpha-doctype';
 import * as path from 'path';
+import * as _ from 'lodash'
 
 const REMOTE_URL = 'http://localhost:3001';
 const clientA = new Client(REMOTE_URL);
@@ -23,40 +24,42 @@ async function main() {
   const signed = await clientA.context.sign(props)
   console.log('signed', signed)
   const rulesetDocument = await clientA.create(signed)
+  const payload = {
+    num: 100
+  }
+  const signedPayload = await clientA.context.sign(payload)
 
-  const vesselDocumentPayload = {
+  const vesselDocumentPayload: VesselDocumentShapeBase = {
     doctype: 'vessel/document/1.0.0',
     ruleset: rulesetDocument.id.toString(),
     content: {
-      num: 100
+      payload: _.omit(payload, 'iss', 'iat'),
+      party: {
+        iss: signedPayload.iss,
+        header: signedPayload.header,
+        signature: signedPayload.signature
+      }
     }
   }
   const vesselDocumentPayloadSigned = await clientA.context.sign(vesselDocumentPayload)
   const vesselDocumentRaw = await clientA.create(vesselDocumentPayloadSigned)
   const vesselDocument = await VesselDocument.fromDocument(vesselDocumentRaw)
-  await vesselDocument.change(shape => {
-    shape.content.num = shape.content.num + 100
+  await sleep(2000)
+  await vesselDocument.change(async shape => {
+    shape.content.payload.num = shape.content.payload.num + 100
+    const signed = await clientA.context.sign(shape.content.payload)
+    shape.content.payload = {
+      num: shape.content.payload.num
+    }
+    shape.content.party = {
+      header: signed.header,
+      iss: signed.iss,
+      signature: signed.signature
+    }
     return shape
   })
   await sleep(2000)
   console.log(JSON.stringify(vesselDocument.document.state, null, 4))
-  // const ruleset = await client.createAs(VesselRulesetAlpha, props);
-//   const document = await client.createAs(VesselDocumentAlphaDoctype, {
-//     ruleset: ruleset.document.id.cid,
-//     content: {
-//       num: 100,
-//     },
-//   });
-//   console.log('published', document.view)
-//   await sleep(61000);
-//   await document.update({
-//     ...document.view,
-//     content: {
-//       num: 20,
-//     },
-//   });
-//   console.log('updated', document.view)
-//   client.close();
 }
 
 main().finally(() => {

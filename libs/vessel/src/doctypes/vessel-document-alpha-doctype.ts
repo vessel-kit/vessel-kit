@@ -23,11 +23,14 @@ const json = t.type({
   content: t.UnknownRecord,
 });
 
-type ShapeBase = {
+export type VesselDocumentShapeBase = {
   doctype: string;
   ruleset: string;
   content: {
-    num: number;
+    payload: {
+      num: number;
+    };
+    party: Signature;
   };
 };
 
@@ -37,7 +40,7 @@ type Signature = {
   signature: string;
 };
 
-export type VesselDocumentShape = ShapeBase & Signature;
+export type VesselDocumentShape = VesselDocumentShapeBase & Signature;
 export type VesselDocumentState = {
   doctype: string;
   ruleset: string;
@@ -50,8 +53,10 @@ function isShape(input: unknown): input is VesselDocumentShape {
   return typeof input === 'object' && 'doctype' in input && (input as any).doctype == DOCTYPE;
 }
 
-function isVesselDocument(document: IDocument<unknown, unknown>): document is IDocument<VesselDocumentState, VesselDocumentShape> {
-  return document.state.doctype === DOCTYPE
+function isVesselDocument(
+  document: IDocument<unknown, unknown>,
+): document is IDocument<VesselDocumentState, VesselDocumentShape> {
+  return document.state.doctype === DOCTYPE;
 }
 
 export class VesselDocument {
@@ -71,7 +76,7 @@ export class VesselDocument {
       const canonical = await document.canonical();
       return new VesselDocument(document, canonical);
     } else {
-      throw new Error(`Invalid doctype: expected tile, got ${document.state.doctype}`)
+      throw new Error(`Invalid doctype: expected tile, got ${document.state.doctype}`);
     }
   }
 
@@ -79,7 +84,9 @@ export class VesselDocument {
     return this.#document;
   }
 
-  async change(mutation: (t: VesselDocumentShape) => Promise<VesselDocumentShape> | VesselDocumentShape): Promise<void> {
+  async change(
+    mutation: (t: VesselDocumentShape) => Promise<VesselDocumentShape> | VesselDocumentShape,
+  ): Promise<void> {
     const next = await produce(this.#canonical, mutation);
     const patch = jsonPatch.compare(this.#canonical, next);
     const payloadToSign = UpdateRecordWaiting.encode({
@@ -113,19 +120,23 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
   }
 
   async canApply(current: VesselDocumentState, next: VesselDocumentShape, rulesetAddress?: CeramicDocumentId) {
-    console.log('canApply', current, next)
+    console.log('canApply', current, next);
     const effectiveRulesetCid = rulesetAddress || CeramicDocumentId.fromString(current.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
-    const ruleset = VesselRulesetAlphaDoctype.json.decode(rulesetJSON);
-    const canApply = ruleset.canApply(current, next);
-    console.log('canApply.result', canApply)
+    const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
+    const canApply = await ruleset.canApply(current, next);
+    console.log('canApply.result', canApply);
     if (!canApply) {
       console.error('Can not apply', current, next);
       throw new Error(`Can not apply`);
     }
   }
 
-  async applyUpdate(updateRecord: RecordWrap, state: VesselDocumentState, docId: CeramicDocumentId): Promise<VesselDocumentState> {
+  async applyUpdate(
+    updateRecord: RecordWrap,
+    state: VesselDocumentState,
+    docId: CeramicDocumentId,
+  ): Promise<VesselDocumentState> {
     if (!(updateRecord.load.id && updateRecord.load.id.equals(docId.cid))) {
       throw new InvalidDocumentUpdateLinkError(`Expected ${docId.cid} id while got ${updateRecord.load.id}`);
     }
@@ -152,7 +163,11 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
     }
   }
 
-  async applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: VesselDocumentState): Promise<VesselDocumentState> {
+  async applyAnchor(
+    anchorRecord: RecordWrap,
+    proof: AnchorProof,
+    state: VesselDocumentState,
+  ): Promise<VesselDocumentState> {
     return produce(state, async (next) => {
       if (next.current) {
         next.freight = next.current;
