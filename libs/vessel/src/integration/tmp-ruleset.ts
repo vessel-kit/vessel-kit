@@ -30,22 +30,6 @@ export default class Ruleset {
       const checkA = await checkSignature(this.context, toCheckA)
       const checkB = await checkSignature(this.context, toCheckB)
       console.log('check', checkA, checkB)
-      //
-      // if (next.content.partyA) {
-      //   const toCheck = {
-      //     ...next.content.payload,
-      //     ...next.content.partyA
-      //   }
-      //   await this.context.assertSignature(toCheck)
-      // } else if (next.content.partyB) {
-      //   const toCheck = {
-      //     ...next.content.payload,
-      //     ...next.content.partyB
-      //   }
-      //   await this.context.assertSignature(toCheck)
-      // } else {
-      //   throw new Error(`Must provide either partyA or partyB`)
-      // }
       if (checkA || checkB) {
         const currentContent = current.current || current.freight;
         if (currentContent && next) {
