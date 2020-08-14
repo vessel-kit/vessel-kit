@@ -1,16 +1,13 @@
-import * as t from 'io-ts';
 import { DoctypeHandler } from '../document/doctype';
-import { CidStringCodec } from '@potter/codec';
 import { VesselRulesetAlphaDoctype } from './vessel-ruleset-alpha-doctype';
 import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
 import jsonPatch from 'fast-json-patch';
 import { RecordWrap } from '@potter/codec';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 import produce from 'immer';
-import { CeramicDocumentId, decodeThrow } from '@potter/codec';
+import { CeramicDocumentId } from '@potter/codec';
 import { Ordering } from '../document/ordering';
 import { AnchorState } from '../document/anchor-state';
-import { JWS } from 'jose';
 import { IDocument } from '..';
 import { UpdateRecordWaiting } from '../util/update-record.codec';
 
@@ -21,6 +18,7 @@ export type VesselDocumentShapeBase = {
   ruleset: string;
   content: {
     payload: {
+      stage: 'draft' | 'agreement'
       num: number;
     };
     partyA?: Signature;

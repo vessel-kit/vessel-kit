@@ -19,6 +19,10 @@ export default class Ruleset {
 
   async canApply(current: VesselDocumentState, next: VesselDocumentShape): Promise<boolean> {
     if (current && next) {
+      const currentContent = current.current || current.freight;
+      if (currentContent.content.payload.stage === 'agreement') {
+        throw new Error(`Can not update after agreement is reached`)
+      }
       const toCheckA = next.content.partyA ? {
         ...next.content.payload,
         ...next.content.partyA
@@ -31,9 +35,8 @@ export default class Ruleset {
       const checkB = await checkSignature(this.context, toCheckB)
       console.log('check', checkA, checkB)
       if (checkA || checkB) {
-        const currentContent = current.current || current.freight;
         if (currentContent && next) {
-          return currentContent.content.payload.num < next.content.payload.num;
+          return currentContent.content.payload.num <= next.content.payload.num;
         } else {
           throw new Error(`No currentContent && nextContent`)
         }

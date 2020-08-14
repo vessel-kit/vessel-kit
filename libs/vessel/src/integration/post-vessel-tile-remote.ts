@@ -32,7 +32,8 @@ async function main() {
   console.log('signed', signed)
   const rulesetDocument = await clientA.create(signed)
   const payload = {
-    num: 100
+    num: 100,
+    stage: 'draft' as 'draft'
   }
   const signedPayload = await clientA.context.sign(payload)
 
@@ -52,11 +53,12 @@ async function main() {
   const vesselDocumentRaw = await clientA.create(vesselDocumentPayloadSigned)
   const vesselDocument = await VesselDocument.fromDocument(vesselDocumentRaw)
   console.log('sleeping...')
-  await sleep(61000)
+  await sleep(2000)
   await vesselDocument.change(async shape => {
     shape.content.payload.num = shape.content.payload.num + 100
     const signed = await clientA.context.sign(shape.content.payload)
     shape.content.payload = {
+      stage: shape.content.payload.stage,
       num: shape.content.payload.num
     }
     shape.content.partyA = {
@@ -67,13 +69,14 @@ async function main() {
     return shape
   })
   console.log('sleeping B...')
-  await sleep(61000)
+  await sleep(2000)
   const vesselDocumentRawB = await clientB.load(vesselDocument.document.id)
   const vesselDocumentB = await VesselDocument.fromDocument(vesselDocumentRawB)
   await vesselDocumentB.change(async shape => {
     shape.content.payload.num = shape.content.payload.num + 100
     const signed = await clientB.context.sign(shape.content.payload)
     shape.content.payload = {
+      stage: shape.content.payload.stage,
       num: shape.content.payload.num
     }
     shape.content.partyB = {
@@ -83,6 +86,48 @@ async function main() {
     }
     return shape
   })
+  console.log('sleeping 2...')
+  await sleep(2000)
+  await vesselDocument.change(async shape => {
+    shape.content.payload = {
+      stage: 'agreement',
+      num: shape.content.payload.num
+    }
+    const signed = await clientA.context.sign(shape.content.payload)
+    shape.content.payload = {
+      stage: 'agreement',
+      num: shape.content.payload.num
+    }
+    shape.content.partyA = {
+      header: signed.header,
+      iss: signed.iss,
+      signature: signed.signature
+    }
+    return shape
+  })
+  console.log('sleeping after agreement is set. call should fail...')
+  await sleep(2000)
+  try {
+    await vesselDocument.change(async shape => {
+      shape.content.payload = {
+        stage: 'agreement',
+        num: shape.content.payload.num + 100
+      }
+      const signed = await clientA.context.sign(shape.content.payload)
+      shape.content.payload = {
+        stage: 'agreement',
+        num: shape.content.payload.num
+      }
+      shape.content.partyA = {
+        header: signed.header,
+        iss: signed.iss,
+        signature: signed.signature
+      }
+      return shape
+    })
+  } catch (e) {
+    console.log('Really failed. Cool.')
+  }
   console.log(JSON.stringify(vesselDocument.document.state, null, 4))
   console.log(JSON.stringify(vesselDocumentB.document.state, null, 4))
 }
