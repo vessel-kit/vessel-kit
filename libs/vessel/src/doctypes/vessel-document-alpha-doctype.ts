@@ -18,7 +18,6 @@ export type VesselDocumentShapeBase = {
   ruleset: string;
   content: {
     payload: {
-      stage: 'draft' | 'agreement'
       num: number;
     };
     partyA?: Signature;
@@ -36,8 +35,8 @@ export type VesselDocumentShape = VesselDocumentShapeBase & Signature;
 export type VesselDocumentState = {
   doctype: string;
   ruleset: string;
-  current: VesselDocumentShape | null;
-  freight: VesselDocumentShape;
+  current: (VesselDocumentShape & { stage: 'draft' | 'agreement' }) | null;
+  freight: VesselDocumentShape & { stage: 'draft' | 'agreement' };
   anchor: AnchorState;
 };
 
@@ -100,7 +99,7 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
         doctype: genesisRecord.doctype,
         ruleset: genesisRecord.ruleset,
         current: null,
-        freight: genesisRecord,
+        freight: Object.assign({}, genesisRecord, { stage: 'draft' as 'draft' }),
         anchor: {
           status: AnchoringStatus.NOT_REQUESTED,
         },
@@ -111,17 +110,22 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
     }
   }
 
-  async canApply(current: VesselDocumentState, next: VesselDocumentShape, rulesetAddress?: CeramicDocumentId) {
-    console.log('canApply', current, next);
-    const effectiveRulesetCid = rulesetAddress || CeramicDocumentId.fromString(current.ruleset);
+  async canApply(
+    state: VesselDocumentState,
+    next: VesselDocumentShape,
+    rulesetAddress?: CeramicDocumentId,
+  ): Promise<VesselDocumentState> {
+    console.log('canApply', state, next);
+    const effectiveRulesetCid = rulesetAddress || CeramicDocumentId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
     const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
-    const canApply = await ruleset.canApply(current, next);
-    console.log('canApply.result', canApply);
-    if (!canApply) {
-      console.error('Can not apply', current, next);
+    const nextState = await ruleset.canApply<VesselDocumentState>(state, next);
+    console.log('canApply.result', nextState);
+    if (!nextState) {
+      console.error('Can not apply', state, next);
       throw new Error(`Can not apply`);
     }
+    return nextState;
   }
 
   async applyUpdate(
@@ -206,11 +210,7 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
       } else {
         await this.context.assertSignature(record);
         const next = jsonPatch.applyPatch(state.current || state.freight, record.patch, false, false).newDocument;
-        await this.canApply(state, next);
-        return {
-          ...state,
-          current: next,
-        };
+        return this.canApply(state, next);
       }
     } else {
       throw new Error(`Can not apply genesis`);

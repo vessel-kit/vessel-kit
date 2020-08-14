@@ -34,7 +34,7 @@ class Freight implements t.TypeOf<typeof json> {
     this.content = params.content;
   }
 
-  async canApply(prev: any, next: any): Promise<boolean> {
+  async canApply<A>(prev: any, next: any): Promise<A> {
     const compartment = new Compartment({
       exports: {},
       console: console,
