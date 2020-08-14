@@ -11,12 +11,19 @@ const REMOTE_URL = 'http://localhost:3001';
 const clientA = new Client(REMOTE_URL);
 const clientB = new Client(REMOTE_URL);
 
-async function main() {
+async function createUser(seed: string) {
   const identityWallet = new IdentityWallet(() => true, {
-    seed: '0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f',
+    seed: seed,
   });
-  const userA = await User.build(identityWallet.get3idProvider());
+
+  return User.build(identityWallet.get3idProvider());
+}
+
+async function main() {
+  const userA = await createUser('0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f');
   await clientA.addSignor(userA);
+  const userB = await createUser('0x2220000000000000000000000000000000000000000000000000000000000000');
+  await clientB.addSignor(userB)
 
   const rulesetFile = path.join(__dirname, './tmp-ruleset.ts');
   const props = await VesselRulesetAlphaDoctype.genesisFromRulesetFile(rulesetFile);
@@ -34,7 +41,7 @@ async function main() {
     ruleset: rulesetDocument.id.toString(),
     content: {
       payload: _.omit(payload, 'iss', 'iat'),
-      party: {
+      partyA: {
         iss: signedPayload.iss,
         header: signedPayload.header,
         signature: signedPayload.signature
@@ -44,22 +51,40 @@ async function main() {
   const vesselDocumentPayloadSigned = await clientA.context.sign(vesselDocumentPayload)
   const vesselDocumentRaw = await clientA.create(vesselDocumentPayloadSigned)
   const vesselDocument = await VesselDocument.fromDocument(vesselDocumentRaw)
-  await sleep(2000)
+  console.log('sleeping...')
+  await sleep(61000)
   await vesselDocument.change(async shape => {
     shape.content.payload.num = shape.content.payload.num + 100
     const signed = await clientA.context.sign(shape.content.payload)
     shape.content.payload = {
       num: shape.content.payload.num
     }
-    shape.content.party = {
+    shape.content.partyA = {
       header: signed.header,
       iss: signed.iss,
       signature: signed.signature
     }
     return shape
   })
-  await sleep(2000)
+  console.log('sleeping B...')
+  await sleep(61000)
+  const vesselDocumentRawB = await clientB.load(vesselDocument.document.id)
+  const vesselDocumentB = await VesselDocument.fromDocument(vesselDocumentRawB)
+  await vesselDocumentB.change(async shape => {
+    shape.content.payload.num = shape.content.payload.num + 100
+    const signed = await clientB.context.sign(shape.content.payload)
+    shape.content.payload = {
+      num: shape.content.payload.num
+    }
+    shape.content.partyB = {
+      header: signed.header,
+      iss: signed.iss,
+      signature: signed.signature
+    }
+    return shape
+  })
   console.log(JSON.stringify(vesselDocument.document.state, null, 4))
+  console.log(JSON.stringify(vesselDocumentB.document.state, null, 4))
 }
 
 main().finally(() => {

@@ -1,12 +1,11 @@
 import * as t from 'io-ts';
 import { DoctypeHandler } from '../document/doctype';
-import { CeramicDocumentIdStringCodec, CidStringCodec } from '@potter/codec';
+import { CidStringCodec } from '@potter/codec';
 import { VesselRulesetAlphaDoctype } from './vessel-ruleset-alpha-doctype';
 import { InvalidDocumentUpdateLinkError } from './invalid-document-update-link.error';
 import jsonPatch from 'fast-json-patch';
 import { RecordWrap } from '@potter/codec';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
-import CID from 'cids';
 import produce from 'immer';
 import { CeramicDocumentId, decodeThrow } from '@potter/codec';
 import { Ordering } from '../document/ordering';
@@ -17,12 +16,6 @@ import { UpdateRecordWaiting } from '../util/update-record.codec';
 
 const DOCTYPE = 'vessel/document/1.0.0';
 
-const json = t.type({
-  doctype: t.literal(DOCTYPE),
-  ruleset: t.string.pipe(CidStringCodec),
-  content: t.UnknownRecord,
-});
-
 export type VesselDocumentShapeBase = {
   doctype: string;
   ruleset: string;
@@ -30,7 +23,8 @@ export type VesselDocumentShapeBase = {
     payload: {
       num: number;
     };
-    party: Signature;
+    partyA?: Signature;
+    partyB?: Signature;
   };
 };
 

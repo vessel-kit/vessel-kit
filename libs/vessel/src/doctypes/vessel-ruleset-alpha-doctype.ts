@@ -39,10 +39,7 @@ class Freight implements t.TypeOf<typeof json> {
       exports: {},
       console: console,
     });
-    console.log('comp', compartment.evaluate(this.content.main));
-    console.log('exports', exports);
     const Ruleset = compartment.evaluate(this.content.main);
-    console.log('Ruleset', Ruleset);
     const ruleset = new Ruleset(this.context);
     return ruleset.canApply(prev, next);
   }

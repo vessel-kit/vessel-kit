@@ -1,21 +1,60 @@
 import type { IContext } from '../context';
 import { VesselDocumentShape, VesselDocumentState } from '../doctypes/vessel-document-alpha-doctype';
 
+async function checkSignature(context: IContext, payload: any) {
+  if (payload) {
+    try {
+      await context.assertSignature(payload)
+      return true
+    } catch {
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
 export default class Ruleset {
   constructor(readonly context: IContext) {}
 
   async canApply(current: VesselDocumentState, next: VesselDocumentShape): Promise<boolean> {
     if (current && next) {
-      const toCheck = {
+      const toCheckA = next.content.partyA ? {
         ...next.content.payload,
-        ...next.content.party
-      }
-      await this.context.assertSignature(toCheck)
-      const currentContent = current.current || current.freight;
-      if (currentContent && next) {
-        return currentContent.content.payload.num < next.content.payload.num;
+        ...next.content.partyA
+      } : null
+      const toCheckB = next.content.partyB ? {
+        ...next.content.payload,
+        ...next.content.partyB
+      } : null
+      const checkA = await checkSignature(this.context, toCheckA)
+      const checkB = await checkSignature(this.context, toCheckB)
+      console.log('check', checkA, checkB)
+      //
+      // if (next.content.partyA) {
+      //   const toCheck = {
+      //     ...next.content.payload,
+      //     ...next.content.partyA
+      //   }
+      //   await this.context.assertSignature(toCheck)
+      // } else if (next.content.partyB) {
+      //   const toCheck = {
+      //     ...next.content.payload,
+      //     ...next.content.partyB
+      //   }
+      //   await this.context.assertSignature(toCheck)
+      // } else {
+      //   throw new Error(`Must provide either partyA or partyB`)
+      // }
+      if (checkA || checkB) {
+        const currentContent = current.current || current.freight;
+        if (currentContent && next) {
+          return currentContent.content.payload.num < next.content.payload.num;
+        } else {
+          throw new Error(`No currentContent && nextContent`)
+        }
       } else {
-        throw new Error(`No currentContent && nextContent`)
+        throw new Error(`Neither signature fits`)
       }
     } else {
       throw new Error(`No current && next`)
