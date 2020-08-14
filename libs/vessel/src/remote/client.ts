@@ -17,6 +17,8 @@ import { ThreeIdState } from '../doctypes/three-id/three-id-state';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
 import { bind } from 'decko';
+import { VesselRulesetAlphaDoctype } from '../doctypes/vessel-ruleset-alpha-doctype';
+import { VesselDocumentAlphaDoctype } from '../doctypes/vessel-document-alpha-doctype';
 
 export class NotThreeIdError extends Error {
   constructor(docId: CeramicDocumentId) {
@@ -53,7 +55,7 @@ export class Client {
       this.load.bind(this),
       retrieve
     );
-    this.#doctypes = new DoctypesContainer([TileDoctype, ThreeIdDoctype], this.#context);
+    this.#doctypes = new DoctypesContainer([TileDoctype, ThreeIdDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype], this.#context);
     this.#service = new RemoteDocumentService(host, this.#context);
   }
 

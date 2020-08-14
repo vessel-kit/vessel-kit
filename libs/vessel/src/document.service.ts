@@ -108,7 +108,7 @@ export class DocumentService implements IDocumentService {
   }
 
   // TODO Fix anchoring, not quite working as should
-  // ...anchor does not contribute to State
+  // ...anchor does not contribute to VesselDocumentState
   // See Anchoring controlled by doctype
   private anchorUpdates$<State, Shape>(
     docId: CeramicDocumentId,

@@ -7,13 +7,14 @@ import CID from 'cids';
 import { RecordWrap } from '@potter/codec';
 import { AnchorProof } from '@potter/anchoring';
 import { AnchoringService } from './anchoring.service';
+import { JWTHeader } from './signor/jwt-payload';
 
 export interface IRetrieve {
   (cid: CID, path?: string): Promise<any>;
 }
 
 export interface IContext {
-  sign(payload: any, opts?: { useMgmt: boolean }): Promise<void>;
+  sign<A>(payload: A, opts?: { useMgmt: boolean }): Promise<A & {iss: string, iat: undefined, header: JWTHeader, signature: string}>;
   did(): Promise<ThreeIdentifier | undefined>;
   assertSignature(payload: any): Promise<void>;
   verifyAnchor(anchorRecord: RecordWrap): Promise<AnchorProof>;

@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import { DoctypeHandler } from '../document/doctype';
-import { decodeThrow, RecordWrap } from '@potter/codec';
+import { decodeThrow, RecordWrap, validateThrow } from '@potter/codec';
 import './ses';
 import { IContext } from '../context';
 
@@ -10,6 +10,8 @@ import * as ts from 'typescript';
 import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
 import produce from 'immer';
 import { Ordering } from '../document/ordering';
+import { AnchorState } from '../document/anchor-state';
+import { isRight } from 'fp-ts/lib/Either';
 
 const DOCTYPE = 'vessel/ruleset/1.0.0';
 
@@ -46,8 +48,37 @@ class Freight implements t.TypeOf<typeof json> {
   }
 }
 
-type State = any;
-type Shape = any;
+const Shape = t.type(
+  {
+    doctype: t.literal(DOCTYPE),
+    content: t.type({
+      type: t.string,
+      main: t.string,
+    }),
+    iss: t.string,
+    header: t.type({
+      typ: t.string,
+      alg: t.string,
+    }),
+    signature: t.string,
+  },
+  'RulesetShape',
+);
+
+const State = t.type(
+  {
+    current: Shape,
+    anchor: AnchorState,
+  },
+  'RulesetState',
+);
+
+type State = t.TypeOf<typeof State>;
+type Shape = t.TypeOf<typeof Shape>;
+
+function isShape(record: unknown): record is Shape {
+  return isRight(Shape.validate(record, []));
+}
 
 class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
   readonly name = DOCTYPE;
@@ -66,6 +97,7 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
     }).outputText;
     const main = terser.minify(outputText, { mangle: false }).code;
     return {
+      doctype: DOCTYPE,
       content: {
         type: 'application/javascript' as 'application/javascript',
         main: main,
@@ -73,12 +105,17 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
     };
   }
 
-  async knead(genesisRecord: unknown): Promise<any> {
-    throw new Error(`Not implemented TODO`);
-  }
-
-  cone(state: any): Promise<any> {
-    throw new Error(`Not implemented TODO`);
+  async knead(genesisRecord: unknown): Promise<State> {
+    if (isShape(genesisRecord)) {
+      return {
+        current: genesisRecord,
+        anchor: {
+          status: AnchoringStatus.NOT_REQUESTED,
+        },
+      };
+    } else {
+      throw new Error('Invalid Vessel Ruleset Shape');
+    }
   }
 
   async order(a: any, b: any): Promise<Ordering> {
@@ -116,13 +153,13 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
     throw new Error(`Not implemented`);
   }
 
-  async canonical(state: any): Promise<any> {
-    return state.current | state.freight;
+  async canonical(state: State): Promise<Shape> {
+    return state.current;
   }
 
   async apply(recordWrap, state: State, docId): Promise<State> {
-    throw new Error(`VesselRulesetAlpha.apply: not implemented`)
+    throw new Error(`VesselRulesetAlpha.apply: not implemented`);
   }
 }
 
-export const VesselRulesetAlpha = new VesselRulesetAlphaHandler();
+export const VesselRulesetAlphaDoctype = new VesselRulesetAlphaHandler();

@@ -14,8 +14,8 @@ import { Context } from './context';
 import { DoctypesContainer } from './doctypes-container';
 import { ThreeIdDoctype } from './doctypes/three-id/three-id-doctype';
 import { TileDoctype } from './doctypes/tile/tile-doctype';
-import { VesselRulesetAlpha } from './doctypes/vessel-ruleset-alpha';
-import { VesselDocumentAlpha } from './doctypes/vessel-document-alpha';
+import { VesselRulesetAlphaDoctype } from './doctypes/vessel-ruleset-alpha-doctype';
+import { VesselDocumentAlphaDoctype } from './doctypes/vessel-document-alpha-doctype';
 import { IDocument } from './document/document.interface';
 
 export interface CeramicOptions {
@@ -47,7 +47,7 @@ export class Ceramic {
       anchoringService,
     );
     const doctypes = new DoctypesContainer(
-      [ThreeIdDoctype, TileDoctype, VesselRulesetAlpha, VesselDocumentAlpha],
+      [ThreeIdDoctype, TileDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
       context,
     );
     const documentUpdateService = new DocumentUpdateService(logger, anchoringService, cloud);

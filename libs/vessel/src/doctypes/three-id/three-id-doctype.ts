@@ -30,7 +30,7 @@ class ThreeIdHandler extends DoctypeHandler<ThreeIdState, ThreeIdShape> {
         },
       };
     } else {
-      throw new Error('Invalid');
+      throw new Error('Invalid ThreeIdShape');
     }
   }
 
