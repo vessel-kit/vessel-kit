@@ -70,8 +70,9 @@ export class DocumentController {
   async readContent(@Param('cid') cidString: string) {
     const cid = new CID(cidString);
     const document = await this.ceramic.load(new CeramicDocumentId(cid));
+    const content = await document.canonical()
     return {
-      content: document,
+      content: content,
     };
   }
 
