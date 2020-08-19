@@ -11,6 +11,15 @@ const Failed = t.type({
   updatedAt: t.string.pipe(DateISO8601Codec),
 });
 
+const Outdated = t.type({
+  status: t.literal(AnchoringStatus.OUTDATED),
+  id: t.string,
+  cid: t.string.pipe(CidStringCodec),
+  docId: t.string.pipe(CeramicDocumentIdStringCodec),
+  createdAt: t.string.pipe(DateISO8601Codec),
+  updatedAt: t.string.pipe(DateISO8601Codec),
+});
+
 const Pending = t.type({
   status: t.union([t.literal(AnchoringStatus.PENDING), t.literal(AnchoringStatus.PROCESSING)]),
   id: t.string,
@@ -31,4 +40,4 @@ const Anchored = t.type({
   updatedAt: t.string.pipe(DateISO8601Codec),
 });
 
-export const AnchorResponsePayload = t.union([Anchored, Pending, Failed]);
+export const AnchorResponsePayload = t.union([Anchored, Pending, Failed, Outdated]);
