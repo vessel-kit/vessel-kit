@@ -50,7 +50,7 @@ export class RequestPresentation {
           docId: this.docId,
           createdAt: this.request.createdAt,
           updatedAt: this.request.updatedAt,
-        } as any);
+        });
       default:
         throw new UnreachableCaseError(this.request.status);
     }

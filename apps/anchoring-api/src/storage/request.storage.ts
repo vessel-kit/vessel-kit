@@ -59,13 +59,6 @@ export class RequestStorage {
     });
   }
 
-  lastByStatusAndCid(status: AnchoringStatus, docId: CID): Promise<any> {
-    return this.repository.find({
-      status: status,
-      docId: docId.toString()
-    });
-  }
-
   saveAll(records: RequestRecord[]): Promise<RequestRecord[]> {
     return this.repository.save(records);
   }
