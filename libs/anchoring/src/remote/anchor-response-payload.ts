@@ -2,7 +2,7 @@ import * as t from 'io-ts';
 import { AnchoringStatus } from '../anchoring-status';
 import { DateISO8601Codec, CidStringCodec, CeramicDocumentIdStringCodec, DateNumberCodec } from '@potter/codec';
 
-const Rejected = t.type({
+const NotAnchored = t.type({
   status: t.union([t.literal(AnchoringStatus.FAILED), t.literal(AnchoringStatus.NOT_REQUESTED), t.literal(AnchoringStatus.OUTDATED)]),
   id: t.string,
   cid: t.string.pipe(CidStringCodec),
@@ -31,4 +31,4 @@ const Anchored = t.type({
   updatedAt: t.string.pipe(DateISO8601Codec),
 });
 
-export const AnchorResponsePayload = t.union([Anchored, Pending, Rejected]);
+export const AnchorResponsePayload = t.union([Anchored, Pending, NotAnchored]);
