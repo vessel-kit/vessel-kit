@@ -31,7 +31,7 @@ export class AnchoringService {
   }
 
   async anchorRequests() {
-    const pending = await this.requestStorage.allByStatus(AnchoringStatus.PENDING);
+    const pending = await this.requestStorage.allByStatus(AnchoringStatus.PENDING, AnchoringStatus.PROCESSING);
     const processing = await this.requestStorage.updateStatus(pending, AnchoringStatus.PROCESSING);
     const [stale, latest] = this.separateRecordsByTime(processing);
     await this.markRecordsOutdated(stale);

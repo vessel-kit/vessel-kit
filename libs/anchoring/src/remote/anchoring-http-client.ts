@@ -61,7 +61,7 @@ export class AnchoringHttpClient {
       return new Promise((resolve) => {
         const doRequest = async () => {
           const status = await this.requestAnchorStatus(docId, cid);
-          if (status === AnchoringStatus.ANCHORED) {
+          if (status === AnchoringStatus.ANCHORED || status === AnchoringStatus.FAILED || status === AnchoringStatus.OUTDATED) {
             resolve();
           } else {
             queueScheduler.schedule(() => doRequest(), this.#period);
