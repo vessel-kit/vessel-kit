@@ -40,6 +40,7 @@ export class RequestPresentation {
           updatedAt: this.request.updatedAt,
           scheduledAt: this.nextAnchoring,
         });
+      case AnchoringStatus.OUTDATED:
       case AnchoringStatus.FAILED:
       case AnchoringStatus.NOT_REQUESTED:
         return AnchorResponsePayload.encode({

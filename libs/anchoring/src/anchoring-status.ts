@@ -4,4 +4,5 @@ export enum AnchoringStatus {
   PROCESSING = 'PROCESSING',
   ANCHORED = 'ANCHORED',
   FAILED = 'FAILED',
+  OUTDATED = 'OUTDATED'
 }

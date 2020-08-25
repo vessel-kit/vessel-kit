@@ -34,7 +34,7 @@ export class AnchoringService {
     const pending = await this.requestStorage.allByStatus(AnchoringStatus.PENDING);
     const processing = await this.requestStorage.updateStatus(pending, AnchoringStatus.PROCESSING);
     const [stale, latest] = this.separateRecordsByTime(processing);
-    await this.markRecordsFailed(stale);
+    await this.markRecordsOutdated(stale);
 
     if (latest.length === 0) {
       this.logger.log(`No pending requests to anchor`);
@@ -65,8 +65,8 @@ export class AnchoringService {
     }
   }
 
-  async markRecordsFailed(records: RequestRecord[]) {
-    await this.requestStorage.updateStatus(records, AnchoringStatus.FAILED);
+  async markRecordsOutdated(records: RequestRecord[]) {
+    await this.requestStorage.updateStatus(records, AnchoringStatus.OUTDATED);
   }
 
   separateRecordsByTime(records: RequestRecord[]) {

@@ -146,6 +146,8 @@ export class DocumentService implements IDocumentService {
                 status: AnchoringStatus.FAILED as AnchoringStatus.FAILED,
               },
             };
+          case AnchoringStatus.OUTDATED:
+            return state$.value;
           default:
             throw new UnhandledAnchoringStatus(observation);
         }
