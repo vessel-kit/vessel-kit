@@ -1,11 +1,7 @@
-import type { IContext } from '../context';
-import {
-  TwoPartyShape,
-  TwoPartyState,
-  VesselDocumentShape,
-  VesselDocumentState,
-} from '../doctypes/vessel-document-alpha-doctype';
-import type { AnchoringStatus } from '@potter/anchoring';
+import type { IContext } from '../../context';
+import { VesselDocumentShape, VesselDocumentState } from '../../doctypes/vessel-document-alpha-doctype';
+import type { AnchoringStatus, AnchorProof } from '@potter/anchoring';
+import type { TwoPartyShape, TwoPartyState } from './shape-and-state';
 
 async function checkSignature(context: IContext, payload: any) {
   if (payload) {
@@ -37,6 +33,25 @@ export default class Ruleset {
       ruleset: state.ruleset,
       content: state.data.current || state.data.freight,
     };
+  }
+
+  async applyAnchor(proof: AnchorProof, state: TwoPartyState): Promise<TwoPartyState> {
+    const next = state;
+    if (next.current) {
+      next.freight = next.current;
+      next.current = null;
+    }
+    next.anchor = {
+      status: 'ANCHORED' as AnchoringStatus.ANCHORED,
+      proof: {
+        chainId: proof.chainId.toString(),
+        blockNumber: proof.blockNumber,
+        timestamp: new Date(proof.blockTimestamp * 1000).toISOString(),
+        txHash: proof.txHash.toString(),
+        root: proof.root.toString(),
+      },
+    };
+    return next;
   }
 
   async knead(genesisRecord: unknown): Promise<VesselDocumentState<TwoPartyState>> {

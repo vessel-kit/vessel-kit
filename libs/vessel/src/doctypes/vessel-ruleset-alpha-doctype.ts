@@ -50,6 +50,11 @@ class Freight implements t.TypeOf<typeof json> {
     return this.#ruleset.canApply(prev, next);
   }
 
+  // TODO Special anchoring
+  async applyAnchor<A>(proof: AnchorProof, state: A): Promise<A> {
+    return this.#ruleset.applyAnchor(proof, state);
+  }
+
   async canonical<A>(state: A) {
     return this.#ruleset.canonical(state);
   }
