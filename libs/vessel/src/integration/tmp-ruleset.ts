@@ -1,5 +1,5 @@
 import type { IContext } from '../context';
-import { VesselDocumentShape, VesselDocumentState } from '../doctypes/vessel-document-alpha-doctype';
+import { TwoPartyShape, TwoPartyState, VesselDocumentState } from '../doctypes/vessel-document-alpha-doctype';
 
 async function checkSignature(context: IContext, payload: any) {
   if (payload) {
@@ -17,35 +17,50 @@ async function checkSignature(context: IContext, payload: any) {
 export default class Ruleset {
   constructor(readonly context: IContext) {}
 
-  async canApply(current: VesselDocumentState, next: VesselDocumentShape): Promise<VesselDocumentState> {
+  async canonical(state: VesselDocumentState<TwoPartyState>) {
+    return {
+      doctype: state.doctype,
+      ruleset: state.ruleset,
+      content: state.data.current || state.data.freight,
+    };
+  }
+
+  async canApply(
+    current: VesselDocumentState<TwoPartyState>,
+    next: TwoPartyShape,
+  ): Promise<VesselDocumentState<TwoPartyState>> {
     if (current && next) {
-      const currentContent = current.current || current.freight;
-      console.log('Ruleset.canApply.currentContent', currentContent)
+      const currentContent = current.data.current || current.data.freight;
       if (currentContent.stage === 'agreement') {
         throw new Error(`Can not update after agreement is reached`);
       }
-      const toCheckA = next.content.partyA
+      const toCheckA = next.partyA
         ? {
-            ...next.content.payload,
-            ...next.content.partyA,
+            ...next.payload,
+            ...next.partyA,
           }
         : null;
-      const toCheckB = next.content.partyB
+      const toCheckB = next.partyB
         ? {
-            ...next.content.payload,
-            ...next.content.partyB,
+            ...next.payload,
+            ...next.partyB,
           }
         : null;
       const checkA = await checkSignature(this.context, toCheckA);
       const checkB = await checkSignature(this.context, toCheckB);
-      console.log('Ruleset.canApply.check', checkA, checkB)
       if (checkA || checkB) {
         if (currentContent && next) {
-          if (currentContent.content.payload.num <= next.content.payload.num) {
+          if (currentContent.payload.num <= next.payload.num) {
             const stage = checkA && checkB ? ('agreement' as 'agreement') : ('draft' as 'draft');
             return {
               ...current,
-              current: Object.assign({}, next, { stage: stage }),
+              data: {
+                ...current.data,
+                current: {
+                  ...next,
+                  stage: stage,
+                },
+              },
             };
           } else {
             throw new Error(`Can not decrease`);

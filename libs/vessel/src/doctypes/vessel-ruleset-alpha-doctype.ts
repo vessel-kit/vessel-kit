@@ -29,19 +29,25 @@ class Freight implements t.TypeOf<typeof json> {
     type: 'application/javascript';
     main: string;
   };
+  #ruleset: any;
 
   constructor(params: t.TypeOf<typeof json>, readonly context: IContext) {
     this.content = params.content;
-  }
-
-  async canApply<A>(prev: any, next: any): Promise<A> {
     const compartment = new Compartment({
       exports: {},
       console: console,
     });
     const Ruleset = compartment.evaluate(this.content.main);
-    const ruleset = new Ruleset(this.context);
-    return ruleset.canApply(prev, next);
+    this.#ruleset = new Ruleset(this.context);
+  }
+
+  // FIXME Any
+  async canApply<A>(prev: any, next: any): Promise<A> {
+    return this.#ruleset.canApply(prev, next);
+  }
+
+  async canonical<A>(state: A) {
+    return this.#ruleset.canonical(state);
   }
 }
 

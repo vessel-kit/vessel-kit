@@ -13,16 +13,13 @@ import { UpdateRecordWaiting } from '../util/update-record.codec';
 
 const DOCTYPE = 'vessel/document/1.0.0';
 
-export type VesselDocumentShapeBase = {
-  doctype: string;
-  ruleset: string;
-  content: {
-    payload: {
-      num: number;
-    };
-    partyA?: Signature;
-    partyB?: Signature;
+export type TwoPartyShape = {
+  payload: {
+    num: number;
   };
+  partyA?: Signature;
+  partyB?: Signature;
+  stage: 'draft' | 'agreement';
 };
 
 type Signature = {
@@ -31,30 +28,44 @@ type Signature = {
   signature: string;
 };
 
-export type VesselDocumentShape = VesselDocumentShapeBase & Signature;
-export type VesselDocumentState = {
+export type VesselDocumentShape<A> = {
   doctype: string;
   ruleset: string;
-  current: (VesselDocumentShape & { stage: 'draft' | 'agreement' }) | null;
-  freight: VesselDocumentShape & { stage: 'draft' | 'agreement' };
+  content: A;
+};
+
+export type TwoPartyState = {
+  current: TwoPartyShape | null;
+  freight: TwoPartyShape;
   anchor: AnchorState;
 };
 
-function isShape(input: unknown): input is VesselDocumentShape {
+export type VesselDocumentState<A> = {
+  doctype: string;
+  ruleset: string;
+  data: A;
+};
+
+function isShape<A>(input: unknown): input is VesselDocumentShape<A> {
+  // TODO UNKNOWN
   return typeof input === 'object' && 'doctype' in input && (input as any).doctype == DOCTYPE;
 }
 
-function isVesselDocument(
+function isVesselDocument<State, Shape>(
   document: IDocument<unknown, unknown>,
-): document is IDocument<VesselDocumentState, VesselDocumentShape> {
+): document is IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>> {
+  // TODO UNKNOWN
   return document.state.doctype === DOCTYPE;
 }
 
-export class VesselDocument {
-  readonly #document: IDocument<VesselDocumentState, VesselDocumentShape>;
-  #canonical: VesselDocumentShape;
+export class VesselDocument<State, Shape> {
+  readonly #document: IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>>;
+  #canonical: VesselDocumentShape<Shape>;
 
-  constructor(document: IDocument<VesselDocumentState, VesselDocumentShape>, canonical: VesselDocumentShape) {
+  constructor(
+    document: IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>>,
+    canonical: VesselDocumentShape<Shape>,
+  ) {
     this.#document = document;
     this.#canonical = canonical;
     this.#document.state$.subscribe(async () => {
@@ -62,8 +73,8 @@ export class VesselDocument {
     });
   }
 
-  static async fromDocument(document: IDocument<unknown, unknown>) {
-    if (isVesselDocument(document)) {
+  static async fromDocument<State, Shape>(document: IDocument<unknown, unknown>) {
+    if (isVesselDocument<State, Shape>(document)) {
       const canonical = await document.canonical();
       return new VesselDocument(document, canonical);
     } else {
@@ -71,15 +82,18 @@ export class VesselDocument {
     }
   }
 
-  get document(): IDocument<VesselDocumentState, VesselDocumentShape> {
+  get document(): IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>> {
     return this.#document;
   }
 
-  async change(
-    mutation: (t: VesselDocumentShape) => Promise<VesselDocumentShape> | VesselDocumentShape,
-  ): Promise<void> {
-    const next = await produce(this.#canonical, mutation);
-    const patch = jsonPatch.compare(this.#canonical, next);
+  async change(mutation: (t: Shape) => Promise<Shape> | Shape): Promise<void> {
+    const shape = this.#canonical.content;
+    const nextShape = await produce(shape, mutation);
+    const nextCanonical = {
+      ...this.#canonical,
+      content: nextShape,
+    };
+    const patch = jsonPatch.compare(this.#canonical, nextCanonical);
     const payloadToSign = UpdateRecordWaiting.encode({
       patch: patch,
       prev: this.#document.log.last,
@@ -90,18 +104,23 @@ export class VesselDocument {
   }
 }
 
-class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
+class Handler extends DoctypeHandler<VesselDocumentState<TwoPartyState>, VesselDocumentShape<TwoPartyShape>> {
   readonly name = DOCTYPE;
 
-  async knead(genesisRecord: unknown): Promise<VesselDocumentState> {
-    if (isShape(genesisRecord)) {
+  async knead(genesisRecord: unknown): Promise<VesselDocumentState<TwoPartyState>> {
+    if (isShape<TwoPartyShape>(genesisRecord)) {
       return {
         doctype: genesisRecord.doctype,
         ruleset: genesisRecord.ruleset,
-        current: null,
-        freight: Object.assign({}, genesisRecord, { stage: 'draft' as 'draft' }),
-        anchor: {
-          status: AnchoringStatus.NOT_REQUESTED,
+        data: {
+          current: null,
+          freight: {
+            ...genesisRecord.content,
+            stage: 'draft',
+          },
+          anchor: {
+            status: AnchoringStatus.NOT_REQUESTED,
+          },
         },
       };
     } else {
@@ -111,16 +130,14 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
   }
 
   async canApply(
-    state: VesselDocumentState,
-    next: VesselDocumentShape,
+    state: VesselDocumentState<TwoPartyState>,
+    next: TwoPartyShape,
     rulesetAddress?: CeramicDocumentId,
-  ): Promise<VesselDocumentState> {
-    console.log('canApply', state, next);
+  ): Promise<VesselDocumentState<TwoPartyState>> {
     const effectiveRulesetCid = rulesetAddress || CeramicDocumentId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
     const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
-    const nextState = await ruleset.canApply<VesselDocumentState>(state, next);
-    console.log('canApply.result', nextState);
+    const nextState = await ruleset.canApply<VesselDocumentState<TwoPartyState>>(state, next);
     if (!nextState) {
       console.error('Can not apply', state, next);
       throw new Error(`Can not apply`);
@@ -130,18 +147,18 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
 
   async applyUpdate(
     updateRecord: RecordWrap,
-    state: VesselDocumentState,
+    state: VesselDocumentState<TwoPartyState>,
     docId: CeramicDocumentId,
-  ): Promise<VesselDocumentState> {
+  ): Promise<VesselDocumentState<TwoPartyState>> {
     if (!(updateRecord.load.id && updateRecord.load.id.equals(docId.cid))) {
       throw new InvalidDocumentUpdateLinkError(`Expected ${docId.cid} id while got ${updateRecord.load.id}`);
     }
     await this.context.assertSignature(updateRecord.load);
-    const next = jsonPatch.applyPatch(state.current || state.freight, updateRecord.load.patch, false, false)
+    const next = jsonPatch.applyPatch(state.data.current || state.data.freight, updateRecord.load.patch, false, false)
       .newDocument;
     await this.canApply(state, next);
-    state.current = next;
-    state.anchor = {
+    state.data.current = next;
+    state.data.anchor = {
       status: AnchoringStatus.NOT_REQUESTED,
     };
     return state;
@@ -162,14 +179,14 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
   async applyAnchor(
     anchorRecord: RecordWrap,
     proof: AnchorProof,
-    state: VesselDocumentState,
-  ): Promise<VesselDocumentState> {
+    state: VesselDocumentState<TwoPartyState>,
+  ): Promise<VesselDocumentState<TwoPartyState>> {
     return produce(state, async (next) => {
-      if (next.current) {
-        next.freight = next.current;
-        next.current = null;
+      if (next.data.current) {
+        next.data.freight = next.data.current;
+        next.data.current = null;
       }
-      next.anchor = {
+      next.data.anchor = {
         status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
         proof: {
           chainId: proof.chainId.toString(),
@@ -182,21 +199,28 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
     });
   }
 
-  async canonical(state: VesselDocumentState): Promise<VesselDocumentShape> {
-    return state.current || state.freight;
+  async canonical(state: VesselDocumentState<TwoPartyState>): Promise<VesselDocumentShape<TwoPartyShape>> {
+    const effectiveRulesetCid = CeramicDocumentId.fromString(state.ruleset);
+    const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
+    const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
+    return ruleset.canonical(state);
   }
 
-  async apply(recordWrap, state: VesselDocumentState, docId): Promise<VesselDocumentState> {
+  async apply(
+    recordWrap,
+    state: VesselDocumentState<TwoPartyState>,
+    docId,
+  ): Promise<VesselDocumentState<TwoPartyState>> {
     const record = recordWrap.load;
     if (record.prev) {
       if (record.proof) {
         const proof = await this.context.verifyAnchor(recordWrap);
         return produce(state, async (next) => {
-          if (next.current) {
-            next.freight = next.current;
-            next.current = null;
+          if (next.data.current) {
+            next.data.freight = next.data.current;
+            next.data.current = null;
           }
-          next.anchor = {
+          next.data.anchor = {
             status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
             proof: {
               chainId: proof.chainId.toString(),
@@ -209,8 +233,9 @@ class Handler extends DoctypeHandler<VesselDocumentState, VesselDocumentShape> {
         });
       } else {
         await this.context.assertSignature(record);
-        const next = jsonPatch.applyPatch(state.current || state.freight, record.patch, false, false).newDocument;
-        return this.canApply(state, next);
+        const canonical = await this.canonical(state);
+        const next = jsonPatch.applyPatch(canonical, record.patch, false, false).newDocument;
+        return this.canApply(state, next.content);
       }
     } else {
       throw new Error(`Can not apply genesis`);
