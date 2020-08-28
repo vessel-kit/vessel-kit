@@ -42,7 +42,7 @@ export class Client {
         url.searchParams.append('path', path);
       }
       const response = await axios.get(url.toString());
-      return JSON.parse(response.data);
+      return response.data
     };
     this.#context = new Context(
       () => {
