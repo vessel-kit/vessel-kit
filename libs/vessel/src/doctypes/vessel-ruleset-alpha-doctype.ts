@@ -41,6 +41,10 @@ class Freight implements t.TypeOf<typeof json> {
     this.#ruleset = new Ruleset(this.context);
   }
 
+  async knead(genesisRecord: unknown) {
+    return this.#ruleset.knead(genesisRecord);
+  }
+
   // FIXME Any
   async canApply<A>(prev: any, next: any): Promise<A> {
     return this.#ruleset.canApply(prev, next);

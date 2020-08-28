@@ -104,25 +104,15 @@ export class VesselDocument<State, Shape> {
   }
 }
 
-class Handler extends DoctypeHandler<VesselDocumentState<TwoPartyState>, VesselDocumentShape<TwoPartyShape>> {
+class Handler<Shape> extends DoctypeHandler<VesselDocumentState<TwoPartyState>, VesselDocumentShape<Shape>> {
   readonly name = DOCTYPE;
 
   async knead(genesisRecord: unknown): Promise<VesselDocumentState<TwoPartyState>> {
-    if (isShape<TwoPartyShape>(genesisRecord)) {
-      return {
-        doctype: genesisRecord.doctype,
-        ruleset: genesisRecord.ruleset,
-        data: {
-          current: null,
-          freight: {
-            ...genesisRecord.content,
-            stage: 'draft',
-          },
-          anchor: {
-            status: AnchoringStatus.NOT_REQUESTED,
-          },
-        },
-      };
+    if (isShape<unknown>(genesisRecord)) {
+      const effectiveRulesetCid = CeramicDocumentId.fromString(genesisRecord.ruleset);
+      const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
+      const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
+      return ruleset.knead(genesisRecord);
     } else {
       console.error('Invalid shape for VesselDocumentAlpha', genesisRecord);
       throw new Error(`Invalid shape for VesselDocumentAlpha`);
@@ -131,7 +121,7 @@ class Handler extends DoctypeHandler<VesselDocumentState<TwoPartyState>, VesselD
 
   async canApply(
     state: VesselDocumentState<TwoPartyState>,
-    next: TwoPartyShape,
+    next: Shape,
     rulesetAddress?: CeramicDocumentId,
   ): Promise<VesselDocumentState<TwoPartyState>> {
     const effectiveRulesetCid = rulesetAddress || CeramicDocumentId.fromString(state.ruleset);
@@ -143,25 +133,6 @@ class Handler extends DoctypeHandler<VesselDocumentState<TwoPartyState>, VesselD
       throw new Error(`Can not apply`);
     }
     return nextState;
-  }
-
-  async applyUpdate(
-    updateRecord: RecordWrap,
-    state: VesselDocumentState<TwoPartyState>,
-    docId: CeramicDocumentId,
-  ): Promise<VesselDocumentState<TwoPartyState>> {
-    if (!(updateRecord.load.id && updateRecord.load.id.equals(docId.cid))) {
-      throw new InvalidDocumentUpdateLinkError(`Expected ${docId.cid} id while got ${updateRecord.load.id}`);
-    }
-    await this.context.assertSignature(updateRecord.load);
-    const next = jsonPatch.applyPatch(state.data.current || state.data.freight, updateRecord.load.patch, false, false)
-      .newDocument;
-    await this.canApply(state, next);
-    state.data.current = next;
-    state.data.anchor = {
-      status: AnchoringStatus.NOT_REQUESTED,
-    };
-    return state;
   }
 
   async order(a: any, b: any): Promise<Ordering> {
@@ -199,7 +170,7 @@ class Handler extends DoctypeHandler<VesselDocumentState<TwoPartyState>, VesselD
     });
   }
 
-  async canonical(state: VesselDocumentState<TwoPartyState>): Promise<VesselDocumentShape<TwoPartyShape>> {
+  async canonical(state: VesselDocumentState<TwoPartyState>): Promise<VesselDocumentShape<Shape>> {
     const effectiveRulesetCid = CeramicDocumentId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
     const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);

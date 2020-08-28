@@ -1,5 +1,11 @@
 import type { IContext } from '../context';
-import { TwoPartyShape, TwoPartyState, VesselDocumentState } from '../doctypes/vessel-document-alpha-doctype';
+import {
+  TwoPartyShape,
+  TwoPartyState,
+  VesselDocumentShape,
+  VesselDocumentState,
+} from '../doctypes/vessel-document-alpha-doctype';
+import type { AnchoringStatus } from '@potter/anchoring';
 
 async function checkSignature(context: IContext, payload: any) {
   if (payload) {
@@ -14,6 +20,14 @@ async function checkSignature(context: IContext, payload: any) {
   }
 }
 
+const DOCTYPE = 'vessel/document/1.0.0';
+
+function isShape<A>(input: unknown): input is VesselDocumentShape<A> {
+  // TODO UNKNOWN
+  // TODO Must be specific to ruleset
+  return typeof input === 'object' && 'doctype' in input && (input as any).doctype == DOCTYPE;
+}
+
 export default class Ruleset {
   constructor(readonly context: IContext) {}
 
@@ -23,6 +37,25 @@ export default class Ruleset {
       ruleset: state.ruleset,
       content: state.data.current || state.data.freight,
     };
+  }
+
+  async knead(genesisRecord: unknown): Promise<VesselDocumentState<TwoPartyState>> {
+    if (isShape<TwoPartyShape>(genesisRecord)) {
+      return {
+        doctype: genesisRecord.doctype,
+        ruleset: genesisRecord.ruleset,
+        data: {
+          current: null,
+          freight: {
+            ...genesisRecord.content,
+            stage: 'draft' as 'draft',
+          },
+          anchor: {
+            status: 'NOT_REQUESTED' as AnchoringStatus.NOT_REQUESTED,
+          },
+        },
+      };
+    }
   }
 
   async canApply(
