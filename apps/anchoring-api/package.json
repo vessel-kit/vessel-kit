@@ -54,7 +54,7 @@
     "apollo-server-express": "^2.13.1",
     "caip": "^0.9.2",
     "cids": "^0.8.0",
-    "class-transformer": "^0.2.3",
+    "class-transformer": "^0.3.1",
     "cron": "^1.7.2",
     "cron-parser": "^2.13.0",
     "decko": "^1.2.0",
