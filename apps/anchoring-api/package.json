@@ -1,7 +1,7 @@
 {
-  "name": "@potter/anchoring-api",
+  "name": "@vessel-kit/anchoring-api",
   "version": "0.0.1",
-  "description": "Anchoring Service API for Ceramic Protocol",
+  "description": "Anchoring Service API",
   "author": {
     "name": "Sergey Ukustov",
     "email": "sergey@ukstv.me"
@@ -47,10 +47,10 @@
     "@nestjs/swagger": "^4.5.7",
     "@nestjs/terminus": "^7.0.1",
     "@nestjs/typeorm": "^7.0.0",
-    "@potter/anchoring": "workspace:*",
-    "@potter/codec": "workspace:*",
-    "@potter/blockchain-connection-string": "workspace:*",
-    "@potter/vessel": "workspace:*",
+    "@vessel-kit/anchoring": "workspace:*",
+    "@vessel-kit/codec": "workspace:*",
+    "@vessel-kit/blockchain-connection-string": "workspace:*",
+    "@vessel-kit/vessel": "workspace:*",
     "apollo-server-express": "^2.13.1",
     "caip": "^0.9.2",
     "cids": "^0.8.0",

@@ -1,5 +1,5 @@
 import { FindOperator, FindOperatorType, ValueTransformer } from 'typeorm';
-import { UuidValue } from '@potter/anchoring';
+import { UuidValue } from '@vessel-kit/anchoring';
 
 export const uuidTransformer: ValueTransformer = {
   to: (entityValue: UuidValue | FindOperator<UuidValue> | undefined) => {

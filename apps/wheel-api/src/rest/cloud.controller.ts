@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { CidStringCodec, DecodePipe } from '@potter/codec';
+import { CidStringCodec, DecodePipe } from '@vessel-kit/codec';
 import CID from 'cids';
 import { IpfsService } from './ipfs.service';
 

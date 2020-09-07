@@ -9,7 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix("api");
 
   // const options = new DocumentBuilder()
-  //   .setTitle('Potter Anchoring')
+  //   .setTitle('Vessel Anchoring')
   //   .setDescription('Implementation of Ceramic protocol Anchoring service')
   //   .setVersion('0.0.1')
   //   .build();

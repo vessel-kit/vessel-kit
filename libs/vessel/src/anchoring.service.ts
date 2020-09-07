@@ -1,5 +1,5 @@
 import { Cloud } from './cloud/cloud';
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import { Observable } from 'rxjs';
 import CID from 'cids';
 import {
@@ -8,9 +8,9 @@ import {
   BlockchainReader,
   IBlockchainReader,
   AnchorProof,
-} from '@potter/anchoring';
-import { RecordWrap } from '@potter/codec';
-import { ConnectionString } from '@potter/blockchain-connection-string';
+} from '@vessel-kit/anchoring';
+import { RecordWrap } from '@vessel-kit/codec';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 
 export class AnchoringService {
   readonly #anchoring: AnchoringHttpClient;

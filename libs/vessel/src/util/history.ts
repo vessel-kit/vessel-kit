@@ -1,6 +1,6 @@
 import CID from 'cids';
 import * as t from 'io-ts';
-import { CidStringCodec } from '@potter/codec';
+import { CidStringCodec } from '@vessel-kit/codec';
 
 export class History {
   #log: CID[];

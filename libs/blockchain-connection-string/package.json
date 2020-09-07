@@ -1,5 +1,5 @@
 {
-  "name": "@potter/blockchain-connection-string",
+  "name": "@vessel-kit/blockchain-connection-string",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

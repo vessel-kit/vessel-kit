@@ -6,8 +6,8 @@ import { AnchorStorage } from '../storage/anchor.storage';
 import { UnreachableCaseError } from '../unreachable-case.error';
 import { AnchorRecord } from '../storage/anchor.record';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
-import { AnchoringStatus, AnchorResponsePayload } from '@potter/anchoring';
-import { CeramicDocumentId } from '@potter/codec';
+import { AnchoringStatus, AnchorResponsePayload } from '@vessel-kit/anchoring';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 
 export class RequestPresentation {
   readonly docId = CeramicDocumentId.fromString(this.request.docId);

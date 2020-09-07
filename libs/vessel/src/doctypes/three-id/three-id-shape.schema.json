@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://potter.ukstv.me/three-id-shape.schema.json#",
+  "$id": "https://vessel.ukstv.me/three-id-shape.schema.json#",
   "title": "ThreeId Shape",
   "description": "JSON Schema for 3id file",
   "definitions": {

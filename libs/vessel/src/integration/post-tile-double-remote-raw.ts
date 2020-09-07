@@ -5,7 +5,7 @@ import { sleep } from './sleep.util';
 import axios from 'axios';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
-import { decodeThrow } from '@potter/codec';
+import { decodeThrow } from '@vessel-kit/codec';
 import { SnapshotCodec } from '..';
 import * as t from 'io-ts';
 

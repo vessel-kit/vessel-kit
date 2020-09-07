@@ -7,10 +7,10 @@ import { AnchorRecord } from '../storage/anchor.record';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { TransactionStorage } from '../storage/transaction.storage';
 import { TransactionRecord } from '../storage/transaction.record';
-import { AnchoringStatus } from '@potter/anchoring';
+import { AnchoringStatus } from '@vessel-kit/anchoring';
 import { ConfigService } from '../commons/config.service';
-import { Anchoring, MerklePathStringCodec } from '@potter/anchoring';
-import { ConnectionString } from '@potter/blockchain-connection-string';
+import { Anchoring, MerklePathStringCodec } from '@vessel-kit/anchoring';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 
 @Injectable()
 export class AnchoringService {

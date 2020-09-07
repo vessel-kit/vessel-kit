@@ -1,5 +1,5 @@
 import { EMPTY_CONTEXT, IContext } from '../context';
-import { CeramicDocumentId, RecordWrap } from '@potter/codec';
+import { CeramicDocumentId, RecordWrap } from '@vessel-kit/codec';
 import { Ordering } from './ordering';
 
 abstract class GenericHandler {

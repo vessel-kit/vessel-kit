@@ -1,8 +1,8 @@
 import { ISignor } from '../signor/signor.interface';
 import { ThreeIdDoctype } from '../doctypes/three-id/three-id-doctype';
 import axios from 'axios';
-import { BufferMultibaseCodec, decodeThrow } from '@potter/codec';
-import { CeramicDocumentId } from '@potter/codec';
+import { BufferMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import { ThreeIdentifierCidCodec } from '../three-identifier';
 import { RemoteDocumentService } from './remote-document-service';
 import { Context, IContext } from '../context';

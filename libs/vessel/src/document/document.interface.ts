@@ -1,5 +1,5 @@
 import { FrozenSubject } from '../util/frozen-subject';
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import { History, HistoryCodec } from '../util/history';
 import * as t from 'io-ts'
 import { IContext } from '../context';

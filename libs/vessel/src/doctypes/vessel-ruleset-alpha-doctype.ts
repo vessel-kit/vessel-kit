@@ -1,13 +1,13 @@
 import * as t from 'io-ts';
 import { DoctypeHandler } from '../document/doctype';
-import { decodeThrow, RecordWrap, validateThrow } from '@potter/codec';
+import { decodeThrow, RecordWrap, validateThrow } from '@vessel-kit/codec';
 import './ses';
 import { IContext } from '../context';
 
 import * as fs from 'fs';
 import terser from 'terser';
 import * as ts from 'typescript';
-import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
+import { AnchoringStatus, AnchorProof } from '@vessel-kit/anchoring';
 import produce from 'immer';
 import { Ordering } from '../document/ordering';
 import { AnchorState } from '../document/anchor-state';

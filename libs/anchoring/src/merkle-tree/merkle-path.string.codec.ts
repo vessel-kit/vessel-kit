@@ -2,7 +2,7 @@ import { either } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { PathDirectionStringCodec } from './path-direction.string.codec';
 import { MerklePath } from './merkle-path';
-import { splitString } from '@potter/codec';
+import { splitString } from '@vessel-kit/codec';
 
 const PathDirectionArrayStringCodec = t.string.pipe(
   splitString('/', PathDirectionStringCodec),

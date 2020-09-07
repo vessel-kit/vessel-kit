@@ -1,9 +1,13 @@
 import * as t from 'io-ts';
 import { AnchoringStatus } from '../anchoring-status';
-import { DateISO8601Codec, CidStringCodec, CeramicDocumentIdStringCodec, DateNumberCodec } from '@potter/codec';
+import { DateISO8601Codec, CidStringCodec, CeramicDocumentIdStringCodec, DateNumberCodec } from '@vessel-kit/codec';
 
 const NotAnchored = t.type({
-  status: t.union([t.literal(AnchoringStatus.FAILED), t.literal(AnchoringStatus.NOT_REQUESTED), t.literal(AnchoringStatus.OUTDATED)]),
+  status: t.union([
+    t.literal(AnchoringStatus.FAILED),
+    t.literal(AnchoringStatus.NOT_REQUESTED),
+    t.literal(AnchoringStatus.OUTDATED),
+  ]),
   id: t.string,
   cid: t.string.pipe(CidStringCodec),
   docId: t.string.pipe(CeramicDocumentIdStringCodec),

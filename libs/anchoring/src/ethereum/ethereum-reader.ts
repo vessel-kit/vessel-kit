@@ -1,7 +1,7 @@
 import { IBlockchainReaderHandler } from '../blockchain-reader-handler.interface';
 import { AnchorProof } from '../anchor-proof';
 import { ChainID } from 'caip';
-import { ConnectionString } from '@potter/blockchain-connection-string';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 import { decode } from 'typestub-multihashes';
 
 const ETHEREUM_NAMESPACE = 'eip155';

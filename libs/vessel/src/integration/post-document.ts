@@ -5,7 +5,7 @@ import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import { ThreeIdentifier } from '../three-identifier';
-import { decodeThrow } from '@potter/codec';
+import { decodeThrow } from '@vessel-kit/codec';
 
 const IPFS_URL = 'http://localhost:5001';
 const ipfs = ipfsClient(IPFS_URL);

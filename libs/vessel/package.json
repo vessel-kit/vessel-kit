@@ -1,5 +1,5 @@
 {
-  "name": "@potter/vessel",
+  "name": "@vessel-kit/vessel",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,9 +13,9 @@
   "dependencies": {
     "@ethersproject/hdnode": "^5.0.1",
     "@ethersproject/providers": "^5.0.3",
-    "@potter/anchoring": "workspace:*",
-    "@potter/blockchain-connection-string": "workspace:*",
-    "@potter/codec": "workspace:*",
+    "@vessel-kit/anchoring": "workspace:*",
+    "@vessel-kit/blockchain-connection-string": "workspace:*",
+    "@vessel-kit/codec": "workspace:*",
     "ajv": "^6.12.3",
     "ajv-merge-patch": "^4.1.0",
     "axios": "^0.19.2",

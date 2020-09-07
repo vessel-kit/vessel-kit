@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { css } from "theme-ui";
-import { PALETTE } from "@potter/ui-shared";
+import { PALETTE } from "@vessel-kit/ui-shared";
 import { Box } from "@theme-ui/components";
 
 const SubtitleE = styled.span(

@@ -1,6 +1,6 @@
 import { FrozenSubject, FrozenSubjectRead } from '../util/frozen-subject';
 import { Observable } from 'rxjs';
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import CID from 'cids';
 import { IContext } from '../context';
 import { Snapshot } from './document.interface';

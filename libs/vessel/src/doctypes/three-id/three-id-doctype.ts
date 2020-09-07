@@ -6,9 +6,9 @@ import { assertSignature } from '../../assert-signature';
 import Ajv from 'ajv';
 import * as ThreeIdShapeSchema from './three-id-shape.schema.json';
 import { ThreeIdShape } from './three-id-shape';
-import { AnchoringStatus } from '@potter/anchoring';
+import { AnchoringStatus } from '@vessel-kit/anchoring';
 import produce from 'immer';
-import { RecordWrap } from '@potter/codec';
+import { RecordWrap } from '@vessel-kit/codec';
 import { Ordering } from '../../document/ordering';
 import { ThreeIdState } from './three-id-state';
 

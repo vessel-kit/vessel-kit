@@ -2,12 +2,12 @@ import { IBlockchainReaderHandler } from './blockchain-reader-handler.interface'
 import { Ipfs } from 'ipfs';
 import { AnchorProof, AnchorProofIpldCodec } from './anchor-proof';
 import { AnchorLeaf, AnchorLeafIpldCodec } from './anchor-leaf';
-import { RecordWrap, decodeThrow } from '@potter/codec';
+import { RecordWrap, decodeThrow } from '@vessel-kit/codec';
 import CID from 'cids';
 import { MerklePathStringCodec } from './merkle-tree/merkle-path.string.codec';
 import { ChainID } from 'caip';
 import { EthereumReader } from './ethereum/ethereum-reader';
-import { ConnectionString } from '@potter/blockchain-connection-string';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 
 export class MisleadingAnchorError extends Error {
   constructor(record: any) {

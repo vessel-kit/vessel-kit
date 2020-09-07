@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RequestRecord } from './request.record';
 import { Repository, In } from 'typeorm';
 import CID from 'cids';
-import { AnchoringStatus } from '@potter/anchoring';
+import { AnchoringStatus } from '@vessel-kit/anchoring';
 
 @Injectable()
 export class RequestStorage {

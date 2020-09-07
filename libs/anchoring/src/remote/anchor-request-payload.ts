@@ -1,6 +1,5 @@
 import * as t from 'io-ts';
-import { CidStringCodec } from '@potter/codec';
-import { CeramicDocumentIdStringCodec } from '@potter/codec';
+import { CidStringCodec, CeramicDocumentIdStringCodec } from '@vessel-kit/codec';
 
 export const AnchorRequestPayload = t.type({
   cid: t.string.pipe(CidStringCodec),

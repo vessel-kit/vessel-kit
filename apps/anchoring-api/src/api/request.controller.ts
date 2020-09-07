@@ -4,13 +4,13 @@ import { RequestCreateScenario } from '../scenarios/request-create.scenario';
 import { RequestGetManyScenario } from '../scenarios/request-get-many.scenario';
 import { RequestGetScenario } from '../scenarios/request-get.scenario';
 import { RequestStorage } from '../storage/request.storage';
-import { CidStringCodec, DecodePipe } from '@potter/codec';
+import { CidStringCodec, DecodePipe } from '@vessel-kit/codec';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { IpfsService } from '../anchoring/ipfs.service';
 import * as multihash from 'multihashes';
 import { RequestPresentation } from './request.presentation';
-import { AnchorRequestPayload } from '@potter/anchoring';
+import { AnchorRequestPayload } from '@vessel-kit/anchoring';
 import * as t from 'io-ts';
 
 const PAGE_SIZE = 25;

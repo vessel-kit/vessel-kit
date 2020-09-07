@@ -1,6 +1,6 @@
 import { ILogger } from './util/logger.interface';
 import { Cloud } from './cloud/cloud';
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import { Document } from './document/document';
 import { DocumentService } from './document.service';
 import { MessageTyp } from './cloud/message-typ';

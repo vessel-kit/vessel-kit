@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
-import { AnchoringStatus } from '@potter/anchoring';
-import { CidStringCodec, DateISO8601Codec } from '@potter/codec';
+import { AnchoringStatus } from '@vessel-kit/anchoring';
+import { CidStringCodec, DateISO8601Codec } from '@vessel-kit/codec';
 
 export interface AnchorDone {
   status: AnchoringStatus.ANCHORED,

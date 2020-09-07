@@ -1,7 +1,7 @@
 import { ConfigService } from '../commons/config.service';
-import { Ceramic } from '@potter/vessel';
+import { Ceramic } from '@vessel-kit/vessel';
 import ipfsClient from 'ipfs-http-client';
-import { ConnectionString } from '@potter/blockchain-connection-string';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 
 export const ceramicProvider = {
   provide: Ceramic,

@@ -1,11 +1,9 @@
-import { ConnectionString } from '@potter/blockchain-connection-string';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 import { BlockchainWriter } from './blockchain-writer';
 import { IBlockchainWriter } from './blockchain-writer.interface';
 import { IAnchoringRequest } from './anchoring-request.interface';
 import { ipfsMerge, MerkleTree } from './merkle-tree/merkle-tree';
 import { Ipfs } from 'ipfs';
-import { PathDirection } from './merkle-tree/path-direction';
-import { MerkleNode } from './merkle-tree/merkle-node';
 import { BlockchainTransaction } from './blockchain-transaction';
 import CID from 'cids';
 import { AnchorProofIpldCodec } from './anchor-proof';

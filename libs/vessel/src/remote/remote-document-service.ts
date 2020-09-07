@@ -2,7 +2,7 @@ import { FrozenSubject, FrozenSubjectRead } from '../util/frozen-subject';
 import { interval, queueScheduler, Observable } from 'rxjs';
 import axios from 'axios';
 import * as _ from 'lodash';
-import { CeramicDocumentId, decodeThrow } from '@potter/codec';
+import { CeramicDocumentId, decodeThrow } from '@vessel-kit/codec';
 import { IDocumentService } from '../document/document.service.interface';
 import CID from 'cids';
 import { IContext } from '../context';

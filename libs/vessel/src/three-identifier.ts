@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import CID from 'cids';
-import { CidStringCodec } from '@potter/codec';
+import { CidStringCodec } from '@vessel-kit/codec';
 import { isRight } from 'fp-ts/lib/Either';
 
 const format = new RegExp(/^did:3:(\w+)$/i);

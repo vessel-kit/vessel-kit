@@ -4,8 +4,8 @@ import { ILoad, ThreeIdResolver } from './resolver/three-id-resolver';
 import { Resolver } from 'did-resolver';
 import { assertSignature } from './assert-signature';
 import CID from 'cids';
-import { RecordWrap } from '@potter/codec';
-import { AnchorProof } from '@potter/anchoring';
+import { RecordWrap } from '@vessel-kit/codec';
+import { AnchorProof } from '@vessel-kit/anchoring';
 import { AnchoringService } from './anchoring.service';
 import { JWTHeader } from './signor/jwt-payload';
 

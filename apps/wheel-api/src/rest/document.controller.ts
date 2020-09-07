@@ -7,15 +7,15 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { Ceramic } from '@potter/vessel';
+import { Ceramic } from '@vessel-kit/vessel';
 import { LiveGateway } from '../live/live.gateway';
 import { DocumentRecord } from '../storage/document.record';
 import { DocumentStorage } from '../storage/document.storage';
 import { DocumentStatePresentation } from './document-state.presentation';
-import { CeramicDocumentId, CidStringCodec, DecodePipe } from '@potter/codec';
+import { CeramicDocumentId, CidStringCodec, DecodePipe } from '@vessel-kit/codec';
 import CID from 'cids';
 import { DateTime } from 'luxon';
-import { IDocument } from '@potter/vessel';
+import { IDocument } from '@vessel-kit/vessel';
 
 @Controller('/api/v0/ceramic')
 export class DocumentController {

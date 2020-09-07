@@ -3,7 +3,7 @@ import { ThreeIdState } from './three-id-state';
 import { ThreeIdShape } from './three-id-shape';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../../signor/jwk.multicodec.codec';
-import { BufferMultibaseCodec, decodeThrow } from '@potter/codec';
+import { BufferMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
 import jose from 'jose';
 import * as _ from 'lodash';
 import jsonPatch from 'fast-json-patch';

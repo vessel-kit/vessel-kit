@@ -2,11 +2,11 @@ import { Cloud } from './cloud/cloud';
 import { History } from './util/history';
 import CID from 'cids';
 import { ILogger } from './util/logger.interface';
-import { RecordWrap } from '@potter/codec';
+import { RecordWrap } from '@vessel-kit/codec';
 import { AnchoringService } from './anchoring.service';
 import { Snapshot } from './document/document.interface';
 import { IDoctype } from './document/doctype';
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import { Ordering } from './document/ordering';
 
 export class InvalidOrdering extends Error {

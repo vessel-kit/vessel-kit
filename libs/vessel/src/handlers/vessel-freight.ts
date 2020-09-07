@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { CidStringCodec } from '@potter/codec';
+import { CidStringCodec } from '@vessel-kit/codec';
 
 export const VESSEL_RULESET_DOCTYPE = 'vessel/ruleset/0.0.1';
 export const VESSEL_DOCUMENT_DOCTYPE = 'vessel/document/0.0.1';

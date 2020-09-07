@@ -1,4 +1,4 @@
-import { ConnectionString } from '@potter/blockchain-connection-string';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 import { EthereumWriter } from './ethereum/ethereum-writer';
 import { IBlockchainWriter } from './blockchain-writer.interface';
 

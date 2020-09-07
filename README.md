@@ -1,6 +1,6 @@
-# Potter
+# Vessel
 
-> Suite for Ceramic/Vessel protocol.
+> Dynamic content for decentralized web.
 
 ## Development
 

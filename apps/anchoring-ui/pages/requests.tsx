@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
 import styled from '@emotion/styled';
 import { css } from 'theme-ui';
 import { Stamp16 } from '@carbon/icons-react';
-import { PALETTE } from '@potter/ui-shared';
+import { PALETTE } from '@vessel-kit/ui-shared';
 
 interface RequestRecord {
   id: string;

@@ -2,7 +2,7 @@ import { Observable, queueScheduler, Subject } from 'rxjs';
 import CID from 'cids';
 import { filter } from 'rxjs/operators';
 import axios from 'axios';
-import { CeramicDocumentId, decodeThrow } from '@potter/codec';
+import { CeramicDocumentId, decodeThrow } from '@vessel-kit/codec';
 import * as t from 'io-ts';
 import { AnchorResponsePayload } from './anchor-response-payload';
 import { AnchorRequestPayload } from './anchor-request-payload';

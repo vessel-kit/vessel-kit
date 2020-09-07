@@ -3,7 +3,7 @@ import { RequestRecord } from './request.record';
 import { Injectable } from '@nestjs/common';
 import { PubSubService } from '../commons/pub-sub.service';
 import { AnchorStorage } from './anchor.storage';
-import { AnchoringStatus } from '@potter/anchoring';
+import { AnchoringStatus } from '@vessel-kit/anchoring';
 
 @EventSubscriber()
 @Injectable()

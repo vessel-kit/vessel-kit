@@ -10,8 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@potter/vessel": "workspace:*",
-    "@potter/anchoring": "workspace:*"
+    "@vessel-kit/vessel": "workspace:*",
+    "@vessel-kit/anchoring": "workspace:*"
   },
   "devDependencies": {}
 }

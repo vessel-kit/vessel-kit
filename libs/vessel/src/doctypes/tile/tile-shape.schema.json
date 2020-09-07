@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://potter.ukstv.me/tile.schema.json#",
+  "$id": "https://vessel.ukstv.me/tile.schema.json#",
   "title": "Tile Shape",
   "description": "JSON Schema for Tile file",
   "definitions": {

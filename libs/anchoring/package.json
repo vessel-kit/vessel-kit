@@ -1,5 +1,5 @@
 {
-  "name": "@potter/anchoring",
+  "name": "@vessel-kit/anchoring",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,8 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@potter/blockchain-connection-string": "workspace:*",
-    "@potter/codec": "workspace:*",
+    "@vessel-kit/blockchain-connection-string": "workspace:*",
+    "@vessel-kit/codec": "workspace:*",
     "axios": "^0.19.2",
     "caip": "^0.9.2",
     "cids": "^0.8.3",

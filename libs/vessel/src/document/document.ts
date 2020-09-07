@@ -1,4 +1,4 @@
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import { Subscription } from 'rxjs';
 import { FrozenSubject } from '../util/frozen-subject';
 import { IDocumentService } from './document.service.interface';

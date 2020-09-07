@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { CeramicDocumentIdCidCodec, CidObjectCodec, FastPatchOperationJsonCodec } from '@potter/codec';
+import { CeramicDocumentIdCidCodec, CidObjectCodec, FastPatchOperationJsonCodec } from '@vessel-kit/codec';
 import { ThreeIdentifier } from '../three-identifier';
 
 export const UpdateRecordWaiting = t.type({

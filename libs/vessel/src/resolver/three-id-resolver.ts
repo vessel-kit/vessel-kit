@@ -1,4 +1,4 @@
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import { Document } from '../document/document';
 import { DIDDocument, DIDResolver, ParsedDID } from 'did-resolver';
 import CID from 'cids';

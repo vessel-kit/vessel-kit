@@ -7,7 +7,7 @@ import CID from 'cids';
 import { History } from '../util/history';
 import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
-import { decodeThrow } from '@potter/codec';
+import { decodeThrow } from '@vessel-kit/codec';
 import { sortKeys } from '../util/sort-keys';
 import { SnapshotCodec } from '..';
 import * as t from 'io-ts';

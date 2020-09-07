@@ -1,5 +1,5 @@
 {
-  "name": "@potter/codec",
+  "name": "@vessel-kit/codec",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

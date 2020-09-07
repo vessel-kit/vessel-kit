@@ -1,4 +1,4 @@
-import { ConnectionString } from '@potter/blockchain-connection-string';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 import { ethers } from 'ethers';
 import CID from 'cids';
 import { ChainID } from 'caip';

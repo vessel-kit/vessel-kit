@@ -2,7 +2,7 @@
   "title": "JSON Patch",
   "description": "JSON schema for JSONPatch files",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://potter.ukstv.me/json-patch.schema.json#",
+  "$id": "https://vessel.ukstv.me/json-patch.schema.json#",
   "type": "array",
 
   "items": {

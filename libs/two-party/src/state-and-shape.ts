@@ -1,4 +1,4 @@
-import { AnchorState, Signature } from '@potter/vessel';
+import { AnchorState, Signature } from '@vessel-kit/vessel';
 
 export type TwoPartyShape = {
   payload: {

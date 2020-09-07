@@ -1,5 +1,5 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from 'typeorm';
-import { UuidValue } from '@potter/anchoring';
+import { UuidValue } from '@vessel-kit/anchoring';
 import { uuidTransformer } from './uuid.transformer';
 import CID from 'cids';
 import { cidTransformer } from './cid.transformer';

@@ -1,5 +1,5 @@
 import jose from 'jose';
-import { BufferMultibaseCodec } from '@potter/codec';
+import { BufferMultibaseCodec } from '@vessel-kit/codec';
 import * as t from 'io-ts';
 import { MapCodec } from './util/map-codec';
 import { isEmpty, lefts, rights } from 'fp-ts/lib/Array';

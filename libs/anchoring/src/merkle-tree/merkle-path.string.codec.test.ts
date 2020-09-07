@@ -1,7 +1,7 @@
 import { MerklePath } from './merkle-path';
 import { PathDirection } from './path-direction';
 import { MerklePathStringCodec } from './merkle-path.string.codec';
-import { decodeThrow } from '@potter/codec';
+import { decodeThrow } from '@vessel-kit/codec';
 
 test('encode', () => {
   const merklePath = new MerklePath([PathDirection.R, PathDirection.L, PathDirection.R]);

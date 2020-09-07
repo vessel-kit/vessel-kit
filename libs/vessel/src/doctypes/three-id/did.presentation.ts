@@ -4,7 +4,7 @@ import * as multicodec from 'multicodec';
 import { DIDDocument, PublicKey } from 'did-resolver';
 import { Authentication } from 'did-resolver/src/resolver';
 import { ThreeIdShape } from './three-id-shape';
-import { BufferMultibaseCodec, decodeThrow } from '@potter/codec';
+import { BufferMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
 import * as t from 'io-ts';
 
 const jwkCodec = t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec);

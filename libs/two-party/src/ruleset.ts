@@ -1,5 +1,5 @@
-import type { IContext, VesselDocumentShape, VesselDocumentState } from '@potter/vessel';
-import type { AnchoringStatus, AnchorProof } from '@potter/anchoring';
+import type { IContext, VesselDocumentShape, VesselDocumentState } from '@vessel-kit/vessel';
+import type { AnchoringStatus, AnchorProof } from '@vessel-kit/anchoring';
 import type { TwoPartyShape, TwoPartyState } from './state-and-shape';
 
 async function checkSignature(context: IContext, payload: any) {

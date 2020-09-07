@@ -1,12 +1,12 @@
 import { ILogger } from './util/logger.interface';
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import CID from 'cids';
-import { AnchoringStatus } from '@potter/anchoring';
+import { AnchoringStatus } from '@vessel-kit/anchoring';
 import { Cloud } from './cloud/cloud';
 import { AnchoringService } from './anchoring.service';
 import { DocumentUpdateService } from './document-update.service';
 import { FrozenSubject, FrozenSubjectRead } from './util/frozen-subject';
-import { RecordWrap, normalizeRecord } from '@potter/codec';
+import { RecordWrap, normalizeRecord } from '@vessel-kit/codec';
 import { MessageTyp } from './cloud/message-typ';
 import { filter, mergeMap } from 'rxjs/operators';
 import { IDocumentService } from './document/document.service.interface';

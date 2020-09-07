@@ -7,7 +7,7 @@ import {
   HeaderName,
   HeaderNavigation,
 } from "../styling/header";
-import { Layout, Shell } from "@potter/ui-shared";
+import { Layout, Shell } from "@vessel-kit/ui-shared";
 
 function App({ Component, pageProps }: AppProps) {
   return (

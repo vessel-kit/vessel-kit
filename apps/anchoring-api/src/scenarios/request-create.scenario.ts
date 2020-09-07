@@ -3,8 +3,8 @@ import { RequestRecord } from '../storage/request.record';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
-import { AnchoringStatus, UuidValue } from '@potter/anchoring';
-import { CeramicDocumentId, CeramicDocumentIdStringCodec } from '@potter/codec';
+import { AnchoringStatus, UuidValue } from '@vessel-kit/anchoring';
+import { CeramicDocumentId, CeramicDocumentIdStringCodec } from '@vessel-kit/codec';
 
 @Injectable()
 export class RequestCreateScenario {

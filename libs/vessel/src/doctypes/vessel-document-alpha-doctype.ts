@@ -1,9 +1,9 @@
 import { DoctypeHandler } from '../document/doctype';
 import { VesselRulesetAlphaDoctype } from './vessel-ruleset-alpha-doctype';
 import jsonPatch from 'fast-json-patch';
-import { AnchoringStatus, AnchorProof } from '@potter/anchoring';
+import { AnchoringStatus, AnchorProof } from '@vessel-kit/anchoring';
 import produce from 'immer';
-import { CeramicDocumentId } from '@potter/codec';
+import { CeramicDocumentId } from '@vessel-kit/codec';
 import { Ordering } from '../document/ordering';
 import { IDocument } from '..';
 import { UpdateRecordWaiting } from '../util/update-record.codec';

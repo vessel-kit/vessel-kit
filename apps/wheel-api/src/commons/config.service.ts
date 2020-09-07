@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import Joi from '@hapi/joi';
 import dotenv from 'dotenv';
-import { ConnectionString } from '@potter/blockchain-connection-string';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 
 export interface Config {
   PORT: number;

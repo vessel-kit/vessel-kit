@@ -4,7 +4,7 @@ import { IProvider } from './provider.interface';
 import { IdentityProviderWrap } from './identity-provider.wrap';
 import jose from 'jose';
 import { JWKMulticodecCodec } from './jwk.multicodec.codec';
-import { decodeThrow } from '@potter/codec';
+import { decodeThrow } from '@vessel-kit/codec';
 import { JWTPayload } from './jwt-payload';
 import { ISignor } from './signor.interface';
 import { ThreeIdentifier } from '../three-identifier';

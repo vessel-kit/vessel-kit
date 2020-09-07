@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import Joi, { CustomHelpers } from '@hapi/joi';
 import dotenv from 'dotenv';
 import cronParser from 'cron-parser';
-import { ConnectionString } from '@potter/blockchain-connection-string';
+import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 
 export interface Config {
   PORT: number;

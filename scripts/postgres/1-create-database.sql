@@ -1,1 +1,1 @@
-create database "dev-potter-anchoring";
+create database "dev-vessel-anchoring";

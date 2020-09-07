@@ -1,17 +1,17 @@
 {
-  "name": "@potter/root",
+  "name": "@vessel-kit/root",
   "private": true,
   "version": "1.0.0-a.0",
-  "description": "",
+  "description": "Dynamic content for distributed web",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OnderPlatform/potter.git"
+    "url": "git+https://github.com/vessel-kit/vessel-kit.git"
   },
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/OnderPlatform/potter/issues"
+    "url": "https://github.com/vessel-kit/vessel-kit/issues"
   },
-  "homepage": "https://github.com/OnderPlatform/potter#readme",
+  "homepage": "https://github.com/vessel-kit/vessel-kit#readme",
   "engines": {
     "node": ">=12.18 <13",
     "pnpm": ">=5"

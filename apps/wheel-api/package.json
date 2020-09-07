@@ -1,5 +1,5 @@
 {
-  "name": "@potter/wheel-api",
+  "name": "@vessel-kit/wheel-api",
   "version": "0.0.1",
   "description": "",
   "author": {
@@ -47,10 +47,10 @@
     "@nestjs/terminus": "^7.0.1",
     "@nestjs/typeorm": "^7.0.0",
     "@nestjs/websockets": "^7.1.3",
-    "@potter/anchoring": "workspace:*",
-    "@potter/blockchain-connection-string": "workspace:*",
-    "@potter/codec": "workspace:*",
-    "@potter/vessel": "workspace:*",
+    "@vessel-kit/anchoring": "workspace:*",
+    "@vessel-kit/blockchain-connection-string": "workspace:*",
+    "@vessel-kit/codec": "workspace:*",
+    "@vessel-kit/vessel": "workspace:*",
     "axios": "^0.19.2",
     "cids": "^0.8.0",
     "cron-parser": "^2.15.0",
