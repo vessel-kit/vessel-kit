@@ -1,4 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse
+} from '@nestjs/swagger';
 
 import { HealthCheck, HealthCheckService, TypeOrmHealthIndicator, MemoryHealthIndicator } from '@nestjs/terminus';
 
@@ -12,6 +17,10 @@ export class HealthController {
 
   @Get()
   @HealthCheck()
+  @ApiTags('health')
+  @ApiOperation({ summary: 'Get API readiness' })
+  @ApiResponse({ status: 200, description: 'Success'})
+  @ApiResponse({ status: 500, description: 'Error'})
   async readiness() {
     return this.health.check([
       async () => this.db.pingCheck('database', { timeout: 300 }),

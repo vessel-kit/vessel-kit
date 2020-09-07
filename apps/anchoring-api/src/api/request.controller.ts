@@ -12,6 +12,12 @@ import * as multihash from 'multihashes';
 import { RequestPresentation } from './request.presentation';
 import { AnchorRequestPayload } from '@vessel-kit/anchoring';
 import * as t from 'io-ts';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiBody
+} from '@nestjs/swagger';
 
 const PAGE_SIZE = 25;
 
@@ -28,6 +34,9 @@ export class RequestController {
   ) {}
 
   @Get('/')
+  @ApiTags('requests')
+  @ApiOperation({ summary: 'Get the page with requests', description: 'Get requests information ' +
+      'including request list, total count of requests, page size (for pagination)' })
   async index(@Query('page') pageIndex = 1) {
     const requests = await this.requestStorage.page(pageIndex, PAGE_SIZE);
     const totalCount = await this.requestStorage.count();
@@ -59,16 +68,25 @@ export class RequestController {
   }
 
   @Get('/:cid')
+  @ApiOperation({ deprecated: true })
   async get(@Param('cid', new DecodePipe(t.string.pipe(CidStringCodec))) cid: CID, @Query() query: string) {
     return this.requestGetScenario.execute(cid);
   }
 
   @Get('/list/:cid')
+  @ApiTags('requests')
+  @ApiOperation({ summary: 'Get all anchor requests by CID' })
+  @ApiResponse({ status: 200, description: 'Success'})
+  @ApiResponse({ status: 500, description: 'Error'})
   async getMany(@Param('cid') cidString: string) {
     return this.requestGetManyScenario.execute(cidString);
   }
 
   @Post('/')
+  @ApiResponse({ status: 201, description: 'The record has been successfully created'})
+  @ApiResponse({ status: 500, description: 'Error'})
+  @ApiOperation({ summary: 'Create a new anchor request.' })
+  @ApiBody({ schema: { example: {"docId":"ceramic://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm","cid":"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm"}} })
   async create(@Body(new DecodePipe(AnchorRequestPayload)) body: t.TypeOf<typeof AnchorRequestPayload>) {
     await this.requestCreateScenario.execute(body.cid, body.docId);
     return this.requestGetScenario.execute(body.cid);
