@@ -113,8 +113,8 @@ importers:
       '@carbon/icons-react': 10.13.0
       '@emotion/core': 10.0.28_react@16.13.1
       '@emotion/styled': 10.0.27_c989b1aa057905c7a8b69bf973f55a19
-      '@vessel-kit/ui-shared': 'link:../../libs/ui-shared'
       '@theme-ui/core': 0.3.1_react@16.13.1
+      '@vessel-kit/ui-shared': 'link:../../libs/ui-shared'
       carbon-components: 10.15.0
       carbon-components-react: 7.15.0_8e7f1169446f58927797b8f0ef43c293
       carbon-icons: 7.0.7
@@ -137,10 +137,10 @@ importers:
       '@carbon/icons-react': ^10.10.2
       '@emotion/core': ^10.0.28
       '@emotion/styled': ^10.0.27
-      '@vessel-kit/ui-shared': 'workspace:*'
       '@theme-ui/core': ^0.3.1
       '@typescript-eslint/eslint-plugin': ^2.19.0
       '@typescript-eslint/parser': ^2.19.0
+      '@vessel-kit/ui-shared': 'workspace:*'
       carbon-components: ^10.11.2
       carbon-components-react: ^7.11.3
       carbon-icons: ^7.0.7
@@ -205,11 +205,11 @@ importers:
       '@nestjs/terminus': ^7.0.1
       '@nestjs/typeorm': ^7.0.0
       '@nestjs/websockets': ^7.1.3
+      '@types/luxon': ^1.24.1
       '@vessel-kit/anchoring': 'workspace:*'
       '@vessel-kit/blockchain-connection-string': 'workspace:*'
       '@vessel-kit/codec': 'workspace:*'
       '@vessel-kit/vessel': 'workspace:*'
-      '@types/luxon': ^1.24.1
       axios: ^0.19.2
       cids: ^0.8.0
       cron-parser: ^2.15.0
@@ -233,8 +233,8 @@ importers:
       '@carbon/icons-react': 10.13.0
       '@emotion/core': 10.0.28_react@16.13.1
       '@emotion/styled': 10.0.27_c989b1aa057905c7a8b69bf973f55a19
-      '@vessel-kit/ui-shared': 'link:../../libs/ui-shared'
       '@theme-ui/core': 0.3.1_react@16.13.1
+      '@vessel-kit/ui-shared': 'link:../../libs/ui-shared'
       carbon-components: 10.15.0
       carbon-components-react: 7.15.0_8e7f1169446f58927797b8f0ef43c293
       carbon-icons: 7.0.7
@@ -250,8 +250,8 @@ importers:
       '@carbon/icons-react': ^10.10.2
       '@emotion/core': ^10.0.28
       '@emotion/styled': ^10.0.27
-      '@vessel-kit/ui-shared': 'workspace:*'
       '@theme-ui/core': ^0.3.1
+      '@vessel-kit/ui-shared': 'workspace:*'
       carbon-components: ^10.11.2
       carbon-components-react: ^7.11.3
       carbon-icons: ^7.0.7
@@ -314,7 +314,12 @@ importers:
       io-ts: ^2.2.7
       multibase: ^1.0.1
   libs/two-party:
-    specifiers: {}
+    dependencies:
+      '@vessel-kit/anchoring': 'link:../anchoring'
+      '@vessel-kit/vessel': 'link:../vessel'
+    specifiers:
+      '@vessel-kit/anchoring': 'workspace:*'
+      '@vessel-kit/vessel': 'workspace:*'
   libs/ui-shared:
     dependencies:
       '@carbon/icons-react': 10.13.0
