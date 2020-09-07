@@ -15,7 +15,7 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ffffff" />
-        <title>Ceramic Anchoring</title>
+        <title>Anchoring</title>
         <link
           rel="stylesheet"
           type="text/css"
@@ -25,7 +25,7 @@ function App({ Component, pageProps }: AppProps) {
       <Shell.Container>
         <Shell.Header>
           <Header>
-            <HeaderName prefix={"Ceramic"} href={"/"}>
+            <HeaderName prefix={"Vessel"} href={"/"}>
               Anchoring
             </HeaderName>
             <HeaderNavigation>

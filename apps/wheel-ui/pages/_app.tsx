@@ -25,7 +25,7 @@ function App({ Component, pageProps }: AppProps) {
       <Shell.Container>
         <Shell.Header>
           <Header>
-            <HeaderName prefix={"Ceramic"} href={"/"}>
+            <HeaderName prefix={"Vessel"} href={"/"}>
               Wheel
             </HeaderName>
             <HeaderNavigation>

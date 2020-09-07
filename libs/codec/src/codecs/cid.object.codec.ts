@@ -10,8 +10,8 @@ export const CidObjectCodec = new t.Type<CID, CidObject, unknown>(
   'CID-CidObject',
   (input: unknown): input is CID => CID.isCID(input),
   (input, context) => {
-    if (typeof input === 'object' && input['/'] && typeof input['/'] === 'string') {
-      const cidString = input['/'];
+    if (input && typeof input === 'object' && (input as any)['/'] && typeof (input as any)['/'] === 'string') {
+      const cidString = String((input as any)['/']);
       return CidStringCodec.decode(cidString);
     } else {
       return t.failure(input, context, 'Not a CIDObject');

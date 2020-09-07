@@ -1,4 +1,4 @@
-import { Ceramic } from '../ceramic';
+import { Vessel } from '../vessel';
 import ipfsClient from 'ipfs-http-client';
 import { ThreeIdContent } from '../three-id.content';
 import IdentityWallet from 'identity-wallet';
@@ -30,7 +30,7 @@ async function main() {
   });
   const user = await User.build(identityWallet.get3idProvider());
 
-  const ceramic = await Ceramic.build(ipfs);
+  const vessel = await Vessel.build(ipfs);
 
   const publicKeys = await user.publicKeys();
   const ownerKey = publicKeys.managementKey;
@@ -49,7 +49,7 @@ async function main() {
     doctype: '3id',
     ...content,
   };
-  const document = await ceramic.create(genesisRecord);
+  const document = await vessel.create(genesisRecord);
   console.log('Present state', document);
   console.log('Waiting some time for anchoring...');
   await sleep(61000)
@@ -80,7 +80,7 @@ async function main() {
   console.log('Sleeping for 20 seconds...')
   await sleep(20000);
   console.log('slept')
-  ceramic.close()
+  vessel.close()
 }
 
 main();

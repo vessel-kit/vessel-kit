@@ -2,7 +2,7 @@ import { Observable, queueScheduler, Subject } from 'rxjs';
 import CID from 'cids';
 import { filter } from 'rxjs/operators';
 import axios from 'axios';
-import { CeramicDocumentId, decodeThrow } from '@vessel-kit/codec';
+import { DocId, decodeThrow } from '@vessel-kit/codec';
 import * as t from 'io-ts';
 import { AnchorResponsePayload } from './anchor-response-payload';
 import { AnchorRequestPayload } from './anchor-request-payload';
@@ -35,13 +35,13 @@ export class AnchoringHttpClient {
     this.#period = period;
   }
 
-  anchorStatus$(docId: CeramicDocumentId): Observable<AnchorResponsePayloadType> {
+  anchorStatus$(docId: DocId): Observable<AnchorResponsePayloadType> {
     const subject = new Subject<AnchorResponsePayloadType>();
     this.#observation$.pipe(filter((o) => o.docId.toString() === docId.toString())).subscribe(subject);
     return subject.asObservable();
   }
 
-  requestAnchor(docId: CeramicDocumentId, cid: CID) {
+  requestAnchor(docId: DocId, cid: CID) {
     queueScheduler.schedule(async () => {
       const endpoint = `${this.#anchoringEndpoint}/api/v0/requests`;
       const payload = AnchorRequestPayload.encode({
@@ -55,13 +55,17 @@ export class AnchoringHttpClient {
     });
   }
 
-  startRequestingAnchorStatus(docId: CeramicDocumentId, cid: CID) {
+  startRequestingAnchorStatus(docId: DocId, cid: CID) {
     const taskName = `${docId}:${cid}`;
     this.#schedule.add(taskName, () => {
       return new Promise((resolve) => {
         const doRequest = async () => {
           const status = await this.requestAnchorStatus(docId, cid);
-          if (status === AnchoringStatus.ANCHORED || status === AnchoringStatus.FAILED || status === AnchoringStatus.OUTDATED) {
+          if (
+            status === AnchoringStatus.ANCHORED ||
+            status === AnchoringStatus.FAILED ||
+            status === AnchoringStatus.OUTDATED
+          ) {
             resolve();
           } else {
             queueScheduler.schedule(() => doRequest(), this.#period);
@@ -72,7 +76,7 @@ export class AnchoringHttpClient {
     });
   }
 
-  async requestAnchorStatus(docId: CeramicDocumentId, cid: CID) {
+  async requestAnchorStatus(docId: DocId, cid: CID) {
     try {
       const endpoint = `${this.#anchoringEndpoint}/api/v0/requests/${cid.toString()}`;
       const response = await axios.get(endpoint);

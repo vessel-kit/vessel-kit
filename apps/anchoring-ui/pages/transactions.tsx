@@ -56,7 +56,7 @@ export default function Transactions() {
   return (
     <Box sx={{ flexGrow: 1, padding: 4 }}>
       <Head>
-        <title>Transactions - Ceramic Anchoring</title>
+        <title>Transactions - Anchoring</title>
       </Head>
       <h1>Transactions</h1>
       <TransactionsTable transactions={transactions} />

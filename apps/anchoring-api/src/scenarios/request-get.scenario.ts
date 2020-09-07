@@ -7,10 +7,10 @@ import { UnreachableCaseError } from '../unreachable-case.error';
 import { AnchorRecord } from '../storage/anchor.record';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 import { AnchoringStatus, AnchorResponsePayload } from '@vessel-kit/anchoring';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 
 export class RequestPresentation {
-  readonly docId = CeramicDocumentId.fromString(this.request.docId);
+  readonly docId = DocId.fromString(this.request.docId);
   constructor(
     private readonly request: RequestRecord,
     private readonly anchor: AnchorRecord | undefined,

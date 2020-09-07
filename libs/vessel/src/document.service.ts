@@ -1,5 +1,5 @@
 import { ILogger } from './util/logger.interface';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 import CID from 'cids';
 import { AnchoringStatus } from '@vessel-kit/anchoring';
 import { Cloud } from './cloud/cloud';
@@ -46,7 +46,7 @@ export class DocumentService implements IDocumentService {
     return this.#context;
   }
 
-  handleUpdate<A>(docId: CeramicDocumentId, state: Snapshot<A>): void {
+  handleUpdate<A>(docId: DocId, state: Snapshot<A>): void {
     if (!docId.cid.equals(state.log.last)) {
       this.#cloud.bus.publishHead(docId, state.log.last);
     }
@@ -60,18 +60,18 @@ export class DocumentService implements IDocumentService {
     const cid = await this.#cloud.store(normalizeRecord(record));
     const recordWrap = new RecordWrap(record, cid);
     const next = await this.#updateService.applyUpdate(recordWrap, handler, state$.value);
-    const documentId = new CeramicDocumentId(state$.value.log.first);
+    const documentId = new DocId(state$.value.log.first);
     this.#anchoring.requestAnchor(documentId, cid);
     state$.next(next);
   }
 
-  requestAnchor(docId: CeramicDocumentId, cid: CID): void {
+  requestAnchor(docId: DocId, cid: CID): void {
     this.#logger.debug(`Requesting anchor for ${docId.toString()}?version=${cid.toString()}`);
     this.#anchoring.requestAnchor(docId, cid);
   }
 
   externalUpdates$<State, Shape>(
-    docId: CeramicDocumentId,
+    docId: DocId,
     handler: IDoctype<State, Shape>,
     state$: FrozenSubjectRead<Snapshot<State>>,
   ): Observable<Snapshot<State>> {
@@ -80,7 +80,7 @@ export class DocumentService implements IDocumentService {
   }
 
   private cloudUpdates$<State, Shape>(
-    docId: CeramicDocumentId,
+    docId: DocId,
     handler: IDoctype<State, Shape>,
     state$: FrozenSubjectRead<Snapshot<State>>,
   ): Observable<Snapshot<State>> {
@@ -111,7 +111,7 @@ export class DocumentService implements IDocumentService {
   // ...anchor does not contribute to VesselDocumentState
   // See Anchoring controlled by doctype
   private anchorUpdates$<State, Shape>(
-    docId: CeramicDocumentId,
+    docId: DocId,
     handler: IDoctype<State, Shape>,
     state$: FrozenSubjectRead<Snapshot<State>>,
   ): Observable<Snapshot<State>> {

@@ -6,7 +6,7 @@ import { Cloud } from './cloud/cloud';
 import { DocumentService } from './document.service';
 import { AnchoringService } from './anchoring.service';
 import { DocumentUpdateService } from './document-update.service';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 import { AnchoringHttpClient } from '@vessel-kit/anchoring';
 import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 import { ISignor } from './signor/signor.interface';
@@ -18,17 +18,17 @@ import { VesselRulesetAlphaDoctype } from './doctypes/vessel-ruleset-alpha-docty
 import { VesselDocumentAlphaDoctype } from './doctypes/vessel-document-alpha-doctype';
 import { IDocument } from './document/document.interface';
 
-export interface CeramicOptions {
+export interface Options {
   logger?: ILogger;
   anchoringEndpoint?: string;
   blockchainEndpoints?: ConnectionString[];
 }
 
-export class Ceramic {
+export class Vessel {
   #documentRepository: DocumentRepository;
   #signor?: ISignor;
 
-  constructor(ipfs: Ipfs, options: CeramicOptions) {
+  constructor(ipfs: Ipfs, options: Options) {
     const logger = options.logger;
     const cloud = new Cloud(logger, ipfs);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
@@ -53,32 +53,32 @@ export class Ceramic {
     const documentUpdateService = new DocumentUpdateService(logger, anchoringService, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
     this.#documentRepository = new DocumentRepository(logger, doctypes, cloud, documentService);
-    logger.log(`Constructed Ceramic instance`, options);
+    logger.log(`Constructed Vessel instance`, options);
   }
 
   // TODO addSignor
 
-  static build(ipfs: Ipfs, options?: CeramicOptions): Ceramic {
+  static build(ipfs: Ipfs, options?: Options): Vessel {
     const appliedOptions = Object.assign(
       {
-        logger: new ConsoleLogger('Ceramic'),
+        logger: new ConsoleLogger('vessel'),
         anchoringEndpoint: 'http://localhost:3000',
         ethereumEndpoint: 'http://localhost:8545',
       },
       options,
     );
-    return new Ceramic(ipfs, appliedOptions);
+    return new Vessel(ipfs, appliedOptions);
   }
 
   async create(genesis: any): Promise<IDocument<unknown, unknown>> {
     return this.#documentRepository.create(genesis);
   }
 
-  async load(docId: CeramicDocumentId): Promise<IDocument<unknown, unknown>> {
+  async load(docId: DocId): Promise<IDocument<unknown, unknown>> {
     return this.#documentRepository.load(docId);
   }
 
-  async history(docId: CeramicDocumentId): Promise<any> {
+  async history(docId: DocId): Promise<any> {
     return this.#documentRepository.history(docId);
   }
 

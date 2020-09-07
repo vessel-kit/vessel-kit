@@ -34,13 +34,13 @@ async function main() {
     ...content,
   };
   console.log('genesis record', genesisRecord);
-  const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
+  const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/document`, genesisRecord);
   console.log('genesisResponse', genesisResponse.data)
   const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
 
   const documentId = snapshot.log.first;
   await sleep(80000);
-  const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
+  const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/document/${documentId.toString()}`);
   console.log('anchoredGenesisResponse', anchoredGenesisResponse.data)
   const genesisSnapshot = decodeThrow(SnapshotCodec(t.unknown), anchoredGenesisResponse.data)
   const log = genesisSnapshot.log;
@@ -66,7 +66,7 @@ async function main() {
     header: jwt.header,
     signature: jwt.signature,
   };
-  const updateResponse = await axios.put(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`, updateRecordA);
+  const updateResponse = await axios.put(`${REMOTE_URL}/api/v0/document/${documentId.toString()}`, updateRecordA);
   console.log('update response', updateResponse.data);
 }
 

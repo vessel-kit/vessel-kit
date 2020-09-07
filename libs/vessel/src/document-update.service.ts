@@ -6,7 +6,7 @@ import { RecordWrap } from '@vessel-kit/codec';
 import { AnchoringService } from './anchoring.service';
 import { Snapshot } from './document/document.interface';
 import { IDoctype } from './document/doctype';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 import { Ordering } from './document/ordering';
 
 export class InvalidOrdering extends Error {
@@ -80,7 +80,7 @@ export class DocumentUpdateService {
     return log.reduce(async (state, entry) => {
       const content = await this.#cloud.retrieve(entry);
       const record = new RecordWrap(content, entry);
-      const docId = new CeramicDocumentId(state.log.first);
+      const docId = new DocId(state.log.first);
       const next = await handler.apply(record, state.view, docId)
       return {
         ...state,
@@ -93,7 +93,7 @@ export class DocumentUpdateService {
   async applyUpdate<State, Shape>(updateRecord: RecordWrap, handler: IDoctype<State, Shape>, state: Snapshot<State>): Promise<Snapshot<State>> {
     console.log('apply-update', state.log, updateRecord.load)
     if (state.log.last.equals(updateRecord.load.prev)) {
-      const docId = new CeramicDocumentId(state.log.first);
+      const docId = new DocId(state.log.first);
       const next = await handler.apply(updateRecord, state.view, docId);
       return {
         ...state,

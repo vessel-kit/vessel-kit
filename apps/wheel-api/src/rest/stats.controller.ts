@@ -1,14 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
-import { Ceramic } from '@vessel-kit/vessel';
+import { Vessel } from '@vessel-kit/vessel';
 
 @Controller('/api/v0/stats')
 export class StatsController {
-  constructor(private readonly ceramic: Ceramic) {
+  constructor(private readonly vessel: Vessel) {
   }
 
   @Get('/')
   async index() {
-    const stats = await this.ceramic.list()
+    const stats = await this.vessel.list()
     return {
       documentsCount: stats.length
     }

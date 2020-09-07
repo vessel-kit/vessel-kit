@@ -1,4 +1,4 @@
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 import { Subscription } from 'rxjs';
 import { FrozenSubject } from '../util/frozen-subject';
 import { IDocumentService } from './document.service.interface';
@@ -10,7 +10,7 @@ import debug from 'debug';
 const log = debug('vessel:document');
 
 export class Document<State, Shape> implements IDocument<State, Shape> {
-  #id: CeramicDocumentId;
+  #id: DocId;
   #service: IDocumentService;
   #state$: FrozenSubject<Snapshot<State>>;
   #external$S: Subscription;
@@ -18,7 +18,7 @@ export class Document<State, Shape> implements IDocument<State, Shape> {
   #handler: IDoctype<State, Shape>;
 
   constructor(snapshot: Snapshot<State>, handler: IDoctype<State, Shape>, service: IDocumentService) {
-    this.#id = new CeramicDocumentId(snapshot.log.first);
+    this.#id = new DocId(snapshot.log.first);
     this.#state$ = new FrozenSubject(snapshot);
     this.#service = service;
     this.#handler = handler;
@@ -40,7 +40,7 @@ export class Document<State, Shape> implements IDocument<State, Shape> {
     return this.#state$.value.doctype;
   }
 
-  get id(): CeramicDocumentId {
+  get id(): DocId {
     return this.#id;
   }
 

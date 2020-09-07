@@ -1,5 +1,5 @@
 import { FrozenSubject } from '../util/frozen-subject';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 import { History, HistoryCodec } from '../util/history';
 import * as t from 'io-ts'
 import { IContext } from '../context';
@@ -19,7 +19,7 @@ export function SnapshotCodec<A>(codec: t.Type<A, unknown, any>) {
 }
 
 export interface IDocument<State, Shape> {
-  id: CeramicDocumentId;
+  id: DocId;
   log: History;
   state: Snapshot<State>;
   state$: FrozenSubject<Snapshot<State>>;

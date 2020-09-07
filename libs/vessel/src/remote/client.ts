@@ -2,7 +2,7 @@ import { ISignor } from '../signor/signor.interface';
 import { ThreeIdDoctype } from '../doctypes/three-id/three-id-doctype';
 import axios from 'axios';
 import { BufferMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 import { ThreeIdentifierCidCodec } from '../three-identifier';
 import { RemoteDocumentService } from './remote-document-service';
 import { Context, IContext } from '../context';
@@ -21,7 +21,7 @@ import { VesselRulesetAlphaDoctype } from '../doctypes/vessel-ruleset-alpha-doct
 import { VesselDocumentAlphaDoctype } from '../doctypes/vessel-document-alpha-doctype';
 
 export class NotThreeIdError extends Error {
-  constructor(docId: CeramicDocumentId) {
+  constructor(docId: DocId) {
     super(`Expected 3id document on ${docId}`);
   }
 }
@@ -69,7 +69,7 @@ export class Client {
     const did = await this.#signor.did();
     if (did) {
       const cid = ThreeIdentifierCidCodec.encode(did);
-      const documentId = new CeramicDocumentId(cid);
+      const documentId = new DocId(cid);
       const document = await this.load(documentId);
       if (document.state.doctype === '3id') {
         return document as IDocument<ThreeIdState, ThreeIdShape>
@@ -100,7 +100,7 @@ export class Client {
     const doctype = this.#doctypes.get(payload.doctype);
     const knead = await doctype.knead(payload);
     const canonical = await doctype.canonical(knead)
-    const response = await axios.post(`${this.host}/api/v0/ceramic`, canonical);
+    const response = await axios.post(`${this.host}/api/v0/document`, canonical);
     const snapshot = decodeThrow(SnapshotCodec(t.unknown), response.data)
     const document  = new Document(snapshot, doctype, this.#service)
     this.#tracked.set(document.id.valueOf(), document);
@@ -108,12 +108,12 @@ export class Client {
   }
 
   @bind()
-  async load(docId: CeramicDocumentId): Promise<IDocument<unknown, unknown>> {
+  async load(docId: DocId): Promise<IDocument<unknown, unknown>> {
     const present = this.#tracked.get(docId.valueOf());
     if (present) {
       return present;
     } else {
-      const genesisResponse = await axios.get(`${this.host}/api/v0/ceramic/${docId.valueOf()}`);
+      const genesisResponse = await axios.get(`${this.host}/api/v0/document/${docId.valueOf()}`);
       const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
       const handler = this.#doctypes.get(snapshot.doctype)
       const document = new Document(snapshot, handler, this.#service)

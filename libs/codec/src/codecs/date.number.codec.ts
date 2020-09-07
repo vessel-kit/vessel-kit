@@ -7,7 +7,7 @@ export const DateNumberCodec = new t.Type<Date, number, number>(
     try {
       return t.success(new Date(input * 1000));
     } catch (e) {
-      t.failure(input, context, 'Invalid timestamp');
+      return t.failure(input, context, 'Invalid timestamp');
     }
   },
   (a: Date) => Math.floor(a.valueOf() / 1000),

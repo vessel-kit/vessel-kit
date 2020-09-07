@@ -1,5 +1,5 @@
 import { Cloud } from './cloud/cloud';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 import { Observable } from 'rxjs';
 import CID from 'cids';
 import {
@@ -26,11 +26,11 @@ export class AnchoringService {
     return this.#reader.verify(wrap);
   }
 
-  anchorStatus$(docId: CeramicDocumentId): Observable<AnchorResponsePayloadType> {
+  anchorStatus$(docId: DocId): Observable<AnchorResponsePayloadType> {
     return this.#anchoring.anchorStatus$(docId);
   }
 
-  requestAnchor(docId: CeramicDocumentId, cid: CID) {
+  requestAnchor(docId: DocId, cid: CID) {
     return this.#anchoring.requestAnchor(docId, cid);
   }
 }

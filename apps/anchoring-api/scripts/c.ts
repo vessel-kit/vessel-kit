@@ -4,7 +4,7 @@ function tileGenesisRecord() {
   return { doctype: 'tile', owners: [ 'did:3:bafyasdfasdf' ], content: { much: 'data' }};
 }
 
-const ENDPOINT = 'http://localhost:3002/api/v0/ceramic';
+const ENDPOINT = 'http://localhost:3002/api/v0/document';
 
 async function create(record: any) {
   const result = await axios.post(ENDPOINT, record);

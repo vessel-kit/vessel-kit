@@ -1,11 +1,11 @@
 import * as t from 'io-ts';
-import { CeramicDocumentIdCidCodec, CidObjectCodec, FastPatchOperationJsonCodec } from '@vessel-kit/codec';
+import { DocIdCidCodec, CidObjectCodec, FastPatchOperationJsonCodec } from '@vessel-kit/codec';
 import { ThreeIdentifier } from '../three-identifier';
 
 export const UpdateRecordWaiting = t.type({
   patch: t.array(FastPatchOperationJsonCodec),
   prev: CidObjectCodec,
-  id: CidObjectCodec.pipe(CeramicDocumentIdCidCodec),
+  id: CidObjectCodec.pipe(DocIdCidCodec),
 });
 
 export const SignedRecord = t.type({

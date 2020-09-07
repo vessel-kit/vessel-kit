@@ -3,7 +3,7 @@ import { VesselRulesetAlphaDoctype } from './vessel-ruleset-alpha-doctype';
 import jsonPatch from 'fast-json-patch';
 import { AnchoringStatus, AnchorProof } from '@vessel-kit/anchoring';
 import produce from 'immer';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 import { Ordering } from '../document/ordering';
 import { IDocument } from '..';
 import { UpdateRecordWaiting } from '../util/update-record.codec';
@@ -85,7 +85,7 @@ class Handler<State, Shape> extends DoctypeHandler<VesselDocumentState<State>, V
 
   async knead(genesisRecord: unknown): Promise<VesselDocumentState<State>> {
     if (isShape<unknown>(genesisRecord)) {
-      const effectiveRulesetCid = CeramicDocumentId.fromString(genesisRecord.ruleset);
+      const effectiveRulesetCid = DocId.fromString(genesisRecord.ruleset);
       const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
       const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
       return ruleset.knead(genesisRecord);
@@ -98,9 +98,9 @@ class Handler<State, Shape> extends DoctypeHandler<VesselDocumentState<State>, V
   async canApply(
     state: VesselDocumentState<State>,
     next: Shape,
-    rulesetAddress?: CeramicDocumentId,
+    rulesetAddress?: DocId,
   ): Promise<VesselDocumentState<State>> {
-    const effectiveRulesetCid = rulesetAddress || CeramicDocumentId.fromString(state.ruleset);
+    const effectiveRulesetCid = rulesetAddress || DocId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
     const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
     const nextState = await ruleset.canApply<VesselDocumentState<State>>(state, next);
@@ -124,14 +124,14 @@ class Handler<State, Shape> extends DoctypeHandler<VesselDocumentState<State>, V
   }
 
   async canonical(state: VesselDocumentState<State>): Promise<VesselDocumentShape<Shape>> {
-    const effectiveRulesetCid = CeramicDocumentId.fromString(state.ruleset);
+    const effectiveRulesetCid = DocId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
     const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
     return ruleset.canonical(state);
   }
 
   async applyAnchor(proof: AnchorProof, state: VesselDocumentState<State>): Promise<State> {
-    const effectiveRulesetCid = CeramicDocumentId.fromString(state.ruleset);
+    const effectiveRulesetCid = DocId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
     const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
     return ruleset.applyAnchor(proof, state.data);

@@ -1,6 +1,6 @@
 import { ILogger } from './util/logger.interface';
 import { Cloud } from './cloud/cloud';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 import { Document } from './document/document';
 import { DocumentService } from './document.service';
 import { MessageTyp } from './cloud/message-typ';
@@ -43,13 +43,13 @@ export class DocumentRepository {
     this.#logger.debug(`Genesis record is valid for doctype "${doctype.name}"`);
     const cid = await this.#cloud.store(canonical);
     this.#logger.debug(`Stored record to IPFS as ${cid.toString()}`);
-    const documentId = new CeramicDocumentId(cid);
+    const documentId = new DocId(cid);
     const document = await this.load(documentId);
     document.requestAnchor();
     return document;
   }
 
-  async load(documentId: CeramicDocumentId): Promise<IDocument<unknown, unknown>> {
+  async load(documentId: DocId): Promise<IDocument<unknown, unknown>> {
     const found = this.#documentCache.get(documentId.toString());
     if (found) {
       return found;
@@ -78,7 +78,7 @@ export class DocumentRepository {
     return Array.from(this.#documentCache.values());
   }
 
-  async history(documentId: CeramicDocumentId): Promise<any[]> {
+  async history(documentId: DocId): Promise<any[]> {
     const result = [];
     let currentCID = documentId.cid;
     let currentElement = await this.#cloud.retrieve(currentCID);

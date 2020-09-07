@@ -34,7 +34,7 @@ async function createUser(seed: string) {
     doctype: '3id',
     ...content,
   };
-  const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, genesisRecord);
+  const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/document`, genesisRecord);
   const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
   await user.did(decodeThrow(ThreeIdentifier, `did:3:${snapshot.log.first}`));
   return user;
@@ -55,12 +55,12 @@ async function main() {
     header: jwt.header,
     signature: jwt.signature,
   };
-  const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/ceramic`, signedTile);
+  const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/document`, signedTile);
   const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
   console.log('genesis response', genesisResponse.data);
   const documentId = snapshot.log.first
   await sleep(65000);
-  const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`);
+  const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/document/${documentId.toString()}`);
   const anchoredSnapshot = decodeThrow(SnapshotCodec(t.unknown), anchoredGenesisResponse.data)
   const log = anchoredSnapshot.log
   const doc2 = Object.assign({}, tile);
@@ -82,7 +82,7 @@ async function main() {
     header: jwtUpdate.header,
     signature: jwtUpdate.signature,
   };
-  const updateResponse = await axios.put(`${REMOTE_URL}/api/v0/ceramic/${documentId.toString()}`, updateRecordA);
+  const updateResponse = await axios.put(`${REMOTE_URL}/api/v0/document/${documentId.toString()}`, updateRecordA);
   console.log('update response', updateResponse.data);
 }
 

@@ -4,7 +4,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { RequestStorage } from '../storage/request.storage';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 import { AnchoringStatus, UuidValue } from '@vessel-kit/anchoring';
-import { CeramicDocumentId, CeramicDocumentIdStringCodec } from '@vessel-kit/codec';
+import { DocId, DocIdStringCodec } from '@vessel-kit/codec';
 
 @Injectable()
 export class RequestCreateScenario {
@@ -13,7 +13,7 @@ export class RequestCreateScenario {
     private readonly anchoringSchedule: AnchoringScheduleService,
   ) {}
 
-  async execute(cid: CID, docId: CeramicDocumentId) {
+  async execute(cid: CID, docId: DocId) {
     const record = await this.buildRequestRecord(cid, docId);
     const saved = await this.save(record);
     const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
@@ -38,11 +38,11 @@ export class RequestCreateScenario {
     }
   }
 
-  async buildRequestRecord(cid: CID, docId: CeramicDocumentId) {
+  async buildRequestRecord(cid: CID, docId: DocId) {
     const record = new RequestRecord();
     record.id = new UuidValue();
     record.cid = cid;
-    record.docId = CeramicDocumentIdStringCodec.encode(docId);
+    record.docId = DocIdStringCodec.encode(docId);
     record.status = AnchoringStatus.PENDING;
     return record;
   }

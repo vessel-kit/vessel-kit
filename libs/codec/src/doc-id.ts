@@ -1,8 +1,8 @@
 import CID from 'cids';
 
-const PATTERN = new RegExp(/(ceramic:\/\/|\/ceramic\/)(\w+)/);
+const PATTERN = new RegExp(/(vessel:\/\/|\/vessel\/)(\w+)/);
 
-export class CeramicDocumentId {
+export class DocId {
   #cid: CID;
 
   constructor(cid: CID) {
@@ -18,10 +18,10 @@ export class CeramicDocumentId {
     if (match && match[2]) {
       const cidString = match[2];
       const cid = new CID(cidString);
-      return new CeramicDocumentId(cid);
+      return new DocId(cid);
     } else {
       const cid = new CID(s);
-      return new CeramicDocumentId(cid);
+      return new DocId(cid);
     }
   }
 
@@ -30,10 +30,10 @@ export class CeramicDocumentId {
   }
 
   toString() {
-    return `ceramic://${this.cid.toString()}`;
+    return `vessel://${this.cid.toString()}`;
   }
 
   [Symbol.for('nodejs.util.inspect.custom')]() {
-    return 'CeramicDocumentId(' + this.cid.toString() + ')';
+    return 'DocId(' + this.cid.toString() + ')';
   }
 }

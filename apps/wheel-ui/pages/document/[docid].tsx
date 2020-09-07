@@ -72,8 +72,8 @@ export default function Document() {
 
   socket.on("live-update", (msg) => setContentSocket(msg));
 
-  const endpointHistory = `${process.env.WHEEL_URL}/api/v0/ceramic/${docid}/history`;
-  const endpointContent = `${process.env.WHEEL_URL}/api/v0/ceramic/${docid}/content`;
+  const endpointHistory = `${process.env.WHEEL_URL}/api/v0/document/${docid}/history`;
+  const endpointContent = `${process.env.WHEEL_URL}/api/v0/document/${docid}/content`;
   const fetcher = url => fetch(url).then(r => r.json())
   const { data: dataHistory } = useSWR(endpointHistory, fetcher)
   const { data: dataContent } = useSWR(endpointContent, fetcher)
@@ -89,7 +89,7 @@ export default function Document() {
     <Box sx={{ flexGrow: 1, padding: 4 }}>
       <h1>Document</h1>
       <Header3>Doc ID</Header3>
-      <code>ceramic://{docid}</code>
+      <code>vessel://{docid}</code>
       <Header3>History</Header3>
       <DocumentHistoryTiles historyData={dataHistory}/>
       <Header3>Current content</Header3>

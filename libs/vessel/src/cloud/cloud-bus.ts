@@ -6,7 +6,7 @@ import { MessageTyp } from './message-typ';
 import CID from 'cids';
 import { bind } from 'decko';
 import { UnknownMessageError } from './cloud';
-import { CeramicDocumentId } from '@vessel-kit/codec';
+import { DocId } from '@vessel-kit/codec';
 
 function rawMessageToDelta(message: any): CloudMessage {
   const { typ, id, cid } = JSON.parse(message.data);
@@ -40,7 +40,7 @@ export class CloudBus {
   #message$ = new Subject<CloudMessage | undefined>()
   #peerId: string | undefined
 
-  static TOPIC = '/ceramic'
+  static TOPIC = '/vessel'
 
   constructor(logger: ILogger, ipfs: Ipfs) {
     this.#logger = logger.withContext(CloudBus.name)
@@ -58,7 +58,7 @@ export class CloudBus {
     })
   }
 
-  publishHead (docId: CeramicDocumentId, head: CID): void {
+  publishHead (docId: DocId, head: CID): void {
     queueScheduler.schedule(async () => {
       const message = { typ: MessageTyp.UPDATE, id: docId.toString(), cid: head.toString() }
       this.#logger.debug(`Publishing head`, message)
@@ -66,7 +66,7 @@ export class CloudBus {
     })
   }
 
-  publishResponse(docId: CeramicDocumentId, head: CID) {
+  publishResponse(docId: DocId, head: CID) {
     queueScheduler.schedule(async () => {
       const message = { typ: MessageTyp.RESPONSE, id: docId.toString(), cid: head.toString() }
       this.#logger.debug(`Publishing response`, message)

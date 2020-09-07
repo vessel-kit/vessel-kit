@@ -86,7 +86,7 @@ export class RequestController {
   @ApiResponse({ status: 201, description: 'The record has been successfully created'})
   @ApiResponse({ status: 500, description: 'Error'})
   @ApiOperation({ summary: 'Create a new anchor request.' })
-  @ApiBody({ schema: { example: {"docId":"ceramic://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm","cid":"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm"}} })
+  @ApiBody({ schema: { example: {"docId":"vessel://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm","cid":"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm"}} })
   async create(@Body(new DecodePipe(AnchorRequestPayload)) body: t.TypeOf<typeof AnchorRequestPayload>) {
     await this.requestCreateScenario.execute(body.cid, body.docId);
     return this.requestGetScenario.execute(body.cid);

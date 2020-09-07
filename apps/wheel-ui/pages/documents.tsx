@@ -46,7 +46,7 @@ function DocumentsTable(props: { documents: any }) {
 }
 
 export default function Documents() {
-  const endpoint = `${process.env.WHEEL_URL}/api/v0/ceramic`;
+  const endpoint = `${process.env.WHEEL_URL}/api/v0/document`;
   const fetcher = url => fetch(url).then(r => r.json())
   const { data } = useSWR(endpoint, fetcher)
 

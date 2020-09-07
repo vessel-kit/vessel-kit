@@ -1,5 +1,5 @@
 import { EMPTY_CONTEXT, IContext } from '../context';
-import { CeramicDocumentId, RecordWrap } from '@vessel-kit/codec';
+import { DocId, RecordWrap } from '@vessel-kit/codec';
 import { Ordering } from './ordering';
 
 abstract class GenericHandler {
@@ -18,12 +18,12 @@ export interface IDoctype<State, Shape> {
   canonical(state: State): Promise<Shape>;
   knead(genesisRecord: unknown): Promise<State>;
   order(a: State, b: State): Promise<Ordering>;
-  apply(recordWrap: RecordWrap, state: State, docId: CeramicDocumentId): Promise<State>;
+  apply(recordWrap: RecordWrap, state: State, docId: DocId): Promise<State>;
 }
 
 export abstract class DoctypeHandler<State, Shape> extends GenericHandler implements IDoctype<State, Shape> {
   abstract knead(genesisRecord: unknown): Promise<State>;
   abstract canonical(state: State): Promise<Shape>;
   abstract order(a: State, b: State): Promise<Ordering>;
-  abstract apply(recordWrap: RecordWrap, state: State, docId: CeramicDocumentId): Promise<State>;
+  abstract apply(recordWrap: RecordWrap, state: State, docId: DocId): Promise<State>;
 }
