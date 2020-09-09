@@ -18,7 +18,7 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "pnpm run --recursive dev",
+    "dev": "pnpm run --parallel dev",
     "build": "pnpm run --recursive build",
     "test": "jest"
   },

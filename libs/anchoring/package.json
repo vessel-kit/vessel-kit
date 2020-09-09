@@ -1,11 +1,8 @@
 {
   "name": "@vessel-kit/anchoring",
   "private": true,
-  "main": "src/index.ts",
-  "publishConfig": {
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts"
-  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "version": "0.0.1-a.0",
   "scripts": {
     "build": "tsc -p .",
