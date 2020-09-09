@@ -28,9 +28,9 @@ or CRDT. It means, that updates happened at different times deterministically co
 CRDT is posed to solve problems arising from concurrent edits. It assumes existence of a cleverly constructed data structure (CRDT itself),
 and a resolver. The latter applies changes, and resolves conflicts in a deterministic way. The resolver depends on type of CRDT,
 and CRDT depends on constraints of the applications. Using CRDTs means either restricting application domain, or putting a heavy burden
-on application developer so that she could choose or construct a proper data structure. In addition to that CRDT, by definition,
+on application developer so that she could choose or construct a proper data structure. In addition to that CRDT, by academic definition,
 does not represent a lifecycle of data. For example, in a contract (paper, not smart one) signing scenario, the text of a contract could not be changed after it is signed by both parties.
-DID document is expected not to be updated after revocation. All in all, we can not build dynamic decentralized applications _purely_ relying on CRDT. 
+DID document is expected not to be updated after revocation. You have to add business logic on top of it for data lifecycle. All in all, we can not build dynamic decentralized applications _purely_ relying on CRDT. 
 
 We assume a piece of data is structured in a form of _document_, we call it Vessel document below. It consists of genesis record and update records, that are stored on IPFS.
 Update records link to each other to form [Merkle DAG](https://docs.ipfs.io/concepts/merkle-dag/).
