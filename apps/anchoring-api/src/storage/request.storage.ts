@@ -46,7 +46,7 @@ export class RequestStorage {
   }
 
   updateStatus(records: RequestRecord[], status: AnchoringStatus): Promise<RequestRecord[]> {
-    const next = records.map(r => {
+    const next = records.map((r) => {
       r.status = status;
       return r;
     });

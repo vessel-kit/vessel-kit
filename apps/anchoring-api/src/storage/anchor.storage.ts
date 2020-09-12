@@ -16,15 +16,15 @@ export class AnchorStorage {
   }
 
   count() {
-    return this.repository.count()
+    return this.repository.count();
   }
 
   byRequestId(id: UuidValue) {
     return this.repository.findOne({
       where: {
-        requestId: id.toString()
-      }
-    })
+        requestId: id.toString(),
+      },
+    });
   }
 
   saveAll(records: AnchorRecord[]): Promise<AnchorRecord[]> {

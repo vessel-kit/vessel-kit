@@ -7,7 +7,10 @@ export class RequestPresentation {
   readonly id = this.request.id.toString();
   @ApiProperty({ example: 'ANCHORED', description: 'Anchoring request status' })
   readonly status = this.request.status.toString();
-  @ApiProperty({ example: 'vessel://bafyreidygxyu2ohh3cuuj6lwm3hnb6u5ruy43pzc2syc7mztuu5zuemfk4', description: 'Vessel Document ID' })
+  @ApiProperty({
+    example: 'vessel://bafyreidygxyu2ohh3cuuj6lwm3hnb6u5ruy43pzc2syc7mztuu5zuemfk4',
+    description: 'Vessel Document ID',
+  })
   readonly docId = this.request.docId;
   @ApiProperty({ example: '2020-08-21 20:37:17.881', description: 'Anchoring request creation date' })
   readonly createdAt = this.request.createdAt.toISOString();

@@ -8,7 +8,11 @@ import { AnchoringStatus } from '@vessel-kit/anchoring';
 @EventSubscriber()
 @Injectable()
 export class RequestSubscriber implements EntitySubscriberInterface<RequestRecord> {
-  constructor(connection: Connection, private readonly pubSubService: PubSubService, private readonly anchorStorage: AnchorStorage) {
+  constructor(
+    connection: Connection,
+    private readonly pubSubService: PubSubService,
+    private readonly anchorStorage: AnchorStorage,
+  ) {
     connection.subscribers.push(this);
   }
 
@@ -19,7 +23,7 @@ export class RequestSubscriber implements EntitySubscriberInterface<RequestRecor
   async afterUpdate(event: UpdateEvent<RequestRecord>): Promise<any> {
     const record = event.entity;
     if (record.status === AnchoringStatus.ANCHORED) {
-      const anchor = await this.anchorStorage.byRequestId(record.id)
+      const anchor = await this.anchorStorage.byRequestId(record.id);
       await this.pubSubService.didAnchor.publish({
         id: record.id.toString(),
         status: record.status,

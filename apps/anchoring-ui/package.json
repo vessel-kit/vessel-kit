@@ -25,12 +25,6 @@
     "theme-ui": "^0.3.1"
   },
   "devDependencies": {
-    "next-transpile-modules": "^3.3.0",
-    "@typescript-eslint/eslint-plugin": "^2.19.0",
-    "@typescript-eslint/parser": "^2.19.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-jest": "^23.17.1"
+    "next-transpile-modules": "^3.3.0"
   }
 }

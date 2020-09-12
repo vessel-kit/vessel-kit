@@ -3,8 +3,7 @@ import { RequestStorage } from '../storage/request.storage';
 import CID from 'cids';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
-import { RequestPresentation } from './request-get.scenario'
-
+import { RequestPresentation } from './request-get.scenario';
 
 @Injectable()
 export class RequestGetManyScenario {
@@ -17,12 +16,13 @@ export class RequestGetManyScenario {
   async execute(cidString: string) {
     const cid = new CID(cidString);
     const requests = await this.requestStorage.byDocIdMany(cid);
-    return await Promise.all(requests.map(async r => {
-      const anchor = await this.anchorStorage.byRequestId(r.id);
-      const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
-      const nextAnchoring = cronJob.nextDate().toDate();
-      return new RequestPresentation(r, anchor, nextAnchoring);
-    }))
-
+    return await Promise.all(
+      requests.map(async (r) => {
+        const anchor = await this.anchorStorage.byRequestId(r.id);
+        const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
+        const nextAnchoring = cronJob.nextDate().toDate();
+        return new RequestPresentation(r, anchor, nextAnchoring);
+      }),
+    );
   }
 }

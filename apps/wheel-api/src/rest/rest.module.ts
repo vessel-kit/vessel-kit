@@ -14,6 +14,11 @@ import { CloudController } from './cloud.controller';
 @Module({
   imports: [CommonsModule, TerminusModule, StorageModule, LiveModule],
   providers: [vesselProvider, LiveGateway, IpfsService],
-  controllers: [DocumentController, StatsController, HealthController, CloudController],
+  controllers: [
+    DocumentController,
+    StatsController,
+    HealthController,
+    CloudController,
+  ],
 })
 export class RestModule {}

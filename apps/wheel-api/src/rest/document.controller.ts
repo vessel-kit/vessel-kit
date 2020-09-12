@@ -55,7 +55,7 @@ export class DocumentController {
     } else {
       const cid = DocId.fromString(cidString);
       const document: IDocument<unknown, unknown> = await this.vessel.load(cid);
-      return document.state
+      return document.state;
     }
   }
 
@@ -70,7 +70,7 @@ export class DocumentController {
   async readContent(@Param('cid') cidString: string) {
     const cid = new CID(cidString);
     const document = await this.vessel.load(new DocId(cid));
-    const content = await document.canonical()
+    const content = await document.canonical();
     return {
       content: content,
     };

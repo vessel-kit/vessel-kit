@@ -13,7 +13,7 @@ export class CloudController {
     @Query('path') path?: string,
   ) {
     const blob = await this.ipfs.client.dag.get(cid, path);
-    console.log('blob', blob)
+    console.log('blob', blob);
     return blob?.value;
   }
 }

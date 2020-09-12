@@ -35,6 +35,6 @@ export class DocumentStorage {
   }
 
   list(): Promise<DocumentRecord[]> {
-    return this.repository.find()
+    return this.repository.find();
   }
 }
