@@ -43,10 +43,9 @@
     "ses": "^0.8.0",
     "sort-keys": "^4.0.0",
     "terser": "^4.8.0",
-    "typestub-multihashes": "^0.0.1"
+    "typestub-multihashes": "^0.0.4"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.3",
     "@types/lodash": "^4.14.157",
     "@types/multicodec": "^1.0.0",
     "json-schema-to-typescript": "^9.1.1"
