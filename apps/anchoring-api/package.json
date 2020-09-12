@@ -68,7 +68,6 @@
     "ipfs-http-client": "^47.0.1",
     "multihashes": "^3.0.1",
     "nestjs-i18n": "^8.0.9",
-    "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
     "swagger-ui-express": "^4.1.4",
