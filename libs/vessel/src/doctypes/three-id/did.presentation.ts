@@ -32,7 +32,7 @@ export class DidPresentation implements DIDDocument {
         this.publicKey.push({
           id: `${this.id}#managementKey_${i}`,
           type: 'Secp256k1VerificationKey2018',
-          owner: this.id,
+          controller: this.id,
           publicKeyHex: publicKeyHex(decodeThrow(jwkCodec, ownerKey)),
         });
         this.authentication.push({
@@ -44,13 +44,13 @@ export class DidPresentation implements DIDDocument {
       this.publicKey.push({
         id: `${this.id}#signingKey`,
         type: 'Secp256k1VerificationKey2018',
-        owner: this.id,
+        controller: this.id,
         publicKeyHex: publicKeyHex(decodeThrow(jwkCodec, document.content.publicKeys.signing)),
       });
       this.publicKey.push({
         id: `${this.id}#encryptionKey`,
         type: 'Curve25519EncryptionPublicKey',
-        owner: this.id,
+        controller: this.id,
         publicKeyBase64: publicKeyBase64(decodeThrow(jwkCodec, document.content.publicKeys.encryption)),
       });
       this.authentication.push({

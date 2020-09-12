@@ -107,7 +107,8 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
     const outputText = ts.transpileModule(source, {
       compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017 },
     }).outputText;
-    const main = terser.minify(outputText, { mangle: false }).code;
+    const minified = await terser.minify(outputText, { mangle: false });
+    const main = minified.code;
     return {
       doctype: DOCTYPE,
       content: {
