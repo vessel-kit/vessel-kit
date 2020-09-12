@@ -1,6 +1,7 @@
 import { RequestRecord } from '../storage/request.record';
 import { AnchorRecord } from '../storage/anchor.record';
 import { ApiProperty } from '@nestjs/swagger';
+import { toHexString } from 'multihashes';
 
 export class RequestPresentation {
   @ApiProperty({ example: '3ce7f07f-284e-405e-8833-d05494329d1d', description: 'Anchor ID' })
@@ -22,7 +23,7 @@ export class RequestPresentation {
   constructor(
     private readonly request: RequestRecord,
     private readonly anchor?: AnchorRecord,
-    private readonly root?: Buffer,
+    private readonly root?: Uint8Array,
     private readonly ethereumTxHash?: string,
     private readonly chainId?: string,
   ) {}
@@ -38,7 +39,7 @@ export class RequestPresentation {
     };
     if (this.anchor) {
       json.anchor = {
-        merkleRoot: this.root.toString('hex'),
+        merkleRoot: toHexString(this.root),
         proofCid: this.anchor.proofCid.toString(),
         path: this.anchor.path,
         ethereumTxHash: this.ethereumTxHash,

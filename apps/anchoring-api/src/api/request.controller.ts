@@ -49,7 +49,7 @@ export class RequestController {
 
           const txHashCid = proofDag.value.txHash;
           const txHashDigest = multihash.decode(txHashCid.multihash);
-          const ethereumTxHash = '0x' + txHashDigest.digest.toString('hex');
+          const ethereumTxHash = '0x' + multihash.toHexString(txHashDigest.digest);
           const chainId = proofDag.value.chainId;
 
           return new RequestPresentation(r, anchor, digest, ethereumTxHash, chainId);

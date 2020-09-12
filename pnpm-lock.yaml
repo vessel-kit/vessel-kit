@@ -45,14 +45,13 @@ importers:
       graphql-tools: 5.0.0_graphql@15.2.0
       io-ts: 2.2.7
       ipfs-http-client: 44.3.0
-      multihashes: 0.4.21
+      multihashes: 3.0.1
       nestjs-i18n: 8.0.6_410e308ee2ecb22a2e89e86bc82d53a8
       reflect-metadata: 0.1.13
       rimraf: 3.0.2
       rxjs: 6.6.0
       swagger-ui-express: 4.1.4
       typeorm: 0.2.25
-      typestub-multihashes: 0.0.4
       uuid: 7.0.3
     devDependencies:
       '@nestjs/cli': 7.4.1
@@ -88,7 +87,7 @@ importers:
       graphql-tools: ^5.0.0
       io-ts: ^2.2.7
       ipfs-http-client: ^44.0.0
-      multihashes: ^0.4.19
+      multihashes: ^3.0.1
       nestjs-i18n: ^8.0.2
       pg: ^8.0.3
       reflect-metadata: ^0.1.13
@@ -96,7 +95,6 @@ importers:
       rxjs: ^6.5.4
       swagger-ui-express: ^4.1.4
       typeorm: ^0.2.24
-      typestub-multihashes: ^0.0.4
       uuid: ^7.0.3
   apps/anchoring-ui:
     dependencies:
@@ -3563,7 +3561,7 @@ packages:
       integrity: sha512-t4CoEokHTfcyfb4hUaF9oOHu9RmmNWnm1CP0YmMqOOfClKascOmvlEM736vlqeScuGvBDsHkf8R2INd4DWreQA==
   /@types/bn.js/4.11.6:
     dependencies:
-      '@types/node': 14.0.14
+      '@types/node': 14.10.1
     dev: false
     resolution:
       integrity: sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
@@ -3779,6 +3777,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-Z4U8yDAl5TFkmYsZdFPdjeMa57NOvnaf1tljHzhouaPEp7LCj2JKkejpI1ODviIAQuW4CcQmxkQ77rnLsOOoKw==
+  /@types/node/14.10.1:
+    dev: false
+    resolution:
+      integrity: sha512-aYNbO+FZ/3KGeQCEkNhHFRIzBOUgc7QvcVNKXbfnhDkSfwUv91JsQQa10rDgKSTSLkXZ1UIyPe4FJJNVgw1xWQ==
   /@types/normalize-package-data/2.4.0:
     dev: true
     resolution:
@@ -12614,6 +12616,16 @@ packages:
       npm: '>=6.0.0'
     resolution:
       integrity: sha512-KcCxpBVY8fdVKu4dJMAahq4F/2Z/9xqEjIiR7PiMe7LRGeorFn2NLmicN6nLBCqQvft6MG2Lc9X5P0IdyvnxEw==
+  /multibase/3.0.0:
+    dependencies:
+      base-x: 3.0.8
+      web-encoding: 1.0.3
+    dev: false
+    engines:
+      node: '>=10.0.0'
+      npm: '>=6.0.0'
+    resolution:
+      integrity: sha512-fuB+zfRbF5zWV4L+CPM0dgA0gX7DHG/IMyzwhVi2RxbRVWn41Wk7SkKW8cxYDGOg6TVh7XgyoesjOAYrB1HBAA==
   /multicast-dns/7.2.2:
     dependencies:
       dns-packet: 4.2.0
@@ -12648,6 +12660,17 @@ packages:
       npm: '>=6.0.0'
     resolution:
       integrity: sha512-S27Tepg4i8atNiFaU5ZOm3+gl3KQlUanLs/jWcBxQHFttgq+5x1OgbQmf2d8axJ/48zYGBd/wT9d723USMFduw==
+  /multihashes/3.0.1:
+    dependencies:
+      multibase: 3.0.0
+      uint8arrays: 1.1.0
+      varint: 5.0.0
+    dev: false
+    engines:
+      node: '>=10.0.0'
+      npm: '>=6.0.0'
+    resolution:
+      integrity: sha512-fFY67WOtb0359IjDZxaCU3gJILlkwkFbxbwrK9Bej5+NqNaYztzLOj8/NgMNMg/InxmhK+Uu8S/U4EcqsHzB7Q==
   /multihashing-async/0.8.2:
     dependencies:
       blakejs: 1.1.0
@@ -16823,6 +16846,13 @@ packages:
       node: '>=10'
     resolution:
       integrity: sha512-+g3NEp7fJLe9DPa1TArHm9QAA7YciZmWnfAqEaFrBihQ7epOv9i99rjtgb6Iz0wh3WuQDjsCTDfgRoGnmHN81A==
+  /uint8arrays/1.1.0:
+    dependencies:
+      multibase: 3.0.0
+      web-encoding: 1.0.3
+    dev: false
+    resolution:
+      integrity: sha512-cLdlZ6jnFczsKf5IH1gPHTtcHtPGho5r4CvctohmQjw8K7Q3gFdfIGHxSTdTaCKrL4w09SsPRJTqRS0drYeszA==
   /unc-path-regex/0.1.2:
     dev: false
     engines:
@@ -17216,6 +17246,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-8LDc+RW8X/FSivrbLA4XtTLaL+g=
+  /web-encoding/1.0.3:
+    dev: false
+    resolution:
+      integrity: sha512-Ajn64qJ0Z3oMwOIwBtxajFPA+4guB12n4EfmY1Mtlgb9296WJxwH1q/ykedmQrBNpjcKCM207S5OM2wpJfl4VA==
   /web-vitals/0.2.1:
     dev: false
     resolution:
