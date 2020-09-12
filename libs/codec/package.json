@@ -6,14 +6,15 @@
   "version": "1.0.0-a.0",
   "scripts": {
     "build": "tsc -p .",
-    "dev": "tsc -p . --watch"
+    "dev": "tsc -p . --watch",
+    "test": "jest"
   },
   "dependencies": {
-    "cids": "^0.8.0",
+    "cids": "^1.0.0",
     "decko": "^1.2.0",
-    "fp-ts": "^2.0.0",
-    "io-ts": "^2.2.7",
-    "multibase": "^1.0.1"
+    "fp-ts": "^2.8.2",
+    "io-ts": "^2.2.10",
+    "multibase": "^3.0.0"
   },
   "devDependencies": {
     "@types/multibase": "^0.6.0"

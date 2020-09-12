@@ -245,13 +245,13 @@ importers:
       '@vessel-kit/codec': 'link:../codec'
       axios: 0.19.2
       caip: 0.9.2
-      cids: 0.8.3
+      cids: 1.0.0
       ethers: 5.0.4
       fp-ts: 2.6.7
       io-ts: 2.2.7_fp-ts@2.6.7
       ipfs: 0.47.0
+      multihashes: 3.0.1
       rxjs: 6.6.0
-      typestub-multihashes: 0.0.4
       uuid: 8.2.0
     devDependencies:
       '@ethersproject/providers': 5.0.4
@@ -263,32 +263,32 @@ importers:
       '@vessel-kit/codec': 'workspace:*'
       axios: ^0.19.2
       caip: ^0.9.2
-      cids: ^0.8.3
+      cids: ^1.0.0
       ethers: ^5.0.4
       fp-ts: ^2.0.0
       io-ts: ^2.2.7
       ipfs: ^0.47.0
+      multihashes: ^3.0.1
       rxjs: ^6.5.5
-      typestub-multihashes: ^0.0.4
       uuid: ^8.2.0
   libs/blockchain-connection-string:
     specifiers: {}
   libs/codec:
     dependencies:
-      cids: 0.8.3
+      cids: 1.0.0
       decko: 1.2.0
-      fp-ts: 2.6.7
-      io-ts: 2.2.7_fp-ts@2.6.7
-      multibase: 1.0.1
+      fp-ts: 2.8.2
+      io-ts: 2.2.10_fp-ts@2.8.2
+      multibase: 3.0.0
     devDependencies:
       '@types/multibase': 0.6.0
     specifiers:
       '@types/multibase': ^0.6.0
-      cids: ^0.8.0
+      cids: ^1.0.0
       decko: ^1.2.0
-      fp-ts: ^2.0.0
-      io-ts: ^2.2.7
-      multibase: ^1.0.1
+      fp-ts: ^2.8.2
+      io-ts: ^2.2.10
+      multibase: ^3.0.0
   libs/identity:
     specifiers: {}
   libs/two-party:
@@ -5763,6 +5763,19 @@ packages:
       npm: '>=3.0.0'
     resolution:
       integrity: sha512-yoXTbV3llpm+EBGWKeL9xKtksPE/s6DPoDSY4fn8I8TEW1zehWXPSB0pwAXVDlLaOlrw+sNynj995uD9abmPhA==
+  /cids/1.0.0:
+    dependencies:
+      class-is: 1.1.0
+      multibase: 3.0.0
+      multicodec: 2.0.1
+      multihashes: 3.0.1
+      uint8arrays: 1.1.0
+    dev: false
+    engines:
+      node: '>=4.0.0'
+      npm: '>=3.0.0'
+    resolution:
+      integrity: sha512-HEBCIElSiXlkgZq3dgHJc3eDcnFteFp96N8/1/oqX5lkxBtB66sZ12jqEP3g7Ut++jEk6kIUGifQ1Qrya1jcNQ==
   /cipher-base/1.0.4:
     dependencies:
       inherits: 2.0.4
@@ -7967,6 +7980,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Uklx0kKrjwbYb142tbQZqWVHhvNzxZwJhr+gkIbwPt/exV0n8/dHDkAmB05vNKNnJMwoJr7i6pM3XW0bicrE7Q==
+  /fp-ts/2.8.2:
+    dev: false
+    resolution:
+      integrity: sha512-YKLBW75Rp+L9DuY1jr7QO6mZLTmJjy7tOqSAMcB2q2kBomqLjBMyV7dotpcnZmUYY6khMsfgYWtPbUDOFcNmkA==
   /fragment-cache/0.2.1:
     dependencies:
       map-cache: 0.2.2
@@ -8858,6 +8875,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
+  /io-ts/2.2.10_fp-ts@2.8.2:
+    dependencies:
+      fp-ts: 2.8.2
+    dev: false
+    peerDependencies:
+      fp-ts: ^2.0.0
+    resolution:
+      integrity: sha512-WHx5jJe7hPpc6JoSIVbD+Xn6tYqe3cRvNpX24d8Wi15/kxhRWa8apo0Gzag6Xg99sCNY9OHKylw/Vhv0JAbNPQ==
   /io-ts/2.2.7:
     dev: false
     peerDependencies:
@@ -12641,6 +12666,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-8G4JKbHWSe/39Xx2uiI+/b/S6mGgimzwEN4TOCokFUIfofg1T8eHny88ht9eWImD2dng+EEQRsApXxA5ubhU4g==
+  /multicodec/2.0.1:
+    dependencies:
+      uint8arrays: 1.0.0
+      varint: 5.0.0
+    dev: false
+    resolution:
+      integrity: sha512-YDYeWn9iGa76hOHAyyZa0kbt3tr5FLg1ZXUHrZUJltjnxxdbTIbHnxWLd2zTcMOjdT3QyO+Xs4bQgJUcC2RWUA==
   /multihashes/0.4.21:
     dependencies:
       buffer: 5.6.0
@@ -16846,6 +16878,13 @@ packages:
       node: '>=10'
     resolution:
       integrity: sha512-+g3NEp7fJLe9DPa1TArHm9QAA7YciZmWnfAqEaFrBihQ7epOv9i99rjtgb6Iz0wh3WuQDjsCTDfgRoGnmHN81A==
+  /uint8arrays/1.0.0:
+    dependencies:
+      multibase: 3.0.0
+      web-encoding: 1.0.3
+    dev: false
+    resolution:
+      integrity: sha512-14tqEVujDREW7YwonSZZwLvo7aFDfX7b6ubvM/U7XvZol+CC/LbhaX/550VlWmhddAL9Wou1sxp0Of3tGqXigg==
   /uint8arrays/1.1.0:
     dependencies:
       multibase: 3.0.0
