@@ -14,7 +14,6 @@ import { DocumentStorage } from '../storage/document.storage';
 import { DocumentStatePresentation } from './document-state.presentation';
 import { DocId, CidStringCodec, DecodePipe } from '@vessel-kit/codec';
 import CID from 'cids';
-import { DateTime } from 'luxon';
 import { IDocument } from '@vessel-kit/vessel';
 
 @Controller('/api/v0/document')
@@ -37,8 +36,8 @@ export class DocumentController {
     record.cid = document.id.cid;
     record.doctype = body.doctype;
     record.payload = body.content;
-    record.createdAt = DateTime.local().toJSDate();
-    record.updatedAt = DateTime.local().toJSDate();
+    record.createdAt = new Date();
+    record.updatedAt = new Date();
     await this.documentStorage.save(record);
     return document.state;
   }
