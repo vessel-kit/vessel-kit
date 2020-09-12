@@ -1,5 +1,5 @@
 import { IBlockchainReaderHandler } from './blockchain-reader-handler.interface';
-import { Ipfs } from 'ipfs';
+import type { Ipfs } from 'ipfs';
 import { AnchorProof, AnchorProofIpldCodec } from './anchor-proof';
 import { AnchorLeaf, AnchorLeafIpldCodec } from './anchor-leaf';
 import { RecordWrap, decodeThrow } from '@vessel-kit/codec';

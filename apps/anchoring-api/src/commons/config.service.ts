@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import Joi, { CustomHelpers } from '@hapi/joi';
+import Joi, { CustomHelpers } from 'joi';
 import dotenv from 'dotenv';
 import cronParser from 'cron-parser';
 import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
