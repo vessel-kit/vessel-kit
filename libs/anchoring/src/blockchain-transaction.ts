@@ -1,4 +1,4 @@
-import { encode } from 'typestub-multihashes';
+import { encode } from 'multihashes';
 import CID from 'cids';
 import { ChainID } from 'caip';
 

@@ -2,7 +2,7 @@ import { IBlockchainReaderHandler } from '../blockchain-reader-handler.interface
 import { AnchorProof } from '../anchor-proof';
 import { ChainID } from 'caip';
 import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
-import { decode } from 'typestub-multihashes';
+import { decode, toHexString } from 'multihashes';
 
 const ETHEREUM_NAMESPACE = 'eip155';
 
@@ -28,12 +28,13 @@ export class EthereumReader implements IBlockchainReaderHandler {
     const provider = network
       ? providers.getDefaultProvider(network)
       : new providers.JsonRpcProvider(this.ethereumEndpoint.transport);
-    const txid = '0x' + decode(proofRecord.txHash.multihash).digest.toString('hex');
+    const txDigest = decode(proofRecord.txHash.multihash).digest;
+    const txid = '0x' + toHexString(txDigest);
     const transaction = await provider.getTransaction(txid);
     if (transaction && transaction.blockHash) {
       const block = await provider.getBlock(transaction.blockHash);
       const txData = Buffer.from(transaction.data.replace('0x', ''), 'hex');
-      const root = proofRecord.root.buffer as Buffer;
+      const root = proofRecord.root.bytes;
       if (!txData.equals(root)) {
         throw new InvalidBlockchainProofError(`Proof Merkle root ${proofRecord.root} is not in transaction ${txid}`);
       }

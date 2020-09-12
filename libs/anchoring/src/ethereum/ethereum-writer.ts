@@ -4,6 +4,7 @@ import CID from 'cids';
 import { ChainID } from 'caip';
 import { BlockchainTransaction } from '../blockchain-transaction';
 import { IBlockchainWriter } from '../blockchain-writer.interface';
+import { toHexString } from 'multihashes';
 
 export class InvalidKeyMaterialError extends Error {}
 
@@ -35,7 +36,7 @@ export class EthereumWriter implements IBlockchainWriter {
   }
 
   async createAnchor(cid: CID): Promise<BlockchainTransaction> {
-    const hex = '0x' + cid.buffer.toString('hex');
+    const hex = '0x' + toHexString(cid.bytes);
     const transaction = await this.#wallet.sendTransaction({
       to: this.#wallet.address,
       data: hex,
