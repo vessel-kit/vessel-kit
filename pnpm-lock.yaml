@@ -156,38 +156,38 @@ importers:
       typeorm: ^0.2.26
   apps/wheel-ui:
     dependencies:
-      '@carbon/icons-react': 10.13.0
-      '@emotion/core': 10.0.28_react@16.13.1
-      '@emotion/styled': 10.0.27_c989b1aa057905c7a8b69bf973f55a19
+      '@carbon/icons-react': 10.17.0
+      '@emotion/core': 10.0.35_react@16.13.1
+      '@emotion/styled': 10.0.27_4d699cf7e8a2bf97a506a18e2a399a54
       '@theme-ui/core': 0.3.1_react@16.13.1
       '@vessel-kit/ui-shared': 'link:../../libs/ui-shared'
-      carbon-components: 10.15.0
-      carbon-components-react: 7.15.0_8e7f1169446f58927797b8f0ef43c293
+      carbon-components: 10.19.0
+      carbon-components-react: 7.19.0_c4ab44a8f0e776a8609726a63830dd84
       carbon-icons: 7.0.7
-      emotion-theming: 10.0.27_c989b1aa057905c7a8b69bf973f55a19
-      luxon: 1.24.1
+      emotion-theming: 10.0.27_4d699cf7e8a2bf97a506a18e2a399a54
+      luxon: 1.25.0
       next: 9.4.0_react-dom@16.13.1+react@16.13.1
       react: 16.13.1
       react-dom: 16.13.1_react@16.13.1
       socket.io-client: 2.3.0
-      swr: 0.2.3_react@16.13.1
+      swr: 0.3.2_react@16.13.1
       theme-ui: 0.3.1_react@16.13.1
     specifiers:
-      '@carbon/icons-react': ^10.10.2
-      '@emotion/core': ^10.0.28
+      '@carbon/icons-react': ^10.17.0
+      '@emotion/core': ^10.0.35
       '@emotion/styled': ^10.0.27
       '@theme-ui/core': ^0.3.1
       '@vessel-kit/ui-shared': 'workspace:*'
-      carbon-components: ^10.11.2
-      carbon-components-react: ^7.11.3
+      carbon-components: ^10.19.0
+      carbon-components-react: ^7.19.0
       carbon-icons: ^7.0.7
       emotion-theming: ^10.0.27
-      luxon: ^1.24.1
+      luxon: ^1.25.0
       next: 9.4.0
       react: 16.13.1
       react-dom: 16.13.1
       socket.io-client: ^2.3.0
-      swr: ^0.2.2
+      swr: ^0.3.2
       theme-ui: ^0.3.1
   libs/anchoring:
     dependencies:
@@ -17512,7 +17512,7 @@ packages:
       express: '>=4.0.0'
     resolution:
       integrity: sha512-Ea96ecpC+Iq9GUqkeD/LFR32xSs8gYqmTW1gXCuKg81c26WV6ZC2FsBSPVExQP6WkyUuz5HEiR0sEv/HCC343g==
-  /swr/0.2.3_react@16.13.1:
+  /swr/0.3.2_react@16.13.1:
     dependencies:
       fast-deep-equal: 2.0.1
       react: 16.13.1
@@ -17520,7 +17520,7 @@ packages:
     peerDependencies:
       react: ^16.11.0
     resolution:
-      integrity: sha512-JhuuD5ojqgjAQpZAhoPBd8Di0Mr1+ykByVKuRJdtKaxkUX/y8kMACWKkLgLQc8pcDOKEAnbIreNjU7HfqI9nHQ==
+      integrity: sha512-Bs5Bihq1hQ66O5bdKaL47iZ2nlAaBsd8tTLRLkw9stZeuBEfH7zSuQI95S2TpchL0ybsMq3isWwuso2uPvCfHA==
   /symbol-observable/1.2.0:
     engines:
       node: '>=0.10.0'
