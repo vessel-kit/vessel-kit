@@ -40,7 +40,7 @@
     "multibase": "^3.0.0",
     "multicodec": "^2.0.1",
     "rxjs": "^6.6.3",
-    "ses": "npm:@ukstv/ses@^0.10.3",
+    "ses": "^0.10.3",
     "terser": "^5.3.1"
   },
   "devDependencies": {
