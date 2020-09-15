@@ -20,6 +20,9 @@ export class RequestPresentation {
   toJSON() {
     switch (this.request.status) {
       case AnchoringStatus.ANCHORED:
+        if (!this.anchor) {
+          throw new Error(`Can not find anchor`)
+        }
         return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
           status: this.request.status,
@@ -69,6 +72,9 @@ export class RequestGetScenario {
     const request = await this.requestStorage.byCidOrFail(cid);
     const anchor = await this.anchorStorage.byRequestId(request.id);
     const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
+    if (!cronJob) {
+      throw new Error(`Can not find ${this.anchoringSchedule.triggerAnchoring.name} cron job`)
+    }
     const nextAnchoring = cronJob.nextDate().toDate();
     return new RequestPresentation(request, anchor, nextAnchoring);
   }

@@ -19,7 +19,7 @@ export class AnchoringService {
   private readonly anchoring: Anchoring;
 
   constructor(
-    private readonly configService: ConfigService,
+    configService: ConfigService,
     private readonly requestStorage: RequestStorage,
     private readonly anchorStorage: AnchorStorage,
     ipfsService: IpfsService,

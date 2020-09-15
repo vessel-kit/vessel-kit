@@ -37,7 +37,7 @@ export class RequestPresentation {
       updatedAt: this.updatedAt,
       cid: this.cid,
     };
-    if (this.anchor) {
+    if (this.anchor && this.root) {
       json.anchor = {
         merkleRoot: toHexString(this.root),
         proofCid: this.anchor.proofCid.toString(),

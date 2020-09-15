@@ -17,6 +17,9 @@ export class RequestCreateScenario {
     const record = await this.buildRequestRecord(cid, docId);
     const saved = await this.save(record);
     const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
+    if (!cronJob) {
+      throw new Error(`Can not find ${this.anchoringSchedule.triggerAnchoring.name} cron job`)
+    }
     return {
       record: saved,
       nextAnchoring: cronJob.nextDate().toDate(),

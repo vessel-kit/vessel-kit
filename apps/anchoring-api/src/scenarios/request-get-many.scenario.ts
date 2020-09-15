@@ -20,6 +20,9 @@ export class RequestGetManyScenario {
       requests.map(async (r) => {
         const anchor = await this.anchorStorage.byRequestId(r.id);
         const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
+        if (!cronJob) {
+          throw new Error(`Can not find ${this.anchoringSchedule.triggerAnchoring.name} cron job`)
+        }
         const nextAnchoring = cronJob.nextDate().toDate();
         return new RequestPresentation(r, anchor, nextAnchoring);
       }),

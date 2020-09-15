@@ -28,6 +28,9 @@ export class StatsController {
     const anchorsTotalCount = await this.anchorStorage.count();
     const pendingRequests = await this.requestStorage.countByStatus(AnchoringStatus.PENDING);
     const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
+    if (!cronJob) {
+      throw new Error(`No job for ${this.anchoringSchedule.triggerAnchoring.name} is found`)
+    }
     const nextAnchoring = cronJob.nextDate().toDate();
     return {
       requestsTotalCount: requestsTotalCount,

@@ -50,6 +50,7 @@ importers:
       typeorm: 0.2.26
     devDependencies:
       '@nestjs/cli': 7.5.1
+      '@types/cron': 1.7.2
       pg: 8.3.3_pg@8.3.3
     specifiers:
       '@nestjs/cli': ^7.5.1
@@ -61,6 +62,7 @@ importers:
       '@nestjs/swagger': ^4.6.0
       '@nestjs/terminus': ^7.0.1
       '@nestjs/typeorm': ^7.1.3
+      '@types/cron': ^1.7.2
       '@vessel-kit/anchoring': 'workspace:*'
       '@vessel-kit/blockchain-connection-string': 'workspace:*'
       '@vessel-kit/codec': 'workspace:*'
@@ -3575,6 +3577,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-sOdDRU3oRS7LBNTIqwDkPJyq0lpHYcbMTt0TrjzsXbk/e37hcLTH6eZX7CdbDeN0yJJvzw9hFBZkbtCSbk/jAQ==
+  /@types/cron/1.7.2:
+    dependencies:
+      '@types/node': 14.10.1
+      moment: 2.28.0
+    dev: true
+    resolution:
+      integrity: sha512-AEpNLRcsVSc5AdseJKNHpz0d4e8+ow+abTaC0fKDbAU86rF1evoFF0oC2fV9FdqtfVXkG2LKshpLTJCFOpyvTg==
   /@types/debug/4.1.5:
     dev: false
     resolution:
@@ -12006,6 +12015,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==
+  /moment/2.28.0:
+    dev: true
+    resolution:
+      integrity: sha512-Z5KOjYmnHyd/ukynmFd/WwyXHd7L4J9vTI/nn5Ap9AVUgaAE15VvQ9MOGmJJygEUklupqIrFnor/tjTwRU+tQw==
   /mortice/2.0.0:
     dependencies:
       globalthis: 1.0.1

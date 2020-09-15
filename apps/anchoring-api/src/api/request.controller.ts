@@ -5,7 +5,6 @@ import { RequestGetManyScenario } from '../scenarios/request-get-many.scenario';
 import { RequestGetScenario } from '../scenarios/request-get.scenario';
 import { RequestStorage } from '../storage/request.storage';
 import { CidStringCodec, DecodePipe } from '@vessel-kit/codec';
-import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
 import { AnchorStorage } from '../storage/anchor.storage';
 import { IpfsService } from '../anchoring/ipfs.service';
 import * as multihash from 'multihashes';
@@ -23,7 +22,6 @@ export class RequestController {
     private readonly requestGetScenario: RequestGetScenario,
     private readonly requestGetManyScenario: RequestGetManyScenario,
     private readonly requestStorage: RequestStorage,
-    private readonly anchoringSchedule: AnchoringScheduleService,
     private readonly anchorStorage: AnchorStorage,
     private readonly ipfsService: IpfsService,
   ) {}
