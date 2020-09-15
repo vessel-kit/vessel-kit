@@ -6,8 +6,8 @@ const textDecoder = new TextDecoder()
 
 const base64urlPrefix = 'u'
 
-export const Uint8ArrayBase64StringCodec = new t.Type<Uint8Array, string, string>(
-  'Uint8Array-base64string',
+export const Base64urlCodec = new t.Type<Uint8Array, string, string>(
+  'base64url',
   (u: unknown): u is Uint8Array => u instanceof Uint8Array,
   (u, context) => {
     try {

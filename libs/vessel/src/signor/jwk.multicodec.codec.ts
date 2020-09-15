@@ -2,7 +2,7 @@ import * as t from 'io-ts';
 import jose from 'jose';
 import * as multicodec from 'multicodec';
 import * as bytes from '@stablelib/bytes';
-import { decodeThrow, Uint8ArrayBase64StringCodec } from "@vessel-kit/codec";
+import { decodeThrow, Base64urlCodec } from "@vessel-kit/codec";
 
 function isECKey(unknown: jose.JWK.Key): unknown is jose.JWK.ECKey {
   return unknown.crv === 'secp256k1' && unknown.kty === 'EC';
@@ -25,8 +25,8 @@ export const JWKMulticodecCodec = new t.Type<jose.JWK.Key, Uint8Array, Uint8Arra
         return t.success(
           jose.JWK.asKey({
             crv: 'secp256k1' as 'secp256k1',
-            x: Uint8ArrayBase64StringCodec.encode(x),
-            y: Uint8ArrayBase64StringCodec.encode(y),
+            x: Base64urlCodec.encode(x),
+            y: Base64urlCodec.encode(y),
             kty: 'EC' as 'EC',
           }),
         );
@@ -34,7 +34,7 @@ export const JWKMulticodecCodec = new t.Type<jose.JWK.Key, Uint8Array, Uint8Arra
         return t.success(
           jose.JWK.asKey({
             crv: 'X25519' as 'X25519',
-            x: Uint8ArrayBase64StringCodec.encode(point),
+            x: Base64urlCodec.encode(point),
             kty: 'OKP' as 'OKP',
           }),
         );
@@ -44,12 +44,12 @@ export const JWKMulticodecCodec = new t.Type<jose.JWK.Key, Uint8Array, Uint8Arra
   },
   (a: jose.JWK.Key) => {
     if (isECKey(a)) {
-      const x = decodeThrow(Uint8ArrayBase64StringCodec, a.x);
-      const y = decodeThrow(Uint8ArrayBase64StringCodec, a.y);
+      const x = decodeThrow(Base64urlCodec, a.x);
+      const y = decodeThrow(Base64urlCodec, a.y);
       const publicKey = bytes.concat(x, y);
       return multicodec.addPrefix(Uint8Array.from([0xe7]), publicKey);
     } else if (isOKPKey(a)) {
-      const publicKey = decodeThrow(Uint8ArrayBase64StringCodec, a.x);
+      const publicKey = decodeThrow(Base64urlCodec, a.x);
       return multicodec.addPrefix(Uint8Array.from([0xec]), publicKey);
     } else {
       throw new Error(`Not implemented for kty ${a.kty}:${a.crv}`);

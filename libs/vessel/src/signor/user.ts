@@ -1,4 +1,5 @@
 import * as multicodec from 'multicodec';
+import * as multibase from 'multibase';
 import { ethers } from 'ethers';
 import { IProvider } from './provider.interface';
 import { IdentityProviderWrap } from './identity-provider.wrap';
@@ -9,18 +10,19 @@ import { JWTPayload } from './jwt-payload';
 import { ISignor } from './signor.interface';
 import { ThreeIdentifier } from '../three-identifier';
 import { sortKeys } from '../util/sort-keys';
+import * as hex from '@stablelib/hex';
 
 function secp256k1PubKeyFromCompressed(compressedHex: string) {
   const publicKey = ethers.utils.computePublicKey('0x' + compressedHex.replace('0x', ''));
-  const asBuffer = Buffer.from(publicKey.replace('0x04', ''), 'hex');
+  const bytes = hex.decode(publicKey.replace('0x04', ''));
   // It is secp256k1 public key
-  const encoded = multicodec.addPrefix(Buffer.from('e7', 'hex'), asBuffer);
+  const encoded = multicodec.addPrefix(Uint8Array.from([0xe7]), bytes);
   return decodeThrow(JWKMulticodecCodec, encoded);
 }
 
 async function x25519publicKey(base64: string) {
-  const encryptionKeyBuffer = Buffer.from(base64, 'base64');
-  const encoded = multicodec.addPrefix(Buffer.from('ec', 'hex'), encryptionKeyBuffer);
+  const bytes = multibase.decode('M' + base64)
+  const encoded = multicodec.addPrefix(Uint8Array.from([0xec]), bytes);
   return decodeThrow(JWKMulticodecCodec, encoded);
 }
 
@@ -67,7 +69,7 @@ export class User implements ISignor {
   }
 
   async sign(payload: any, opts: { useMgmt: boolean } = { useMgmt: false }): Promise<JWTPayload> {
-    const did = await this.did()
+    const did = await this.did();
     if (!did) throw new EmptyDIDSigningError(`Can not sign payload without DID`);
     payload.iss = did;
     payload.iat = undefined; // did-jwt is quite opinionated

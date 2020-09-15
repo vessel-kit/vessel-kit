@@ -4,20 +4,20 @@ import * as multicodec from 'multicodec';
 import { DIDDocument, PublicKey } from 'did-resolver';
 import { Authentication } from 'did-resolver/src/resolver';
 import { ThreeIdShape } from './three-id-shape';
-import { decodeThrow, Uint8ArrayMultibaseCodec, Uint8ArrayBase64StringCodec } from "@vessel-kit/codec";
+import { decodeThrow, Uint8ArrayMultibaseCodec, Base64urlCodec } from "@vessel-kit/codec";
 import * as t from 'io-ts';
 import * as hex from '@stablelib/hex';
 
 const jwkCodec = t.string.pipe(Uint8ArrayMultibaseCodec).pipe(JWKMulticodecCodec);
 
 function publicKeyHex(key: jose.JWK.Key): string {
-  const multicodecBuffer = JWKMulticodecCodec.encode(key);
-  return '04' + hex.encode(multicodec.rmPrefix(multicodecBuffer));
+  const bytes = JWKMulticodecCodec.encode(key);
+  return '04' + hex.encode(multicodec.rmPrefix(bytes));
 }
 
 function publicKeyBase64(key: jose.JWK.Key): string {
-  const multicodecBuffer = JWKMulticodecCodec.encode(key);
-  return Uint8ArrayBase64StringCodec.encode(multicodec.rmPrefix(multicodecBuffer));
+  const bytes = JWKMulticodecCodec.encode(key);
+  return Base64urlCodec.encode(multicodec.rmPrefix(bytes));
 }
 
 export class DidPresentation implements DIDDocument {
