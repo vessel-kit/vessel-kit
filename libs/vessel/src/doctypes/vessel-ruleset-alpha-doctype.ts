@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import { DoctypeHandler } from '../document/doctype';
-import { decodeThrow, RecordWrap, validateThrow } from '@vessel-kit/codec';
+import { decodeThrow } from '@vessel-kit/codec';
 import './ses';
 import { IContext } from '../context';
 
@@ -8,7 +8,6 @@ import * as fs from 'fs';
 import terser from 'terser';
 import * as ts from 'typescript';
 import { AnchoringStatus, AnchorProof } from '@vessel-kit/anchoring';
-import produce from 'immer';
 import { Ordering } from '../document/ordering';
 import { AnchorState } from '../document/anchor-state';
 import { isRight } from 'fp-ts/lib/Either';
@@ -143,34 +142,11 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
     }
   }
 
-  async applyAnchor(anchorRecord: RecordWrap, proof: AnchorProof, state: any): Promise<any> {
-    return produce(state, async (next) => {
-      if (next.current) {
-        next.freight = next.current;
-        next.current = null;
-      }
-      next.anchor = {
-        status: AnchoringStatus.ANCHORED as AnchoringStatus.ANCHORED,
-        proof: {
-          chainId: proof.chainId.toString(),
-          blockNumber: proof.blockNumber,
-          timestamp: new Date(proof.blockTimestamp * 1000).toISOString(),
-          txHash: proof.txHash.toString(),
-          root: proof.root.toString(),
-        },
-      };
-    });
-  }
-
-  applyUpdate(updateRecord, state: any, docId): Promise<any> {
-    throw new Error(`Not implemented`);
-  }
-
   async canonical(state: State): Promise<Shape> {
     return state.current;
   }
 
-  async apply(recordWrap, state: State, docId): Promise<State> {
+  async apply(): Promise<State> {
     throw new Error(`VesselRulesetAlpha.apply: not implemented`);
   }
 }

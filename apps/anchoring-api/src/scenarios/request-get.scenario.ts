@@ -23,18 +23,18 @@ export class RequestPresentation {
         return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
           status: this.request.status,
-          cid: this.request.cid,
+          cid: new CID(this.request.cid),
           docId: this.docId,
           createdAt: this.request.createdAt,
           updatedAt: this.request.updatedAt,
-          anchorRecord: this.anchor.cid,
+          anchorRecord: new CID(this.anchor.cid),
         });
       case AnchoringStatus.PROCESSING:
       case AnchoringStatus.PENDING:
         return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
           status: this.request.status,
-          cid: this.request.cid,
+          cid: new CID(this.request.cid),
           docId: this.docId,
           createdAt: this.request.createdAt,
           updatedAt: this.request.updatedAt,
@@ -46,7 +46,7 @@ export class RequestPresentation {
         return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
           status: this.request.status,
-          cid: this.request.cid,
+          cid: new CID(this.request.cid),
           docId: this.docId,
           createdAt: this.request.createdAt,
           updatedAt: this.request.updatedAt,

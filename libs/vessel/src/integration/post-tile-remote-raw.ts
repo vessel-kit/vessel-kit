@@ -15,7 +15,7 @@ import * as t from 'io-ts';
 const REMOTE_URL = 'http://localhost:3001';
 
 async function createUser(seed: string) {
-  const identityWallet = new IdentityWallet(() => true, {
+  const identityWallet = new IdentityWallet(async () => true, {
     seed: seed,
   });
   const user = await User.build(identityWallet.get3idProvider());
@@ -66,7 +66,7 @@ async function main() {
   const documentId = snapshot.log.first;
   await sleep(61000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/document/${documentId.toString()}`);
-  const log = new History(anchoredGenesisResponse.data.log.map((cid) => new CID(cid)));
+  const log = new History(anchoredGenesisResponse.data.log.map((cid: string) => new CID(cid)));
   const doc2 = Object.assign({}, tile);
   doc2.content = {
     foo: '33',

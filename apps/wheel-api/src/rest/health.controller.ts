@@ -3,7 +3,6 @@ import { Controller, Get } from '@nestjs/common';
 import {
   HealthCheck,
   HealthCheckService,
-  TypeOrmHealthIndicator,
   MemoryHealthIndicator,
 } from '@nestjs/terminus';
 
@@ -15,7 +14,6 @@ const MEMORY_RSS_THRESHOLD = 3000 * MEGABYTE;
 export class HealthController {
   constructor(
     private health: HealthCheckService,
-    private db: TypeOrmHealthIndicator,
     private mem: MemoryHealthIndicator,
   ) {}
 

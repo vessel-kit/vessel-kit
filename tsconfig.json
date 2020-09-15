@@ -1,14 +1,25 @@
 {
   "compilerOptions": {
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "forceConsistentCasingInFileNames": true,
+    "newLine": "lf",
     "module": "commonjs",
+    "target": "es2017",
     "declaration": true,
     "removeComments": true,
-    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es2017",
     "sourceMap": true,
-    "incremental": true
-  },
-  "exclude": ["node_modules", "dist"]
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "checkJs": false,
+    "typeRoots": ["types/", "node_modules/@types/"]
+  }
 }

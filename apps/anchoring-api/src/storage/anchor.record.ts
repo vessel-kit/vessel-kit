@@ -1,8 +1,6 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from 'typeorm';
 import { UuidValue } from '@vessel-kit/anchoring';
 import { uuidTransformer } from './uuid.transformer';
-import CID from 'cids';
-import { cidTransformer } from './cid.transformer';
 
 @Entity('anchors')
 export class AnchorRecord {
@@ -12,14 +10,14 @@ export class AnchorRecord {
   @Column('uuid', { transformer: uuidTransformer })
   requestId: UuidValue;
 
-  @Column('varchar', { transformer: cidTransformer })
-  cid: CID;
+  @Column('varchar')
+  cid: string;
 
   @Column()
   path: string;
 
-  @Column('varchar', { transformer: cidTransformer })
-  proofCid: CID;
+  @Column('varchar')
+  proofCid: string;
 
   @Column()
   createdAt: Date;

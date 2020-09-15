@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@stablelib/hex": "^1.0.0",
     "@vessel-kit/blockchain-connection-string": "workspace:*",
     "@vessel-kit/codec": "workspace:*",
     "axios": "^0.20.0",

@@ -12,7 +12,7 @@ import * as t from 'io-ts';
 const REMOTE_URL = 'http://localhost:3001';
 
 async function createUser(seed: string) {
-  const identityWallet = new IdentityWallet(() => true, {
+  const identityWallet = new IdentityWallet(async () => true, {
     seed: seed,
   });
   const user = await User.build(identityWallet.get3idProvider());

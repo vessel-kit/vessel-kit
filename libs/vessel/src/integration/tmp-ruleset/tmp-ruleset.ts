@@ -21,7 +21,7 @@ const DOCTYPE = 'vessel/document/1.0.0';
 function isShape<A>(input: unknown): input is VesselDocumentShape<A> {
   // TODO UNKNOWN
   // TODO Must be specific to ruleset
-  return typeof input === 'object' && 'doctype' in input && (input as any).doctype == DOCTYPE;
+  return input && typeof input === 'object' && 'doctype' in input && (input as any).doctype == DOCTYPE;
 }
 
 export default class Ruleset {
@@ -70,6 +70,8 @@ export default class Ruleset {
           },
         },
       };
+    } else {
+      throw new Error(`Improper payload`)
     }
   }
 

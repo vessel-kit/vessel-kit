@@ -3,7 +3,7 @@ import { VesselRulesetAlphaDoctype } from './vessel-ruleset-alpha-doctype';
 import jsonPatch from 'fast-json-patch';
 import { AnchoringStatus, AnchorProof } from '@vessel-kit/anchoring';
 import produce from 'immer';
-import { DocId } from '@vessel-kit/codec';
+import { DocId, RecordWrap } from '@vessel-kit/codec';
 import { Ordering } from '../document/ordering';
 import { IDocument } from '..';
 import { UpdateRecordWaiting } from '../util/update-record.codec';
@@ -24,14 +24,14 @@ export type VesselDocumentState<A> = {
 
 function isShape<A>(input: unknown): input is VesselDocumentShape<A> {
   // TODO UNKNOWN
-  return typeof input === 'object' && 'doctype' in input && (input as any).doctype == DOCTYPE;
+  return input && typeof input === 'object' && 'doctype' in input && (input as any).doctype == DOCTYPE;
 }
 
 function isVesselDocument<State, Shape>(
-  document: IDocument<unknown, unknown>,
+  document: unknown,
 ): document is IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>> {
   // TODO UNKNOWN
-  return document.state.doctype === DOCTYPE;
+  return document && typeof document === 'object' && (document as any)?.state?.doctype === DOCTYPE;
 }
 
 export class VesselDocument<State, Shape> {
@@ -51,8 +51,9 @@ export class VesselDocument<State, Shape> {
 
   static async fromDocument<State, Shape>(document: IDocument<unknown, unknown>) {
     if (isVesselDocument<State, Shape>(document)) {
-      const canonical = await document.canonical();
-      return new VesselDocument(document, canonical);
+      const d: IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>> = document;
+      const canonical = await d.canonical();
+      return new VesselDocument(d, canonical);
     } else {
       throw new Error(`Invalid doctype: expected tile, got ${document.state.doctype}`);
     }
@@ -137,7 +138,7 @@ class Handler<State, Shape> extends DoctypeHandler<VesselDocumentState<State>, V
     return ruleset.applyAnchor(proof, state.data);
   }
 
-  async apply(recordWrap, state: VesselDocumentState<State>, docId): Promise<VesselDocumentState<State>> {
+  async apply(recordWrap: RecordWrap, state: VesselDocumentState<State>): Promise<VesselDocumentState<State>> {
     const record = recordWrap.load;
     if (record.prev) {
       if (record.proof) {

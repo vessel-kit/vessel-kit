@@ -3,7 +3,6 @@ import { History } from './util/history';
 import CID from 'cids';
 import { ILogger } from './util/logger.interface';
 import { RecordWrap } from '@vessel-kit/codec';
-import { AnchoringService } from './anchoring.service';
 import { Snapshot } from './document/document.interface';
 import { IDoctype } from './document/doctype';
 import { DocId } from '@vessel-kit/codec';
@@ -18,12 +17,10 @@ export class InvalidOrdering extends Error {
 export class DocumentUpdateService {
   #cloud: Cloud;
   #logger: ILogger;
-  #anchoring: AnchoringService;
 
-  constructor(logger: ILogger, anchoring: AnchoringService, cloud: Cloud) {
+  constructor(logger: ILogger, cloud: Cloud) {
     this.#logger = logger.withContext(DocumentUpdateService.name);
     this.#cloud = cloud;
-    this.#anchoring = anchoring;
   }
 
   async tail(local: History, tip: CID, log: CID[] = []): Promise<History> {

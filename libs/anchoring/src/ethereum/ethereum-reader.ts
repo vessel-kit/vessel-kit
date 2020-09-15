@@ -3,6 +3,7 @@ import { AnchorProof } from '../anchor-proof';
 import { ChainID } from 'caip';
 import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 import { decode, toHexString } from 'multihashes';
+import * as hex from '@stablelib/hex';
 
 const ETHEREUM_NAMESPACE = 'eip155';
 
@@ -33,9 +34,10 @@ export class EthereumReader implements IBlockchainReaderHandler {
     const transaction = await provider.getTransaction(txid);
     if (transaction && transaction.blockHash) {
       const block = await provider.getBlock(transaction.blockHash);
-      const txData = Buffer.from(transaction.data.replace('0x', ''), 'hex');
+      const txData = hex.decode(transaction.data.replace('0x', ''));
       const root = proofRecord.root.bytes;
-      if (!txData.equals(root)) {
+      const equal = txData.every((byte, i) => byte == root[i]);
+      if (!equal) {
         throw new InvalidBlockchainProofError(`Proof Merkle root ${proofRecord.root} is not in transaction ${txid}`);
       }
       if (proofRecord.blockNumber !== transaction.blockNumber) {

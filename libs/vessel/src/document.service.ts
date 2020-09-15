@@ -10,10 +10,11 @@ import { RecordWrap, normalizeRecord } from '@vessel-kit/codec';
 import { MessageTyp } from './cloud/message-typ';
 import { filter, mergeMap } from 'rxjs/operators';
 import { IDocumentService } from './document/document.service.interface';
-import { merge, Observable } from 'rxjs';
+import { merge, Observable } from "rxjs";
 import { IContext } from './context';
 import { Snapshot } from './document/document.interface';
 import { IDoctype } from './document/doctype';
+import { CloudMessage, ResponseMessage, UpdateMessage } from "./cloud/cloud-message";
 
 export class UnhandledAnchoringStatus extends Error {
   constructor(status: never) {
@@ -84,12 +85,15 @@ export class DocumentService implements IDocumentService {
     handler: IDoctype<State, Shape>,
     state$: FrozenSubjectRead<Snapshot<State>>,
   ): Observable<Snapshot<State>> {
+    const filterOwn = filter((message: CloudMessage) => message.id === docId.toString());
+    const filterResponseOrUpdate = filter((message: CloudMessage): message is UpdateMessage | ResponseMessage => {
+      return message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE
+    })
     return this.#cloud.bus.message$.pipe(
-      filter((message) => message.id === docId.toString()),
-      mergeMap(async (message) => {
-        if (message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE) {
-          return this.applyHead(message.cid, handler, state$);
-        }
+      filterOwn,
+      filterResponseOrUpdate,
+      mergeMap(async message => {
+        return this.applyHead(message.cid, handler, state$);
       }),
     );
   }

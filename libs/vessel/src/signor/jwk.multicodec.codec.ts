@@ -1,9 +1,18 @@
 import * as t from 'io-ts';
 import jose from 'jose';
-import base64url from 'base64url';
 import * as multicodec from 'multicodec';
+import * as bytes from '@stablelib/bytes';
+import { Uint8ArrayBase64StringCodec, decodeThrow } from '@vessel-kit/codec';
 
-export const JWKMulticodecCodec = new t.Type<jose.JWK.Key, Buffer, Buffer>(
+function isECKey(unknown: jose.JWK.Key): unknown is jose.JWK.ECKey {
+  return unknown.crv === 'secp256k1' && unknown.kty === 'EC';
+}
+
+function isOKPKey(unknown: jose.JWK.Key): unknown is jose.JWK.OKPKey {
+  return unknown.crv === 'X25519' && unknown.kty === 'OKP';
+}
+
+export const JWKMulticodecCodec = new t.Type<jose.JWK.Key, Uint8Array, Uint8Array>(
   'jose.JWK.Key-multicodec',
   (input: unknown): input is jose.JWK.Key => jose.JWK.isKey(input),
   (input, context) => {
@@ -16,8 +25,8 @@ export const JWKMulticodecCodec = new t.Type<jose.JWK.Key, Buffer, Buffer>(
         return t.success(
           jose.JWK.asKey({
             crv: 'secp256k1' as 'secp256k1',
-            x: base64url.encode(x),
-            y: base64url.encode(y),
+            x: Uint8ArrayBase64StringCodec.encode(x),
+            y: Uint8ArrayBase64StringCodec.encode(y),
             kty: 'EC' as 'EC',
           }),
         );
@@ -25,7 +34,7 @@ export const JWKMulticodecCodec = new t.Type<jose.JWK.Key, Buffer, Buffer>(
         return t.success(
           jose.JWK.asKey({
             crv: 'X25519' as 'X25519',
-            x: base64url.encode(point),
+            x: Uint8ArrayBase64StringCodec.encode(point),
             kty: 'OKP' as 'OKP',
           }),
         );
@@ -34,14 +43,14 @@ export const JWKMulticodecCodec = new t.Type<jose.JWK.Key, Buffer, Buffer>(
     }
   },
   (a: jose.JWK.Key) => {
-    if (a.crv === 'secp256k1' && a.kty === 'EC') {
-      const x = base64url.toBuffer(a.x);
-      const y = base64url.toBuffer(a.y);
-      const publicKey = Buffer.concat([x, y]);
-      return multicodec.addPrefix(Buffer.from('e7', 'hex'), publicKey);
-    } else if (a.crv === 'X25519' && a.kty === 'OKP') {
-      const publicKey = base64url.toBuffer(a.x);
-      return multicodec.addPrefix(Buffer.from('ec', 'hex'), publicKey);
+    if (isECKey(a)) {
+      const x = decodeThrow(Uint8ArrayBase64StringCodec, a.x);
+      const y = decodeThrow(Uint8ArrayBase64StringCodec, a.y);
+      const publicKey = bytes.concat(x, y);
+      return multicodec.addPrefix(Uint8Array.from([0xe7]), publicKey);
+    } else if (isOKPKey(a)) {
+      const publicKey = decodeThrow(Uint8ArrayBase64StringCodec, a.x);
+      return multicodec.addPrefix(Uint8Array.from([0xec]), publicKey);
     } else {
       throw new Error(`Not implemented for kty ${a.kty}:${a.crv}`);
     }

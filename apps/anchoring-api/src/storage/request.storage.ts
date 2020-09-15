@@ -65,7 +65,7 @@ export class RequestStorage {
 
   find(cid: CID, docId: string) {
     return this.repository.findOne({
-      cid: cid,
+      cid: cid.toString(),
       docId: docId,
     });
   }

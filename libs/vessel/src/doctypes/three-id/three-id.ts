@@ -3,14 +3,13 @@ import { ThreeIdState } from './three-id-state';
 import { ThreeIdShape } from './three-id-shape';
 import * as t from 'io-ts';
 import { JWKMulticodecCodec } from '../../signor/jwk.multicodec.codec';
-import { BufferMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
+import { Uint8ArrayMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
 import jose from 'jose';
 import * as _ from 'lodash';
 import jsonPatch from 'fast-json-patch';
 import { UpdateRecordWaiting } from '../../util/update-record.codec';
-import produce from 'immer';
 
-const jwkCodec = t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec);
+const jwkCodec = t.string.pipe(Uint8ArrayMultibaseCodec).pipe(JWKMulticodecCodec);
 
 type PublicKeys = { encryption: jose.JWK.Key; signing: jose.JWK.Key }
 

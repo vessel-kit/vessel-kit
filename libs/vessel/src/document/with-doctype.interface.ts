@@ -4,7 +4,7 @@ export interface IWithDoctype {
 
 export namespace IWithDoctype {
   export function is(u: unknown): u is IWithDoctype {
-    return typeof u === 'object' && 'doctype' in u;
+    return u && typeof u === 'object' && 'doctype' in u;
   }
 }
 

@@ -14,9 +14,10 @@ export enum ActionTypes {
 
 @WebSocketGateway(3010)
 export class LiveGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  connectedClients = [];
+  connectedClients: string[] = [];
   data = {};
   @WebSocketServer()
+  // @ts-ignore
   server: Server;
   private logger: Logger = new Logger();
 

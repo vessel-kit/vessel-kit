@@ -19,9 +19,9 @@ import { VesselDocumentAlphaDoctype } from './doctypes/vessel-document-alpha-doc
 import { IDocument } from './document/document.interface';
 
 export interface Options {
-  logger?: ILogger;
-  anchoringEndpoint?: string;
-  blockchainEndpoints?: ConnectionString[];
+  logger: ILogger;
+  anchoringEndpoint: string;
+  blockchainEndpoints: ConnectionString[];
 }
 
 export class Vessel {
@@ -50,7 +50,7 @@ export class Vessel {
       [ThreeIdDoctype, TileDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
       context,
     );
-    const documentUpdateService = new DocumentUpdateService(logger, anchoringService, cloud);
+    const documentUpdateService = new DocumentUpdateService(logger, cloud);
     const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
     this.#documentRepository = new DocumentRepository(logger, doctypes, cloud, documentService);
     logger.log(`Constructed Vessel instance`, options);
@@ -58,12 +58,13 @@ export class Vessel {
 
   // TODO addSignor
 
-  static build(ipfs: Ipfs, options?: Options): Vessel {
+  static build(ipfs: Ipfs, options?: Partial<Options>): Vessel {
     const appliedOptions = Object.assign(
       {
         logger: new ConsoleLogger('vessel'),
         anchoringEndpoint: 'http://localhost:3000',
         ethereumEndpoint: 'http://localhost:8545',
+        blockchainEndpoints: [],
       },
       options,
     );

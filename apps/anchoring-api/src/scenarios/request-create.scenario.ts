@@ -25,7 +25,7 @@ export class RequestCreateScenario {
 
   async save(record: RequestRecord) {
     try {
-      const found = await this.requestStorage.find(record.cid, record.docId);
+      const found = await this.requestStorage.find(new CID(record.cid), record.docId);
       if (found) {
         return found;
       } else {
@@ -41,7 +41,7 @@ export class RequestCreateScenario {
   async buildRequestRecord(cid: CID, docId: DocId) {
     const record = new RequestRecord();
     record.id = new UuidValue();
-    record.cid = cid;
+    record.cid = cid.toString();
     record.docId = DocIdStringCodec.encode(docId);
     record.status = AnchoringStatus.PENDING;
     return record;

@@ -7,7 +7,7 @@ import { Ipfs } from 'ipfs';
 export class IpfsService {
   readonly client: Ipfs;
 
-  constructor(private readonly config: ConfigService) {
+  constructor(config: ConfigService) {
     const ipfsUrl = config.current.IPFS_URL;
     this.client = ipfsClient(ipfsUrl);
   }

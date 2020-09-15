@@ -46,7 +46,7 @@ export class IdentityProviderWrap {
     if (response.error) {
       throw new Error(`Got errors: ${JSON.stringify(response.error)}`);
     } else {
-      return response.result;
+      return response.result as A;
     }
   }
 }

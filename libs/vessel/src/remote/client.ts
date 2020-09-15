@@ -1,7 +1,7 @@
 import { ISignor } from '../signor/signor.interface';
 import { ThreeIdDoctype } from '../doctypes/three-id/three-id-doctype';
 import axios from 'axios';
-import { BufferMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
+import { Uint8ArrayMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
 import { DocId } from '@vessel-kit/codec';
 import { ThreeIdentifierCidCodec } from '../three-identifier';
 import { RemoteDocumentService } from './remote-document-service';
@@ -26,7 +26,7 @@ export class NotThreeIdError extends Error {
   }
 }
 
-const jwkCodec = t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec);
+const jwkCodec = t.string.pipe(Uint8ArrayMultibaseCodec).pipe(JWKMulticodecCodec);
 
 export class Client {
   #signor?: ISignor;

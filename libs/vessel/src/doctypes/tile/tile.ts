@@ -6,8 +6,8 @@ import jsonPatch from 'fast-json-patch';
 import { UpdateRecordWaiting } from '../../util/update-record.codec';
 import { IContext } from '../../context';
 
-function isTileDocument(document: IDocument<unknown, unknown>): document is IDocument<TileState, TileShape> {
-  return document.state.doctype === 'tile'
+function isTileDocument(document: unknown): document is IDocument<TileState, TileShape> {
+  return document && typeof document === 'object' && (document as any).state?.doctype === 'tile';
 }
 
 export class Tile {
@@ -28,10 +28,11 @@ export class Tile {
 
   static async fromDocument(document: IDocument<unknown, unknown>) {
     if (isTileDocument(document)) {
-      const canonical = await document.canonical();
+      const d: IDocument<TileState, TileShape> = document;
+      const canonical = await d.canonical();
       return new Tile(document, canonical);
     } else {
-      throw new Error(`Invalid doctype: expected tile, got ${document.state.doctype}`)
+      throw new Error(`Invalid doctype: expected tile, got ${document.state.doctype}`);
     }
   }
 
@@ -43,7 +44,7 @@ export class Tile {
     const payload = Object.assign({ doctype: 'tile' }, shape);
     const signed = await context.sign(payload);
     const document = await create(signed);
-    return this.fromDocument(document as IDocument<TileState, TileShape>);
+    return this.fromDocument(document);
   }
 
   async change(mutation: (t: TileShapeBase) => Promise<TileShapeBase> | TileShapeBase): Promise<void> {

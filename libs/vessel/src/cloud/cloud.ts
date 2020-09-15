@@ -10,31 +10,34 @@ export class UnknownMessageError extends Error {
 }
 
 export class Cloud {
-  #ipfs: Ipfs
-  #logger: ILogger
-  #bus: CloudBus
+  #ipfs: Ipfs;
+  #bus: CloudBus;
 
   constructor(logger: ILogger, ipfs: Ipfs) {
-    this.#logger = logger;
-    this.#ipfs = ipfs
-    this.#bus = new CloudBus(logger, ipfs)
-    this.#bus.listen()
+    this.#ipfs = ipfs;
+    this.#bus = new CloudBus(logger, ipfs);
+    this.#bus.listen();
   }
 
   get ipfs() {
-    return this.#ipfs
+    return this.#ipfs;
   }
 
   get bus() {
-    return this.#bus
+    return this.#bus;
   }
 
   store(content: any): Promise<CID> {
-    return this.#ipfs.dag.put(content)
+    return this.#ipfs.dag.put(content);
   }
 
   async retrieve(cid: CID, path?: string): Promise<any> {
-    const blob = await this.#ipfs.dag.get(cid, path)
-    return blob?.value
+    if (path) {
+      const blob = await this.#ipfs.dag.get(cid, path);
+      return blob?.value;
+    } else {
+      const blob = await this.#ipfs.dag.get(cid);
+      return blob?.value;
+    }
   }
 }

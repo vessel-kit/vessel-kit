@@ -24,6 +24,7 @@ export class RemoteDocumentService implements IDocumentService {
     return this.#context;
   }
 
+  // @ts-ignore
   async update<State, Shape>(record: any, handler: IDoctype<State, Shape>, state$: FrozenSubject<Snapshot<State>>): Promise<void> {
     const documentId = state$.value.log.first;
     const response = await axios.put(`${this.#host}/api/v0/document/${documentId}`, record);
@@ -31,10 +32,12 @@ export class RemoteDocumentService implements IDocumentService {
     state$.next(snapshot);
   }
 
+  // @ts-ignore
   handleUpdate<A>(docId: DocId, state: Snapshot<A>): void {
     // Noop
   }
 
+  // @ts-ignore
   requestAnchor(docId: DocId, cid: CID): void {
     queueScheduler.schedule(async () => {
       const endpoint = `${this.#host}/api/v0/document/${docId.valueOf()}/anchor`;
@@ -42,6 +45,7 @@ export class RemoteDocumentService implements IDocumentService {
     });
   }
 
+  // @ts-ignore
   externalUpdates$<State, Shape>(docId: DocId, handler: IDoctype<State, Shape>, state$: FrozenSubjectRead<Snapshot<State>>): Observable<Snapshot<State>> {
     return interval(5000).pipe(
       mergeMap(async () => {

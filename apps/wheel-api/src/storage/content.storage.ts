@@ -36,7 +36,7 @@ export class ContentStorage {
       return found;
     } else {
       const contentRecord = new ContentRecord();
-      contentRecord.cid = new CID(cid.toString());
+      contentRecord.cid = cid.toString();
       contentRecord.payload = payload;
       return this.repository.save(contentRecord);
     }
