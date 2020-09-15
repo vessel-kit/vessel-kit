@@ -17,6 +17,9 @@ export class RequestCreateScenario {
     const record = await this.buildRequestRecord(cid, docId);
     const saved = await this.save(record);
     const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
+    if (!cronJob) {
+      throw new Error(`Can not find ${this.anchoringSchedule.triggerAnchoring.name} cron job`)
+    }
     return {
       record: saved,
       nextAnchoring: cronJob.nextDate().toDate(),
@@ -25,7 +28,7 @@ export class RequestCreateScenario {
 
   async save(record: RequestRecord) {
     try {
-      const found = await this.requestStorage.find(record.cid, record.docId);
+      const found = await this.requestStorage.find(new CID(record.cid), record.docId);
       if (found) {
         return found;
       } else {
@@ -41,7 +44,7 @@ export class RequestCreateScenario {
   async buildRequestRecord(cid: CID, docId: DocId) {
     const record = new RequestRecord();
     record.id = new UuidValue();
-    record.cid = cid;
+    record.cid = cid.toString();
     record.docId = DocIdStringCodec.encode(docId);
     record.status = AnchoringStatus.PENDING;
     return record;

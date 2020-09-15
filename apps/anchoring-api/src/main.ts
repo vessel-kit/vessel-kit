@@ -4,9 +4,9 @@ import { ConfigService } from './commons/config.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {cors: true});
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.enableCors();
-  app.setGlobalPrefix("api");
+  app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
     .setTitle('Vessel Anchoring')
@@ -16,7 +16,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/swagger', app, document);
 
-  const config = app.get(ConfigService)
+  const config = app.get(ConfigService);
   const port = config.current.PORT;
   const host = config.current.HOST;
   await app.listen(port, host);

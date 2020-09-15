@@ -1,6 +1,7 @@
-import { encode } from 'typestub-multihashes';
+import { encode } from 'multihashes';
 import CID from 'cids';
 import { ChainID } from 'caip';
+import * as hex from '@stablelib/hex';
 
 export class UnknownChainTxCodecError extends Error {
   constructor(chain: ChainID) {
@@ -28,7 +29,7 @@ export class BlockchainTransaction {
     readonly blockNumber: number,
     readonly blockTimestamp: number,
   ) {
-    const bytes = Buffer.from(txHash.replace(/0x/, ''), 'hex');
+    const bytes = hex.decode(txHash.replace(/0x/, ''));
     const multihash = encode(bytes, 'keccak-256');
     const cidVersion = 1;
     const codec = txCodec(chainId);

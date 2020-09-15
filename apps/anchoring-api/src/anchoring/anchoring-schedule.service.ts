@@ -2,7 +2,6 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronCommand, CronJob } from 'cron';
 import { ConfigService } from '../commons/config.service';
-import { bind } from 'decko';
 import { AnchoringService } from './anchoring.service';
 
 @Injectable()
@@ -14,7 +13,9 @@ export class AnchoringScheduleService implements OnApplicationBootstrap {
     private readonly schedulerRegistry: SchedulerRegistry,
     private readonly configService: ConfigService,
     private readonly anchoringService: AnchoringService,
-  ) {}
+  ) {
+    this.triggerAnchoring = this.triggerAnchoring.bind(this);
+  }
 
   add(schedule: string, command: CronCommand & { name: string }) {
     const job = new CronJob(schedule, command);
@@ -27,7 +28,6 @@ export class AnchoringScheduleService implements OnApplicationBootstrap {
     return this.jobs.get(command.name);
   }
 
-  @bind()
   async triggerAnchoring() {
     this.logger.log('Trigger anchoring');
     await this.anchoringService.anchorRequests();

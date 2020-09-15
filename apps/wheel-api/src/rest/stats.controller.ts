@@ -3,14 +3,13 @@ import { Vessel } from '@vessel-kit/vessel';
 
 @Controller('/api/v0/stats')
 export class StatsController {
-  constructor(private readonly vessel: Vessel) {
-  }
+  constructor(private readonly vessel: Vessel) {}
 
   @Get('/')
   async index() {
-    const stats = await this.vessel.list()
+    const stats = await this.vessel.list();
     return {
-      documentsCount: stats.length
-    }
+      documentsCount: stats.length,
+    };
   }
 }

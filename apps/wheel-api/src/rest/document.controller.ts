@@ -14,7 +14,7 @@ import { DocumentStorage } from '../storage/document.storage';
 import { DocumentStatePresentation } from './document-state.presentation';
 import { DocId, CidStringCodec, DecodePipe } from '@vessel-kit/codec';
 import CID from 'cids';
-import { DateTime } from 'luxon';
+import * as t from 'io-ts';
 import { IDocument } from '@vessel-kit/vessel';
 
 @Controller('/api/v0/document')
@@ -34,11 +34,11 @@ export class DocumentController {
       `Created ${document.state.doctype} document ${document.id.toString()}`,
     );
     const record = new DocumentRecord();
-    record.cid = document.id.cid;
+    record.cid = document.id.cid.toString();
     record.doctype = body.doctype;
     record.payload = body.content;
-    record.createdAt = DateTime.local().toJSDate();
-    record.updatedAt = DateTime.local().toJSDate();
+    record.createdAt = new Date();
+    record.updatedAt = new Date();
     await this.documentStorage.save(record);
     return document.state;
   }
@@ -55,7 +55,7 @@ export class DocumentController {
     } else {
       const cid = DocId.fromString(cidString);
       const document: IDocument<unknown, unknown> = await this.vessel.load(cid);
-      return document.state
+      return document.state;
     }
   }
 
@@ -70,7 +70,7 @@ export class DocumentController {
   async readContent(@Param('cid') cidString: string) {
     const cid = new CID(cidString);
     const document = await this.vessel.load(new DocId(cid));
-    const content = await document.canonical()
+    const content = await document.canonical();
     return {
       content: content,
     };
@@ -100,7 +100,7 @@ export class DocumentController {
   }
 
   @Post('/:cid/anchor')
-  async requestAnchor(@Param('cid', new DecodePipe(CidStringCodec)) cid: CID) {
+  async requestAnchor(@Param('cid', new DecodePipe(t.string.pipe(CidStringCodec))) cid: CID) {
     const documentId = new DocId(cid);
     const document = await this.vessel.load(documentId);
     document.requestAnchor();

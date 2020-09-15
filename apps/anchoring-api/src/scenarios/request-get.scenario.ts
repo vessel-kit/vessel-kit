@@ -20,21 +20,24 @@ export class RequestPresentation {
   toJSON() {
     switch (this.request.status) {
       case AnchoringStatus.ANCHORED:
+        if (!this.anchor) {
+          throw new Error(`Can not find anchor`)
+        }
         return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
           status: this.request.status,
-          cid: this.request.cid,
+          cid: new CID(this.request.cid),
           docId: this.docId,
           createdAt: this.request.createdAt,
           updatedAt: this.request.updatedAt,
-          anchorRecord: this.anchor.cid,
+          anchorRecord: new CID(this.anchor.cid),
         });
       case AnchoringStatus.PROCESSING:
       case AnchoringStatus.PENDING:
         return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
           status: this.request.status,
-          cid: this.request.cid,
+          cid: new CID(this.request.cid),
           docId: this.docId,
           createdAt: this.request.createdAt,
           updatedAt: this.request.updatedAt,
@@ -46,7 +49,7 @@ export class RequestPresentation {
         return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
           status: this.request.status,
-          cid: this.request.cid,
+          cid: new CID(this.request.cid),
           docId: this.docId,
           createdAt: this.request.createdAt,
           updatedAt: this.request.updatedAt,
@@ -69,6 +72,9 @@ export class RequestGetScenario {
     const request = await this.requestStorage.byCidOrFail(cid);
     const anchor = await this.anchorStorage.byRequestId(request.id);
     const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
+    if (!cronJob) {
+      throw new Error(`Can not find ${this.anchoringSchedule.triggerAnchoring.name} cron job`)
+    }
     const nextAnchoring = cronJob.nextDate().toDate();
     return new RequestPresentation(request, anchor, nextAnchoring);
   }

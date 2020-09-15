@@ -25,7 +25,7 @@ export class DocumentRepository {
     this.#documentCache = new Map();
 
     this.#cloud.bus.message$.subscribe((message) => {
-      if (message.typ === MessageTyp.REQUEST) {
+      if (message && message.typ === MessageTyp.REQUEST) {
         const found = this.#documentCache.get(message.id);
         if (found) {
           this.#cloud.bus.publishResponse(found.id, found.log.last);

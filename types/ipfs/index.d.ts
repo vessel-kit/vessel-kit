@@ -1,5 +1,4 @@
 declare module 'ipfs' {
-  import { EventEmitter } from 'events';
   export function create(options: any): Ipfs;
   export function create(): Ipfs;
 
@@ -23,7 +22,7 @@ declare module 'ipfs' {
     publish(topic: string, content: string): Promise<void>;
   }
 
-  export class Ipfs extends EventEmitter {
+  export class Ipfs {
     constructor(options: any);
 
     types: Ipfs.Types;
@@ -415,7 +414,7 @@ declare module 'ipfs' {
       ): void;
       get(cid: string | CID, path: string, options: any): Promise<any>;
       get(cid: string | CID, path: string, callback: Callback<any>): void;
-      get(cid: string | CID, path: string): Promise<any>;
+      get(cid: string | CID, path?: string): Promise<any>;
       get(cid: string | CID, callback: Callback<any>): void;
       get(cid: string | CID): Promise<any>;
 

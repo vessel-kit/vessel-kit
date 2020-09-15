@@ -8,29 +8,18 @@
     "start": "next start"
   },
   "dependencies": {
-    "@carbon/icons-react": "^10.10.2",
-    "@emotion/core": "^10.0.28",
+    "@carbon/icons-react": "^10.17.0",
+    "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "@vessel-kit/ui-shared": "workspace:*",
     "@theme-ui/core": "^0.3.1",
-    "carbon-components": "^10.11.2",
-    "carbon-components-react": "^7.11.3",
+    "@vessel-kit/ui-shared": "workspace:*",
+    "carbon-components": "^10.19.0",
+    "carbon-components-react": "^7.19.0",
     "carbon-icons": "^7.0.7",
-    "emotion-theming": "^10.0.27",
-    "ipfs": "^0.43.3",
-    "luxon": "^1.24.1",
-    "next": "9.4.0",
+    "luxon": "^1.25.0",
+    "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "theme-ui": "^0.3.1"
-  },
-  "devDependencies": {
-    "next-transpile-modules": "^3.3.0",
-    "@typescript-eslint/eslint-plugin": "^2.19.0",
-    "@typescript-eslint/parser": "^2.19.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-jest": "^23.17.1"
   }
 }

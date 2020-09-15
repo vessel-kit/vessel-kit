@@ -26,7 +26,7 @@ export const ThreeIdentifierCidCodec = new t.Type<ThreeIdentifier, CID, CID>(
   },
   (a) => {
     const match = format.exec(a);
-    return new CID(match[1]);
+    return new CID(match![1]);
   },
 );
 

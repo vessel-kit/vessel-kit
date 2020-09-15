@@ -46,7 +46,7 @@ export class RequestStorage {
   }
 
   updateStatus(records: RequestRecord[], status: AnchoringStatus): Promise<RequestRecord[]> {
-    const next = records.map(r => {
+    const next = records.map((r) => {
       r.status = status;
       return r;
     });
@@ -65,7 +65,7 @@ export class RequestStorage {
 
   find(cid: CID, docId: string) {
     return this.repository.findOne({
-      cid: cid,
+      cid: cid.toString(),
       docId: docId,
     });
   }

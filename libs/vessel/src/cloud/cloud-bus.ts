@@ -37,7 +37,7 @@ function rawMessageToDelta(message: any): CloudMessage {
 export class CloudBus {
   #ipfs: Ipfs
   #logger: ILogger
-  #message$ = new Subject<CloudMessage | undefined>()
+  #message$ = new Subject<CloudMessage>()
   #peerId: string | undefined
 
   static TOPIC = '/vessel'
@@ -48,7 +48,7 @@ export class CloudBus {
     this.#peerId = undefined
   }
 
-  get message$() {
+  get message$(): Subject<CloudMessage> {
     return this.#message$
   }
 

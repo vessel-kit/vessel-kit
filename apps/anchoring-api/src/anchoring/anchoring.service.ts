@@ -19,7 +19,7 @@ export class AnchoringService {
   private readonly anchoring: Anchoring;
 
   constructor(
-    private readonly configService: ConfigService,
+    configService: ConfigService,
     private readonly requestStorage: RequestStorage,
     private readonly anchorStorage: AnchorStorage,
     ipfsService: IpfsService,
@@ -55,9 +55,9 @@ export class AnchoringService {
     for (const response of creation.responses) {
       const anchorRecord = new AnchorRecord();
       anchorRecord.requestId = response.request.id;
-      anchorRecord.proofCid = response.proofCid;
+      anchorRecord.proofCid = response.proofCid.toString();
       anchorRecord.path = MerklePathStringCodec.encode(response.path);
-      anchorRecord.cid = response.leafCid;
+      anchorRecord.cid = response.leafCid.toString();
       anchorRecord.transactionId = savedTransactionRecord.id;
       await this.anchorStorage.save(anchorRecord);
       response.request.status = AnchoringStatus.ANCHORED;

@@ -16,7 +16,7 @@ const clientA = new Client(REMOTE_URL);
 const clientB = new Client(REMOTE_URL);
 
 async function createUser(seed: string) {
-  const identityWallet = new IdentityWallet(() => true, {
+  const identityWallet = new IdentityWallet(async () => true, {
     seed: seed,
   });
 

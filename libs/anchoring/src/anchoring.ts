@@ -26,13 +26,14 @@ export class Anchoring {
 
   async create<A extends IAnchoringRequest>(requests: A[]): Promise<AnchoringCreation<A>> {
     const merkleTree = await this.merkleTree(requests);
-    const transaction = await this.#writer.createAnchor(merkleTree.root.id);
-    const proofCid = await this.putAnchorProof(transaction, merkleTree.root.id);
+    const merkleRoot = new CID(merkleTree.root.id)
+    const transaction = await this.#writer.createAnchor(merkleRoot);
+    const proofCid = await this.putAnchorProof(transaction, merkleRoot);
 
     const promises = requests.map<Promise<IAnchoringResponse<A>>>(async (request) => {
       const path = merkleTree.path(request.cid);
       const leaf: AnchorLeaf = {
-        prev: request.cid,
+        prev: new CID(request.cid),
         proof: proofCid,
         path: path,
       };

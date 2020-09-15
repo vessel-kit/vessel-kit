@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { CidStringCodec, DecodePipe } from '@vessel-kit/codec';
+import * as t from 'io-ts';
 import CID from 'cids';
 import { IpfsService } from './ipfs.service';
 
@@ -9,11 +10,10 @@ export class CloudController {
 
   @Get('/:cid')
   async read(
-    @Param('cid', new DecodePipe(CidStringCodec)) cid: CID,
+    @Param('cid', new DecodePipe(t.string.pipe(CidStringCodec))) cid: CID,
     @Query('path') path?: string,
   ) {
     const blob = await this.ipfs.client.dag.get(cid, path);
-    console.log('blob', blob)
     return blob?.value;
   }
 }

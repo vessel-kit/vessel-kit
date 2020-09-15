@@ -1,13 +1,15 @@
-import { DIDDocument, PublicKey } from 'did-resolver';
-import base64url from 'base64url';
+import { DIDDocument } from 'did-resolver';
 import { InvalidSignatureError } from './invalid-signature.error';
 import _ from 'lodash';
 import { sortKeys } from './util/sort-keys';
 import * as didJwt from 'did-jwt';
+import { Base64urlCodec } from '@vessel-kit/codec';
 
 export interface Resolvable {
   resolve: (did: string) => Promise<DIDDocument | null>;
 }
+
+const textEncoder = new TextEncoder();
 
 export async function assertSignature(record: any, resolvable: Resolvable): Promise<void> {
   const payloadObject = _.omit(record, ['header', 'signature']);
@@ -19,9 +21,11 @@ export async function assertSignature(record: any, resolvable: Resolvable): Prom
   //   throw new InvalidSignatureError(`Invalid issuer`);
   // }
 
-  const encodedPayload = base64url(JSON.stringify(sortKeys(payloadObject)));
+  const encodedPayload = Base64urlCodec.encode(
+    textEncoder.encode(JSON.stringify(sortKeys(payloadObject))),
+  );
   const header = { typ: record.header.typ, alg: record.header.alg };
-  const encodedHeader = base64url(JSON.stringify(header));
+  const encodedHeader = Base64urlCodec.encode(textEncoder.encode(JSON.stringify(header)));
   const encodedSignature = record.signature;
   const jwt = [encodedHeader, encodedPayload, encodedSignature].join('.');
 

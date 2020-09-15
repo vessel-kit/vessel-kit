@@ -3,7 +3,7 @@ import { CommonsModule } from '../commons/commons.module';
 import { RequestCreateScenario } from './request-create.scenario';
 import { StorageModule } from '../storage/storage.module';
 import { AnchoringModule } from '../anchoring/anchoring.module';
-import { RequestGetManyScenario } from './request-get-many.scenario'
+import { RequestGetManyScenario } from './request-get-many.scenario';
 import { RequestGetScenario } from './request-get.scenario';
 
 @Module({

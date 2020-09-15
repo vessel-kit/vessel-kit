@@ -8,7 +8,7 @@ export class AnchorPresentation {
   readonly requestId = this.anchor.requestId.toString();
   @ApiProperty({ example: 'bafyreibxstit7iyussyxn3rcl5kee7xputh4ebgksl2jrft4ysgwkfhwmq', description: 'Document CID' })
   readonly cid = this.anchor.cid.toString();
-  @ApiProperty({ example: '2020-08-21 20:38:13.557', description: 'Date of anchor\'s creation' })
+  @ApiProperty({ example: '2020-08-21 20:38:13.557', description: "Date of anchor's creation" })
   readonly createdAt = this.anchor.createdAt.toISOString();
 
   constructor(private readonly anchor: AnchorRecord) {}

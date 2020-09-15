@@ -1,5 +1,5 @@
 import jose from 'jose';
-import { BufferMultibaseCodec } from '@vessel-kit/codec';
+import { Uint8ArrayMultibaseCodec } from '@vessel-kit/codec';
 import * as t from 'io-ts';
 import { MapCodec } from './util/map-codec';
 import { isEmpty, lefts, rights } from 'fp-ts/lib/Array';
@@ -11,10 +11,12 @@ export const ThreeIdContentJSONCodec = new t.Type<ThreeIdContent, any, any>(
   'ThreeIdContent-json',
   (input: unknown): input is ThreeIdContent => input instanceof ThreeIdContent,
   (input: any) => {
-    const ownersR = input.owners.map((o) => BufferMultibaseCodec.pipe(JWKMulticodecCodec).decode(o));
+    const ownersR = input.owners.map((o: unknown) =>
+      t.string.pipe(Uint8ArrayMultibaseCodec).pipe(JWKMulticodecCodec).decode(o),
+    );
     if (isEmpty(lefts(ownersR))) {
       const owners: Array<jose.JWK.Key> = rights(ownersR);
-      const contentR = MapCodec(BufferMultibaseCodec.pipe(JWKMulticodecCodec)).decode(input.content.publicKeys);
+      const contentR = MapCodec(Uint8ArrayMultibaseCodec.pipe(JWKMulticodecCodec)).decode(input.content.publicKeys);
       if (isRight(contentR)) {
         const publicKeys = contentR.right;
         return t.success(new ThreeIdContent(owners, publicKeys));
@@ -27,9 +29,9 @@ export const ThreeIdContentJSONCodec = new t.Type<ThreeIdContent, any, any>(
   },
   (a: ThreeIdContent) => {
     return {
-      owners: a.owners.map((o) => BufferMultibaseCodec.pipe(JWKMulticodecCodec).encode(o)),
+      owners: a.owners.map((o) => t.string.pipe(Uint8ArrayMultibaseCodec).pipe(JWKMulticodecCodec).encode(o)),
       content: {
-        publicKeys: MapCodec(BufferMultibaseCodec.pipe(JWKMulticodecCodec)).encode(a.publicKeys),
+        publicKeys: MapCodec(Uint8ArrayMultibaseCodec.pipe(JWKMulticodecCodec)).encode(a.publicKeys),
       },
     };
   },

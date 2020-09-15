@@ -8,7 +8,7 @@ import * as jose from 'jose';
 const REMOTE_URL = 'http://localhost:3001';
 
 async function main() {
-  const identityWallet = new IdentityWallet(() => true, {
+  const identityWallet = new IdentityWallet(async () => true, {
     seed: '0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f',
   });
   const user = await User.build(identityWallet.get3idProvider());

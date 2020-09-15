@@ -7,7 +7,7 @@ import ipfsClient from 'ipfs-http-client';
 export class IpfsService {
   readonly client: Ipfs;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(configService: ConfigService) {
     this.client = ipfsClient(configService.current.IPFS_URL);
   }
 }

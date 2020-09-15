@@ -8,7 +8,11 @@ import { AnchoringStatus } from '@vessel-kit/anchoring';
 @EventSubscriber()
 @Injectable()
 export class RequestSubscriber implements EntitySubscriberInterface<RequestRecord> {
-  constructor(connection: Connection, private readonly pubSubService: PubSubService, private readonly anchorStorage: AnchorStorage) {
+  constructor(
+    connection: Connection,
+    private readonly pubSubService: PubSubService,
+    private readonly anchorStorage: AnchorStorage,
+  ) {
     connection.subscribers.push(this);
   }
 
@@ -19,23 +23,25 @@ export class RequestSubscriber implements EntitySubscriberInterface<RequestRecor
   async afterUpdate(event: UpdateEvent<RequestRecord>): Promise<any> {
     const record = event.entity;
     if (record.status === AnchoringStatus.ANCHORED) {
-      const anchor = await this.anchorStorage.byRequestId(record.id)
-      await this.pubSubService.didAnchor.publish({
-        id: record.id.toString(),
-        status: record.status,
-        cid: record.cid.toString(),
-        docId: record.docId.toString(),
-        createdAt: record.createdAt.toISOString(),
-        updatedAt: record.updatedAt.toISOString(),
-        anchorRecord: {
-          cid: anchor.cid.toString(),
-          content: {
-            path: anchor.path,
-            prev: record.cid.toString(),
-            proof: anchor.proofCid.toString(),
+      const anchor = await this.anchorStorage.byRequestId(record.id);
+      if (anchor) {
+        await this.pubSubService.didAnchor.publish({
+          id: record.id.toString(),
+          status: record.status,
+          cid: record.cid.toString(),
+          docId: record.docId.toString(),
+          createdAt: record.createdAt.toISOString(),
+          updatedAt: record.updatedAt.toISOString(),
+          anchorRecord: {
+            cid: anchor.cid.toString(),
+            content: {
+              path: anchor.path,
+              prev: record.cid.toString(),
+              proof: anchor.proofCid.toString(),
+            },
           },
-        },
-      });
+        });
+      }
     }
   }
 }

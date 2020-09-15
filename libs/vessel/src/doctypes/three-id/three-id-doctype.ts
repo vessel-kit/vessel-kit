@@ -8,7 +8,7 @@ import * as ThreeIdShapeSchema from './three-id-shape.schema.json';
 import { ThreeIdShape } from './three-id-shape';
 import { AnchoringStatus } from '@vessel-kit/anchoring';
 import produce from 'immer';
-import { RecordWrap } from '@vessel-kit/codec';
+import { DocId, RecordWrap } from "@vessel-kit/codec";
 import { Ordering } from '../../document/ordering';
 import { ThreeIdState } from './three-id-state';
 
@@ -50,7 +50,7 @@ class ThreeIdHandler extends DoctypeHandler<ThreeIdState, ThreeIdShape> {
     return state.current || state.freight;
   }
 
-  async apply(recordWrap: RecordWrap, state: ThreeIdState, docId): Promise<ThreeIdState> {
+  async apply(recordWrap: RecordWrap, state: ThreeIdState, docId: DocId): Promise<ThreeIdState> {
     const record = recordWrap.load
     if (record.prev) {
       if (record.proof) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import dotenv from 'dotenv';
 import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 

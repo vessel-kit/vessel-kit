@@ -4,19 +4,20 @@ import * as multicodec from 'multicodec';
 import { DIDDocument, PublicKey } from 'did-resolver';
 import { Authentication } from 'did-resolver/src/resolver';
 import { ThreeIdShape } from './three-id-shape';
-import { BufferMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
+import { decodeThrow, Uint8ArrayMultibaseCodec, Base64urlCodec } from "@vessel-kit/codec";
 import * as t from 'io-ts';
+import * as hex from '@stablelib/hex';
 
-const jwkCodec = t.string.pipe(BufferMultibaseCodec).pipe(JWKMulticodecCodec);
+const jwkCodec = t.string.pipe(Uint8ArrayMultibaseCodec).pipe(JWKMulticodecCodec);
 
 function publicKeyHex(key: jose.JWK.Key): string {
-  const multicodecBuffer = JWKMulticodecCodec.encode(key);
-  return '04' + multicodec.rmPrefix(multicodecBuffer).toString('hex');
+  const bytes = JWKMulticodecCodec.encode(key);
+  return '04' + hex.encode(multicodec.rmPrefix(bytes));
 }
 
 function publicKeyBase64(key: jose.JWK.Key): string {
-  const multicodecBuffer = JWKMulticodecCodec.encode(key);
-  return multicodec.rmPrefix(multicodecBuffer).toString('base64');
+  const bytes = JWKMulticodecCodec.encode(key);
+  return Base64urlCodec.encode(multicodec.rmPrefix(bytes));
 }
 
 export class DidPresentation implements DIDDocument {
@@ -32,7 +33,7 @@ export class DidPresentation implements DIDDocument {
         this.publicKey.push({
           id: `${this.id}#managementKey_${i}`,
           type: 'Secp256k1VerificationKey2018',
-          owner: this.id,
+          controller: this.id,
           publicKeyHex: publicKeyHex(decodeThrow(jwkCodec, ownerKey)),
         });
         this.authentication.push({
@@ -44,13 +45,13 @@ export class DidPresentation implements DIDDocument {
       this.publicKey.push({
         id: `${this.id}#signingKey`,
         type: 'Secp256k1VerificationKey2018',
-        owner: this.id,
+        controller: this.id,
         publicKeyHex: publicKeyHex(decodeThrow(jwkCodec, document.content.publicKeys.signing)),
       });
       this.publicKey.push({
         id: `${this.id}#encryptionKey`,
         type: 'Curve25519EncryptionPublicKey',
-        owner: this.id,
+        controller: this.id,
         publicKeyBase64: publicKeyBase64(decodeThrow(jwkCodec, document.content.publicKeys.encryption)),
       });
       this.authentication.push({
