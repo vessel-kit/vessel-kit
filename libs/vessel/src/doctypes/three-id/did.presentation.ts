@@ -4,7 +4,7 @@ import * as multicodec from 'multicodec';
 import { DIDDocument, PublicKey } from 'did-resolver';
 import { Authentication } from 'did-resolver/src/resolver';
 import { ThreeIdShape } from './three-id-shape';
-import { Uint8ArrayMultibaseCodec, decodeThrow, Uint8ArrayBase64StringCodec } from "@vessel-kit/codec";
+import { decodeThrow, Uint8ArrayMultibaseCodec, Uint8ArrayBase64StringCodec } from "@vessel-kit/codec";
 import * as t from 'io-ts';
 import * as hex from '@stablelib/hex';
 

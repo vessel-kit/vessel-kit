@@ -10,7 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@stablelib/base64": "^1.0.0",
     "cids": "^1.0.0",
     "fp-ts": "^2.8.2",
     "io-ts": "^2.2.10",

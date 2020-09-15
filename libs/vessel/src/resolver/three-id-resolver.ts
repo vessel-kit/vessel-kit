@@ -23,7 +23,10 @@ export class ThreeIdResolver {
         const docId = new DocId(new CID(parsed.id));
         const document = await this.load(docId) as IDocument<ThreeIdState, ThreeIdShape>
         const shape = await document.canonical()
-        return new DidPresentation(did, shape);
+        console.log(`canonical shape for 3id ${did}`, JSON.stringify(shape, null, 4))
+        const result = new DidPresentation(did, shape);
+        console.log(`did presentation for 3id ${did}`, JSON.stringify(result, null, 4))
+        return result
       },
     };
   }

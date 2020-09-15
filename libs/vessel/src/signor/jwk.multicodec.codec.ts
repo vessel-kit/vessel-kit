@@ -2,7 +2,7 @@ import * as t from 'io-ts';
 import jose from 'jose';
 import * as multicodec from 'multicodec';
 import * as bytes from '@stablelib/bytes';
-import { Uint8ArrayBase64StringCodec, decodeThrow } from '@vessel-kit/codec';
+import { decodeThrow, Uint8ArrayBase64StringCodec } from "@vessel-kit/codec";
 
 function isECKey(unknown: jose.JWK.Key): unknown is jose.JWK.ECKey {
   return unknown.crv === 'secp256k1' && unknown.kty === 'EC';

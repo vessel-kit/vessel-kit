@@ -239,13 +239,11 @@ importers:
     specifiers: {}
   libs/codec:
     dependencies:
-      '@stablelib/base64': 1.0.0
       cids: 1.0.0
       fp-ts: 2.8.2
       io-ts: 2.2.10_fp-ts@2.8.2
       multibase: 3.0.0
     specifiers:
-      '@stablelib/base64': ^1.0.0
       cids: ^1.0.0
       fp-ts: ^2.8.2
       io-ts: ^2.2.10
@@ -3254,10 +3252,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
-  /@stablelib/base64/1.0.0:
-    dev: false
-    resolution:
-      integrity: sha512-s/wTc/3+vYSalh4gfayJrupzhT7SDBqNtiYOeEMlkSDqL/8cExh5FAeTzLpmYq+7BLLv36EjBL5xrb0bUHWJWQ==
   /@stablelib/binary/1.0.0:
     dependencies:
       '@stablelib/int': 1.0.0
