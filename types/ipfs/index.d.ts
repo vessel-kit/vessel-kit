@@ -1,4 +1,6 @@
-declare module 'ipfs' {
+declare module "ipfs" {
+  import CID from "cids";
+
   export function create(options: any): Ipfs;
   export function create(): Ipfs;
 
@@ -16,10 +18,45 @@ declare module 'ipfs' {
     subscribe(
       topic: string,
       handler: (message: any) => void,
-      options?: any,
+      options?: any
     ): Promise<void>;
     unsubscribe(topic: string, handler: (message: any) => void): Promise<void>;
     publish(topic: string, content: string): Promise<void>;
+  }
+
+  export type PinAddRmOptions = {
+    recursive?: boolean;
+    timeout?: number;
+    signal?: AbortSignal;
+  };
+
+  export type PinAddAllSource = AsyncIterable<{
+    cid: CID;
+    path: String;
+    recursive: Boolean;
+    comments: String;
+  }>;
+
+  export type PinAddAllOptions = {
+    timeout?: number;
+    signal?: AbortSignal;
+  };
+
+  export type PinLsOptions = {
+    paths: CID | CID[] | string | string[];
+    type?: string;
+    timeout?: number;
+    signal: AbortSignal;
+  };
+
+  export interface PinApi {
+    add(cid: CID | string, options?: PinAddRmOptions): Promise<CID[]>;
+    addAll(
+      source: PinAddAllSource,
+      options?: PinAddAllOptions
+    ): AsyncIterable<CID>;
+    ls(options?: PinLsOptions): AsyncIterable<{ cid: CID; type: string }>;
+    rm(ipfsPath: CID | string, options?: PinAddRmOptions): Promise<CID>
   }
 
   export class Ipfs {
@@ -37,7 +74,7 @@ declare module 'ipfs' {
 
     version(
       options: any,
-      callback: (error: Error, version: Ipfs.Version) => void,
+      callback: (error: Error, version: Ipfs.Version) => void
     ): void;
     version(options: any): Promise<Ipfs.Version>;
     version(callback: (error: Error, version: Ipfs.Version) => void): void;
@@ -64,13 +101,13 @@ declare module 'ipfs' {
 
     pubsub: PubSub;
     dht: any;
-    pin: any;
+    pin: PinApi;
 
     // Top level Files API
     add(
       data: Ipfs.FileContent,
       options: any,
-      callback: Callback<Ipfs.IpfsFile[]>,
+      callback: Callback<Ipfs.IpfsFile[]>
     ): void;
     add(data: Ipfs.FileContent, options: any): Promise<Ipfs.IpfsFile[]>;
     add(data: Ipfs.FileContent, callback: Callback<Ipfs.IpfsFile[]>): void;
@@ -81,13 +118,13 @@ declare module 'ipfs' {
     addFromStream(
       stream: any,
       options: any,
-      callback: Callback<Ipfs.IpfsFile[]>,
+      callback: Callback<Ipfs.IpfsFile[]>
     ): void;
 
     addFromUrl(
       url: string,
       options: any,
-      callback: Callback<Ipfs.IpfsFile[]>,
+      callback: Callback<Ipfs.IpfsFile[]>
     ): void;
     addFromUrl(url: string, options: any): Promise<Ipfs.IpfsFile[]>;
     addFromUrl(url: string, callback: Callback<Ipfs.IpfsFile[]>): void;
@@ -96,7 +133,7 @@ declare module 'ipfs' {
     addFromFs(
       path: string,
       options: any,
-      callback: Callback<Ipfs.IpfsFile[]>,
+      callback: Callback<Ipfs.IpfsFile[]>
     ): void;
     addFromFs(path: string, options: any): Promise<Ipfs.IpfsFile[]>;
     addFromFs(path: string, callback: Callback<Ipfs.IpfsFile[]>): void;
@@ -109,7 +146,7 @@ declare module 'ipfs' {
     cat(
       hash: Ipfs.Multihash,
       options: any,
-      callback: Callback<Ipfs.FileContent>,
+      callback: Callback<Ipfs.FileContent>
     ): void;
     cat(hash: Ipfs.Multihash, options?: any): Promise<Ipfs.FileContent>;
     catPullStream(hash: Ipfs.Multihash, options?: any): any;
@@ -194,7 +231,7 @@ declare module 'ipfs' {
       size: number;
       name: string;
       depth: number;
-      type: 'file' | 'dir' | string;
+      type: "file" | "dir" | string;
     }
 
     export interface FilesAPI {
@@ -281,17 +318,17 @@ declare module 'ipfs' {
         multihash: Multihash,
         link: DAGLink,
         options: GetObjectOptions,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       addLink(
         multihash: Multihash,
         link: DAGLink,
-        options: GetObjectOptions,
+        options: GetObjectOptions
       ): Promise<any>;
       addLink(
         multihash: Multihash,
         link: DAGLink,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       addLink(multihash: Multihash, link: DAGLink): Promise<any>;
 
@@ -299,17 +336,17 @@ declare module 'ipfs' {
         multihash: Multihash,
         linkRef: DAGLinkRef,
         options: GetObjectOptions,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       rmLink(
         multihash: Multihash,
         linkRef: DAGLinkRef,
-        options: GetObjectOptions,
+        options: GetObjectOptions
       ): Promise<any>;
       rmLink(
         multihash: Multihash,
         linkRef: DAGLinkRef,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       rmLink(multihash: Multihash, linkRef: DAGLinkRef): Promise<any>;
 
@@ -317,17 +354,17 @@ declare module 'ipfs' {
         multihash: Multihash,
         data: any,
         options: GetObjectOptions,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       appendData(
         multihash: Multihash,
         data: any,
-        options: GetObjectOptions,
+        options: GetObjectOptions
       ): Promise<any>;
       appendData(
         multihash: Multihash,
         data: any,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       appendData(multihash: Multihash, data: any): Promise<any>;
 
@@ -335,21 +372,21 @@ declare module 'ipfs' {
         multihash: Multihash,
         data: any,
         options: GetObjectOptions,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       setData(
         multihash: Multihash,
         data: any,
-        options: GetObjectOptions,
+        options: GetObjectOptions
       ): Promise<any>;
       setData(multihash: Multihash, data: any, callback: Callback<any>): void;
       setData(multihash: Multihash, data: any): Promise<any>;
     }
 
     export interface ObjectAPI {
-      'new'(template: 'unixfs-dir', callback: Callback<DAGNode>): void;
-      'new'(callback: Callback<DAGNode>): void;
-      'new'(): Promise<DAGNode>;
+      "new"(template: "unixfs-dir", callback: Callback<DAGNode>): void;
+      "new"(callback: Callback<DAGNode>): void;
+      "new"(): Promise<DAGNode>;
 
       put(obj: Obj, options: PutObjectOptions, callback: Callback<any>): void;
       put(obj: Obj, options: PutObjectOptions): Promise<any>;
@@ -359,7 +396,7 @@ declare module 'ipfs' {
       get(
         multihash: Multihash,
         options: GetObjectOptions,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       get(multihash: Multihash, options: GetObjectOptions): Promise<any>;
       get(multihash: Multihash, callback: Callback<any>): void;
@@ -368,7 +405,7 @@ declare module 'ipfs' {
       data(
         multihash: Multihash,
         options: GetObjectOptions,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       data(multihash: Multihash, options: GetObjectOptions): Promise<any>;
       data(multihash: Multihash, callback: Callback<any>): void;
@@ -377,11 +414,11 @@ declare module 'ipfs' {
       links(
         multihash: Multihash,
         options: GetObjectOptions,
-        callback: Callback<DAGLink[]>,
+        callback: Callback<DAGLink[]>
       ): void;
       links(
         multihash: Multihash,
-        options: GetObjectOptions,
+        options: GetObjectOptions
       ): Promise<DAGLink[]>;
       links(multihash: Multihash, callback: Callback<DAGLink[]>): void;
       links(multihash: Multihash): Promise<DAGLink[]>;
@@ -389,11 +426,11 @@ declare module 'ipfs' {
       stat(
         multihash: Multihash,
         options: GetObjectOptions,
-        callback: Callback<ObjectStat>,
+        callback: Callback<ObjectStat>
       ): void;
       stat(
         multihash: Multihash,
-        options: GetObjectOptions,
+        options: GetObjectOptions
       ): Promise<ObjectStat>;
       stat(multihash: Multihash, callback: Callback<ObjectStat>): void;
       stat(multihash: Multihash): Promise<ObjectStat>;
@@ -410,7 +447,7 @@ declare module 'ipfs' {
         cid: string | CID,
         path: string,
         options: any,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       get(cid: string | CID, path: string, options: any): Promise<any>;
       get(cid: string | CID, path: string, callback: Callback<any>): void;
@@ -422,7 +459,7 @@ declare module 'ipfs' {
         cid: string | CID,
         path: string,
         options: any,
-        callback: Callback<any>,
+        callback: Callback<any>
       ): void;
       tree(cid: string | CID, path: string, options: any): Promise<any>;
       tree(cid: string | CID, path: string, callback: Callback<any>): void;

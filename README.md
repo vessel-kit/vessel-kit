@@ -101,10 +101,6 @@ As for the authoring, this should include generation of JSON (LD) Schema for the
 
 So, lots of stuff that could be done better.
 
-## Relation to Ceramic
-
-This started as yet another node for Ceramic Network protocol. Maybe after identity and tile-related work is settled, and this Vessel thing properly handles state transitions and security, this could be integrated into Ceramic protocol. 
-
 ## Development
 
 The suite uses [pnpm](https://pnpm.js.org) package manager. You have to install it first.
