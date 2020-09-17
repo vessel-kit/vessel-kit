@@ -1,0 +1,20 @@
+{
+  "name": "@vessel-kit/identity",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "version": "1.0.0-a.0",
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "tsc -p . --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "fp-ts": "^2.8.2",
+    "io-ts": "^2.2.10"
+  },
+  "devDependencies": {
+    "@relmify/jest-fp-ts": "^1.1.1",
+    "faker": "^5.1.0",
+    "@types/faker": "^5.1.0"
+  }
+}

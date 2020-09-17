@@ -250,6 +250,20 @@ importers:
       fp-ts: ^2.8.2
       io-ts: ^2.2.10
       multibase: ^3.0.0
+  libs/identity:
+    dependencies:
+      fp-ts: 2.8.2
+      io-ts: 2.2.10_fp-ts@2.8.2
+    devDependencies:
+      '@relmify/jest-fp-ts': 1.1.1_fp-ts@2.8.2+io-ts@2.2.10
+      '@types/faker': 5.1.0
+      faker: 5.1.0
+    specifiers:
+      '@relmify/jest-fp-ts': ^1.1.1
+      '@types/faker': ^5.1.0
+      faker: ^5.1.0
+      fp-ts: ^2.8.2
+      io-ts: ^2.2.10
   libs/ui-shared:
     dependencies:
       '@carbon/icons-react': 10.17.0
@@ -3133,6 +3147,19 @@ packages:
     dev: false
     resolution:
       integrity: sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
+  /@relmify/jest-fp-ts/1.1.1_fp-ts@2.8.2+io-ts@2.2.10:
+    dependencies:
+      expect: 26.4.2
+      fp-ts: 2.8.2
+      io-ts: 2.2.10_fp-ts@2.8.2
+      jest-get-type: 26.3.0
+      jest-matcher-utils: 26.4.2
+    dev: true
+    peerDependencies:
+      fp-ts: 2.x
+      io-ts: 2.x
+    resolution:
+      integrity: sha512-cuYK27gjDoEZIzvUuLRvgmqp/t5BlGWMrsVj+kzGlsgYny9xYCAMMRBd38HcFciG6aVTVKrLKqsYNidvU+4vzA==
   /@schematics/schematics/0.1000.7:
     dependencies:
       '@angular-devkit/core': 10.0.7
@@ -3536,6 +3563,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-dCOT5lcmV/uC2J9k0rPafATeeyz+99xTt54ReX11/LObZgfzJqZNcW27zGhYyX+9iSEGXGt5qLPwRSvBZcLvtQ==
+  /@types/faker/5.1.0:
+    dev: true
+    resolution:
+      integrity: sha512-7iK+rNvtSmG3FcAgI67BphmQVzBPkI6SCjJqR/SXxGr6tDUoMovkhGYIxNICEfy/trTgiGQL2v1tKPuFEXIrQg==
   /@types/fs-capacitor/2.0.0:
     dependencies:
       '@types/node': 14.10.1
@@ -7498,6 +7529,10 @@ packages:
       '0': node >=0.6.0
     resolution:
       integrity: sha1-lpGEQOMEGnpBT4xS48V06zw+HgU=
+  /faker/5.1.0:
+    dev: true
+    resolution:
+      integrity: sha512-RrWKFSSA/aNLP0g3o2WW1Zez7/MnMr7xkiZmoCfAGZmdkDQZ6l2KtuXHN5XjdvpRjDl8+3vf+Rrtl06Z352+Mw==
   /fast-deep-equal/2.0.1:
     dev: false
     resolution:
