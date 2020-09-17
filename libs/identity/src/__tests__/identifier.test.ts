@@ -8,11 +8,11 @@ const id = faker.internet.domainWord();
 const identifier = new Identifier(method, id);
 
 describe('Identifier', () => {
-  test('fields', () => {
+  test('constructor', () => {
     expect(identifier.method).toEqual(method);
     expect(identifier.id).toEqual(id);
   });
-  test('toString', () => {
+  test('#toString', () => {
     expect(identifier.toString()).toEqual(`did:${method}:${id}`);
   });
   test('nodejs inspect', () => {

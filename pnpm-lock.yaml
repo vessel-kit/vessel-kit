@@ -252,18 +252,26 @@ importers:
       multibase: ^3.0.0
   libs/identity:
     dependencies:
+      did-resolver: 2.1.1
       fp-ts: 2.8.2
       io-ts: 2.2.10_fp-ts@2.8.2
+      lodash: 4.17.20
+      query-string: 6.13.2
     devDependencies:
       '@relmify/jest-fp-ts': 1.1.1_fp-ts@2.8.2+io-ts@2.2.10
       '@types/faker': 5.1.0
+      '@types/lodash': 4.14.161
       faker: 5.1.0
     specifiers:
       '@relmify/jest-fp-ts': ^1.1.1
       '@types/faker': ^5.1.0
+      '@types/lodash': ^4.14.161
+      did-resolver: ^2.1.1
       faker: ^5.1.0
       fp-ts: ^2.8.2
       io-ts: ^2.2.10
+      lodash: ^4.17.20
+      query-string: ^6.13.2
   libs/ui-shared:
     dependencies:
       '@carbon/icons-react': 10.17.0
@@ -13977,6 +13985,16 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-u7aTucqRXCMlFbIosaArYJBD2+s=
+  /query-string/6.13.2:
+    dependencies:
+      decode-uri-component: 0.2.0
+      split-on-first: 1.1.0
+      strict-uri-encode: 2.0.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-BMmDaUiLDFU1hlM38jTFcRt7HYiGP/zt1sRzrIWm5zpeEuO1rkbPS0ELI3uehoLuuhHDCS8u8lhFN3fEN4JzPQ==
   /querystring-es3/0.2.1:
     engines:
       node: '>=0.4.x'
@@ -15075,6 +15093,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-J+FWzZoynJEXGphVIS+XEh3kFSjZX/1i9gFBaWQcB+/tmpe2qUsSBABpcxqxnAxFdiUFEgAX1bjYGQvIZmoz9Q==
+  /split-on-first/1.1.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-43ZssAJaMusuKWL8sKUBQXHWOpq8d6CfN/u1p4gUzfJkM05C8rxTmYrkIPTXapZpORA6LkkzcUulJ8FqA7Uudw==
   /split-string/3.1.0:
     dependencies:
       extend-shallow: 3.0.2
@@ -15241,6 +15265,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=
+  /strict-uri-encode/2.0.0:
+    dev: false
+    engines:
+      node: '>=4'
+    resolution:
+      integrity: sha1-ucczDHBChi9rFC3CdLvMWGbONUY=
   /string-format/2.0.0:
     dev: false
     resolution:
