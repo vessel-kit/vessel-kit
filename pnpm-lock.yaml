@@ -252,21 +252,35 @@ importers:
       multibase: ^3.0.0
   libs/identity:
     dependencies:
+      '@stablelib/bytes': 1.0.0
+      '@stablelib/ed25519': 1.0.1
+      '@stablelib/sha256': 1.0.0
+      bn.js: 4.11.9
       did-resolver: 2.1.1
+      elliptic: 6.5.3
       fp-ts: 2.8.2
       io-ts: 2.2.10_fp-ts@2.8.2
       lodash: 4.17.20
       query-string: 6.13.2
     devDependencies:
       '@relmify/jest-fp-ts': 1.1.1_fp-ts@2.8.2+io-ts@2.2.10
+      '@types/bn.js': 4.11.6
+      '@types/elliptic': 6.4.12
       '@types/faker': 5.1.0
       '@types/lodash': 4.14.161
       faker: 5.1.0
     specifiers:
       '@relmify/jest-fp-ts': ^1.1.1
+      '@stablelib/bytes': ^1.0.0
+      '@stablelib/ed25519': ^1.0.1
+      '@stablelib/sha256': ^1.0.0
+      '@types/bn.js': ^4.11.6
+      '@types/elliptic': ^6.4.12
       '@types/faker': ^5.1.0
       '@types/lodash': ^4.14.161
+      bn.js: ^4.4.0
       did-resolver: ^2.1.1
+      elliptic: ^6.5.3
       faker: ^5.1.0
       fp-ts: ^2.8.2
       io-ts: ^2.2.10
@@ -3251,6 +3265,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-G9vwwKrNCGMI/uHL6XeWe2Nk4BuxkYyWZagGaDU9wrsuV+9hUwNI1lok2WVo8uJDa2zx7ahNwN7Ij983hOUFEw==
+  /@stablelib/sha256/1.0.0:
+    dependencies:
+      '@stablelib/binary': 1.0.0
+      '@stablelib/hash': 1.0.0
+      '@stablelib/wipe': 1.0.0
+    dev: false
+    resolution:
+      integrity: sha512-+IEzCXO6HSyYWV+5TqdFjcUYgkebdiadzRtMXJg6ia68WQm2xHpABl5t0vVdtvgTlw7matBRhImunAHUFIAEUg==
   /@stablelib/sha512/1.0.0:
     dependencies:
       '@stablelib/binary': 1.0.0
@@ -3498,8 +3520,7 @@ packages:
       integrity: sha512-1TdA9IXOy4sdqn8vgieQ6GZAiHiPNrOiO1s2GJjuYPw4QVY7gYoVjkW049avj33Ez7IcIvu43hQsMsoUFbCn2g==
   /@types/bn.js/4.11.6:
     dependencies:
-      '@types/node': 14.10.1
-    dev: false
+      '@types/node': 14.10.3
     resolution:
       integrity: sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
   /@types/body-parser/1.19.0:
@@ -3548,6 +3569,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
+  /@types/elliptic/6.4.12:
+    dependencies:
+      '@types/bn.js': 4.11.6
+    dev: true
+    resolution:
+      integrity: sha512-gP1KsqoouLJGH6IJa28x7PXb3cRqh83X8HCLezd2dF+XcAIMKYv53KV+9Zn6QA561E120uOqZBQ+Jy/cl+fviw==
   /@types/engine.io/3.1.4:
     dependencies:
       '@types/node': 14.10.1
@@ -3708,6 +3735,9 @@ packages:
   /@types/node/14.10.1:
     resolution:
       integrity: sha512-aYNbO+FZ/3KGeQCEkNhHFRIzBOUgc7QvcVNKXbfnhDkSfwUv91JsQQa10rDgKSTSLkXZ1UIyPe4FJJNVgw1xWQ==
+  /@types/node/14.10.3:
+    resolution:
+      integrity: sha512-zdN0hor7TLkjAdKTnYW+Y22oIhUUpil5ZD1V1OFq0CR0CLKw+NdR6dkziTfkWRLo6sKzisayoj/GNpNbe4LY9Q==
   /@types/normalize-package-data/2.4.0:
     dev: true
     resolution:
@@ -3750,7 +3780,7 @@ packages:
       integrity: sha512-DtLFjSj0OYAdVLBbyjhuV9CdGVHCkHn2R+xr3XkBvK2rS1Y1tkc14XSGjYgm5Fjjr90AxH9tiSzc1pCFMGO06g==
   /@types/secp256k1/4.0.1:
     dependencies:
-      '@types/node': 14.10.1
+      '@types/node': 14.10.3
     dev: false
     resolution:
       integrity: sha512-+ZjSA8ELlOp8SlKi0YLB2tz9d5iPNEmOBd+8Rz21wTMdaXQIa9b6TEnD6l5qKOCypE7FSyPyck12qZJxSDNoog==
