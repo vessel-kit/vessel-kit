@@ -1,22 +1,23 @@
-import { PublicKey, PublicKeyFingerprintCodec } from './public-key';
-import { KeyKind } from './key-kind';
-import { InvalidSecretKindError } from './invalid-secret-kind.error';
+import { AlgorithmKind } from './algorithm-kind';
+import { InvalidAlgorithmKindError } from './invalid-algorithm-kind.error';
 import { Identifier } from './identifier';
 import { BytesMultibaseCodec } from '@vessel-kit/codec';
 import { DIDDocument, ParsedDID } from 'did-resolver';
 import * as f from 'fp-ts';
+import { IPublicKey } from './public-key.interface';
+import { PublicKeyStringCodec } from './public-key.string.codec';
 
 const METHOD = 'key';
 
 const hexCodec = BytesMultibaseCodec('base16');
 const base58btcCodec = BytesMultibaseCodec('base58btc');
 
-export function didDocument(publicKey: PublicKey): any {
-  const fingerprint = PublicKeyFingerprintCodec.encode(publicKey);
+export function didDocument(publicKey: IPublicKey): any {
+  const fingerprint = PublicKeyStringCodec.encode(publicKey);
   const identifier = new Identifier(METHOD, fingerprint);
   const keyId = `${identifier}#${fingerprint}`;
   switch (publicKey.kind) {
-    case KeyKind.secp256k1:
+    case AlgorithmKind.secp256k1:
       return {
         id: identifier.toString(),
         '@context': 'https://w3id.org/did/v1',
@@ -33,7 +34,7 @@ export function didDocument(publicKey: PublicKey): any {
         capabilityDelegation: [keyId],
         capabilityInvocation: [keyId],
       };
-    case KeyKind.ed25519:
+    case AlgorithmKind.ed25519:
       return {
         id: identifier.toString(),
         '@context': 'https://w3id.org/did/v1',
@@ -51,19 +52,17 @@ export function didDocument(publicKey: PublicKey): any {
         capabilityInvocation: [keyId],
       };
     default:
-      throw new InvalidSecretKindError(publicKey.kind);
+      throw new InvalidAlgorithmKindError(publicKey.kind);
   }
 }
 
 export function getResolver() {
-  async function resolve(did: string, parsed: ParsedDID): Promise<DIDDocument> {
-    return f.function.pipe(
-      parsed.id,
-      PublicKeyFingerprintCodec.decode,
-      f.either.map(didDocument),
-      f.either.fold(f.either.throwError, f.function.identity),
-    );
-  }
+  const asDocument = f.function.flow(
+    PublicKeyStringCodec.decode,
+    f.either.map(didDocument),
+    f.either.fold(f.either.throwError, f.function.identity),
+  );
+  const resolve = async (did: string, parsed: ParsedDID): Promise<DIDDocument> => asDocument(parsed.id);
 
   return { key: resolve };
 }
