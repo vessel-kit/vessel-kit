@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`didPresentation ed25519 1`] = `
+Object {
+  "@context": "https://w3id.org/did/v1",
+  "assertionMethod": Array [
+    "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  ],
+  "authentication": Array [
+    "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  ],
+  "capabilityDelegation": Array [
+    "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  ],
+  "capabilityInvocation": Array [
+    "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  ],
+  "id": "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  "publicKey": Array [
+    Object {
+      "controller": "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+      "id": "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+      "publicKeyBase58": "z2sqWMdAK1PBcNPxCFXS3EAZL7jNNbFsjmYpgdJLxAbzt",
+      "type": "Ed25519VerificationKey2018",
+    },
+  ],
+}
+`;
+
+exports[`didPresentation secp256k1 1`] = `
+Object {
+  "@context": "https://w3id.org/did/v1",
+  "assertionMethod": Array [
+    "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  ],
+  "authentication": Array [
+    "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  ],
+  "capabilityDelegation": Array [
+    "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  ],
+  "capabilityInvocation": Array [
+    "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  ],
+  "id": "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  "publicKey": Array [
+    Object {
+      "controller": "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+      "id": "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+      "publicKeyHex": "f0326f603b8381715459f15ca03b48c2de0ee169fa987842b14d6029ccfcf7e17fb",
+      "type": "Secp256k1VerificationKey2018",
+    },
+  ],
+}
+`;
+
+exports[`resolver ed25519 1`] = `
+Object {
+  "@context": "https://w3id.org/did/v1",
+  "assertionMethod": Array [
+    "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  ],
+  "authentication": Array [
+    "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  ],
+  "capabilityDelegation": Array [
+    "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  ],
+  "capabilityInvocation": Array [
+    "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  ],
+  "id": "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+  "publicKey": Array [
+    Object {
+      "controller": "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+      "id": "did:key:z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme#z6LSdZ1fsvyB6quMTnKxnAwzYkmoxsuVHs3teXYN7kzUsyme",
+      "publicKeyBase58": "z2sqWMdAK1PBcNPxCFXS3EAZL7jNNbFsjmYpgdJLxAbzt",
+      "type": "Ed25519VerificationKey2018",
+    },
+  ],
+}
+`;
+
+exports[`resolver secp256k1 1`] = `
+Object {
+  "@context": "https://w3id.org/did/v1",
+  "assertionMethod": Array [
+    "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  ],
+  "authentication": Array [
+    "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  ],
+  "capabilityDelegation": Array [
+    "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  ],
+  "capabilityInvocation": Array [
+    "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  ],
+  "id": "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+  "publicKey": Array [
+    Object {
+      "controller": "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+      "id": "did:key:zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp#zQ3shhGCCLfpvn8U4EfCsCEE9VqtB9zY4aZBJg1Vc6KAmkPfp",
+      "publicKeyHex": "f0326f603b8381715459f15ca03b48c2de0ee169fa987842b14d6029ccfcf7e17fb",
+      "type": "Secp256k1VerificationKey2018",
+    },
+  ],
+}
+`;

@@ -245,22 +245,29 @@ importers:
       fp-ts: 2.8.2
       io-ts: 2.2.10_fp-ts@2.8.2
       multibase: 3.0.0
+      multicodec: 2.0.1
+    devDependencies:
+      faker: 5.1.0
     specifiers:
       cids: ^1.0.0
+      faker: ^5.1.0
       fp-ts: ^2.8.2
       io-ts: ^2.2.10
       multibase: ^3.0.0
+      multicodec: ^2.0.1
   libs/identity:
     dependencies:
       '@stablelib/bytes': 1.0.0
       '@stablelib/ed25519': 1.0.1
       '@stablelib/sha256': 1.0.0
+      '@vessel-kit/codec': 'link:../codec'
       bn.js: 4.11.9
       did-resolver: 2.1.1
       elliptic: 6.5.3
       fp-ts: 2.8.2
       io-ts: 2.2.10_fp-ts@2.8.2
       lodash: 4.17.20
+      multicodec: 2.0.1
       query-string: 6.13.2
     devDependencies:
       '@relmify/jest-fp-ts': 1.1.1_fp-ts@2.8.2+io-ts@2.2.10
@@ -278,6 +285,7 @@ importers:
       '@types/elliptic': ^6.4.12
       '@types/faker': ^5.1.0
       '@types/lodash': ^4.14.161
+      '@vessel-kit/codec': 'workspace:*'
       bn.js: ^4.4.0
       did-resolver: ^2.1.1
       elliptic: ^6.5.3
@@ -285,6 +293,7 @@ importers:
       fp-ts: ^2.8.2
       io-ts: ^2.2.10
       lodash: ^4.17.20
+      multicodec: ^2.0.1
       query-string: ^6.13.2
   libs/ui-shared:
     dependencies:

@@ -2,19 +2,20 @@ import * as bytes from '@stablelib/bytes';
 import * as ed25519 from '@stablelib/ed25519';
 import * as elliptic from 'elliptic';
 import { KeyKind } from './key-kind';
+import { PublicKey } from "./public-key";
 
 const secp256k1Context = new elliptic.ec('secp256k1');
 
 export interface ISecret {
   kind: KeyKind;
-  publicKey(): Promise<Uint8Array>
+  publicKey(): Promise<PublicKey>;
 }
-
-export class InvalidKeyMaterialError extends Error {}
 
 export interface ISigningSecret extends ISecret {
   sign(message: Uint8Array): Promise<Uint8Array>;
 }
+
+export class InvalidKeyMaterialError extends Error {}
 
 export class Secp256k1Secret implements ISigningSecret {
   readonly kind = KeyKind.secp256k1;
@@ -29,8 +30,8 @@ export class Secp256k1Secret implements ISigningSecret {
     this.#publicKey = new Uint8Array(this.#keyPair.getPublic().encodeCompressed());
   }
 
-  async publicKey(): Promise<Uint8Array> {
-    return this.#publicKey;
+  async publicKey(): Promise<PublicKey> {
+    return new PublicKey(this.kind, this.#publicKey);
   }
 
   async sign(message: Uint8Array): Promise<Uint8Array> {
@@ -54,8 +55,8 @@ export class Ed25519Secret implements ISigningSecret {
     this.#publicKey = this.#keyPair.publicKey;
   }
 
-  async publicKey(): Promise<Uint8Array> {
-    return this.#publicKey;
+  async publicKey(): Promise<PublicKey> {
+    return new PublicKey(this.kind, this.#publicKey);
   }
 
   async sign(message: Uint8Array): Promise<Uint8Array> {

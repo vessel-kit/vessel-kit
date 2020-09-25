@@ -1,12 +1,7 @@
 import { Ed25519Secret, ISecret, Secp256k1Secret } from './secret';
 import { KeyKind } from './key-kind';
 import * as sha256 from '@stablelib/sha256';
-
-export class InvalidSecretKindError extends Error {
-  constructor(kind: never) {
-    super(`Invalid secret kind ${kind}`);
-  }
-}
+import { InvalidSecretKindError } from "./invalid-secret-kind.error";
 
 const encoder = new TextEncoder();
 

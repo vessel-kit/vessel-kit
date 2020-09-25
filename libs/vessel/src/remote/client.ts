@@ -1,7 +1,7 @@
 import { ISignor } from '../signor/signor.interface';
 import { ThreeIdDoctype } from '../doctypes/three-id/three-id-doctype';
 import axios from 'axios';
-import { Uint8ArrayMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
+import { BytesMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
 import { DocId } from '@vessel-kit/codec';
 import { ThreeIdentifierCidCodec } from '../three-identifier';
 import { RemoteDocumentService } from './remote-document-service';
@@ -26,14 +26,14 @@ export class NotThreeIdError extends Error {
   }
 }
 
-const jwkCodec = t.string.pipe(Uint8ArrayMultibaseCodec).pipe(JWKMulticodecCodec);
+const jwkCodec = t.string.pipe(BytesMultibaseCodec('base58btc')).pipe(JWKMulticodecCodec);
 
 export class Client {
   #signor?: ISignor;
   #tracked: Map<string, IDocument<unknown, unknown>> = new Map();
   #service: RemoteDocumentService;
   #doctypes: DoctypesContainer;
-  #context: IContext
+  #context: IContext;
 
   constructor(private readonly host: string) {
     const retrieve = async (cid: CID, path?: string) => {
@@ -42,7 +42,7 @@ export class Client {
         url.searchParams.append('path', path);
       }
       const response = await axios.get(url.toString());
-      return response.data
+      return response.data;
     };
     this.#context = new Context(
       () => {
@@ -53,14 +53,17 @@ export class Client {
         }
       },
       this.load.bind(this),
-      retrieve
+      retrieve,
     );
-    this.#doctypes = new DoctypesContainer([TileDoctype, ThreeIdDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype], this.#context);
+    this.#doctypes = new DoctypesContainer(
+      [TileDoctype, ThreeIdDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
+      this.#context,
+    );
     this.#service = new RemoteDocumentService(host, this.#context);
   }
 
   get context(): IContext {
-    return this.#context
+    return this.#context;
   }
 
   @bind()
@@ -72,9 +75,9 @@ export class Client {
       const documentId = new DocId(cid);
       const document = await this.load(documentId);
       if (document.state.doctype === '3id') {
-        return document as IDocument<ThreeIdState, ThreeIdShape>
+        return document as IDocument<ThreeIdState, ThreeIdShape>;
       } else {
-        throw new NotThreeIdError(documentId)
+        throw new NotThreeIdError(documentId);
       }
     } else {
       const publicKeys = await this.#signor.publicKeys();
@@ -84,11 +87,11 @@ export class Client {
         content: {
           publicKeys: {
             encryption: jwkCodec.encode(publicKeys.asymEncryptionKey),
-            signing: jwkCodec.encode(publicKeys.signingKey)
-          }
-        }
-      }
-      const document = await this.create(canonical)
+            signing: jwkCodec.encode(publicKeys.signingKey),
+          },
+        },
+      };
+      const document = await this.create(canonical);
       const did = decodeThrow(ThreeIdentifierCidCodec, document.id.cid);
       await this.#signor.did(did);
       return document as IDocument<ThreeIdState, ThreeIdShape>;
@@ -99,12 +102,12 @@ export class Client {
   async create<A extends IWithDoctype>(payload: A) {
     const doctype = this.#doctypes.get(payload.doctype);
     const knead = await doctype.knead(payload);
-    const canonical = await doctype.canonical(knead)
+    const canonical = await doctype.canonical(knead);
     const response = await axios.post(`${this.host}/api/v0/document`, canonical);
-    const snapshot = decodeThrow(SnapshotCodec(t.unknown), response.data)
-    const document  = new Document(snapshot, doctype, this.#service)
+    const snapshot = decodeThrow(SnapshotCodec(t.unknown), response.data);
+    const document = new Document(snapshot, doctype, this.#service);
     this.#tracked.set(document.id.valueOf(), document);
-    return document
+    return document;
   }
 
   @bind()
@@ -114,9 +117,9 @@ export class Client {
       return present;
     } else {
       const genesisResponse = await axios.get(`${this.host}/api/v0/document/${docId.valueOf()}`);
-      const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
-      const handler = this.#doctypes.get(snapshot.doctype)
-      const document = new Document(snapshot, handler, this.#service)
+      const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data);
+      const handler = this.#doctypes.get(snapshot.doctype);
+      const document = new Document(snapshot, handler, this.#service);
       this.#tracked.set(document.id.valueOf(), document);
       return document;
     }

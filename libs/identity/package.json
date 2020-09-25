@@ -18,7 +18,9 @@
     "fp-ts": "^2.8.2",
     "io-ts": "^2.2.10",
     "lodash": "^4.17.20",
-    "query-string": "^6.13.2"
+    "query-string": "^6.13.2",
+    "multicodec": "^2.0.1",
+    "@vessel-kit/codec": "workspace:*"
   },
   "devDependencies": {
     "@relmify/jest-fp-ts": "^1.1.1",

@@ -13,6 +13,10 @@
     "cids": "^1.0.0",
     "fp-ts": "^2.8.2",
     "io-ts": "^2.2.10",
-    "multibase": "^3.0.0"
+    "multibase": "^3.0.0",
+    "multicodec": "^2.0.1"
+  },
+  "devDependencies": {
+    "faker": "^5.1.0"
   }
 }
