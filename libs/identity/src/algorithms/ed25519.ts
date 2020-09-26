@@ -1,5 +1,5 @@
 import { IPrivateKey } from '../private-key.interface';
-import { ISigning } from '../signing.interface';
+import { ISigning } from '../signing';
 import { AlgorithmKind } from '../algorithm-kind';
 import { IPublicKey } from '../public-key.interface';
 import * as ed25519 from '@stablelib/ed25519';

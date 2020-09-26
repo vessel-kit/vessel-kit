@@ -1,7 +1,7 @@
 import * as bytes from '@stablelib/bytes';
 import * as elliptic from 'elliptic';
 import { IPrivateKey } from '../private-key.interface';
-import { ISigning } from '../signing.interface';
+import { ISigning } from '../signing';
 import { AlgorithmKind } from '../algorithm-kind';
 import { IPublicKey } from '../public-key.interface';
 import BN from 'bn.js';
