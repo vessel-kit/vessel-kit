@@ -1,20 +1,20 @@
-import * as didResolver from 'did-resolver';
-import { PrivateKeyFactory } from '../../private-key.factory';
-import { AlgorithmKind } from '../../algorithm-kind';
-import * as keyMethod from '../../key.method';
+import * as didResolver from "did-resolver";
+import { PrivateKeyFactory } from "../../private-key.factory";
+import { AlgorithmKind } from "../../algorithm-kind";
+import * as keyMethod from "../../key.method";
 import {
   extractPublicKeys,
   keyMaterialFromDID,
   publicKeyFromDID,
   UnknownKeyTypeError,
   UnsupportedKeyEncodingError,
-  VerificationRelation,
-} from '../resolver';
-import { DidUrl, DidUrlStringCodec } from '../../did-url';
-import { BytesUnbaseCodec, decodeThrow } from '@vessel-kit/codec';
-import * as _ from 'lodash';
-import * as ES256K from '../../algorithms/ES256K';
-import * as Ed25519 from '../../algorithms/Ed25519';
+  VerificationRelation
+} from "../resolver";
+import { DidUrl, DidUrlStringCodec } from "../../did-url";
+import { BytesUnbaseCodec, decodeThrow } from "@vessel-kit/codec";
+import * as _ from "lodash";
+import * as ES256K from "../../algorithms/ES256K";
+import * as Ed25519 from "../../algorithms/Ed25519";
 
 const privateKeyFactory = new PrivateKeyFactory();
 const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, 'seed');
@@ -29,7 +29,7 @@ describe('extractPublicKeys', () => {
     const publicKey = await privateKey.publicKey();
     const didDocument = await resolver.resolve(signer.kid);
     const relation = VerificationRelation.authentication;
-    const publicKeys = extractPublicKeys(didDocument, relation, signer.kid);
+    const publicKeys = extractPublicKeys(didDocument, relation, signer.kid, signer.alg);
     expect(publicKeys.length).toEqual(1);
     expect(publicKeys[0]).toEqual(publicKey);
   });
@@ -40,7 +40,7 @@ describe('extractPublicKeys', () => {
     const didDocument = await resolver.resolve(signer.kid);
     const relation = VerificationRelation.authentication;
     const didUrl = decodeThrow(DidUrlStringCodec, signer.kid);
-    const publicKeys = extractPublicKeys(didDocument, relation, didUrl.identifier.toString());
+    const publicKeys = extractPublicKeys(didDocument, relation, didUrl.identifier.toString(), signer.alg);
     expect(publicKeys.length).toEqual(1);
     expect(publicKeys[0]).toEqual(publicKey);
   });
@@ -51,7 +51,17 @@ describe('extractPublicKeys', () => {
     const relation = VerificationRelation.authentication;
     const kid = decodeThrow(DidUrlStringCodec, signer.kid);
     const didUrl = new DidUrl(kid.identifier, undefined, undefined, 'foo');
-    const publicKeys = extractPublicKeys(didDocument, relation, didUrl.toString());
+    const publicKeys = extractPublicKeys(didDocument, relation, didUrl.toString(), signer.alg);
+    expect(publicKeys.length).toEqual(0);
+  });
+
+  test('wrong alg', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const didDocument = await resolver.resolve(signer.kid);
+    const relation = VerificationRelation.authentication;
+    const kid = decodeThrow(DidUrlStringCodec, signer.kid);
+    const didUrl = new DidUrl(kid.identifier, undefined, undefined, 'foo');
+    const publicKeys = extractPublicKeys(didDocument, relation, didUrl.toString(), AlgorithmKind.Ed25519);
     expect(publicKeys.length).toEqual(0);
   });
 
@@ -60,7 +70,7 @@ describe('extractPublicKeys', () => {
     let didDocument = await resolver.resolve(signer.kid);
     didDocument.authentication = undefined;
     const relation = VerificationRelation.authentication;
-    const publicKeys = extractPublicKeys(didDocument, relation, signer.kid);
+    const publicKeys = extractPublicKeys(didDocument, relation, signer.kid, signer.alg);
     expect(publicKeys.length).toEqual(0);
   });
 });

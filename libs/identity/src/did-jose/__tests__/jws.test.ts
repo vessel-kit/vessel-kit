@@ -49,9 +49,26 @@ describe('verify', () => {
     const result = await jws.verify(signature, resolver);
     expect(result).toBeTruthy();
   });
-  test.todo('no document');
-  test.todo('no keys');
-  test.todo('wrong key');
+  test('no document', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, { hello: 'world' });
+    const resolver = new Resolver();
+    await expect(jws.verify(signature, resolver)).rejects.toThrow();
+  });
+  test('no keys', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, { hello: 'world' });
+    const resolver = new Resolver({
+      key: async () => {
+        return {
+          id: 'did:key:zQ3shawAiwRa3YbMitAcCyT9PhqPgy4Q4o1va8wzVyz9Lneh7',
+          '@context': 'https://w3id.org/did/v1',
+          publicKey: [],
+        };
+      },
+    });
+    await expect(jws.verify(signature, resolver)).resolves.toBeFalsy();
+  });
 });
 
 test.todo('verifyDetached');

@@ -3,6 +3,8 @@ import { BytesUnbaseCodec, decodeThrow } from '@vessel-kit/codec';
 import * as ES256K from '../algorithms/ES256K';
 import * as Ed25519 from '../algorithms/Ed25519';
 import { DidUrlStringCodec } from '../did-url';
+import { AlgorithmKind } from '../algorithm-kind';
+import { IPublicKey } from '../public-key.interface';
 
 export interface IResolver {
   resolve(did: string): Promise<didResolver.DIDDocument>;
@@ -46,18 +48,38 @@ export enum VerificationRelation {
   keyAgreement = 'keyAgreement',
 }
 
+const isRelationProper = (didDocument: didResolver.DIDDocument, relation: VerificationRelation) => (
+  publicKey: didResolver.PublicKey,
+) => {
+  const relationEntries = ((didDocument[relation] || []) as unknown) as any[];
+  const links = relationEntries.filter<string>((value): value is string => typeof value === 'string');
+  return links.includes(publicKey.id);
+};
+
+const isKidProper = (kid: string) => (publicKey: didResolver.PublicKey) => {
+  const didUrl = decodeThrow(DidUrlStringCodec, kid);
+  if (didUrl.fragment) {
+    return publicKey.id === kid;
+  } else {
+    return true;
+  }
+};
+
+const isAlgProper = (alg: AlgorithmKind) => (publicKey: IPublicKey) => {
+  return publicKey.alg === alg;
+};
+
 export function extractPublicKeys(
   didDocument: didResolver.DIDDocument,
   relation: VerificationRelation,
   kid: string,
+  alg: AlgorithmKind,
 ): SupportedPublicKey[] {
-  const relationEntries = ((didDocument[relation] || []) as unknown) as any[];
-  const relationLinks = relationEntries.filter<string>((value): value is string => typeof value === 'string');
   const allPublicKeys = didDocument.publicKey;
-  let relationPublicKeysRaw = allPublicKeys.filter((p) => relationLinks.includes(p.id));
-  const didUrl = decodeThrow(DidUrlStringCodec, kid);
-  if (didUrl.fragment) {
-    relationPublicKeysRaw = relationPublicKeysRaw.filter((p) => p.id === kid);
-  }
-  return relationPublicKeysRaw.map(publicKeyFromDID);
+
+  const byRelation = isRelationProper(didDocument, relation);
+  const byKid = isKidProper(kid);
+
+  const relationPublicKeysRaw = allPublicKeys.filter((p) => byRelation(p) && byKid(p));
+  return relationPublicKeysRaw.map(publicKeyFromDID).filter(isAlgProper(alg));
 }

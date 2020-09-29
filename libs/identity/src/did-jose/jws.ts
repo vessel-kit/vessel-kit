@@ -68,9 +68,7 @@ export async function verify(jws: string, resolver: IResolver): Promise<boolean>
   const decoded = decode(jws);
   const kid = decoded.header.kid;
   const didDocument = await resolver.resolve(kid);
-  const publicKeys = extractPublicKeys(didDocument, VerificationRelation.authentication, kid).filter(
-    (p) => p.alg === decoded.header.alg,
-  );
+  const publicKeys = extractPublicKeys(didDocument, VerificationRelation.authentication, kid, decoded.header.alg);
   const input = signingInput(decoded.payload, decoded.header);
   const message = textEncoder.encode(input);
   const verifications = await Promise.all(publicKeys.map((p) => p.verify(message, decoded.signature)));

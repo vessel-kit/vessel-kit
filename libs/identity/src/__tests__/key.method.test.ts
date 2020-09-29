@@ -29,9 +29,3 @@ describe('resolver', () => {
     await expect(resolver.resolve('did:key:garbage')).rejects.toThrow();
   });
 });
-
-describe('didDocument', () => {
-  test.todo('ES256K');
-  test.todo('Ed25519');
-  test.todo('garbage');
-});
