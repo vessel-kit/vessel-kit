@@ -2,7 +2,7 @@ import { InvalidAlgorithmKindError } from './invalid-algorithm-kind.error';
 
 export enum AlgorithmKind {
   ES256K = 'ES256K',
-  Ed25519 = 'Ed25519',
+  EdDSA = 'EdDSA',
 }
 
 /* istanbul ignore next */
@@ -10,8 +10,8 @@ export namespace AlgorithmKind {
   export function fromString(input: string) {
     const searching = input as AlgorithmKind;
     switch (searching) {
-      case AlgorithmKind.Ed25519:
-        return AlgorithmKind.Ed25519;
+      case AlgorithmKind.EdDSA:
+        return AlgorithmKind.EdDSA;
       case AlgorithmKind.ES256K:
         return AlgorithmKind.ES256K;
       default:

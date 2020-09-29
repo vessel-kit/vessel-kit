@@ -18,11 +18,11 @@ describe('secp256k1', () => {
 
 describe('ed25519', () => {
   test('generate from bytes', () => {
-    const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.Ed25519, bytesSeed);
-    expect(privateKey.alg).toEqual(AlgorithmKind.Ed25519);
+    const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.EdDSA, bytesSeed);
+    expect(privateKey.alg).toEqual(AlgorithmKind.EdDSA);
   });
   test('generate from string', () => {
-    const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.Ed25519, stringSeed);
-    expect(privateKey.alg).toEqual(AlgorithmKind.Ed25519);
+    const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.EdDSA, stringSeed);
+    expect(privateKey.alg).toEqual(AlgorithmKind.EdDSA);
   });
 });

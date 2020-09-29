@@ -27,7 +27,7 @@ describe('encode', () => {
     expect(PublicKeyStringCodec.encode(publicKey)).toMatchSnapshot();
   });
   test('Ed25519', async () => {
-    const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.Ed25519, material);
+    const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.EdDSA, material);
     const publicKey = await privateKey.publicKey();
     expect(PublicKeyStringCodec.encode(publicKey)).toMatchSnapshot();
   });
@@ -40,7 +40,7 @@ describe('decode', () => {
     expect(PublicKeyStringCodec.decode(PublicKeyStringCodec.encode(publicKey))).toEqualRight(publicKey);
   });
   test('Ed25519', async () => {
-    const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.Ed25519, material);
+    const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.EdDSA, material);
     const publicKey = await privateKey.publicKey();
     expect(PublicKeyStringCodec.decode(PublicKeyStringCodec.encode(publicKey))).toEqualRight(publicKey);
   });

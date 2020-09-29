@@ -3,7 +3,7 @@ import { InvalidAlgorithmKindError } from '../invalid-algorithm-kind.error';
 
 describe('fromString', () => {
   test('present', () => {
-    const algorithms = [AlgorithmKind.ES256K, AlgorithmKind.Ed25519];
+    const algorithms = [AlgorithmKind.ES256K, AlgorithmKind.EdDSA];
     algorithms.forEach((algo) => {
       expect(AlgorithmKind.fromString(algo)).toEqual(algo);
     });

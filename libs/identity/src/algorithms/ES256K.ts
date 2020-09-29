@@ -1,5 +1,6 @@
 import * as bytes from '@stablelib/bytes';
 import * as elliptic from 'elliptic';
+import * as sha256 from '@stablelib/sha256';
 import { IPrivateKey, ISigner } from '../private-key.interface';
 import { AlgorithmKind } from '../algorithm-kind';
 import { IPublicKey, ISignatureVerification } from '../public-key.interface';
@@ -16,7 +17,8 @@ export class PublicKey implements IPublicKey, ISignatureVerification {
       const keyPair = secp256k1Context.keyFromPublic(this.material);
       const r = new BN(signature.slice(0, 32));
       const s = new BN(signature.slice(32, 64));
-      return keyPair.verify(message, { r, s });
+      const digest = sha256.hash(message);
+      return keyPair.verify(digest, { r, s });
     } catch {
       return false;
     }
@@ -39,7 +41,8 @@ export class PrivateKey implements IPrivateKey, ISigner {
   }
 
   async sign(message: Uint8Array): Promise<Uint8Array> {
-    const signature = this.#keyPair.sign(message, { canonical: true });
+    const digest = sha256.hash(message);
+    const signature = this.#keyPair.sign(digest, { canonical: true });
     const r = new Uint8Array(signature.r.toArray('be', 32));
     const s = new Uint8Array(signature.s.toArray('be', 32));
     return bytes.concat(r, s);

@@ -1,7 +1,7 @@
 import { Resolver } from 'did-resolver';
 import * as keyMethod from '../key.method';
 import * as ES256K from '../algorithms/ES256K';
-import * as Ed25519 from '../algorithms/Ed25519';
+import * as Ed25519 from '../algorithms/EdDSA';
 import * as _ from 'lodash';
 
 describe('resolver', () => {
@@ -18,7 +18,7 @@ describe('resolver', () => {
     expect(didDocument).toMatchSnapshot();
   });
 
-  test('resolve Ed25519 key', async () => {
+  test('resolve EdDSA key', async () => {
     const publicKey = new Ed25519.PublicKey(material);
     const did = keyMethod.identifier(publicKey).toString();
     const didDocument = await resolver.resolve(did);

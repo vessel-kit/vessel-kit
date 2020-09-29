@@ -4,7 +4,7 @@ import { InvalidAlgorithmKindError } from './invalid-algorithm-kind.error';
 import * as t from 'io-ts';
 import { IPublicKey } from './public-key.interface';
 import * as ES256K from './algorithms/ES256K';
-import * as Ed25519 from './algorithms/Ed25519';
+import * as Ed25519 from './algorithms/EdDSA';
 import { BytesMultibaseCodec } from '@vessel-kit/codec';
 
 enum KEY_PREFIX {
@@ -36,7 +36,7 @@ const PublicKeyMulticodecCodec = new t.Type<IPublicKey, Uint8Array, Uint8Array>(
     switch (publicKey.alg) {
       case AlgorithmKind.ES256K:
         return multicodec.addPrefix(Uint8Array.from([KEY_PREFIX.secp256k1]), publicKey.material);
-      case AlgorithmKind.Ed25519:
+      case AlgorithmKind.EdDSA:
         return multicodec.addPrefix(Uint8Array.from([KEY_PREFIX.ed25519]), publicKey.material);
       /* istanbul ignore next */
       default:

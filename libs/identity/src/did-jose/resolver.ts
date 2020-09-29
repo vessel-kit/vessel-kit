@@ -1,7 +1,7 @@
 import * as didResolver from 'did-resolver';
 import { BytesUnbaseCodec, decodeThrow } from '@vessel-kit/codec';
 import * as ES256K from '../algorithms/ES256K';
-import * as Ed25519 from '../algorithms/Ed25519';
+import * as Ed25519 from '../algorithms/EdDSA';
 import { DidUrlStringCodec } from '../did-url';
 import { AlgorithmKind } from '../algorithm-kind';
 import { IPublicKey } from '../public-key.interface';

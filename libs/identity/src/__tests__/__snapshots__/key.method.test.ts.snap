@@ -27,7 +27,7 @@ Object {
 }
 `;
 
-exports[`resolver resolve Ed25519 key 1`] = `
+exports[`resolver resolve EdDSA key 1`] = `
 Object {
   "@context": "https://w3id.org/did/v1",
   "assertionMethod": Array [

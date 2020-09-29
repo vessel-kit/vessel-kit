@@ -14,7 +14,7 @@ import { DidUrl, DidUrlStringCodec } from "../../did-url";
 import { BytesUnbaseCodec, decodeThrow } from "@vessel-kit/codec";
 import * as _ from "lodash";
 import * as ES256K from "../../algorithms/ES256K";
-import * as Ed25519 from "../../algorithms/Ed25519";
+import * as Ed25519 from "../../algorithms/EdDSA";
 
 const privateKeyFactory = new PrivateKeyFactory();
 const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, 'seed');
@@ -61,7 +61,7 @@ describe('extractPublicKeys', () => {
     const relation = VerificationRelation.authentication;
     const kid = decodeThrow(DidUrlStringCodec, signer.kid);
     const didUrl = new DidUrl(kid.identifier, undefined, undefined, 'foo');
-    const publicKeys = extractPublicKeys(didDocument, relation, didUrl.toString(), AlgorithmKind.Ed25519);
+    const publicKeys = extractPublicKeys(didDocument, relation, didUrl.toString(), AlgorithmKind.EdDSA);
     expect(publicKeys.length).toEqual(0);
   });
 

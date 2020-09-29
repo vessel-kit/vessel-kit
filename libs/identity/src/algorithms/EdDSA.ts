@@ -4,7 +4,7 @@ import { IPublicKey, ISignatureVerification } from '../public-key.interface';
 import * as ed25519 from '@stablelib/ed25519';
 
 export class PublicKey implements IPublicKey, ISignatureVerification {
-  readonly alg = AlgorithmKind.Ed25519;
+  readonly alg = AlgorithmKind.EdDSA;
   constructor(readonly material: Uint8Array) {}
 
   async verify(message: Uint8Array, signature: Uint8Array): Promise<boolean> {
@@ -17,7 +17,7 @@ export class PublicKey implements IPublicKey, ISignatureVerification {
 }
 
 export class PrivateKey implements IPrivateKey, ISigner {
-  readonly alg = AlgorithmKind.Ed25519;
+  readonly alg = AlgorithmKind.EdDSA;
   #keyPair: ed25519.KeyPair;
   #publicKey: Uint8Array;
 

@@ -57,7 +57,7 @@ export function didDocument(publicKey: IPublicKey): any {
         capabilityDelegation: [keyId],
         capabilityInvocation: [keyId],
       };
-    case AlgorithmKind.Ed25519:
+    case AlgorithmKind.EdDSA:
       return {
         id: id,
         '@context': 'https://w3id.org/did/v1',
