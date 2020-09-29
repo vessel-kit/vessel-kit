@@ -2,6 +2,6 @@ import { AlgorithmKind } from './algorithm-kind';
 import { IPublicKey } from './public-key.interface';
 
 export interface IPrivateKey {
-  readonly kind: AlgorithmKind;
+  readonly alg: AlgorithmKind;
   publicKey(): Promise<IPublicKey>;
 }

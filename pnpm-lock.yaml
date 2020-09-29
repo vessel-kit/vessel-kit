@@ -247,8 +247,10 @@ importers:
       multibase: 3.0.0
       multicodec: 2.0.1
     devDependencies:
+      '@relmify/jest-fp-ts': 1.1.1_fp-ts@2.8.2+io-ts@2.2.10
       faker: 5.1.0
     specifiers:
+      '@relmify/jest-fp-ts': ^1.1.1
       cids: ^1.0.0
       faker: ^5.1.0
       fp-ts: ^2.8.2
@@ -2737,8 +2739,8 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.3
       '@types/istanbul-reports': 3.0.0
-      '@types/node': 14.10.1
-      '@types/yargs': 15.0.5
+      '@types/node': 14.11.2
+      '@types/yargs': 15.0.7
       chalk: 4.1.0
     engines:
       node: '>= 10.14.2'
@@ -3747,6 +3749,9 @@ packages:
   /@types/node/14.10.3:
     resolution:
       integrity: sha512-zdN0hor7TLkjAdKTnYW+Y22oIhUUpil5ZD1V1OFq0CR0CLKw+NdR6dkziTfkWRLo6sKzisayoj/GNpNbe4LY9Q==
+  /@types/node/14.11.2:
+    resolution:
+      integrity: sha512-jiE3QIxJ8JLNcb1Ps6rDbysDhN4xa8DJJvuC9prr6w+1tIh+QAbYyNF3tyiZNLDBIuBCf4KEcV2UvQm/V60xfA==
   /@types/normalize-package-data/2.4.0:
     dev: true
     resolution:
@@ -3901,8 +3906,14 @@ packages:
   /@types/yargs/15.0.5:
     dependencies:
       '@types/yargs-parser': 15.0.0
+    dev: true
     resolution:
       integrity: sha512-Dk/IDOPtOgubt/IaevIUbTgV7doaKkoorvOyYM2CMwuDyP89bekI7H4xLIwunNYiK9jhCkmc6pUrJk3cj2AB9w==
+  /@types/yargs/15.0.7:
+    dependencies:
+      '@types/yargs-parser': 15.0.0
+    resolution:
+      integrity: sha512-Gf4u3EjaPNcC9cTu4/j2oN14nSVhr8PQ+BvBcBQHAhDZfl0bVIiLgvnRXv/dn58XhTm9UXvBpvJpDlwV65QxOA==
   /@ukstv/ses/0.10.3:
     dependencies:
       '@agoric/babel-standalone': 7.9.5

@@ -2,7 +2,7 @@
 
 exports[`PrivateKey fields 1`] = `
 PublicKey {
-  "kind": "secp256k1",
+  "kind": "ES256K",
   "material": Uint8Array [
     3,
     27,

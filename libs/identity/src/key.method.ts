@@ -1,31 +1,55 @@
 import { AlgorithmKind } from './algorithm-kind';
 import { InvalidAlgorithmKindError } from './invalid-algorithm-kind.error';
 import { Identifier } from './identifier';
-import { BytesMultibaseCodec } from '@vessel-kit/codec';
+import { BytesUnbaseCodec } from "@vessel-kit/codec";
 import { DIDDocument, ParsedDID } from 'did-resolver';
 import * as f from 'fp-ts';
 import { IPublicKey } from './public-key.interface';
 import { PublicKeyStringCodec } from './public-key.string.codec';
+import { ISigner, ISignerIdentified } from './signing';
+import { IPrivateKey } from './private-key.interface';
 
 const METHOD = 'key';
 
-const hexCodec = BytesMultibaseCodec('base16');
-const base58btcCodec = BytesMultibaseCodec('base58btc');
+const hexCodec = BytesUnbaseCodec('base16');
+const base58btcCodec = BytesUnbaseCodec('base58btc');
+
+export function identifier(publicKey: IPublicKey) {
+  const fingerprint = PublicKeyStringCodec.encode(publicKey);
+  return new Identifier(METHOD, fingerprint);
+}
+
+export function kid(publicKey: IPublicKey) {
+  const id = identifier(publicKey);
+  return `${id}#${id.id}`;
+}
+
+export class SignerIdentified implements ISignerIdentified {
+  readonly alg = this.signer.alg;
+  readonly sign = this.signer.sign.bind(this.signer);
+
+  static async fromPrivateKey(privateKey: IPrivateKey & ISigner) {
+    const publicKey = await privateKey.publicKey();
+    const keyId = kid(publicKey);
+    return new SignerIdentified(privateKey, keyId);
+  }
+
+  constructor(private readonly signer: ISigner, readonly kid: string) {}
+}
 
 export function didDocument(publicKey: IPublicKey): any {
-  const fingerprint = PublicKeyStringCodec.encode(publicKey);
-  const identifier = new Identifier(METHOD, fingerprint);
-  const keyId = `${identifier}#${fingerprint}`;
+  const id = identifier(publicKey).toString();
+  const keyId = kid(publicKey);
   switch (publicKey.kind) {
-    case AlgorithmKind.secp256k1:
+    case AlgorithmKind.ES256K:
       return {
-        id: identifier.toString(),
+        id: id,
         '@context': 'https://w3id.org/did/v1',
         publicKey: [
           {
             id: keyId,
             type: 'Secp256k1VerificationKey2018',
-            controller: identifier.toString(),
+            controller: id,
             publicKeyHex: hexCodec.encode(publicKey.material),
           },
         ],
@@ -34,15 +58,15 @@ export function didDocument(publicKey: IPublicKey): any {
         capabilityDelegation: [keyId],
         capabilityInvocation: [keyId],
       };
-    case AlgorithmKind.ed25519:
+    case AlgorithmKind.Ed25519:
       return {
-        id: identifier.toString(),
+        id: id,
         '@context': 'https://w3id.org/did/v1',
         publicKey: [
           {
             id: keyId,
             type: 'Ed25519VerificationKey2018',
-            controller: identifier.toString(),
+            controller: id,
             publicKeyBase58: base58btcCodec.encode(publicKey.material),
           },
         ],
