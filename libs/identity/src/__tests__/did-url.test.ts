@@ -82,5 +82,9 @@ describe('DidUrlStringCodec', () => {
       expect(decoded).toBeRight();
       expect(decoded).toEqualRight(url);
     });
+    test('garbage', () => {
+      const decoded = DidUrlStringCodec.decode('did:garbage');
+      expect(decoded).toBeLeft();
+    });
   });
 });

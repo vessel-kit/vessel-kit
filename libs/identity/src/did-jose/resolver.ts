@@ -53,7 +53,7 @@ export function extractPublicKeys(
 ): SupportedPublicKey[] {
   const relationEntries = ((didDocument[relation] || []) as unknown) as any[];
   const relationLinks = relationEntries.filter<string>((value): value is string => typeof value === 'string');
-  const allPublicKeys = didDocument.publicKey || [];
+  const allPublicKeys = didDocument.publicKey;
   let relationPublicKeysRaw = allPublicKeys.filter((p) => relationLinks.includes(p.id));
   const didUrl = decodeThrow(DidUrlStringCodec, kid);
   if (didUrl.fragment) {

@@ -54,6 +54,15 @@ describe('extractPublicKeys', () => {
     const publicKeys = extractPublicKeys(didDocument, relation, didUrl.toString());
     expect(publicKeys.length).toEqual(0);
   });
+
+  test('no relation entries', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    let didDocument = await resolver.resolve(signer.kid);
+    didDocument.authentication = undefined;
+    const relation = VerificationRelation.authentication;
+    const publicKeys = extractPublicKeys(didDocument, relation, signer.kid);
+    expect(publicKeys.length).toEqual(0);
+  });
 });
 
 describe('keyMaterialFromDID', () => {

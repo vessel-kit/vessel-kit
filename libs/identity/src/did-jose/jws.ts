@@ -2,7 +2,6 @@ import * as f from 'fp-ts';
 import { ISignerIdentified } from '../private-key.interface';
 import { Base64urlCodec, decodeThrow } from '@vessel-kit/codec';
 import { extractPublicKeys, IResolver, VerificationRelation } from './resolver';
-import * as _ from 'lodash';
 import { AlgorithmKind } from '../algorithm-kind';
 
 const textEncoder = new TextEncoder();
@@ -69,15 +68,11 @@ export async function verify(jws: string, resolver: IResolver): Promise<boolean>
   const decoded = decode(jws);
   const kid = decoded.header.kid;
   const didDocument = await resolver.resolve(kid);
-  if (didDocument) {
-    const publicKeys = extractPublicKeys(didDocument, VerificationRelation.authentication, kid).filter(
-      (p) => p.alg === decoded.header.alg,
-    );
-    const input = signingInput(decoded.payload, decoded.header);
-    const message = textEncoder.encode(input);
-    const verifications = await Promise.all(publicKeys.map((p) => p.verify(message, decoded.signature)));
-    return verifications.some(_.identity);
-  } else {
-    return false;
-  }
+  const publicKeys = extractPublicKeys(didDocument, VerificationRelation.authentication, kid).filter(
+    (p) => p.alg === decoded.header.alg,
+  );
+  const input = signingInput(decoded.payload, decoded.header);
+  const message = textEncoder.encode(input);
+  const verifications = await Promise.all(publicKeys.map((p) => p.verify(message, decoded.signature)));
+  return verifications.some(f.function.identity);
 }

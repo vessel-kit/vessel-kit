@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolver resolve ES256K key 1`] = `
+Object {
+  "@context": "https://w3id.org/did/v1",
+  "assertionMethod": Array [
+    "did:key:z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N#z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N",
+  ],
+  "authentication": Array [
+    "did:key:z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N#z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N",
+  ],
+  "capabilityDelegation": Array [
+    "did:key:z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N#z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N",
+  ],
+  "capabilityInvocation": Array [
+    "did:key:z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N#z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N",
+  ],
+  "id": "did:key:z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N",
+  "publicKey": Array [
+    Object {
+      "controller": "did:key:z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N",
+      "id": "did:key:z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N#z6DtMrg4Kv51UMAM8vJcCLcRywJfEB4dpHVxPCR6qm6hSV3N",
+      "publicKeyHex": "0101010101010101010101010101010101010101010101010101010101010101",
+      "type": "Secp256k1VerificationKey2018",
+    },
+  ],
+}
+`;
+
+exports[`resolver resolve Ed25519 key 1`] = `
+Object {
+  "@context": "https://w3id.org/did/v1",
+  "assertionMethod": Array [
+    "did:key:z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U#z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U",
+  ],
+  "authentication": Array [
+    "did:key:z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U#z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U",
+  ],
+  "capabilityDelegation": Array [
+    "did:key:z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U#z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U",
+  ],
+  "capabilityInvocation": Array [
+    "did:key:z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U#z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U",
+  ],
+  "id": "did:key:z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U",
+  "publicKey": Array [
+    Object {
+      "controller": "did:key:z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U",
+      "id": "did:key:z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U#z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U",
+      "publicKeyBase58": "4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi",
+      "type": "Ed25519VerificationKey2018",
+    },
+  ],
+}
+`;

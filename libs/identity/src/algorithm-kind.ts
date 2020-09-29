@@ -5,6 +5,7 @@ export enum AlgorithmKind {
   Ed25519 = 'Ed25519',
 }
 
+/* istanbul ignore next */
 export namespace AlgorithmKind {
   export function fromString(input: string) {
     const searching = input as AlgorithmKind;

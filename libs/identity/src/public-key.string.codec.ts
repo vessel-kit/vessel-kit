@@ -16,7 +16,7 @@ const PublicKeyMulticodecCodec = new t.Type<IPublicKey, Uint8Array, Uint8Array>(
   'PublicKey-multicodec',
   (p: unknown): p is IPublicKey => {
     if (p && typeof p === 'object') {
-      return 'kind' in p && 'material' in p;
+      return 'alg' in p && 'material' in p;
     } else {
       return false;
     }
@@ -38,6 +38,7 @@ const PublicKeyMulticodecCodec = new t.Type<IPublicKey, Uint8Array, Uint8Array>(
         return multicodec.addPrefix(Uint8Array.from([KEY_PREFIX.secp256k1]), publicKey.material);
       case AlgorithmKind.Ed25519:
         return multicodec.addPrefix(Uint8Array.from([KEY_PREFIX.ed25519]), publicKey.material);
+      /* istanbul ignore next */
       default:
         throw new InvalidAlgorithmKindError(publicKey.alg);
     }

@@ -74,6 +74,7 @@ export function didDocument(publicKey: IPublicKey): any {
         capabilityDelegation: [keyId],
         capabilityInvocation: [keyId],
       };
+    /* istanbul ignore next */
     default:
       throw new InvalidAlgorithmKindError(publicKey.alg);
   }
@@ -83,9 +84,9 @@ export function getResolver() {
   const asDocument = f.function.flow(
     PublicKeyStringCodec.decode,
     f.either.map(didDocument),
-    f.either.fold(f.either.throwError, f.function.identity),
+    f.either.fold(f.task.of(null), f.function.identity),
   );
-  const resolve = async (did: string, parsed: ParsedDID): Promise<DIDDocument> => asDocument(parsed.id);
+  const resolve = async (did: string, parsed: ParsedDID): Promise<DIDDocument | null> => asDocument(parsed.id);
 
   return { key: resolve };
 }

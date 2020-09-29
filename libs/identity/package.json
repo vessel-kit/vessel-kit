@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -p .",
     "dev": "tsc -p . --watch",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "@stablelib/bytes": "^1.0.0",
