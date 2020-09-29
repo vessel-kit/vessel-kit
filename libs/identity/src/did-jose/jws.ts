@@ -95,3 +95,7 @@ export function isDetached(jws: string) {
   const parts = splitParts(jws);
   return parts[2] === '';
 }
+
+export function isAttached(jws: string): boolean {
+  return !isDetached(jws);
+}

@@ -37,6 +37,7 @@ export function publicKeyFromDID(entry: didResolver.PublicKey): SupportedPublicK
     case 'Secp256k1SignatureVerificationKey2018':
       return new ES256K.PublicKey(material);
     case 'ED25519SignatureVerification':
+    case 'Ed25519VerificationKey2018':
       return new Ed25519.PublicKey(material);
     default:
       throw new UnknownKeyTypeError(`Unknown key type ${entry.type}`);

@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`did ES256K 1`] = `
+Identifier {
+  "id": "zQ3shawAiwRa3YbMitAcCyT9PhqPgy4Q4o1va8wzVyz9Lneh7",
+  "method": "key",
+}
+`;
+
+exports[`did EdDSA 1`] = `
+Identifier {
+  "id": "z6LSsvVXRym6jRf5u9tuXwsegxd1u5JAQFL4AAGenS1ouTXs",
+  "method": "key",
+}
+`;
+
+exports[`sign ES256K 1`] = `"eyJhbGciOiJFUzI1NksiLCJraWQiOiJkaWQ6a2V5OnpRM3NoYXdBaXdSYTNZYk1pdEFjQ3lUOVBocVBneTRRNG8xdmE4d3pWeXo5TG5laDcjelEzc2hhd0Fpd1JhM1liTWl0QWNDeVQ5UGhxUGd5NFE0bzF2YTh3elZ5ejlMbmVoNyJ9.eyJoZWxsbyI6IndvcmxkIn0.win83rENOCzEcE_1wN9QmJ3_S9vFzomqKuE0xY9QT60qXd2aX1tFcdSTi39yWA8ls7M54I9Zp13Zup7uT33hgw"`;
+
+exports[`sign EdDSA 1`] = `"eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDprZXk6ejZMU3N2VlhSeW02alJmNXU5dHVYd3NlZ3hkMXU1SkFRRkw0QUFHZW5TMW91VFhzI3o2TFNzdlZYUnltNmpSZjV1OXR1WHdzZWd4ZDF1NUpBUUZMNEFBR2VuUzFvdVRYcyJ9.eyJoZWxsbyI6IndvcmxkIn0.K-65Z7TMGi45fnUfO3ytDN7hkaqoxDJBYo7gJTwCutSOexzYNEZUvZRbssWHVzFaDnKz7DVeHIenyBLdWxsyDQ"`;

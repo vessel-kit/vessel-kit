@@ -60,8 +60,7 @@ describe('verify', () => {
     const resolver = new Resolver({
       ...keyMethod.getResolver(),
     });
-    const result = await jws.verify(signature, resolver);
-    expect(result).toBeTruthy();
+    await expect(jws.verify(signature, resolver)).resolves.toBeTruthy();
   });
   test('no document', async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
@@ -102,12 +101,15 @@ describe('detached', () => {
     expect(attached).toEqual(signature);
   });
 
-  test('isDetached', async () => {
+  test('isDetached and isAttached', async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
     const signature = await jws.create(signer, { hello: 'world' });
     const detached = jws.asDetached(signature);
     const attached = jws.asAttached(payload, detached);
     expect(jws.isDetached(detached)).toBeTruthy();
     expect(jws.isDetached(attached)).toBeFalsy();
+
+    expect(jws.isAttached(detached)).toBeFalsy();
+    expect(jws.isAttached(attached)).toBeTruthy();
   });
 });
