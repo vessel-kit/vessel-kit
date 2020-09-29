@@ -17,6 +17,7 @@
     "multicodec": "^2.0.1"
   },
   "devDependencies": {
+    "@relmify/jest-fp-ts": "^1.1.1",
     "faker": "^5.1.0"
   }
 }

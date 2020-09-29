@@ -1,7 +1,7 @@
 import CID from 'cids';
-import { DocId } from '../doc-id';
-import { DocIdStringCodec } from './doc-id.string.codec';
-import { decodeThrow } from '../decode-throw';
+import { DocId } from '../../doc-id';
+import { DocIdStringCodec } from '../doc-id.string.codec';
+import { decodeThrow } from '../../decode-throw';
 
 const cid = new CID('QmSnuWmxptJZdLJpKRarxBMS2Ju2oANVrgbr2xWbie9b2D');
 
