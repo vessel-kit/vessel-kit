@@ -1,5 +1,5 @@
 import * as f from 'fp-ts';
-import { ISignerIdentified } from '../signing';
+import { ISignerIdentified } from '../private-key.interface';
 import { Base64urlCodec, decodeThrow } from '@vessel-kit/codec';
 import { extractPublicKeys, IResolver, VerificationRelation } from './resolver';
 import { verifySignature } from '../verify-signature';

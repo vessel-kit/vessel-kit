@@ -1,13 +1,12 @@
 import { AlgorithmKind } from './algorithm-kind';
 import { InvalidAlgorithmKindError } from './invalid-algorithm-kind.error';
 import { Identifier } from './identifier';
-import { BytesUnbaseCodec } from "@vessel-kit/codec";
+import { BytesUnbaseCodec } from '@vessel-kit/codec';
 import { DIDDocument, ParsedDID } from 'did-resolver';
 import * as f from 'fp-ts';
 import { IPublicKey } from './public-key.interface';
 import { PublicKeyStringCodec } from './public-key.string.codec';
-import { ISigner, ISignerIdentified } from './signing';
-import { IPrivateKey } from './private-key.interface';
+import { IPrivateKey, ISigner, ISignerIdentified } from './private-key.interface';
 
 const METHOD = 'key';
 
