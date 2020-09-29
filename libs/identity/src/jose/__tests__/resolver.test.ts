@@ -1,20 +1,20 @@
-import * as didResolver from "did-resolver";
-import { PrivateKeyFactory } from "../../private-key.factory";
-import { AlgorithmKind } from "../../algorithm-kind";
-import * as keyMethod from "../../key.method";
+import * as didResolver from 'did-resolver';
+import { PrivateKeyFactory } from '../../private-key.factory';
+import { AlgorithmKind } from '../../algorithm-kind';
+import * as keyMethod from '../../key.method';
 import {
   extractPublicKeys,
   keyMaterialFromDID,
   publicKeyFromDID,
   UnknownKeyTypeError,
   UnsupportedKeyEncodingError,
-  VerificationRelation
-} from "../resolver";
-import { DidUrl, DidUrlStringCodec } from "../../did-url";
-import { BytesUnbaseCodec, decodeThrow } from "@vessel-kit/codec";
-import * as _ from "lodash";
-import * as ES256K from "../../algorithms/ES256K";
-import * as Ed25519 from "../../algorithms/EdDSA";
+  VerificationRelation,
+} from '../resolver';
+import { DidUrl, DidUrlStringCodec } from '../../did-url';
+import { BytesUnbaseCodec, decodeThrow } from '@vessel-kit/codec';
+import * as _ from 'lodash';
+import * as ES256K from '../../algorithms/ES256K';
+import * as Ed25519 from '../../algorithms/EdDSA';
 
 const privateKeyFactory = new PrivateKeyFactory();
 const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, 'seed');

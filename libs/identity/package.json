@@ -7,7 +7,9 @@
     "build": "tsc -p .",
     "dev": "tsc -p . --watch",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "lint": "prettier --check src/",
+    "lint:fix": "prettier --write src/"
   },
   "dependencies": {
     "@stablelib/bytes": "^1.0.0",
