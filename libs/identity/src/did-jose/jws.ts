@@ -17,7 +17,7 @@ export function signingInput(payload: object, header: JWSDecodedHeader) {
     alg: header.alg,
     kid: header.kid,
   });
-  return `${appliedHeader}.${appliedPayload}`;
+  return appliedHeader + '.' + appliedPayload;
 }
 
 export async function create(signer: ISignerIdentified, payload: object): Promise<string> {
@@ -27,10 +27,10 @@ export async function create(signer: ISignerIdentified, payload: object): Promis
   });
   const signature = await signer.sign(textEncoder.encode(toSign));
   const signatureEncoded = Base64urlCodec.encode(signature);
-  return `${toSign}.${signatureEncoded}`;
+  return toSign + '.' + signatureEncoded;
 }
 
-const JWS_PATTERN = /^([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_-]+)$/;
+const JWS_PATTERN = /^([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_-]*)\.([a-zA-Z0-9_-]+)$/;
 
 export class InvalidJWSError extends Error {}
 
@@ -45,23 +45,28 @@ export interface JWSDecoded {
   signature: Uint8Array;
 }
 
-export function decode(jws: string): JWSDecoded {
+export function splitParts(jws: string): RegExpMatchArray {
   const match = jws.match(JWS_PATTERN);
   if (match) {
-    const header = bytesToJSON(decodeThrow(Base64urlCodec, match[1]));
-    if (!header.alg) throw new InvalidJWSError(`Missing alg header`);
-    if (!header.kid) throw new InvalidJWSError(`Missing kid header`);
-    return {
-      header: {
-        alg: AlgorithmKind.fromString(header.alg),
-        kid: header.kid,
-      },
-      payload: bytesToJSON(decodeThrow(Base64urlCodec, match[2])),
-      signature: decodeThrow(Base64urlCodec, match[3]),
-    };
+    return match;
   } else {
     throw new InvalidJWSError(`Wrong format`);
   }
+}
+
+export function decode(jws: string): JWSDecoded {
+  const match = splitParts(jws);
+  const header = bytesToJSON(decodeThrow(Base64urlCodec, match[1]));
+  if (!header.alg) throw new InvalidJWSError(`Missing alg header`);
+  if (!header.kid) throw new InvalidJWSError(`Missing kid header`);
+  return {
+    header: {
+      alg: AlgorithmKind.fromString(header.alg),
+      kid: header.kid,
+    },
+    payload: bytesToJSON(decodeThrow(Base64urlCodec, match[2])),
+    signature: decodeThrow(Base64urlCodec, match[3]),
+  };
 }
 
 export async function verify(jws: string, resolver: IResolver): Promise<boolean> {
@@ -73,4 +78,20 @@ export async function verify(jws: string, resolver: IResolver): Promise<boolean>
   const message = textEncoder.encode(input);
   const verifications = await Promise.all(publicKeys.map((p) => p.verify(message, decoded.signature)));
   return verifications.some(f.function.identity);
+}
+
+export function asDetached(jws: string): string {
+  const parts = splitParts(jws);
+  return parts[1] + '..' + parts[3];
+}
+
+export function asAttached(payload: object, detached: string): string {
+  const parts = splitParts(detached);
+  const appliedPayload = asBase64Url(payload);
+  return parts[1] + '.' + appliedPayload + '.' + parts[3];
+}
+
+export function isDetached(jws: string) {
+  const parts = splitParts(jws);
+  return parts[2] === '';
 }

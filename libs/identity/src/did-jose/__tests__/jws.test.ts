@@ -14,6 +14,20 @@ test('create', async () => {
   expect(signature).toMatchSnapshot();
 });
 
+describe('splitParts', () => {
+  test('ok', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const payload = { hello: 'world' };
+    const signature = await jws.create(signer, payload);
+    const decoded = jws.splitParts(signature);
+    expect(decoded).toMatchSnapshot();
+  });
+
+  test('malformed jws', async () => {
+    expect(() => jws.splitParts('malformed jws')).toThrow(new InvalidJWSError('Wrong format'));
+  });
+});
+
 describe('decode', () => {
   test('ok', async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
@@ -71,4 +85,29 @@ describe('verify', () => {
   });
 });
 
-test.todo('verifyDetached');
+describe('detached', () => {
+  const payload = { hello: 'world' };
+
+  test('asDetached', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, { hello: 'world' });
+    expect(jws.asDetached(signature)).toMatchSnapshot();
+  });
+
+  test('asAttached', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, payload);
+    const detached = jws.asDetached(signature);
+    const attached = jws.asAttached(payload, detached);
+    expect(attached).toEqual(signature);
+  });
+
+  test('isDetached', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, { hello: 'world' });
+    const detached = jws.asDetached(signature);
+    const attached = jws.asAttached(payload, detached);
+    expect(jws.isDetached(detached)).toBeTruthy();
+    expect(jws.isDetached(attached)).toBeFalsy();
+  });
+});
