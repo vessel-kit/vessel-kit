@@ -9,8 +9,6 @@ const textDecoder = new TextDecoder();
 const asBase64Url = f.function.flow(JSON.stringify, textEncoder.encode.bind(textEncoder), Base64urlCodec.encode);
 const bytesToJSON = f.function.flow(textDecoder.decode.bind(textDecoder), JSON.parse);
 
-export class InvalidHeaderError extends Error {}
-
 export function signingInput(payload: object, header: JWSDecodedHeader) {
   const appliedPayload = asBase64Url(payload);
   const appliedHeader = asBase64Url({
