@@ -33,13 +33,13 @@ const PublicKeyMulticodecCodec = new t.Type<IPublicKey, Uint8Array, Uint8Array>(
     }
   },
   (publicKey) => {
-    switch (publicKey.kind) {
+    switch (publicKey.alg) {
       case AlgorithmKind.ES256K:
         return multicodec.addPrefix(Uint8Array.from([KEY_PREFIX.secp256k1]), publicKey.material);
       case AlgorithmKind.Ed25519:
         return multicodec.addPrefix(Uint8Array.from([KEY_PREFIX.ed25519]), publicKey.material);
       default:
-        throw new InvalidAlgorithmKindError(publicKey.kind);
+        throw new InvalidAlgorithmKindError(publicKey.alg);
     }
   },
 );

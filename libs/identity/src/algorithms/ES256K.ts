@@ -2,14 +2,25 @@ import * as bytes from '@stablelib/bytes';
 import * as elliptic from 'elliptic';
 import { IPrivateKey, ISigner } from '../private-key.interface';
 import { AlgorithmKind } from '../algorithm-kind';
-import { IPublicKey } from '../public-key.interface';
+import { IPublicKey, ISignatureVerification } from '../public-key.interface';
 import BN from 'bn.js';
 
 const secp256k1Context = new elliptic.ec('secp256k1');
 
-export class PublicKey implements IPublicKey {
-  readonly kind = AlgorithmKind.ES256K;
+export class PublicKey implements IPublicKey, ISignatureVerification {
+  readonly alg = AlgorithmKind.ES256K;
   constructor(readonly material: Uint8Array) {}
+
+  async verify(message: Uint8Array, signature: Uint8Array): Promise<boolean> {
+    try {
+      const keyPair = secp256k1Context.keyFromPublic(this.material);
+      const r = new BN(signature.slice(0, 32));
+      const s = new BN(signature.slice(32, 64));
+      return keyPair.verify(message, { r, s });
+    } catch {
+      return false;
+    }
+  }
 }
 
 export class PrivateKey implements IPrivateKey, ISigner {
@@ -32,16 +43,5 @@ export class PrivateKey implements IPrivateKey, ISigner {
     const r = new Uint8Array(signature.r.toArray('be', 32));
     const s = new Uint8Array(signature.s.toArray('be', 32));
     return bytes.concat(r, s);
-  }
-}
-
-export function verifySignature(publicKey: IPublicKey, message: Uint8Array, signature: Uint8Array): boolean {
-  try {
-    const keyPair = secp256k1Context.keyFromPublic(publicKey.material);
-    const r = new BN(signature.slice(0, 32));
-    const s = new BN(signature.slice(32, 64));
-    return keyPair.verify(message, { r, s });
-  } catch {
-    return false;
   }
 }

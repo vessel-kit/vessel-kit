@@ -25,7 +25,9 @@ export function keyMaterialFromDID(entry: didResolver.PublicKey) {
 
 export class UnknownKeyTypeError extends Error {}
 
-export function publicKeyFromDID(entry: didResolver.PublicKey) {
+export type SupportedPublicKey = ES256K.PublicKey | Ed25519.PublicKey;
+
+export function publicKeyFromDID(entry: didResolver.PublicKey): SupportedPublicKey {
   const material = keyMaterialFromDID(entry);
   switch (entry.type) {
     case 'Secp256k1VerificationKey2018':
@@ -48,7 +50,7 @@ export function extractPublicKeys(
   didDocument: didResolver.DIDDocument,
   relation: VerificationRelation,
   kid: string,
-) {
+): SupportedPublicKey[] {
   const relationEntries = ((didDocument[relation] || []) as unknown) as any[];
   const relationLinks = relationEntries.filter<string>((value): value is string => typeof value === 'string');
   const allPublicKeys = didDocument.publicKey || [];

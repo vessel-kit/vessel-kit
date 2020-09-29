@@ -1,11 +1,19 @@
 import { IPrivateKey, ISigner } from '../private-key.interface';
 import { AlgorithmKind } from '../algorithm-kind';
-import { IPublicKey } from '../public-key.interface';
+import { IPublicKey, ISignatureVerification } from '../public-key.interface';
 import * as ed25519 from '@stablelib/ed25519';
 
-export class PublicKey implements IPublicKey {
-  readonly kind = AlgorithmKind.Ed25519;
+export class PublicKey implements IPublicKey, ISignatureVerification {
+  readonly alg = AlgorithmKind.Ed25519;
   constructor(readonly material: Uint8Array) {}
+
+  async verify(message: Uint8Array, signature: Uint8Array): Promise<boolean> {
+    try {
+      return ed25519.verify(this.material, message, signature);
+    } catch {
+      return false;
+    }
+  }
 }
 
 export class PrivateKey implements IPrivateKey, ISigner {
@@ -24,13 +32,5 @@ export class PrivateKey implements IPrivateKey, ISigner {
 
   async sign(message: Uint8Array): Promise<Uint8Array> {
     return ed25519.sign(this.#keyPair.secretKey, message);
-  }
-}
-
-export function verifySignature(publicKey: IPublicKey, message: Uint8Array, signature: Uint8Array): boolean {
-  try {
-    return ed25519.verify(publicKey.material, message, signature);
-  } catch {
-    return false;
   }
 }

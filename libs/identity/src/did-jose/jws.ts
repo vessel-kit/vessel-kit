@@ -2,7 +2,8 @@ import * as f from 'fp-ts';
 import { ISignerIdentified } from '../private-key.interface';
 import { Base64urlCodec, decodeThrow } from '@vessel-kit/codec';
 import { extractPublicKeys, IResolver, VerificationRelation } from './resolver';
-import { verifySignature } from '../verify-signature';
+import * as _ from 'lodash';
+import { AlgorithmKind } from '../algorithm-kind';
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -35,7 +36,7 @@ const JWS_PATTERN = /^([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_-]+)$/;
 export class InvalidJWSError extends Error {}
 
 export interface JWSDecodedHeader {
-  alg: string;
+  alg: AlgorithmKind;
   kid: string;
 }
 
@@ -52,7 +53,10 @@ export function decode(jws: string): JWSDecoded {
     if (!header.alg) throw new InvalidJWSError(`Missing alg header`);
     if (!header.kid) throw new InvalidJWSError(`Missing kid header`);
     return {
-      header: header,
+      header: {
+        alg: AlgorithmKind.fromString(header.alg),
+        kid: header.kid,
+      },
       payload: bytesToJSON(decodeThrow(Base64urlCodec, match[2])),
       signature: decodeThrow(Base64urlCodec, match[3]),
     };
@@ -66,10 +70,13 @@ export async function verify(jws: string, resolver: IResolver): Promise<boolean>
   const kid = decoded.header.kid;
   const didDocument = await resolver.resolve(kid);
   if (didDocument) {
-    const publicKeys = extractPublicKeys(didDocument, VerificationRelation.authentication, kid);
+    const publicKeys = extractPublicKeys(didDocument, VerificationRelation.authentication, kid).filter(
+      (p) => p.alg === decoded.header.alg,
+    );
     const input = signingInput(decoded.payload, decoded.header);
     const message = textEncoder.encode(input);
-    return publicKeys.some((p) => verifySignature(p, message, decoded.signature));
+    const verifications = await Promise.all(publicKeys.map((p) => p.verify(message, decoded.signature)));
+    return verifications.some(_.identity);
   } else {
     return false;
   }

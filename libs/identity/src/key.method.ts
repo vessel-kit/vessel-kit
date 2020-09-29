@@ -39,7 +39,7 @@ export class SignerIdentified implements ISignerIdentified {
 export function didDocument(publicKey: IPublicKey): any {
   const id = identifier(publicKey).toString();
   const keyId = kid(publicKey);
-  switch (publicKey.kind) {
+  switch (publicKey.alg) {
     case AlgorithmKind.ES256K:
       return {
         id: id,
@@ -75,7 +75,7 @@ export function didDocument(publicKey: IPublicKey): any {
         capabilityInvocation: [keyId],
       };
     default:
-      throw new InvalidAlgorithmKindError(publicKey.kind);
+      throw new InvalidAlgorithmKindError(publicKey.alg);
   }
 }
 

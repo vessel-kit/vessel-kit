@@ -7,7 +7,7 @@ export interface IPrivateKey {
 }
 
 export interface ISigner {
-  alg: string;
+  alg: AlgorithmKind;
   sign(message: Uint8Array): Promise<Uint8Array>;
 }
 
