@@ -10,7 +10,7 @@ import {
   UnsupportedKeyEncodingError,
   VerificationRelation,
 } from '../resolver';
-import { DidUrl, DidUrlStringCodec } from '../../did-url';
+import { DidUrl } from '../../did-url';
 import { BytesUnbaseCodec, decodeThrow } from '@vessel-kit/codec';
 import * as _ from 'lodash';
 import * as ES256K from '../../algorithms/ES256K';
@@ -39,7 +39,7 @@ describe('extractPublicKeys', () => {
     const publicKey = await privateKey.publicKey();
     const didDocument = await resolver.resolve(signer.kid);
     const relation = VerificationRelation.authentication;
-    const didUrl = decodeThrow(DidUrlStringCodec, signer.kid);
+    const didUrl = decodeThrow(DidUrl.asString, signer.kid);
     const publicKeys = extractPublicKeys(didDocument, relation, didUrl.identifier.toString(), signer.alg);
     expect(publicKeys.length).toEqual(1);
     expect(publicKeys[0]).toEqual(publicKey);
@@ -49,7 +49,7 @@ describe('extractPublicKeys', () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
     const didDocument = await resolver.resolve(signer.kid);
     const relation = VerificationRelation.authentication;
-    const kid = decodeThrow(DidUrlStringCodec, signer.kid);
+    const kid = decodeThrow(DidUrl.asString, signer.kid);
     const didUrl = new DidUrl(kid.identifier, undefined, undefined, 'foo');
     const publicKeys = extractPublicKeys(didDocument, relation, didUrl.toString(), signer.alg);
     expect(publicKeys.length).toEqual(0);
@@ -59,7 +59,7 @@ describe('extractPublicKeys', () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
     const didDocument = await resolver.resolve(signer.kid);
     const relation = VerificationRelation.authentication;
-    const kid = decodeThrow(DidUrlStringCodec, signer.kid);
+    const kid = decodeThrow(DidUrl.asString, signer.kid);
     const didUrl = new DidUrl(kid.identifier, undefined, undefined, 'foo');
     const publicKeys = extractPublicKeys(didDocument, relation, didUrl.toString(), AlgorithmKind.EdDSA);
     expect(publicKeys.length).toEqual(0);

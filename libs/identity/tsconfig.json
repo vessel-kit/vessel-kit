@@ -1,8 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist/",
-    "sourceRoot": "src/"
+    "outDir": "dist/"
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "src/**/*.spec.ts", "src/**/*.test.ts"],
+  "typedocOptions": {
+    "mode": "library",
+    "out": "docs",
+    "exclude": "**/*+(.spec|.test|.e2e).ts"
+  }
 }

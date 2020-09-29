@@ -2,7 +2,7 @@ import { IPrivateKey, ISigner } from './private-key.interface';
 import { IIdentity } from './identity.interface';
 import { Identifier } from './identifier';
 import * as keyMethod from './key.method';
-import * as jws from './did-jose/jws';
+import * as jws from './jose/jws';
 
 export class KeyIdentity implements IIdentity {
   #privateKey: IPrivateKey & ISigner;

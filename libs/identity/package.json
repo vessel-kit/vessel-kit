@@ -9,7 +9,9 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "lint": "prettier --check src/",
-    "lint:fix": "prettier --write src/"
+    "lint:fix": "prettier --write src/",
+    "doc": "../../node_modules/.bin/typedoc --tsconfig tsconfig.json src/",
+    "doc:prev": "../../node_modules/.bin/typedoc --out docs --tsconfig tsconfig.json src/"
   },
   "dependencies": {
     "@stablelib/bytes": "^1.0.0",

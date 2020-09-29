@@ -2,7 +2,7 @@ import '@relmify/jest-fp-ts';
 import faker from 'faker';
 import util from 'util';
 import { Identifier } from '../identifier';
-import { DidUrl, DidUrlStringCodec } from '../did-url';
+import { DidUrl } from '../did-url';
 
 const method = faker.internet.domainWord();
 const id = faker.internet.domainWord();
@@ -30,60 +30,60 @@ describe('DidUrl', () => {
   });
 });
 
-describe('DidUrlStringCodec', () => {
+describe('DidUrl.asString', () => {
   test('is', () => {
-    expect(DidUrlStringCodec.is(url)).toBeTruthy();
+    expect(DidUrl.asString.is(url)).toBeTruthy();
   });
   describe('encode', () => {
     test('just identifier', () => {
       const url = new DidUrl(identifier);
-      expect(DidUrlStringCodec.encode(url)).toEqual(identifier.toString());
+      expect(DidUrl.asString.encode(url)).toEqual(identifier.toString());
     });
     test('with path', () => {
       const url = new DidUrl(identifier, path);
       const expected = `${identifier}${path}`;
-      expect(DidUrlStringCodec.encode(url)).toEqual(expected);
+      expect(DidUrl.asString.encode(url)).toEqual(expected);
     });
     test('with query', () => {
       const url = new DidUrl(identifier, path, query);
       const queryString = Object.entries(query).map(([k, v]) => `${k}=${v}`);
       const expected = `${identifier}${path}?${queryString}`;
-      expect(DidUrlStringCodec.encode(url)).toEqual(expected);
+      expect(DidUrl.asString.encode(url)).toEqual(expected);
     });
     test('with fragment', () => {
       const url = new DidUrl(identifier, path, query, fragment);
       const queryString = Object.entries(query).map(([k, v]) => `${k}=${v}`);
       const expected = `${identifier}${path}?${queryString}#${fragment}`;
-      expect(DidUrlStringCodec.encode(url)).toEqual(expected);
+      expect(DidUrl.asString.encode(url)).toEqual(expected);
     });
   });
   describe('decode', () => {
     test('just identifier', () => {
       const url = new DidUrl(identifier);
-      const decoded = DidUrlStringCodec.decode(DidUrlStringCodec.encode(url));
+      const decoded = DidUrl.asString.decode(DidUrl.asString.encode(url));
       expect(decoded).toBeRight();
       expect(decoded).toEqualRight(url);
     });
     test('with path', () => {
       const url = new DidUrl(identifier, path);
-      const decoded = DidUrlStringCodec.decode(DidUrlStringCodec.encode(url));
+      const decoded = DidUrl.asString.decode(DidUrl.asString.encode(url));
       expect(decoded).toBeRight();
       expect(decoded).toEqualRight(url);
     });
     test('with query', () => {
       const url = new DidUrl(identifier, path, query);
-      const decoded = DidUrlStringCodec.decode(DidUrlStringCodec.encode(url));
+      const decoded = DidUrl.asString.decode(DidUrl.asString.encode(url));
       expect(decoded).toBeRight();
       expect(decoded).toEqualRight(url);
     });
     test('with fragment', () => {
       const url = new DidUrl(identifier, path, query, fragment);
-      const decoded = DidUrlStringCodec.decode(DidUrlStringCodec.encode(url));
+      const decoded = DidUrl.asString.decode(DidUrl.asString.encode(url));
       expect(decoded).toBeRight();
       expect(decoded).toEqualRight(url);
     });
     test('garbage', () => {
-      const decoded = DidUrlStringCodec.decode('did:garbage');
+      const decoded = DidUrl.asString.decode('did:garbage');
       expect(decoded).toBeLeft();
     });
   });

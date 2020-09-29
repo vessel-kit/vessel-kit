@@ -4,16 +4,18 @@ importers:
       '@types/jest': 26.0.13
       jest: 26.4.2
       prettier: 2.1.1
-      ts-jest: 26.3.0_jest@26.4.2+typescript@4.0.2
-      ts-node: 9.0.0_typescript@4.0.2
-      typescript: 4.0.2
+      ts-jest: 26.3.0_jest@26.4.2+typescript@4.0.3
+      ts-node: 9.0.0_typescript@4.0.3
+      typedoc: 0.17.0-3_typescript@4.0.3
+      typescript: 4.0.3
     specifiers:
       '@types/jest': ^26.0.13
       jest: ^26.4.2
       prettier: ^2.1.1
       ts-jest: ^26.3.0
       ts-node: ^9.0.0
-      typescript: ^4.0.2
+      typedoc: 0.17.0-3
+      typescript: ^4.0.3
   apps/anchoring-api:
     dependencies:
       '@nestjs/common': 7.4.4_0c773f197e7bb0df0bedc332ad8bc35d
@@ -3713,8 +3715,6 @@ packages:
     resolution:
       integrity: sha512-Jus9s4CDbqwocc5pOAnh8ShfrnMcPHuJYzVcSUU7lrh8Ni5HuIqX3oilL86p3dlTrk0LzHRCgA/GQ7uNCw6l2Q==
   /@types/minimatch/3.0.3:
-    dev: false
-    optional: true
     resolution:
       integrity: sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
   /@types/node-fetch/2.5.4:
@@ -3922,6 +3922,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-xhWwTGZEc51U9nzyVa4yTkfo+O3dIOocobmiPL4ouMBsj06z6sJFTZlihTsOsUh38bAO78tx1AHSFyAXDC1blA==
+      tarball: '@ukstv/ses/-/ses-0.10.3.tgz'
   /@webassemblyjs/ast/1.9.0:
     dependencies:
       '@webassemblyjs/helper-module-context': 1.9.0
@@ -4922,6 +4923,12 @@ packages:
       '@babel/core': ^7.0.0
     resolution:
       integrity: sha512-5WPdf7nyYi2/eRxCbVrE1kKCWxgWY4RsPEbdJWFm7QsesFGqjdkyLeu1zRkwM1cxK6EPIlNd6d2AxLk7J+t4pw==
+  /backbone/1.4.0:
+    dependencies:
+      underscore: 1.11.0
+    dev: true
+    resolution:
+      integrity: sha512-RLmDrRXkVdouTg38jcgHhyQ/2zjg7a8E6sz2zxfz21Hh17xDJYUHBZimVIt5fUyS8vbfpeSmTL3gUjTEvUV3qQ==
   /backo2/1.0.2:
     dev: false
     resolution:
@@ -8229,6 +8236,20 @@ packages:
       npm: '>=6.0.0'
     resolution:
       integrity: sha512-jDk8N1U8qprvSt3KopOrrP46zUogxeZY+znDHP196MLBQKldld0TQFTneT1bxOFDw8vttbAQy1bG7L3/pzYorg==
+  /handlebars/4.7.6:
+    dependencies:
+      minimist: 1.2.5
+      neo-async: 2.6.2
+      source-map: 0.6.1
+      wordwrap: 1.0.0
+    dev: true
+    engines:
+      node: '>=0.4.7'
+    hasBin: true
+    optionalDependencies:
+      uglify-js: 3.11.0
+    resolution:
+      integrity: sha512-1f2BACcBfiwAfStCKZNrUCgqNZkGsAT7UM3kkYtXuLo0KnaVfjKOyf7PRzB6++aK9STyT1Pd2ZCPe3EGOXleXA==
   /hapi-pino/8.3.0:
     dependencies:
       '@hapi/hoek': 9.1.0
@@ -8373,7 +8394,6 @@ packages:
     resolution:
       integrity: sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
   /highlight.js/9.18.3:
-    dev: false
     resolution:
       integrity: sha512-zBZAmhSupHIl5sITeMqIJnYCDfAEc3Gdkqj65wC1lpI468MMQeeQkhcIAvk+RylAkxrCcI9xy9piHiXeQ1BdzQ==
   /hmac-drbg/1.0.1:
@@ -8695,6 +8715,7 @@ packages:
     resolution:
       integrity: sha512-JG3eIAj5V9CwcGvuOmoo6LB9kbAYT8HXffUl6memuszlwDC/qvFAJw49XJ5NROSFNPxp3iQg1GqkFhaY/CR0IA==
   /interface-datastore/2.0.0:
+    bundledDependencies: []
     dependencies:
       class-is: 1.1.0
       err-code: 2.0.3
@@ -10410,6 +10431,10 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-YqvUxoOcVPnCp0VU1/56f+iKSdvIRJYPznH22BdXV3xMk75SFXhWeJkZ8C9XxUWt1b5x2X1SxuFygW1U0FmkEQ==
+  /jquery/3.5.1:
+    dev: true
+    resolution:
+      integrity: sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==
   /js-sha256/0.9.0:
     dev: false
     resolution:
@@ -10567,6 +10592,7 @@ packages:
     resolution:
       integrity: sha512-KXPvOm8K9IJKFM0bmdn8QXh7udDh1g/giieX0NLCaMnb4hEiVFqnop2ImTXCc5e0/oHz3LTqmHGtExn5hfMkOA==
   /jsondiffpatch/0.4.1:
+    bundledDependencies: []
     dependencies:
       chalk: 2.4.2
       diff-match-patch: 1.0.5
@@ -11481,6 +11507,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-81ypHEk/e3PaDgdJUwTxezH4fuU=
+  /lunr/2.3.9:
+    dev: true
+    resolution:
+      integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==
   /luxon/1.25.0:
     dev: false
     resolution:
@@ -11563,6 +11593,13 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
+  /marked/0.8.2:
+    dev: true
+    engines:
+      node: '>= 8.16.2'
+    hasBin: true
+    resolution:
+      integrity: sha512-EGwzEeCcLniFX51DhTpmTom+dSA/MG/OBUDjnWtHbEnjAH180VzUeAw+oE4+Zv+CoYBWyRlYOTR0N8SO9R1PVw==
   /md5.js/1.3.5:
     dependencies:
       hash-base: 3.1.0
@@ -13813,7 +13850,6 @@ packages:
     resolution:
       integrity: sha1-czIwDoQBYb2j5podHZGn1LwW8YI=
   /progress/2.0.3:
-    dev: false
     engines:
       node: '>=0.4.0'
     resolution:
@@ -16030,7 +16066,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-uEtWkFM/sdZvRNNDL3Ehu4WVpwaulhwQszV8mrtcdeE8nN00BV9mAmQ88RkrBhFgl9gMgvjJLAQcZbnPXI9mlA==
-  /ts-jest/26.3.0_jest@26.4.2+typescript@4.0.2:
+  /ts-jest/26.3.0_jest@26.4.2+typescript@4.0.3:
     dependencies:
       '@types/jest': 26.0.13
       bs-logger: 0.2.6
@@ -16043,7 +16079,7 @@ packages:
       make-error: 1.3.6
       mkdirp: 1.0.4
       semver: 7.3.2
-      typescript: 4.0.2
+      typescript: 4.0.3
       yargs-parser: 18.1.3
     dev: true
     engines:
@@ -16063,13 +16099,13 @@ packages:
     optional: true
     resolution:
       integrity: sha512-BUKSoz7AFSKPcYTZODbICW2mOthAN4vc5juD6FL1lD/dLwZ0WvrC3zqBM3/X6f5gHxq3yaz+HmanHGaWm0ddbQ==
-  /ts-node/9.0.0_typescript@4.0.2:
+  /ts-node/9.0.0_typescript@4.0.3:
     dependencies:
       arg: 4.1.3
       diff: 4.0.2
       make-error: 1.3.6
       source-map-support: 0.5.19
-      typescript: 4.0.2
+      typescript: 4.0.3
       yn: 3.1.1
     dev: true
     engines:
@@ -16198,6 +16234,38 @@ packages:
   /typedarray/0.0.6:
     resolution:
       integrity: sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+  /typedoc-default-themes/0.8.0-0:
+    dependencies:
+      backbone: 1.4.0
+      jquery: 3.5.1
+      lunr: 2.3.9
+      underscore: 1.11.0
+    dev: true
+    engines:
+      node: '>= 8'
+    resolution:
+      integrity: sha512-blFWppm5aKnaPOa1tpGO9MLu+njxq7P3rtkXK4QxJBNszA+Jg7x0b+Qx0liXU1acErur6r/iZdrwxp5DUFdSXw==
+  /typedoc/0.17.0-3_typescript@4.0.3:
+    dependencies:
+      '@types/minimatch': 3.0.3
+      fs-extra: 8.1.0
+      handlebars: 4.7.6
+      highlight.js: 9.18.3
+      lodash: 4.17.20
+      marked: 0.8.2
+      minimatch: 3.0.4
+      progress: 2.0.3
+      shelljs: 0.8.4
+      typedoc-default-themes: 0.8.0-0
+      typescript: 4.0.3
+    dev: true
+    engines:
+      node: '>= 8.0.0'
+    hasBin: true
+    peerDependencies:
+      typescript: '>=3.7'
+    resolution:
+      integrity: sha512-DO2djkR4NHgzAWfNbJb2eQKsFMs+gOuYBXlQ8dOSCjkAK5DRI7ZywDufBGPUw7Ue9Qwi2Cw1DxLd3reDq8wFuQ==
   /typeforce/1.18.0:
     dev: false
     resolution:
@@ -16229,19 +16297,27 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
-  /typescript/4.0.2:
+  /typescript/4.0.3:
     dev: true
     engines:
       node: '>=4.2.0'
     hasBin: true
     resolution:
-      integrity: sha512-e4ERvRV2wb+rRZ/IQeb3jm2VxBsirQLpQhdxplZ2MEzGvDkkMmPglecnNDfSUBivMjP93vRbngYYDQqQ/78bcQ==
+      integrity: sha512-tEu6DGxGgRJPb/mVPIZ48e69xCn2yRmCgYmDugAVwmJ6o+0u1RI18eO7E7WBTLYLaEVVOhwQmcdhQHweux/WPg==
   /typical/6.0.1:
     dev: false
     engines:
       node: '>=10'
     resolution:
       integrity: sha512-+g3NEp7fJLe9DPa1TArHm9QAA7YciZmWnfAqEaFrBihQ7epOv9i99rjtgb6Iz0wh3WuQDjsCTDfgRoGnmHN81A==
+  /uglify-js/3.11.0:
+    dev: true
+    engines:
+      node: '>=0.8.0'
+    hasBin: true
+    optional: true
+    resolution:
+      integrity: sha512-e1KQFRCpOxnrJsJVqDUCjURq+wXvIn7cK2sRAx9XL3HYLL9aezOP4Pb1+Y3/o693EPk111Yj2Q+IUXxcpHlygQ==
   /uint8arrays/1.0.0:
     dependencies:
       multibase: 3.0.0
@@ -16261,6 +16337,10 @@ packages:
     optional: true
     resolution:
       integrity: sha1-5z3T17DXxe2G+6xrCufYxqadUPo=
+  /underscore/1.11.0:
+    dev: true
+    resolution:
+      integrity: sha512-xY96SsN3NA461qIRKZ/+qox37YXPtSBswMGfiNptr+wrt6ds4HaMw23TP612fEyGekRE6LNRiLYr/aqbHXNedw==
   /unicode-canonical-property-names-ecmascript/1.0.4:
     dev: false
     engines:
@@ -16817,6 +16897,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
+  /wordwrap/1.0.0:
+    dev: true
+    resolution:
+      integrity: sha1-J1hIEIkUVqQXHI0CJkQa3pDLyus=
   /worker-farm/1.7.0:
     dependencies:
       errno: 0.1.7

@@ -2,7 +2,7 @@ import * as didResolver from 'did-resolver';
 import { BytesUnbaseCodec, decodeThrow } from '@vessel-kit/codec';
 import * as ES256K from '../algorithms/ES256K';
 import * as Ed25519 from '../algorithms/EdDSA';
-import { DidUrlStringCodec } from '../did-url';
+import { DidUrl } from '../did-url';
 import { AlgorithmKind } from '../algorithm-kind';
 import { IPublicKey } from '../public-key.interface';
 
@@ -58,7 +58,7 @@ const isRelationProper = (didDocument: didResolver.DIDDocument, relation: Verifi
 };
 
 const isKidProper = (kid: string) => (publicKey: didResolver.PublicKey) => {
-  const didUrl = decodeThrow(DidUrlStringCodec, kid);
+  const didUrl = decodeThrow(DidUrl.asString, kid);
   if (didUrl.fragment) {
     return publicKey.id === kid;
   } else {

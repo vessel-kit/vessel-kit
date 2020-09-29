@@ -1,7 +1,7 @@
 import { PrivateKeyFactory } from '../private-key.factory';
 import { AlgorithmKind } from '../algorithm-kind';
 import { KeyIdentity } from '../key-identity';
-import * as jws from '../did-jose/jws';
+import * as jws from '../jose/jws';
 import { Resolver } from 'did-resolver';
 import * as keyMethod from '../key.method';
 
