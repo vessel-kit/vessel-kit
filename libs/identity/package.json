@@ -1,5 +1,6 @@
 {
   "name": "@vessel-kit/identity",
+  "description": "Identity layer for VesselKit",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "version": "1.0.0-a.0",
@@ -10,8 +11,8 @@
     "coverage": "jest --coverage",
     "lint": "prettier --check src/",
     "lint:fix": "prettier --write src/",
-    "doc": "../../node_modules/.bin/typedoc --tsconfig tsconfig.json src/",
-    "doc:prev": "../../node_modules/.bin/typedoc --out docs --tsconfig tsconfig.json src/"
+    "doc": "../../node_modules/.bin/typedoc tsconfig.json src/",
+    "doc:watch": "onchange 'src/**/*.ts' -- typedoc tsconfig.json src/"
   },
   "dependencies": {
     "@stablelib/bytes": "^1.0.0",

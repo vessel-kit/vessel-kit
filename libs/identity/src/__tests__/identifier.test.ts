@@ -1,7 +1,7 @@
 import '@relmify/jest-fp-ts';
 import * as faker from 'faker';
 import * as util from 'util';
-import { Identifier, IdentifierStringCodec } from '../identifier';
+import { Identifier } from '../identifier';
 
 const method = faker.internet.domainWord();
 const id = faker.internet.domainWord();
@@ -20,30 +20,30 @@ describe('Identifier', () => {
   });
 });
 
-describe('IdentifierStringCodec', () => {
-  const asString = IdentifierStringCodec.encode(identifier);
+describe('Identifier.asString', () => {
+  const asString = Identifier.asString.encode(identifier);
   test('encode', () => {
     expect(asString).toEqual(`did:${method}:${id}`);
   });
   describe('decode', () => {
     test('ok', () => {
-      const decoded = IdentifierStringCodec.decode(asString);
+      const decoded = Identifier.asString.decode(asString);
       expect(decoded).toBeRight();
       expect(decoded).toEqualRight(identifier);
     });
     test('not: just string', () => {
-      expect(IdentifierStringCodec.decode(faker.random.word())).toBeLeft();
+      expect(Identifier.asString.decode(faker.random.word())).toBeLeft();
     });
     test('not: just method', () => {
       const nonDID = `did:${faker.random.word()}`;
-      expect(IdentifierStringCodec.decode(nonDID)).toBeLeft();
+      expect(Identifier.asString.decode(nonDID)).toBeLeft();
     });
     test('not: with query', () => {
       const nonDID = `did:${faker.random.word()}:${faker.random.word()}?version=33`;
-      expect(IdentifierStringCodec.decode(nonDID)).toBeLeft();
+      expect(Identifier.asString.decode(nonDID)).toBeLeft();
     });
   });
   test('is', () => {
-    expect(IdentifierStringCodec.is(identifier)).toBeTruthy();
+    expect(Identifier.asString.is(identifier)).toBeTruthy();
   });
 });

@@ -1,0 +1,7 @@
+SPDXVersion: SPDX-2.1
+DataLicense: CC0-1.0
+PackageName: @vessel-kit/identity
+PackageOriginator: Person: Sergey Ukustov (<sergey@ukstv.me>)
+PackageHomePage: https://github.com/vessel-kit/vessel-kit/tree/master/libs/identity
+PackageLicenseDeclared: (MIT OR Apache-2.0)
+PackageCopyrightText: Copyright 2020 Sergey Ukustov

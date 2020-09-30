@@ -1,10 +1,13 @@
 import { IPrivateKey, ISigner } from './private-key.interface';
-import { IIdentity } from './identity.interface';
+import { IIdentitySigning } from './identity.interface';
 import { Identifier } from './identifier';
 import * as keyMethod from './key.method';
 import * as jws from './jose/jws';
 
-export class KeyIdentity implements IIdentity {
+/**
+ * Instance of [[IIdentity]] built on local private key.
+ */
+export class KeyIdentity implements IIdentitySigning {
   #privateKey: IPrivateKey & ISigner;
 
   constructor(privateKey: IPrivateKey & ISigner) {

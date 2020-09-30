@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`encode ES256K 1`] = `"zQ3shkAX9qxg2DUj3gd9tv7fmbJAuZSnr6W5ELTJJc1uUfNsf"`;
-
-exports[`encode Ed25519 1`] = `"z6LSqVDApMd14pj9gYfNFR6hSBnziMgxePPq8mzoWQHkFfBM"`;

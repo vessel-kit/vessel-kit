@@ -1,5 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`PublicKeyStringCodec encode ES256K 1`] = `"zQ3shkAX9qxg2DUj3gd9tv7fmbJAuZSnr6W5ELTJJc1uUfNsf"`;
+
+exports[`PublicKeyStringCodec encode Ed25519 1`] = `"z6LSqVDApMd14pj9gYfNFR6hSBnziMgxePPq8mzoWQHkFfBM"`;
+
 exports[`resolver resolve ES256K key 1`] = `
 Object {
   "@context": "https://w3id.org/did/v1",

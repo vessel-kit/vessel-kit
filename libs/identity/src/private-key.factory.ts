@@ -7,8 +7,29 @@ import { IPrivateKey } from './private-key.interface';
 
 const encoder = new TextEncoder();
 
+/**
+ * Build instance of {@link IPrivateKey} for one of the supported algorithms.
+ */
 export class PrivateKeyFactory {
+  /**
+   * Create ES256K private key.
+   *
+   * @example
+   * ```ts
+   * const privateKeyFactory = new PrivateKeyFactory();
+   * const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, 'seed');
+   * ```
+   */
   fromSeed(kind: AlgorithmKind.ES256K, seed: Uint8Array | string): ES256K.PrivateKey;
+  /**
+   * Create EdDSA private key.
+   *
+   * @example
+   * ```ts
+   * const privateKeyFactory = new PrivateKeyFactory();
+   * const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.EdDSA, 'seed');
+   * ```
+   */
   fromSeed(kind: AlgorithmKind.EdDSA, seed: Uint8Array | string): EdDSA.PrivateKey;
   fromSeed(kind: AlgorithmKind, seed: Uint8Array | string): IPrivateKey {
     const bytes = typeof seed === 'string' ? encoder.encode(seed) : seed;
