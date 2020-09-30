@@ -11,9 +11,9 @@ apps/*/dist/
 apps/*/coverage/
 apps/anchoring-ui/.next/
 apps/anchoring-ui/next-env.d.ts
-libs/*/dist/
-libs/*/coverage/
-libs/*/docs/
+lib/*/dist/
+lib/*/coverage/
+lib/*/docs/
 
 # Globals
 coverage/

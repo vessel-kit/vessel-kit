@@ -28,9 +28,9 @@ importers:
       '@nestjs/swagger': 4.6.0_281727a5691a66131a944bba9a99415f
       '@nestjs/terminus': 7.0.1_6d11ab0b190de919f62eb58a0b1fc0ad
       '@nestjs/typeorm': 7.1.4_887afab1fa3a94e0c82471b852d1a0f5
-      '@vessel-kit/anchoring': 'link:../../libs/anchoring'
-      '@vessel-kit/blockchain-connection-string': 'link:../../libs/blockchain-connection-string'
-      '@vessel-kit/codec': 'link:../../libs/codec'
+      '@vessel-kit/anchoring': 'link:../../lib/anchoring'
+      '@vessel-kit/blockchain-connection-string': 'link:../../lib/blockchain-connection-string'
+      '@vessel-kit/codec': 'link:../../lib/codec'
       apollo-server-express: 2.17.0_graphql@14.7.0
       cids: 1.0.0
       class-transformer: 0.3.1
@@ -98,7 +98,7 @@ importers:
       '@emotion/core': 10.0.35_react@16.13.1
       '@emotion/styled': 10.0.27_4d699cf7e8a2bf97a506a18e2a399a54
       '@theme-ui/core': 0.3.1_react@16.13.1
-      '@vessel-kit/ui-shared': 'link:../../libs/ui-shared'
+      '@vessel-kit/ui-shared': 'link:../../lib/ui-shared'
       carbon-components: 10.19.0
       carbon-components-react: 7.19.0_c4ab44a8f0e776a8609726a63830dd84
       carbon-icons: 7.0.7
@@ -131,10 +131,10 @@ importers:
       '@nestjs/terminus': 7.0.1_a073563eda6e2cb33ae79215800d4b16
       '@nestjs/typeorm': 7.1.4_af6199f97a96ebeba7ae3114d4d13d04
       '@nestjs/websockets': 7.4.4_a073563eda6e2cb33ae79215800d4b16
-      '@vessel-kit/anchoring': 'link:../../libs/anchoring'
-      '@vessel-kit/blockchain-connection-string': 'link:../../libs/blockchain-connection-string'
-      '@vessel-kit/codec': 'link:../../libs/codec'
-      '@vessel-kit/vessel': 'link:../../libs/vessel'
+      '@vessel-kit/anchoring': 'link:../../lib/anchoring'
+      '@vessel-kit/blockchain-connection-string': 'link:../../lib/blockchain-connection-string'
+      '@vessel-kit/codec': 'link:../../lib/codec'
+      '@vessel-kit/vessel': 'link:../../lib/vessel'
       cids: 1.0.0
       dotenv: 8.2.0
       fp-ts: 2.8.2
@@ -177,7 +177,7 @@ importers:
       '@emotion/core': 10.0.35_react@16.13.1
       '@emotion/styled': 10.0.27_4d699cf7e8a2bf97a506a18e2a399a54
       '@theme-ui/core': 0.3.1_react@16.13.1
-      '@vessel-kit/ui-shared': 'link:../../libs/ui-shared'
+      '@vessel-kit/ui-shared': 'link:../../lib/ui-shared'
       carbon-components: 10.19.0
       carbon-components-react: 7.19.0_c4ab44a8f0e776a8609726a63830dd84
       carbon-icons: 7.0.7
@@ -206,7 +206,7 @@ importers:
       socket.io-client: ^2.3.0
       swr: ^0.3.2
       theme-ui: ^0.3.1
-  libs/anchoring:
+  lib/anchoring:
     dependencies:
       '@stablelib/hex': 1.0.0
       '@vessel-kit/blockchain-connection-string': 'link:../blockchain-connection-string'
@@ -241,9 +241,9 @@ importers:
       multihashes: ^3.0.1
       rxjs: ^6.6.3
       uuid: ^8.3.0
-  libs/blockchain-connection-string:
+  lib/blockchain-connection-string:
     specifiers: {}
-  libs/codec:
+  lib/codec:
     dependencies:
       cids: 1.0.0
       fp-ts: 2.8.2
@@ -261,7 +261,7 @@ importers:
       io-ts: ^2.2.10
       multibase: ^3.0.0
       multicodec: ^2.0.1
-  libs/identity:
+  lib/identity:
     dependencies:
       '@stablelib/bytes': 1.0.0
       '@stablelib/ed25519': 1.0.1
@@ -301,7 +301,7 @@ importers:
       lodash: ^4.17.20
       multicodec: ^2.0.1
       query-string: ^6.13.2
-  libs/ui-shared:
+  lib/ui-shared:
     dependencies:
       '@carbon/icons-react': 10.17.0
       '@emotion/core': 10.0.35_react@16.13.1
@@ -333,7 +333,7 @@ importers:
       react: 16.13.1
       react-dom: 16.13.1
       theme-ui: ^0.3.1
-  libs/vessel:
+  lib/vessel:
     dependencies:
       '@ethersproject/hdnode': 5.0.4
       '@ethersproject/providers': 5.0.8
@@ -3537,13 +3537,13 @@ packages:
       integrity: sha512-8w9szzKs14ZtBVuP6Wn7nMLRJ0D6dfB0VEBEyRgxrZ/Ln49aNMykrghM2FaNn4FJRzNppCSa0Rv9pBRM5Xc3wg==
   /@types/bl/2.1.0:
     dependencies:
-      '@types/node': 14.10.1
+      '@types/node': 14.11.2
     dev: false
     resolution:
       integrity: sha512-1TdA9IXOy4sdqn8vgieQ6GZAiHiPNrOiO1s2GJjuYPw4QVY7gYoVjkW049avj33Ez7IcIvu43hQsMsoUFbCn2g==
   /@types/bn.js/4.11.6:
     dependencies:
-      '@types/node': 14.10.3
+      '@types/node': 14.11.2
     resolution:
       integrity: sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
   /@types/body-parser/1.19.0:
@@ -3756,9 +3756,6 @@ packages:
   /@types/node/14.10.1:
     resolution:
       integrity: sha512-aYNbO+FZ/3KGeQCEkNhHFRIzBOUgc7QvcVNKXbfnhDkSfwUv91JsQQa10rDgKSTSLkXZ1UIyPe4FJJNVgw1xWQ==
-  /@types/node/14.10.3:
-    resolution:
-      integrity: sha512-zdN0hor7TLkjAdKTnYW+Y22oIhUUpil5ZD1V1OFq0CR0CLKw+NdR6dkziTfkWRLo6sKzisayoj/GNpNbe4LY9Q==
   /@types/node/14.11.2:
     resolution:
       integrity: sha512-jiE3QIxJ8JLNcb1Ps6rDbysDhN4xa8DJJvuC9prr6w+1tIh+QAbYyNF3tyiZNLDBIuBCf4KEcV2UvQm/V60xfA==
@@ -3771,7 +3768,7 @@ packages:
       integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
   /@types/pbkdf2/3.1.0:
     dependencies:
-      '@types/node': 14.10.1
+      '@types/node': 14.11.2
     dev: false
     resolution:
       integrity: sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ==
@@ -3804,7 +3801,7 @@ packages:
       integrity: sha512-DtLFjSj0OYAdVLBbyjhuV9CdGVHCkHn2R+xr3XkBvK2rS1Y1tkc14XSGjYgm5Fjjr90AxH9tiSzc1pCFMGO06g==
   /@types/secp256k1/4.0.1:
     dependencies:
-      '@types/node': 14.10.3
+      '@types/node': 14.11.2
     dev: false
     resolution:
       integrity: sha512-+ZjSA8ELlOp8SlKi0YLB2tz9d5iPNEmOBd+8Rz21wTMdaXQIa9b6TEnD6l5qKOCypE7FSyPyck12qZJxSDNoog==
@@ -3932,7 +3929,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-xhWwTGZEc51U9nzyVa4yTkfo+O3dIOocobmiPL4ouMBsj06z6sJFTZlihTsOsUh38bAO78tx1AHSFyAXDC1blA==
-      tarball: '@ukstv/ses/-/ses-0.10.3.tgz'
   /@webassemblyjs/ast/1.9.0:
     dependencies:
       '@webassemblyjs/helper-module-context': 1.9.0
@@ -8731,7 +8727,6 @@ packages:
     resolution:
       integrity: sha512-JG3eIAj5V9CwcGvuOmoo6LB9kbAYT8HXffUl6memuszlwDC/qvFAJw49XJ5NROSFNPxp3iQg1GqkFhaY/CR0IA==
   /interface-datastore/2.0.0:
-    bundledDependencies: []
     dependencies:
       class-is: 1.1.0
       err-code: 2.0.3
@@ -10608,7 +10603,6 @@ packages:
     resolution:
       integrity: sha512-KXPvOm8K9IJKFM0bmdn8QXh7udDh1g/giieX0NLCaMnb4hEiVFqnop2ImTXCc5e0/oHz3LTqmHGtExn5hfMkOA==
   /jsondiffpatch/0.4.1:
-    bundledDependencies: []
     dependencies:
       chalk: 2.4.2
       diff-match-patch: 1.0.5
@@ -10757,7 +10751,7 @@ packages:
     dependencies:
       inherits: 2.0.4
       level-errors: 1.0.5
-      readable-stream: 1.0.34
+      readable-stream: 1.1.14
       xtend: 4.0.2
     dev: false
     resolution:

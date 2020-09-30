@@ -60,7 +60,7 @@ with state transitions, document lifecycle or semantics of document state to ret
 
 ## Current Status
 
-Consider this a research project. To have a peek on full Vessel document lifecycle go to [post-vessel-tile-remote.ts](./libs/vessel/src/integration/post-vessel-tile-remote.ts).
+Consider this a research project. To have a peek on full Vessel document lifecycle go to [post-vessel-tile-remote.ts](lib/vessel/src/integration/post-vessel-tile-remote.ts).
 To run it:
 1. start necessary infra (two IPFS nodes) by docker-compose: `docker-compose up`,
 2. install dependencies: `pnpm install`
