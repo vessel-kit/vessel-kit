@@ -1,9 +1,9 @@
 {
   "name": "@vessel-kit/codec",
-  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "version": "1.0.0-a.0",
+  "license": "(MIT OR Apache-2.0)",
   "scripts": {
     "build": "tsc -p .",
     "dev": "tsc -p . --watch",
