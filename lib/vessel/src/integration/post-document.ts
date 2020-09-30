@@ -4,8 +4,7 @@ import { ThreeIdContent } from '../three-id.content';
 import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
-import { ThreeIdentifier } from '../three-identifier';
-import { decodeThrow } from '@vessel-kit/codec';
+import { Identifier } from '@vessel-kit/identity';
 
 const IPFS_URL = 'http://localhost:5001';
 const ipfs = ipfsClient(IPFS_URL);
@@ -52,7 +51,7 @@ async function main() {
   const document = await vessel.create(genesisRecord);
   console.log('Present state', document);
   console.log('Waiting some time for anchoring...');
-  await sleep(61000)
+  await sleep(61000);
   console.log(`Present state`, document);
   const doc2 = doc1.clone();
   doc2.publicKeys.set('foocryption', signingKey);
@@ -67,8 +66,7 @@ async function main() {
     prev: { '/': document.log.last.toString() },
     id: { '/': document.id.valueOf() },
   });
-  const did = decodeThrow(ThreeIdentifier, `did:3:${document.id.valueOf()}`);
-  await user.did(did);
+  await user.did(new Identifier('3', document.id.valueOf()));
   const a = await user.sign(updateRecordToSign, { useMgmt: true });
   const updateRecordA = {
     ...updateRecord,
@@ -77,10 +75,10 @@ async function main() {
     signature: a.signature,
   };
   await document.update(updateRecordA);
-  console.log('Sleeping for 20 seconds...')
+  console.log('Sleeping for 20 seconds...');
   await sleep(20000);
-  console.log('slept')
-  vessel.close()
+  console.log('slept');
+  vessel.close();
 }
 
 main();

@@ -8,9 +8,9 @@ import { JWKMulticodecCodec } from './jwk.multicodec.codec';
 import { decodeThrow } from '@vessel-kit/codec';
 import { JWTPayload } from './jwt-payload';
 import { ISignor } from './signor.interface';
-import { ThreeIdentifier } from '../three-identifier';
 import { sortKeys } from '../util/sort-keys';
 import * as hex from '@stablelib/hex';
+import { Identifier } from "@vessel-kit/identity";
 
 function secp256k1PubKeyFromCompressed(compressedHex: string) {
   const publicKey = ethers.utils.computePublicKey('0x' + compressedHex.replace('0x', ''));
@@ -31,7 +31,7 @@ export class EmptyDIDSigningError extends Error {}
 export class User implements ISignor {
   readonly #identityProvider: IdentityProviderWrap;
   #publicKeys: Record<string, jose.JWK.Key>;
-  #did?: ThreeIdentifier;
+  #did?: Identifier;
 
   constructor(identityProvider: IProvider) {
     this.#identityProvider = new IdentityProviderWrap(identityProvider);
@@ -42,7 +42,7 @@ export class User implements ISignor {
     return this.#publicKeys;
   }
 
-  async did(value?: ThreeIdentifier): Promise<ThreeIdentifier | undefined> {
+  async did(value?: Identifier): Promise<Identifier | undefined> {
     if (value) {
       this.#did = value;
     }

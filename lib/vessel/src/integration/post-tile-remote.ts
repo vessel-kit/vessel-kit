@@ -17,8 +17,9 @@ async function main() {
   if (!did) {
     throw new Error(`Empty DID`)
   }
+  console.log('foo', did.toString())
   const tile = await Tile.create(client.create, client.context, {
-    owners: [did],
+    owners: [did.toString()],
     content: {},
   });
   tile.document.state$.subscribe((state) => {

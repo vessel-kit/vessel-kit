@@ -27,7 +27,7 @@ async function main() {
     throw new Error(`Empty DID`);
   }
   const tile = await Tile.create(clientA.create, clientA.context, {
-    owners: [didA, didB],
+    owners: [didA.toString(), didB.toString()],
     content: {},
   });
   await sleep(61000);

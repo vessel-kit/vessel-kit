@@ -346,6 +346,7 @@ importers:
       '@vessel-kit/anchoring': 'link:../anchoring'
       '@vessel-kit/blockchain-connection-string': 'link:../blockchain-connection-string'
       '@vessel-kit/codec': 'link:../codec'
+      '@vessel-kit/identity': 'link:../identity'
       ajv: 6.12.5
       ajv-merge-patch: 4.1.0_ajv@6.12.5
       axios: 0.20.0
@@ -383,6 +384,7 @@ importers:
       '@vessel-kit/anchoring': 'workspace:*'
       '@vessel-kit/blockchain-connection-string': 'workspace:*'
       '@vessel-kit/codec': 'workspace:*'
+      '@vessel-kit/identity': 'workspace:*'
       ajv: ^6.12.5
       ajv-merge-patch: ^4.1.0
       axios: ^0.20.0

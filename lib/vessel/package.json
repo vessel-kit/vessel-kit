@@ -18,6 +18,7 @@
     "@vessel-kit/anchoring": "workspace:*",
     "@vessel-kit/blockchain-connection-string": "workspace:*",
     "@vessel-kit/codec": "workspace:*",
+    "@vessel-kit/identity": "workspace:*",
     "ajv": "^6.12.5",
     "ajv-merge-patch": "^4.1.0",
     "axios": "^0.20.0",

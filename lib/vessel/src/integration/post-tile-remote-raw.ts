@@ -5,12 +5,12 @@ import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
 import { History } from '../util/history';
-import { ThreeIdentifier } from '../three-identifier';
 import jsonPatch from 'fast-json-patch';
 import { decodeThrow } from '@vessel-kit/codec';
 import { sortKeys } from '../util/sort-keys';
 import { SnapshotCodec } from '..';
 import * as t from 'io-ts';
+import { Identifier } from '@vessel-kit/identity';
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -38,9 +38,10 @@ async function createUser(seed: string) {
     ...content,
   };
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/document`, genesisRecord);
-  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
+  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data);
   const documentId = new CID(snapshot.log.first);
-  await user.did(decodeThrow(ThreeIdentifier, `did:3:${documentId.valueOf()}`));
+  const identifier = new Identifier('3', documentId.valueOf().toString());
+  await user.did(identifier);
   return user;
 }
 
@@ -51,7 +52,7 @@ async function main() {
     owners: [await user.did()],
     content: {},
   };
-  console.log('to sign', sortKeys(tile))
+  console.log('to sign', sortKeys(tile));
   const jwt = await user.sign(sortKeys(tile));
   const signedTile = {
     ...tile,
@@ -59,10 +60,10 @@ async function main() {
     header: jwt.header,
     signature: jwt.signature,
   };
-  console.log('posting', signedTile)
+  console.log('posting', signedTile);
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/document`, signedTile);
   console.log('genesis response', genesisResponse.data);
-  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
+  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data);
   const documentId = snapshot.log.first;
   await sleep(61000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/document/${documentId.toString()}`);

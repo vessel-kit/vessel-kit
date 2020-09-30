@@ -3,7 +3,6 @@ import { ThreeIdDoctype } from '../doctypes/three-id/three-id-doctype';
 import axios from 'axios';
 import { BytesMultibaseCodec, decodeThrow } from '@vessel-kit/codec';
 import { DocId } from '@vessel-kit/codec';
-import { ThreeIdentifierCidCodec } from '../three-identifier';
 import { RemoteDocumentService } from './remote-document-service';
 import { Context, IContext } from '../context';
 import { Document } from '../document/document';
@@ -19,6 +18,7 @@ import { JWKMulticodecCodec } from '../signor/jwk.multicodec.codec';
 import { bind } from 'decko';
 import { VesselRulesetAlphaDoctype } from '../doctypes/vessel-ruleset-alpha-doctype';
 import { VesselDocumentAlphaDoctype } from '../doctypes/vessel-document-alpha-doctype';
+import { Identifier } from '@vessel-kit/identity';
 
 export class NotThreeIdError extends Error {
   constructor(docId: DocId) {
@@ -71,7 +71,7 @@ export class Client {
     this.#signor = signor;
     const did = await this.#signor.did();
     if (did) {
-      const cid = ThreeIdentifierCidCodec.encode(did);
+      const cid = new CID(did.id);
       const documentId = new DocId(cid);
       const document = await this.load(documentId);
       if (document.state.doctype === '3id') {
@@ -92,8 +92,8 @@ export class Client {
         },
       };
       const document = await this.create(canonical);
-      const did = decodeThrow(ThreeIdentifierCidCodec, document.id.cid);
-      await this.#signor.did(did);
+      const identifier = new Identifier('3', document.id.cid.toString());
+      await this.#signor.did(identifier);
       return document as IDocument<ThreeIdState, ThreeIdShape>;
     }
   }

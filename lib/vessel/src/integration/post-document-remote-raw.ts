@@ -3,10 +3,10 @@ import IdentityWallet from 'identity-wallet';
 import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import axios from 'axios';
-import { ThreeIdentifier } from '../three-identifier';
 import { decodeThrow } from '@vessel-kit/codec';
 import { SnapshotCodec } from '../document/document.interface';
-import * as t from 'io-ts'
+import * as t from 'io-ts';
+import { Identifier } from '@vessel-kit/identity';
 
 const REMOTE_URL = 'http://localhost:3001';
 
@@ -35,14 +35,14 @@ async function main() {
   };
   console.log('genesis record', genesisRecord);
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/document`, genesisRecord);
-  console.log('genesisResponse', genesisResponse.data)
-  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data)
+  console.log('genesisResponse', genesisResponse.data);
+  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data);
 
   const documentId = snapshot.log.first;
   await sleep(80000);
   const anchoredGenesisResponse = await axios.get(`${REMOTE_URL}/api/v0/document/${documentId.toString()}`);
-  console.log('anchoredGenesisResponse', anchoredGenesisResponse.data)
-  const genesisSnapshot = decodeThrow(SnapshotCodec(t.unknown), anchoredGenesisResponse.data)
+  console.log('anchoredGenesisResponse', anchoredGenesisResponse.data);
+  const genesisSnapshot = decodeThrow(SnapshotCodec(t.unknown), anchoredGenesisResponse.data);
   const log = genesisSnapshot.log;
   const doc2 = doc1.clone();
   doc2.publicKeys.set('foocryption', signingKey);
@@ -57,7 +57,7 @@ async function main() {
     prev: { '/': updateRecord.prev.valueOf().toString() },
     id: { '/': updateRecord.id.valueOf().toString() },
   };
-  await user.did(decodeThrow(ThreeIdentifier, `did:3:${documentId.valueOf()}`));
+  await user.did(new Identifier('3', documentId.valueOf().toString()));
   console.log('signing payload', updateRecordToSign);
   const jwt = await user.sign(updateRecordToSign, { useMgmt: true });
   const updateRecordA = {
