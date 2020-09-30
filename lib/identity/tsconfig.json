@@ -1,10 +1,6 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "resolveJsonModule": false,
-    "moduleResolution": "Node",
-    "module": "ESNext",
-    "target": "ESNext",
     "outDir": "dist/",
     "importHelpers": true
   },
