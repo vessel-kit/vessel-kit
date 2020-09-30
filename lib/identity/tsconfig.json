@@ -1,7 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist/"
+    "resolveJsonModule": false,
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "outDir": "dist/",
+    "importHelpers": true
   },
   "exclude": ["node_modules", "dist", "src/**/*.spec.ts", "src/**/*.test.ts"],
   "typedocOptions": {

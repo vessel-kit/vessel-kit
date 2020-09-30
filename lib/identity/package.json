@@ -1,9 +1,26 @@
 {
   "name": "@vessel-kit/identity",
   "description": "Identity layer for VesselKit",
+  "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "version": "1.0.0-a.0",
+  "module": "dist/index.module.js",
+  "unpkg": "dist/index.umd.js",
+  "version": "1.0.0",
+  "license": "(MIT OR Apache-2.0)",
+  "repository": "https://github.com/vessel-kit/vessel-kit",
+  "homepage": "https://github.com/vessel-kit/vessel-kit/tree/master/libs/identity",
+  "bugs": {
+    "url": "https://github.com/vessel-kit/vessel-kit/issues"
+  },
+  "author": {
+    "name": "Sergey Ukustov",
+    "email": "sergey@ukstv.me"
+  },
+  "engines": {
+    "node": ">=14",
+    "pnpm": ">=5.4"
+  },
   "scripts": {
     "build": "tsc -p .",
     "dev": "tsc -p . --watch",
@@ -12,8 +29,12 @@
     "lint": "prettier --check src/",
     "lint:fix": "prettier --write src/",
     "doc": "../../node_modules/.bin/typedoc tsconfig.json src/",
-    "doc:watch": "onchange 'src/**/*.ts' -- typedoc tsconfig.json src/"
+    "doc:watch": "onchange 'src/**/*.ts' -- typedoc tsconfig.json src/",
+    "prepublishOnly": "../../node_modules/.bin/microbundle"
   },
+  "files": [
+    "dist/"
+  ],
   "dependencies": {
     "@stablelib/bytes": "^1.0.0",
     "@stablelib/ed25519": "^1.0.1",
@@ -26,7 +47,8 @@
     "io-ts": "^2.2.10",
     "lodash": "^4.17.20",
     "multicodec": "^2.0.1",
-    "query-string": "^6.13.2"
+    "query-string": "^6.13.2",
+    "tslib": "^2.0.1"
   },
   "devDependencies": {
     "@relmify/jest-fp-ts": "^1.1.1",
