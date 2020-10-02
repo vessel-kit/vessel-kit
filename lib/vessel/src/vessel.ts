@@ -11,7 +11,6 @@ import { AnchoringHttpClient } from '@vessel-kit/anchoring';
 import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
 import { Context } from './context';
 import { DoctypesContainer } from './doctypes-container';
-import { ThreeIdDoctype } from './doctypes/three-id/three-id-doctype';
 import { TileDoctype } from './doctypes/tile/tile-doctype';
 import { VesselRulesetAlphaDoctype } from './doctypes/vessel-ruleset-alpha-doctype';
 import { VesselDocumentAlphaDoctype } from './doctypes/vessel-document-alpha-doctype';
@@ -46,7 +45,7 @@ export class Vessel {
       anchoringService,
     );
     const doctypes = new DoctypesContainer(
-      [ThreeIdDoctype, TileDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
+      [TileDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
       context,
     );
     const documentUpdateService = new DocumentUpdateService(logger, cloud);

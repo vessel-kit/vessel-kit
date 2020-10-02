@@ -1,4 +1,3 @@
-import { ThreeIdDoctype } from '../doctypes/three-id/three-id-doctype';
 import axios from 'axios';
 import { decodeThrow } from '@vessel-kit/codec';
 import { DocId } from '@vessel-kit/codec';
@@ -15,12 +14,6 @@ import { bind } from 'decko';
 import { VesselRulesetAlphaDoctype } from '../doctypes/vessel-ruleset-alpha-doctype';
 import { VesselDocumentAlphaDoctype } from '../doctypes/vessel-document-alpha-doctype';
 import { IIdentitySigning } from '@vessel-kit/identity';
-
-export class NotThreeIdError extends Error {
-  constructor(docId: DocId) {
-    super(`Expected 3id document on ${docId}`);
-  }
-}
 
 export class Client {
   #signor?: IIdentitySigning;
@@ -46,7 +39,7 @@ export class Client {
       }
     }, retrieve);
     this.#doctypes = new DoctypesContainer(
-      [TileDoctype, ThreeIdDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
+      [TileDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
       this.#context,
     );
     this.#service = new RemoteDocumentService(host, this.#context);

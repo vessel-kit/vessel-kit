@@ -86,8 +86,6 @@ Really failed. Cool.
 
 ## Concerns and Limitations
 
-The kit contains a weird copy of 3id. This should be rejected in favour of more broad support of DID methods.
-
 The kit, and Vessel approach do not fully handle siblings.
 We should make that a responsibility of Ruleset to resolve siblings.
 Siblings-resolution relies on anchoring, which should itself be moved fully to the ruleset.
