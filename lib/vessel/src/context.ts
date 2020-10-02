@@ -1,11 +1,10 @@
-import { ILoad, ThreeIdResolver } from './resolver/three-id-resolver';
-import { Resolver } from 'did-resolver';
+import { DIDResolver } from './did-resolver';
 import { assertSignature } from './assert-signature';
 import CID from 'cids';
 import { RecordWrap } from '@vessel-kit/codec';
 import { AnchorProof } from '@vessel-kit/anchoring';
 import { AnchoringService } from './anchoring.service';
-import { Identifier, IIdentitySigning, jws } from '@vessel-kit/identity';
+import { Identifier, IIdentitySigning, IResolver, jws } from '@vessel-kit/identity';
 
 export interface IRetrieve {
   (cid: CID, path?: string): Promise<any>;
@@ -21,16 +20,13 @@ export interface IContext {
 
 export class Context implements IContext {
   readonly #signorP: () => IIdentitySigning;
-  readonly #load: ILoad;
-  readonly #resolver: Resolver;
+  readonly #resolver: IResolver;
   readonly #retrieve: IRetrieve;
   readonly #anchoring?: AnchoringService;
 
-  constructor(signorP: () => IIdentitySigning, load: ILoad, retrieve: IRetrieve, anchoring?: AnchoringService) {
+  constructor(signorP: () => IIdentitySigning, retrieve: IRetrieve, anchoring?: AnchoringService) {
     this.#signorP = signorP;
-    this.#load = load;
-    const threeIdResolver = new ThreeIdResolver(this.#load);
-    this.#resolver = new Resolver(threeIdResolver.registry);
+    this.#resolver = new DIDResolver();
     this.#retrieve = retrieve;
     this.#anchoring = anchoring;
   }

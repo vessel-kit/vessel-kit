@@ -38,17 +38,13 @@ export class Client {
       const response = await axios.get(url.toString());
       return response.data;
     };
-    this.#context = new Context(
-      () => {
-        if (this.#signor) {
-          return this.#signor;
-        } else {
-          throw new Error(`No signor set`);
-        }
-      },
-      this.load.bind(this),
-      retrieve,
-    );
+    this.#context = new Context(() => {
+      if (this.#signor) {
+        return this.#signor;
+      } else {
+        throw new Error(`No signor set`);
+      }
+    }, retrieve);
     this.#doctypes = new DoctypesContainer(
       [TileDoctype, ThreeIdDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
       this.#context,

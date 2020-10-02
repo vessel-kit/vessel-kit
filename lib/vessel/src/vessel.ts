@@ -16,7 +16,7 @@ import { TileDoctype } from './doctypes/tile/tile-doctype';
 import { VesselRulesetAlphaDoctype } from './doctypes/vessel-ruleset-alpha-doctype';
 import { VesselDocumentAlphaDoctype } from './doctypes/vessel-document-alpha-doctype';
 import { IDocument } from './document/document.interface';
-import { IIdentitySigning } from "@vessel-kit/identity";
+import { IIdentitySigning } from '@vessel-kit/identity';
 
 export interface Options {
   logger: ILogger;
@@ -42,7 +42,6 @@ export class Vessel {
           throw new Error(`No signor set`);
         }
       },
-      this.load.bind(this),
       cloud.retrieve.bind(cloud),
       anchoringService,
     );
