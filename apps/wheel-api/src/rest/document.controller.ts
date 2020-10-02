@@ -10,7 +10,7 @@ import {
 import { Vessel } from '@vessel-kit/vessel';
 import { LiveGateway } from '../live/live.gateway';
 import { DocumentRecord } from '../storage/document.record';
-import { DocumentStorage } from '../storage/document.storage';
+// import { DocumentStorage } from '../storage/document.storage'; TODO
 import { DocumentStatePresentation } from './document-state.presentation';
 import { DocId, CidStringCodec, DecodePipe } from '@vessel-kit/codec';
 import CID from 'cids';
@@ -23,7 +23,7 @@ export class DocumentController {
   constructor(
     private readonly vessel: Vessel,
     private readonly liveUpdater: LiveGateway,
-    private readonly documentStorage: DocumentStorage,
+    // private readonly documentStorage: DocumentStorage,
   ) {}
 
   @Post('/')
@@ -39,7 +39,7 @@ export class DocumentController {
     record.payload = body.content;
     record.createdAt = new Date();
     record.updatedAt = new Date();
-    await this.documentStorage.save(record);
+    // await this.documentStorage.save(record); TODO
     return document.state;
   }
 
