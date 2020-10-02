@@ -66,11 +66,6 @@ const Shape = t.type(
       type: t.string,
       main: t.string,
     }),
-    iss: t.string,
-    header: t.type({
-      typ: t.string,
-      alg: t.string,
-    }),
     signature: t.string,
   },
   'RulesetShape',

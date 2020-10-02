@@ -76,8 +76,8 @@ export class VesselDocument<State, Shape> {
       prev: this.#document.log.last,
       id: this.#document.id,
     });
-    const signed = await this.#document.context.sign(payloadToSign);
-    await this.#document.update(signed);
+    const signature = await this.#document.context.sign(payloadToSign);
+    await this.#document.update(Object.assign(payloadToSign, { signature }));
   }
 }
 

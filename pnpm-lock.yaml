@@ -270,8 +270,10 @@ importers:
       '@stablelib/sha256': 1.0.0
       '@vessel-kit/codec': 'link:../codec'
       bn.js: 4.11.9
+      cids: 1.0.1
       did-resolver: 2.1.1
       elliptic: 6.5.3
+      fast-json-stable-stringify: 2.1.0
       fp-ts: 2.8.2
       io-ts: 2.2.10_fp-ts@2.8.2
       lodash: 4.17.20
@@ -296,9 +298,11 @@ importers:
       '@types/lodash': ^4.14.161
       '@vessel-kit/codec': 'workspace:*'
       bn.js: ^4.4.0
+      cids: ^1.0.1
       did-resolver: ^2.1.1
       elliptic: ^6.5.3
       faker: ^5.1.0
+      fast-json-stable-stringify: ^2.1.0
       fp-ts: ^2.8.2
       io-ts: ^2.2.10
       lodash: ^4.17.20
@@ -3493,6 +3497,9 @@ packages:
       react: ^16.13.1
     resolution:
       integrity: sha512-UdzGY6/eeeJlGOWw0evhQfUxP/+DRt+530lqOkgNrYPyp6q2t1kr0Z0kukPAY9Bwv9lyIGMEm9jeNvBpRnYVgg==
+  /@multiformats/base-x/4.0.1:
+    resolution:
+      integrity: sha512-eMk0b9ReBbV23xXU693TAIrLyeO5iTgBZGSJfpqriG8UkYvr/hC9u9pyMlAakDNHWmbhMZCDs6KQO0jzKD8OTw==
   /@nestjs/cli/7.5.1:
     dependencies:
       '@angular-devkit/core': 10.0.7
@@ -6648,6 +6655,19 @@ packages:
       npm: '>=3.0.0'
     resolution:
       integrity: sha512-HEBCIElSiXlkgZq3dgHJc3eDcnFteFp96N8/1/oqX5lkxBtB66sZ12jqEP3g7Ut++jEk6kIUGifQ1Qrya1jcNQ==
+  /cids/1.0.1:
+    dependencies:
+      class-is: 1.1.0
+      multibase: 3.0.1
+      multicodec: 2.0.1
+      multihashes: 3.0.1
+      uint8arrays: 1.1.0
+    dev: false
+    engines:
+      node: '>=4.0.0'
+      npm: '>=3.0.0'
+    resolution:
+      integrity: sha512-A5DvnNMr7ABdP3IWFPEdbpued8Sw2cHu6n4+Hke9MpzEqhQH74Pm6Zk2TB59aNHIuue1Oh/jZi/t0wgISWgOow==
   /cipher-base/1.0.4:
     dependencies:
       inherits: 2.0.4
@@ -13114,6 +13134,15 @@ packages:
       npm: '>=6.0.0'
     resolution:
       integrity: sha512-fuB+zfRbF5zWV4L+CPM0dgA0gX7DHG/IMyzwhVi2RxbRVWn41Wk7SkKW8cxYDGOg6TVh7XgyoesjOAYrB1HBAA==
+  /multibase/3.0.1:
+    dependencies:
+      '@multiformats/base-x': 4.0.1
+      web-encoding: 1.0.4
+    engines:
+      node: '>=10.0.0'
+      npm: '>=6.0.0'
+    resolution:
+      integrity: sha512-MRU5WpnSg81/vYO977MweoeUAxBdXl7+F5Af2Es+X6Vcgfk/g/EjIqXTgm3kb+xO3m1Kzr+aIV14oRX7nv5Z9w==
   /multicast-dns/7.2.2:
     dependencies:
       dns-packet: 4.2.0
@@ -13156,9 +13185,9 @@ packages:
       integrity: sha512-S27Tepg4i8atNiFaU5ZOm3+gl3KQlUanLs/jWcBxQHFttgq+5x1OgbQmf2d8axJ/48zYGBd/wT9d723USMFduw==
   /multihashes/3.0.1:
     dependencies:
-      multibase: 3.0.0
+      multibase: 3.0.1
       uint8arrays: 1.1.0
-      varint: 5.0.0
+      varint: 5.0.2
     engines:
       node: '>=10.0.0'
       npm: '>=6.0.0'
@@ -17531,7 +17560,7 @@ packages:
       integrity: sha512-14tqEVujDREW7YwonSZZwLvo7aFDfX7b6ubvM/U7XvZol+CC/LbhaX/550VlWmhddAL9Wou1sxp0Of3tGqXigg==
   /uint8arrays/1.1.0:
     dependencies:
-      multibase: 3.0.0
+      multibase: 3.0.1
       web-encoding: 1.0.4
     resolution:
       integrity: sha512-cLdlZ6jnFczsKf5IH1gPHTtcHtPGho5r4CvctohmQjw8K7Q3gFdfIGHxSTdTaCKrL4w09SsPRJTqRS0drYeszA==
@@ -17809,6 +17838,9 @@ packages:
   /varint/5.0.0:
     resolution:
       integrity: sha1-2Ca4n3SQcy+rwMDtaT7Uddyynr8=
+  /varint/5.0.2:
+    resolution:
+      integrity: sha512-lKxKYG6H03yCZUpAGOPOsMcGxd1RHCu1iKvEHYDPmTyq2HueGhD73ssNBqqQWfvYs04G9iUFRvmAVLW20Jw6ow==
   /varuint-bitcoin/1.1.2:
     dependencies:
       safe-buffer: 5.2.1

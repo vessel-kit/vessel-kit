@@ -47,31 +47,12 @@
         "content": {
           "type": "object"
         },
-        "iss": {
-          "$ref": "#/definitions/three-identifier"
-        },
-        "header": {
-          "type": "object",
-          "properties": {
-            "typ": {
-              "type": "string",
-              "const": "JWT"
-            },
-            "alg": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
-        },
         "signature": {
           "type": "string"
         }
       },
-      "required": ["iss", "header", "signature", "doctype", "owners", "content"]
+      "required": ["signature", "doctype", "owners", "content"]
     }
   },
-  "anyOf": [
-    { "$ref": "#/definitions/base" },
-    { "$ref": "#/definitions/with-signature" }
-  ]
+  "anyOf": [{ "$ref": "#/definitions/base" }, { "$ref": "#/definitions/with-signature" }]
 }

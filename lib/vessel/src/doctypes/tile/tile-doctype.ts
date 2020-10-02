@@ -5,7 +5,7 @@ import Ajv from 'ajv';
 import * as TileShapeSchema from './tile-shape.schema.json';
 import { AnchoringStatus } from '@vessel-kit/anchoring';
 import produce from 'immer';
-import { RecordWrap } from "@vessel-kit/codec";
+import { RecordWrap } from '@vessel-kit/codec';
 import jsonPatch from 'fast-json-patch';
 import { Ordering } from '../../document/ordering';
 

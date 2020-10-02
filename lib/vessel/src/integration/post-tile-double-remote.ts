@@ -1,19 +1,17 @@
-import IdentityWallet from 'identity-wallet';
-import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import { Client } from '../remote/client';
 import { Tile } from '../doctypes/tile/tile';
+import { AlgorithmKind, KeyIdentity, PrivateKeyFactory } from '@vessel-kit/identity';
 
 const REMOTE_URL = 'http://localhost:3001';
 const clientA = new Client(REMOTE_URL);
 const clientB = new Client(REMOTE_URL);
 
-async function createUser(seed: string) {
-  const identityWallet = new IdentityWallet(async () => true, {
-    seed: seed,
-  });
+const privateKeyFactory = new PrivateKeyFactory();
 
-  return User.build(identityWallet.get3idProvider());
+async function createUser(seed: string) {
+  const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, seed);
+  return new KeyIdentity(privateKey);
 }
 
 async function main() {

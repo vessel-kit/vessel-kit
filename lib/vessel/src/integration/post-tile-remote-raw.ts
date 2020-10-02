@@ -1,6 +1,3 @@
-import { ThreeIdContent } from '../three-id.content';
-import IdentityWallet from 'identity-wallet';
-import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import axios from 'axios';
 import CID from 'cids';
@@ -10,55 +7,30 @@ import { decodeThrow } from '@vessel-kit/codec';
 import { sortKeys } from '../util/sort-keys';
 import { SnapshotCodec } from '..';
 import * as t from 'io-ts';
-import { Identifier } from '@vessel-kit/identity';
+import { AlgorithmKind, KeyIdentity, PrivateKeyFactory, jws } from '@vessel-kit/identity';
 
 const REMOTE_URL = 'http://localhost:3001';
 
+const privateKeyFactory = new PrivateKeyFactory();
+
 async function createUser(seed: string) {
-  const identityWallet = new IdentityWallet(async () => true, {
-    seed: seed,
-  });
-  const user = await User.build(identityWallet.get3idProvider());
-
-  const publicKeys = await user.publicKeys();
-  const ownerKey = publicKeys.managementKey;
-  const signingKey = publicKeys.signingKey;
-  const encryptionKey = publicKeys.asymEncryptionKey;
-
-  const doc1 = new ThreeIdContent(
-    [ownerKey],
-    new Map([
-      ['signing', signingKey],
-      ['encryption', encryptionKey],
-    ]),
-  );
-  const content = ThreeIdContent.codec.encode(doc1);
-  const genesisRecord = {
-    doctype: '3id',
-    ...content,
-  };
-  const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/document`, genesisRecord);
-  const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data);
-  const documentId = new CID(snapshot.log.first);
-  const identifier = new Identifier('3', documentId.valueOf().toString());
-  await user.did(identifier);
-  return user;
+  const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, seed);
+  return new KeyIdentity(privateKey);
 }
 
 async function main() {
   const user = await createUser('0xf533035c3339782eb95ffdfb7f485ac2c74545033a7cb2a46b6c91f77ae33b8f');
   const tile = {
     doctype: 'tile' as 'tile',
-    owners: [await user.did()],
+    owners: [await user.did().then(i => i.toString())],
     content: {},
   };
   console.log('to sign', sortKeys(tile));
   const jwt = await user.sign(sortKeys(tile));
+  const detached = jws.asDetached(jwt);
   const signedTile = {
     ...tile,
-    iss: await user.did(),
-    header: jwt.header,
-    signature: jwt.signature,
+    signature: detached,
   };
   console.log('posting', signedTile);
   const genesisResponse = await axios.post(`${REMOTE_URL}/api/v0/document`, signedTile);
@@ -87,9 +59,7 @@ async function main() {
   const jwtUpdate = await user.sign(updateRecordToSign);
   const updateRecordA = {
     ...updateRecordToSign,
-    iss: await user.did(),
-    header: jwtUpdate.header,
-    signature: jwtUpdate.signature,
+    signature: jws.asDetached(jwtUpdate),
   };
   console.log('signed payload', updateRecordToSign);
   const updateResponse = await axios.put(`${REMOTE_URL}/api/v0/document/${documentId.toString()}`, updateRecordA);

@@ -24,11 +24,6 @@ export interface WithSignature {
   content: {
     [k: string]: unknown;
   };
-  iss: ThreeIdentifier;
-  header: {
-    typ?: string;
-    alg?: string;
-  };
   signature: string;
   [k: string]: unknown;
 }

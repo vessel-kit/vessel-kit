@@ -1,12 +1,11 @@
-import { Signature } from '../../signature.interface';
 import { AnchorState } from '../../document/anchor-state';
 
 export type TwoPartyShape = {
   payload: {
     num: number;
   };
-  partyA?: Signature;
-  partyB?: Signature;
+  partyA?: string;
+  partyB?: string;
   stage: 'draft' | 'agreement';
 };
 

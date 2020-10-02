@@ -56,7 +56,7 @@ export class ThreeId {
       prev: this.#document.log.last,
       id: this.#document.id,
     });
-    const signed = await this.#document.context.sign(payloadToSign, { useMgmt: true });
+    const signed = await this.#document.context.sign(payloadToSign);
     return this.#document.update(signed);
   }
 }

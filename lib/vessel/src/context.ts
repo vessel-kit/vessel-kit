@@ -1,4 +1,3 @@
-import { ISignor } from './signor/signor.interface';
 import { ILoad, ThreeIdResolver } from './resolver/three-id-resolver';
 import { Resolver } from 'did-resolver';
 import { assertSignature } from './assert-signature';
@@ -6,18 +5,14 @@ import CID from 'cids';
 import { RecordWrap } from '@vessel-kit/codec';
 import { AnchorProof } from '@vessel-kit/anchoring';
 import { AnchoringService } from './anchoring.service';
-import { JWTHeader } from './signor/jwt-payload';
-import { Identifier } from '@vessel-kit/identity';
+import { Identifier, IIdentitySigning, jws } from '@vessel-kit/identity';
 
 export interface IRetrieve {
   (cid: CID, path?: string): Promise<any>;
 }
 
 export interface IContext {
-  sign<A>(
-    payload: A,
-    opts?: { useMgmt: boolean },
-  ): Promise<A & { iss: string; iat: undefined; header: JWTHeader; signature: string }>;
+  sign(payload: object): Promise<string>;
   did(): Promise<Identifier | undefined>;
   assertSignature(payload: any): Promise<void>;
   verifyAnchor(anchorRecord: RecordWrap): Promise<AnchorProof>;
@@ -25,13 +20,13 @@ export interface IContext {
 }
 
 export class Context implements IContext {
-  readonly #signorP: () => ISignor;
+  readonly #signorP: () => IIdentitySigning;
   readonly #load: ILoad;
   readonly #resolver: Resolver;
   readonly #retrieve: IRetrieve;
   readonly #anchoring?: AnchoringService;
 
-  constructor(signorP: () => ISignor, load: ILoad, retrieve: IRetrieve, anchoring?: AnchoringService) {
+  constructor(signorP: () => IIdentitySigning, load: ILoad, retrieve: IRetrieve, anchoring?: AnchoringService) {
     this.#signorP = signorP;
     this.#load = load;
     const threeIdResolver = new ThreeIdResolver(this.#load);
@@ -44,20 +39,10 @@ export class Context implements IContext {
     return this.#retrieve(cid, path);
   }
 
-  async sign(payload: any, opts?: { useMgmt: boolean }) {
+  async sign(payload: object): Promise<string> {
     const signor = await this.#signorP();
-    const did = await signor.did();
-    if (did) {
-      const jwt = await signor.sign(payload, opts);
-      return {
-        ...payload,
-        iss: did.toString(),
-        header: jwt.header,
-        signature: jwt.signature,
-      };
-    } else {
-      throw new Error(`No DID set for the signor`);
-    }
+    const signature = await signor.sign(payload);
+    return jws.asDetached(signature);
   }
 
   async did(): Promise<Identifier | undefined> {

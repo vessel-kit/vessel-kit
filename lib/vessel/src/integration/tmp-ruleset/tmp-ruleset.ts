@@ -71,7 +71,7 @@ export default class Ruleset {
         },
       };
     } else {
-      throw new Error(`Improper payload`)
+      throw new Error(`Improper payload`);
     }
   }
 
@@ -87,13 +87,13 @@ export default class Ruleset {
       const toCheckA = next.partyA
         ? {
             ...next.payload,
-            ...next.partyA,
+            signature: next.partyA,
           }
         : null;
       const toCheckB = next.partyB
         ? {
             ...next.payload,
-            ...next.partyB,
+            signature: next.partyB,
           }
         : null;
       const checkA = await checkSignature(this.context, toCheckA);

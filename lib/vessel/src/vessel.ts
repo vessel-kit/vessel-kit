@@ -9,7 +9,6 @@ import { DocumentUpdateService } from './document-update.service';
 import { DocId } from '@vessel-kit/codec';
 import { AnchoringHttpClient } from '@vessel-kit/anchoring';
 import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
-import { ISignor } from './signor/signor.interface';
 import { Context } from './context';
 import { DoctypesContainer } from './doctypes-container';
 import { ThreeIdDoctype } from './doctypes/three-id/three-id-doctype';
@@ -17,6 +16,7 @@ import { TileDoctype } from './doctypes/tile/tile-doctype';
 import { VesselRulesetAlphaDoctype } from './doctypes/vessel-ruleset-alpha-doctype';
 import { VesselDocumentAlphaDoctype } from './doctypes/vessel-document-alpha-doctype';
 import { IDocument } from './document/document.interface';
+import { IIdentitySigning } from "@vessel-kit/identity";
 
 export interface Options {
   logger: ILogger;
@@ -26,7 +26,7 @@ export interface Options {
 
 export class Vessel {
   #documentRepository: DocumentRepository;
-  #signor?: ISignor;
+  #signor?: IIdentitySigning;
 
   constructor(ipfs: Ipfs, options: Options) {
     const logger = options.logger;

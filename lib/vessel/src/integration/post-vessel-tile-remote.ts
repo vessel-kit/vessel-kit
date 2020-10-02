@@ -1,26 +1,21 @@
-import IdentityWallet from 'identity-wallet';
-import { User } from '../signor/user';
 import { sleep } from './sleep.util';
 import { Client } from '../remote/client';
 import { VesselRulesetAlphaDoctype } from '../doctypes/vessel-ruleset-alpha-doctype';
-import {
-  VesselDocument,
-  VesselDocumentShape,
-} from '../doctypes/vessel-document-alpha-doctype';
+import { VesselDocument, VesselDocumentShape } from '../doctypes/vessel-document-alpha-doctype';
 import * as path from 'path';
 import * as _ from 'lodash';
 import { TwoPartyShape, TwoPartyState } from './tmp-ruleset/shape-and-state';
+import { AlgorithmKind, KeyIdentity, PrivateKeyFactory } from '@vessel-kit/identity';
 
 const REMOTE_URL = 'http://localhost:3001';
 const clientA = new Client(REMOTE_URL);
 const clientB = new Client(REMOTE_URL);
 
-async function createUser(seed: string) {
-  const identityWallet = new IdentityWallet(async () => true, {
-    seed: seed,
-  });
+const privateKeyFactory = new PrivateKeyFactory();
 
-  return User.build(identityWallet.get3idProvider());
+async function createUser(seed: string) {
+  const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, seed);
+  return new KeyIdentity(privateKey);
 }
 
 async function main() {
@@ -32,11 +27,11 @@ async function main() {
   const rulesetFile = path.join(__dirname, './tmp-ruleset/tmp-ruleset.ts');
   const props = await VesselRulesetAlphaDoctype.genesisFromRulesetFile(rulesetFile);
   const signed = await clientA.context.sign(props);
-  const rulesetDocument = await clientA.create(signed);
+  const rulesetDocument = await clientA.create(Object.assign(props, { signature: signed }));
   const payload = {
     num: 100,
   };
-  const signedPayload = await clientA.context.sign(payload);
+  const signature = await clientA.context.sign(payload);
 
   // I. Create document
   const vesselDocumentPayload: VesselDocumentShape<TwoPartyShape> = {
@@ -44,16 +39,14 @@ async function main() {
     ruleset: rulesetDocument.id.toString(),
     content: {
       payload: _.omit(payload, 'iss', 'iat'),
-      partyA: {
-        iss: signedPayload.iss,
-        header: signedPayload.header,
-        signature: signedPayload.signature,
-      },
+      partyA: signature,
       stage: 'draft',
     },
   };
   const vesselDocumentPayloadSigned = await clientA.context.sign(vesselDocumentPayload);
-  const vesselDocumentRaw = await clientA.create(vesselDocumentPayloadSigned);
+  const vesselDocumentRaw = await clientA.create(
+    Object.assign(vesselDocumentPayload, { signature: vesselDocumentPayloadSigned }),
+  );
   console.log('Vessel document id', vesselDocumentRaw.id);
   const vesselDocument = await VesselDocument.fromDocument<TwoPartyState, TwoPartyShape>(vesselDocumentRaw);
   console.log('sleeping...');
@@ -62,15 +55,7 @@ async function main() {
   // I. Change num to 200, sigA
   await vesselDocument.change(async (shape) => {
     shape.payload.num = shape.payload.num + 100;
-    const signed = await clientA.context.sign(shape.payload);
-    shape.payload = {
-      num: shape.payload.num,
-    };
-    shape.partyA = {
-      header: signed.header,
-      iss: signed.iss,
-      signature: signed.signature,
-    };
+    shape.partyA = await clientA.context.sign(shape.payload);
     return shape;
   });
 
@@ -80,33 +65,14 @@ async function main() {
   const vesselDocumentB = await VesselDocument.fromDocument<TwoPartyState, TwoPartyShape>(vesselDocumentRawB);
   await vesselDocumentB.change(async (shape) => {
     shape.payload.num = shape.payload.num + 100;
-    const signed = await clientB.context.sign(shape.payload);
-    shape.payload = {
-      num: shape.payload.num,
-    };
-    shape.partyB = {
-      header: signed.header,
-      iss: signed.iss,
-      signature: signed.signature,
-    };
+    shape.partyB = await clientB.context.sign(shape.payload);
     return shape;
   });
 
   console.log('Same num, sigA...');
   await sleep(20000);
   await vesselDocument.change(async (shape) => {
-    shape.payload = {
-      num: shape.payload.num,
-    };
-    const signed = await clientA.context.sign(shape.payload);
-    shape.payload = {
-      num: shape.payload.num,
-    };
-    shape.partyA = {
-      header: signed.header,
-      iss: signed.iss,
-      signature: signed.signature,
-    };
+    shape.partyA = await clientA.context.sign(shape.payload);
     return shape;
   });
 
@@ -123,11 +89,7 @@ async function main() {
       shape.payload = {
         num: shape.payload.num,
       };
-      shape.partyA = {
-        header: signed.header,
-        iss: signed.iss,
-        signature: signed.signature,
-      };
+      shape.partyA = signed;
       return shape;
     });
   } catch (e) {

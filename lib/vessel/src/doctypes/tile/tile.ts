@@ -42,8 +42,8 @@ export class Tile {
     shape: Omit<TileShapeBase, 'doctype'>,
   ) {
     const payload = Object.assign({ doctype: 'tile' }, shape);
-    const signed = await context.sign(payload);
-    const document = await create(signed);
+    const signature = await context.sign(payload);
+    const document = await create(Object.assign(payload, { signature }));
     return this.fromDocument(document);
   }
 
@@ -55,7 +55,7 @@ export class Tile {
       prev: this.#document.log.last,
       id: this.#document.id,
     });
-    const signed = await this.#document.context.sign(payloadToSign);
-    await this.#document.update(signed);
+    const signature = await this.#document.context.sign(payloadToSign);
+    await this.#document.update(Object.assign(payloadToSign, { signature }));
   }
 }
