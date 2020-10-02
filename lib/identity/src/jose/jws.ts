@@ -23,14 +23,59 @@
 
 import * as f from 'fp-ts';
 import { ISignerIdentified } from '../private-key.interface';
-import { Base64urlCodec, decodeThrow } from '@vessel-kit/codec';
+import { Base64urlCodec, decodeThrow, BytesMultibaseCodec } from '@vessel-kit/codec';
 import { extractPublicKeys, IResolver, VerificationRelation } from './resolver';
 import { AlgorithmKind } from '../algorithm-kind';
+import * as _ from 'lodash';
+import stringify from 'fast-json-stable-stringify';
+import CID from 'cids';
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
-const asBase64Url = f.function.flow(JSON.stringify, textEncoder.encode.bind(textEncoder), Base64urlCodec.encode);
-const bytesToJSON = f.function.flow(textDecoder.decode.bind(textDecoder), JSON.parse);
+const isBinary = (input: unknown): input is ArrayBuffer | ArrayBufferView =>
+  input instanceof ArrayBuffer || ArrayBuffer.isView(input);
+const coerceBinary = (o: ArrayBufferView | ArrayBuffer) => {
+  if (o instanceof Uint8Array && o.constructor.name === 'Uint8Array') return o;
+  if (o instanceof ArrayBuffer) return new Uint8Array(o);
+  if (ArrayBuffer.isView(o)) {
+    return new Uint8Array(o.buffer, o.byteOffset, o.byteLength);
+  }
+  throw new Error('Unknown type, must be binary type');
+};
+const linkify = (obj: Record<string, any>) =>
+  _.transform(obj, (result: any, value, key) => {
+    const cid = CID.isCID(value);
+    if (cid) {
+      result[key] = { '/': value.toString() };
+    } else if (isBinary(value)) {
+      value = coerceBinary(value);
+      result[key] = { '/': { bytes: BytesMultibaseCodec('base64').encode(value) } };
+    } else if (typeof value === 'object' && value !== null) {
+      result[key] = linkify(value);
+    } else {
+      result[key] = value;
+    }
+  });
+const unlinkify = (obj: Record<string, any>) =>
+  _.transform(obj, (result: any, value, key) => {
+    if (typeof value === 'object' && value !== null) {
+      if (value['/']) {
+        if (typeof value['/'] === 'string') {
+          result[key] = new CID(value['/']);
+        } else if (typeof value['/'] === 'object' && value['/'].bytes) {
+          result[key] = decodeThrow(BytesMultibaseCodec('base64'), value['/'].bytes);
+        } else {
+          result[key] = unlinkify(value);
+        }
+      } else {
+        result[key] = unlinkify(value);
+      }
+    } else {
+      result[key] = value;
+    }
+  });
+const asBase64Url = f.function.flow(linkify, stringify, textEncoder.encode.bind(textEncoder), Base64urlCodec.encode);
+const bytesToJSON = f.function.flow(textDecoder.decode.bind(textDecoder), JSON.parse, unlinkify);
 
 /**
  * Create JSON Web signature, in compact form, that is "<header>.<payload>.<signature>" string.

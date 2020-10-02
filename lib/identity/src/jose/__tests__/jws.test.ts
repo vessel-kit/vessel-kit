@@ -4,14 +4,33 @@ import * as jws from '../jws';
 import * as keyMethod from '../../key.method';
 import { InvalidJWSError } from '../jws';
 import { Resolver } from 'did-resolver';
+import CID from 'cids';
 
 const privateKeyFactory = new PrivateKeyFactory();
 const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, 'seed');
 
-test('create', async () => {
-  const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-  const signature = await jws.create(signer, { hello: 'world' });
-  expect(signature).toMatchSnapshot();
+describe('create', () => {
+  test('plain', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, { hello: 'world' });
+    expect(signature).toMatchSnapshot();
+  });
+  test('with CID', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, {
+      hello: new CID('bafyreie2a2sbirpdklnsi6uxlwng5istoztktj7lrsyfqv3wonovazy354'),
+    });
+    expect(signature).toMatchSnapshot();
+  });
+  test('with bytes', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, {
+      hello: {
+        world: new Uint8Array([1, 2, 3]),
+      },
+    });
+    expect(signature).toMatchSnapshot();
+  });
 });
 
 describe('splitParts', () => {
@@ -57,6 +76,28 @@ describe('verify', () => {
   test('ok', async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
     const signature = await jws.create(signer, { hello: 'world' });
+    const resolver = new Resolver({
+      ...keyMethod.getResolver(),
+    });
+    await expect(jws.verify(signature, resolver)).resolves.toBeTruthy();
+  });
+  test('with CID', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, {
+      hello: new CID('bafyreie2a2sbirpdklnsi6uxlwng5istoztktj7lrsyfqv3wonovazy354'),
+    });
+    const resolver = new Resolver({
+      ...keyMethod.getResolver(),
+    });
+    await expect(jws.verify(signature, resolver)).resolves.toBeTruthy();
+  });
+  test('with bytes', async () => {
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const signature = await jws.create(signer, {
+      hello: {
+        world: new Uint8Array([1, 2, 3]),
+      },
+    });
     const resolver = new Resolver({
       ...keyMethod.getResolver(),
     });
