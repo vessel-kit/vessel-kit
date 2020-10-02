@@ -2,6 +2,7 @@ import { InvalidSignatureError } from './invalid-signature.error';
 import _ from 'lodash';
 import { jws, IResolver } from '@vessel-kit/identity';
 
+// TODO Check signor
 export async function assertSignature(record: any, resolvable: IResolver): Promise<void> {
   const payloadObject = _.omit(record, ['signature']);
   payloadObject.prev = payloadObject.prev ? { '/': payloadObject.prev.toString() } : undefined;
