@@ -364,7 +364,6 @@ importers:
       ethers: 5.0.13
       fast-json-patch: 3.0.0-1
       fp-ts: 2.8.2
-      identity-wallet: 1.2.0-ceramic.1
       immer: 7.0.9
       io-ts: 2.2.10_fp-ts@2.8.2
       ipfs: 0.50.2
@@ -402,7 +401,6 @@ importers:
       ethers: ^5.0.13
       fast-json-patch: ^3.0.0-1
       fp-ts: ^2.8.2
-      identity-wallet: 1.2.0-ceramic.1
       immer: ^7.0.9
       io-ts: ^2.2.10
       ipfs: ^0.50.2
@@ -417,14 +415,6 @@ importers:
       terser: ^5.3.1
 lockfileVersion: 5.1
 packages:
-  /3id-blockchain-utils/0.3.4:
-    dependencies:
-      '@ethersproject/contracts': 5.0.0-beta.152
-      '@ethersproject/providers': 5.0.0-beta.144
-      '@ethersproject/wallet': 5.0.0-beta.136
-    dev: false
-    resolution:
-      integrity: sha512-GS3IfeXWnaLasHaOGvQukr9Gm+9IgofbysfkZF5X6lNztVysXhj5ZXv+Az5FmDNg3Q/ssVw7FfwK/r7HJYNi+g==
   /@agoric/babel-standalone/7.9.5:
     dev: false
     resolution:
@@ -2694,21 +2684,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Df32lcXDHPgZRPgp1dgmByNbNe4Ki1QoXR+wU61on5nggQGTqWR1Bb7pp9VtI5Go9kyE/JflFc4Te6o9MvYt8A==
-  /@ethersproject/contracts/5.0.0-beta.152:
-    dependencies:
-      '@ethersproject/abi': 5.0.5
-      '@ethersproject/abstract-provider': 5.0.4
-      '@ethersproject/abstract-signer': 5.0.4
-      '@ethersproject/address': 5.0.4
-      '@ethersproject/bignumber': 5.0.7
-      '@ethersproject/bytes': 5.0.4
-      '@ethersproject/constants': 5.0.4
-      '@ethersproject/logger': 5.0.5
-      '@ethersproject/properties': 5.0.3
-      '@ethersproject/transactions': 5.0.5
-    dev: false
-    resolution:
-      integrity: sha512-sYdSNqmX59uH1eDqQvR4QlYaslQ80zqvrWaugUeSqz97/EyZ2aVF61R/BJ+mKLnv/smwerkNlGKCjxubmdmM/w==
   /@ethersproject/contracts/5.0.4:
     dependencies:
       '@ethersproject/abi': 5.0.5
@@ -2732,23 +2707,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-VCs/bFBU8AQFhHcT1cQH6x7a4zjulR6fJmAOcPxUgrN7bxOQ7QkpBKF+YCDJhFtkLdaljIsr/r831TuWU4Ysfg==
-  /@ethersproject/hdnode/5.0.0-beta.137:
-    dependencies:
-      '@ethersproject/abstract-signer': 5.0.4
-      '@ethersproject/basex': 5.0.3
-      '@ethersproject/bignumber': 5.0.7
-      '@ethersproject/bytes': 5.0.4
-      '@ethersproject/logger': 5.0.5
-      '@ethersproject/pbkdf2': 5.0.3
-      '@ethersproject/properties': 5.0.3
-      '@ethersproject/sha2': 5.0.3
-      '@ethersproject/signing-key': 5.0.4
-      '@ethersproject/strings': 5.0.4
-      '@ethersproject/transactions': 5.0.5
-      '@ethersproject/wordlists': 5.0.4
-    dev: false
-    resolution:
-      integrity: sha512-TDe57vm/tndbaSKi/NRgC0uAp4uVr60LurTAw+u6mG5ihZg9mlYgr15GxOXWTRiJfa3V3kQD8VsTpzlNMYHViw==
   /@ethersproject/hdnode/5.0.4:
     dependencies:
       '@ethersproject/abstract-signer': 5.0.4
@@ -2814,26 +2772,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-wLCSrbywkQgTO6tIF9ZdKsH9AIxPEqAJF/z5xcPkz1DK4mMAZgAXRNw1MrKYhyb+7CqNHbj3vxenNKFavGY/IA==
-  /@ethersproject/providers/5.0.0-beta.144:
-    dependencies:
-      '@ethersproject/abstract-provider': 5.0.4
-      '@ethersproject/abstract-signer': 5.0.4
-      '@ethersproject/address': 5.0.4
-      '@ethersproject/bignumber': 5.0.7
-      '@ethersproject/bytes': 5.0.4
-      '@ethersproject/constants': 5.0.4
-      '@ethersproject/hash': 5.0.4
-      '@ethersproject/logger': 5.0.5
-      '@ethersproject/networks': 5.0.3
-      '@ethersproject/properties': 5.0.3
-      '@ethersproject/random': 5.0.3
-      '@ethersproject/rlp': 5.0.3
-      '@ethersproject/strings': 5.0.4
-      '@ethersproject/transactions': 5.0.5
-      '@ethersproject/web': 5.0.6
-    dev: false
-    resolution:
-      integrity: sha512-r4WIDGlI2lcrUkldqfhUsegVL3LB08l0s8Ri1sPQyEVIB01ZDCvxxWk2dohTWSQHDAa7Nkym9EgKps6Ij3MEpQ==
   /@ethersproject/providers/5.0.8:
     dependencies:
       '@ethersproject/abstract-provider': 5.0.4
@@ -2929,26 +2867,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-80d6skjDgiHLdbKOA9FVpzyMEPwbif40PbGd970JvcecVf48VjB09fUu37d6duG8DhRVyefRdX8nuVQLzcGGPw==
-  /@ethersproject/wallet/5.0.0-beta.136:
-    dependencies:
-      '@ethersproject/abstract-provider': 5.0.4
-      '@ethersproject/abstract-signer': 5.0.4
-      '@ethersproject/address': 5.0.4
-      '@ethersproject/bignumber': 5.0.7
-      '@ethersproject/bytes': 5.0.4
-      '@ethersproject/hash': 5.0.4
-      '@ethersproject/hdnode': 5.0.4
-      '@ethersproject/json-wallets': 5.0.6
-      '@ethersproject/keccak256': 5.0.3
-      '@ethersproject/logger': 5.0.5
-      '@ethersproject/properties': 5.0.3
-      '@ethersproject/random': 5.0.3
-      '@ethersproject/signing-key': 5.0.4
-      '@ethersproject/transactions': 5.0.5
-      '@ethersproject/wordlists': 5.0.4
-    dev: false
-    resolution:
-      integrity: sha512-ORK5/zCf0XCh7lcTKDXXUm18Crm4kjM3k/J6HRzs56LCHDlDlQbWRnfubq7uj6ZH6/FEIuf5F2J8YvOVpoqcSA==
   /@ethersproject/wallet/5.0.4:
     dependencies:
       '@ethersproject/abstract-provider': 5.0.4
@@ -6630,19 +6548,6 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-K7NGZBo1P6N2ogUmBtJWwMNfqXxU3ROiCHs+YKDDwBecsZ46J+9vJ6pOEJzds1JzqRnYRxxZBPfgBEYQebMXJg==
-  /cids/0.8.3:
-    dependencies:
-      buffer: 5.6.0
-      class-is: 1.1.0
-      multibase: 1.0.1
-      multicodec: 1.0.4
-      multihashes: 1.0.1
-    dev: false
-    engines:
-      node: '>=4.0.0'
-      npm: '>=3.0.0'
-    resolution:
-      integrity: sha512-yoXTbV3llpm+EBGWKeL9xKtksPE/s6DPoDSY4fn8I8TEW1zehWXPSB0pwAXVDlLaOlrw+sNynj995uD9abmPhA==
   /cids/1.0.0:
     dependencies:
       class-is: 1.1.0
@@ -9527,24 +9432,6 @@ packages:
       node: '>= 6'
     resolution:
       integrity: sha512-4aFq7wvWyMHKgxsH8QQtGpvbASCf+eM3wPRLI6R+MgAnTCZ6STYsRvttLvRWK0Nfif5piF394St3HeJDaljGPA==
-  /identity-wallet/1.2.0-ceramic.1:
-    dependencies:
-      3id-blockchain-utils: 0.3.4
-      '@babel/runtime': 7.11.2
-      '@ethersproject/hdnode': 5.0.0-beta.137
-      '@ethersproject/wallet': 5.0.0-beta.136
-      did-jwt: 4.5.1
-      events: 3.2.0
-      ipfs-did-document: 1.2.3
-      ipld-dag-cbor: 0.15.3
-      js-sha256: 0.9.0
-      multihashes: 0.4.21
-      store: 2.0.12
-      tweetnacl: 1.0.3
-      tweetnacl-util: 0.15.1
-    dev: false
-    resolution:
-      integrity: sha512-HRNrtqa9KbiMMISrMsoOxxsWIx4u78vXm9Wr+ly5yiclhwTQ5qAUl8jR8HH2TozbiayRVwrZPxqRRYkpOupEZQ==
   /ieee754/1.1.13:
     resolution:
       integrity: sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==
@@ -9832,10 +9719,6 @@ packages:
       uint8arrays: 1.1.0
     resolution:
       integrity: sha512-IBPFvYjWPfVFpCeYUL/0gCUOabdBhh7aO5i4tU//UlF2gVCXPH4PRYlbBH9WM83zE2+o4vDi+dBXsdAI6nLPAg==
-  /ipfs-did-document/1.2.3:
-    dev: false
-    resolution:
-      integrity: sha512-LLcmDbj9m+kBS8srL1Mq3oOgSOuqTe9lyj70DhjQkd+T+4xj1plkiYanbB6w600e/XOHnGxbbOkKYOpRs0vpgw==
   /ipfs-http-client/47.0.1:
     dependencies:
       abort-controller: 3.0.0
@@ -10161,20 +10044,6 @@ packages:
       npm: '>=3.0.0'
     resolution:
       integrity: sha512-lPMfW9tA2hVZw9hdO/YSppTxFmA0+5zxcefBOlCTOn+12RLyy+pdepKMbQw8u0KESFu3pYVmabNRWuFGcgHLLw==
-  /ipld-dag-cbor/0.15.3:
-    dependencies:
-      borc: 2.1.2
-      buffer: 5.6.0
-      cids: 0.8.3
-      is-circular: 1.0.2
-      multicodec: 1.0.4
-      multihashing-async: 0.8.2
-    dev: false
-    engines:
-      node: '>=6.0.0'
-      npm: '>=3.0.0'
-    resolution:
-      integrity: sha512-m23nG7ZyoVFnkK55/bLAErc7EfiMgaEQlqHWDTGzPI+O5r6bPfp+qbL5zTVSIT8tpbHmu174dwerVtLoVgeVyA==
   /ipld-dag-cbor/0.17.0:
     dependencies:
       borc: 2.1.2
@@ -13115,16 +12984,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-TW8q03O0f6PNFTQDvh3xxH03c8CjGaaYrjkl9UQPG6rz53TQzzxJVCIWVjzcbN/Q5Y53Zd0IBQBMVktVgNx4Fg==
-  /multibase/1.0.1:
-    dependencies:
-      base-x: 3.0.8
-      buffer: 5.6.0
-    dev: false
-    engines:
-      node: '>=10.0.0'
-      npm: '>=6.0.0'
-    resolution:
-      integrity: sha512-KcCxpBVY8fdVKu4dJMAahq4F/2Z/9xqEjIiR7PiMe7LRGeorFn2NLmicN6nLBCqQvft6MG2Lc9X5P0IdyvnxEw==
   /multibase/3.0.0:
     dependencies:
       base-x: 3.0.8
@@ -13151,13 +13010,6 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-XqSMeO8EWV/nOXOpPV8ztIpNweVfE1dSpz6SQvDPp71HD74lMXjt4m/mWB1YBMG0kHtOodxRWc5WOb/UNN1A5g==
-  /multicodec/1.0.4:
-    dependencies:
-      buffer: 5.6.0
-      varint: 5.0.0
-    dev: false
-    resolution:
-      integrity: sha512-NDd7FeS3QamVtbgfvu5h7fd1IlbaC4EQ0/pgU4zqE2vdHCmBGsUa0TiM8/TdSeG6BMPC92OOCf8F1ocE/Wkrrg==
   /multicodec/2.0.1:
     dependencies:
       uint8arrays: 1.0.0
@@ -13172,17 +13024,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-uVSvmeCWf36pU2nB4/1kzYZjsXD9vofZKpgudqkceYY5g2aZZXJ5r9lxuzoRLl1OAp28XljXsEJ/X/85ZsKmKw==
-  /multihashes/1.0.1:
-    dependencies:
-      buffer: 5.6.0
-      multibase: 1.0.1
-      varint: 5.0.0
-    dev: false
-    engines:
-      node: '>=10.0.0'
-      npm: '>=6.0.0'
-    resolution:
-      integrity: sha512-S27Tepg4i8atNiFaU5ZOm3+gl3KQlUanLs/jWcBxQHFttgq+5x1OgbQmf2d8axJ/48zYGBd/wT9d723USMFduw==
   /multihashes/3.0.1:
     dependencies:
       multibase: 3.0.1
@@ -13193,20 +13034,6 @@ packages:
       npm: '>=6.0.0'
     resolution:
       integrity: sha512-fFY67WOtb0359IjDZxaCU3gJILlkwkFbxbwrK9Bej5+NqNaYztzLOj8/NgMNMg/InxmhK+Uu8S/U4EcqsHzB7Q==
-  /multihashing-async/0.8.2:
-    dependencies:
-      blakejs: 1.1.0
-      buffer: 5.6.0
-      err-code: 2.0.3
-      js-sha3: 0.8.0
-      multihashes: 1.0.1
-      murmurhash3js-revisited: 3.0.0
-    dev: false
-    engines:
-      node: '>=10.0.0'
-      npm: '>=6.0.0'
-    resolution:
-      integrity: sha512-2lKa1autuCy8x7KIEj9aVNbAb3aIMRFYIwN7mq/zD4pxgNIVgGlm+f6GKY4880EOF2Y3GktHYssRy7TAJQ2DyQ==
   /multihashing-async/2.0.1:
     dependencies:
       blakejs: 1.1.0
@@ -16514,10 +16341,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
-  /store/2.0.12:
-    dev: false
-    resolution:
-      integrity: sha1-jFNOKguDH3K3X8XxEZhXxE711ZM=
   /stream-browserify/2.0.2:
     dependencies:
       inherits: 2.0.4
@@ -17397,18 +17220,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-J6XeoGs2sEoKmWZ3SykIaPD8QP0=
-  /tweetnacl-util/0.15.1:
-    dev: false
-    resolution:
-      integrity: sha512-RKJBIj8lySrShN4w6i/BonWp2Z/uxwC3h4y7xsRrpP59ZboCd0GpEVsOnMDYLMmKBpYhb5TgHzZXy7wTfYFBRw==
   /tweetnacl/0.14.5:
     dev: true
     resolution:
       integrity: sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
-  /tweetnacl/1.0.3:
-    dev: false
-    resolution:
-      integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
   /type-check/0.3.2:
     dependencies:
       prelude-ls: 1.1.2
