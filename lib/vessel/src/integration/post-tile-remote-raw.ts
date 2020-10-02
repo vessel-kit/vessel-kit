@@ -4,7 +4,6 @@ import CID from 'cids';
 import { History } from '../util/history';
 import jsonPatch from 'fast-json-patch';
 import { decodeThrow } from '@vessel-kit/codec';
-import { sortKeys } from '../util/sort-keys';
 import { SnapshotCodec } from '..';
 import * as t from 'io-ts';
 import { AlgorithmKind, KeyIdentity, PrivateKeyFactory, jws } from '@vessel-kit/identity';
@@ -25,8 +24,8 @@ async function main() {
     owners: [await user.did().then(i => i.toString())],
     content: {},
   };
-  console.log('to sign', sortKeys(tile));
-  const jwt = await user.sign(sortKeys(tile));
+  console.log('to sign', tile);
+  const jwt = await user.sign(tile);
   const detached = jws.asDetached(jwt);
   const signedTile = {
     ...tile,

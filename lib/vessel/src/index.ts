@@ -1,4 +1,3 @@
-export * from './util/map-codec';
 export * from './vessel';
 export * from './document/document';
 export * from './document/anchor-state';
