@@ -43,9 +43,9 @@ async function main() {
       stage: 'draft',
     },
   };
-  const vesselDocumentPayloadSigned = await clientA.context.sign(vesselDocumentPayload);
+  const vesselDocumentPayloadSignature = await clientA.context.sign(vesselDocumentPayload);
   const vesselDocumentRaw = await clientA.create(
-    Object.assign(vesselDocumentPayload, { signature: vesselDocumentPayloadSigned }),
+    Object.assign(vesselDocumentPayload, { signature: vesselDocumentPayloadSignature }),
   );
   console.log('Vessel document id', vesselDocumentRaw.id);
   const vesselDocument = await VesselDocument.fromDocument<TwoPartyState, TwoPartyShape>(vesselDocumentRaw);

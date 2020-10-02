@@ -35,6 +35,11 @@ export class Context implements IContext {
     return this.#retrieve(cid, path);
   }
 
+  /**
+   * Return detached JWS signature.
+   *
+   * @param payload
+   */
   async sign(payload: object): Promise<string> {
     const signor = await this.#signorP();
     const signature = await signor.sign(payload);
