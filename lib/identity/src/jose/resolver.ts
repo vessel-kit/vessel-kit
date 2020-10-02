@@ -6,7 +6,14 @@ import { DidUrl } from '../did-url';
 import { AlgorithmKind } from '../algorithm-kind';
 import { IPublicKey } from '../public-key.interface';
 
+/**
+ * Aspect of [DIDResolver](https://github.com/decentralized-identity/did-resolver). Resolve DID document by DID.
+ */
 export interface IResolver {
+  /**
+   * Resolve DID document by DID or throw an error if no document found.
+   * @param did DID identifier or DID URL.
+   */
   resolve(did: string): Promise<didResolver.DIDDocument>;
 }
 

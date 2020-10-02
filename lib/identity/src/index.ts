@@ -60,3 +60,5 @@ import * as EdDSA from './algorithms/EdDSA';
  * Get access to supported algorithms.
  */
 export const algorithms = { ES256K, EdDSA };
+
+export { IResolver } from './jose/resolver';
