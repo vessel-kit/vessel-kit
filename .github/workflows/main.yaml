@@ -6,6 +6,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14'
       - name: Setup Python
         uses: actions/setup-python@v2
       - name: Setup PNPM
@@ -13,7 +17,6 @@ jobs:
         with:
           version: 5.8.0
           run_install: |
-            - recursive: true
-              args: [--frozen-lockfile]
+            - args: [--frozen-lockfile]
       - name: Build
         run: pnpm run build
