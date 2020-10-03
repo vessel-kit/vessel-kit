@@ -21,7 +21,7 @@ export class AnchorStorage {
     return this.repository.count();
   }
 
-  byRequestId(id: UuidValue) {
+  byRequestId(id: UuidValue): Promise<AnchorRecord | undefined> {
     return this.repository.findOne({
       where: {
         requestId: id.toString(),

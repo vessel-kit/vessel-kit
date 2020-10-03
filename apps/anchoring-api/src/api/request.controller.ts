@@ -12,19 +12,25 @@ import { RequestPresentation } from "./request.presentation";
 import { AnchorRequestPayload } from "@vessel-kit/anchoring";
 import * as t from "io-ts";
 import { ApiOperation, ApiTags, ApiResponse, ApiBody } from "@nestjs/swagger";
+import { RequestRecord } from "../storage/request.record";
+import type { Ipfs } from "ipfs";
 
 const PAGE_SIZE = 25;
 
 @Controller("/v0/requests")
 export class RequestController {
+  private readonly ipfs: Ipfs;
+
   constructor(
     private readonly requestCreateScenario: RequestCreateScenario,
     private readonly requestGetScenario: RequestGetScenario,
     private readonly requestGetManyScenario: RequestGetManyScenario,
     private readonly requestStorage: RequestStorage,
     private readonly anchorStorage: AnchorStorage,
-    private readonly ipfsService: IpfsService
-  ) {}
+    ipfsService: IpfsService
+  ) {
+    this.ipfs = ipfsService.client;
+  }
 
   @Get("/")
   @ApiTags("requests")
@@ -37,26 +43,8 @@ export class RequestController {
   async index(@Query("page") pageIndex = 1) {
     const requests = await this.requestStorage.page(pageIndex, PAGE_SIZE);
     const totalCount = await this.requestStorage.count();
-    const ipfs = this.ipfsService.client;
     const presentations = await Promise.all(
-      requests.map(async (r) => {
-        const anchor = await this.anchorStorage.byRequestId(r.id);
-        if (anchor) {
-          const proofDag = await ipfs.dag.get(new CID(anchor.proofCid));
-          return new RequestPresentation(
-            r,
-            anchor,
-            multihash.decode(proofDag.value.root.multihash).digest,
-            "0x" +
-              multihash.toHexString(
-                multihash.decode(proofDag.value.txHash.multihash).digest
-              ),
-            proofDag.value.chainId
-          );
-        } else {
-          return new RequestPresentation(r);
-        }
-      })
+      requests.map((r) => this.requestPresentation(r))
     );
     return {
       requests: presentations,
@@ -105,5 +93,28 @@ export class RequestController {
   ) {
     await this.requestCreateScenario.execute(body.cid, body.docId);
     return this.requestGetScenario.execute(body.cid);
+  }
+
+  protected async requestPresentation(r: RequestRecord) {
+    const anchor = await this.anchorStorage.byRequestId(r.id);
+    if (anchor) {
+      const proofDag = await this.ipfs.dag.get(new CID(anchor.proofCid));
+      const merkleRootMultihash = proofDag.value.root.multihash;
+      const digest = multihash.decode(merkleRootMultihash).digest;
+
+      const txHashCid = proofDag.value.txHash;
+      const txHashDigest = multihash.decode(txHashCid.multihash);
+      const ethereumTxHash = "0x" + multihash.toHexString(txHashDigest.digest);
+
+      return new RequestPresentation(
+        r,
+        anchor,
+        digest,
+        ethereumTxHash,
+        proofDag.value.chainId
+      );
+    } else {
+      return new RequestPresentation(r);
+    }
   }
 }

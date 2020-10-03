@@ -10,17 +10,15 @@ import {
 const REMOTE_URL = "http://localhost:3001";
 const client = new Client(REMOTE_URL);
 
+const privateKey = new PrivateKeyFactory().fromSeed(
+  AlgorithmKind.ES256K,
+  "seed"
+);
+const identity = new KeyIdentity(privateKey);
+
 async function main() {
-  const privateKey = new PrivateKeyFactory().fromSeed(
-    AlgorithmKind.ES256K,
-    "seed"
-  );
-  const identity = new KeyIdentity(privateKey);
   await client.addSignor(identity);
   const did = await identity.did();
-  if (!did) {
-    throw new Error(`Empty DID`);
-  }
   const tile = await Tile.create(client.create, client.context, {
     owners: [did.toString()],
     content: {},
@@ -38,7 +36,13 @@ async function main() {
     };
   });
   await sleep(65000);
-  client.close();
 }
 
-main();
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => {
+    client.close();
+  });
