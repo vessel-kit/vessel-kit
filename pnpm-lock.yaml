@@ -6,7 +6,6 @@ importers:
       '@types/jest': 26.0.13
       husky: 4.3.0
       jest: 26.4.2
-      jest-sonar: 0.2.11
       microbundle: 0.12.4
       onchange: 7.0.2
       prettier: 2.1.1
@@ -20,7 +19,6 @@ importers:
       '@types/jest': ^26.0.13
       husky: ^4.3.0
       jest: ^26.4.2
-      jest-sonar: ^0.2.11
       microbundle: ^0.12.4
       onchange: ^7.0.2
       prettier: ^2.1.1
@@ -11507,13 +11505,6 @@ packages:
       node: '>= 10.14.2'
     resolution:
       integrity: sha512-N6Uub8FccKlf5SBFnL2Ri/xofbaA68Cc3MGjP/NuwgnsvWh+9hLIR/DhrxbSiKXMY9vUW5dI6EW1eHaDHqe9sg==
-  /jest-sonar/0.2.11:
-    dependencies:
-      entities: 2.0.3
-      strip-ansi: 6.0.0
-    dev: true
-    resolution:
-      integrity: sha512-uQej+af8ElXNp6rP5OyjrZraSpbxGwLUuMJIxaBq/dd9V0rP6GCFjUUn35w6oUF5RT8vC8N+gNq1lxrlgpbmUg==
   /jest-util/26.3.0:
     dependencies:
       '@jest/types': 26.3.0
