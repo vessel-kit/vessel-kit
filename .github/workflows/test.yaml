@@ -36,3 +36,7 @@ jobs:
         run: pnpm run test:coverage
       - name: Check format
         run: pnpm run format
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v2.7.4
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
