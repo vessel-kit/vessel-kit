@@ -15,6 +15,9 @@ import { BytesUnbaseCodec, decodeThrow } from "@vessel-kit/codec";
 import * as _ from "lodash";
 import * as ES256K from "../../algorithms/ES256K";
 import * as Ed25519 from "../../algorithms/EdDSA";
+import { IPublicKey } from "../../public-key.interface";
+import { SignerIdentified } from "../../key.method";
+import { DIDDocument } from "did-resolver";
 
 const privateKeyFactory = new PrivateKeyFactory();
 const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, "seed");
@@ -24,11 +27,19 @@ const resolver = new didResolver.Resolver({
 });
 
 describe("extractPublicKeys", () => {
+  let signer: SignerIdentified;
+  let publicKey: IPublicKey;
+  let didDocument: DIDDocument;
+  let relation: VerificationRelation;
+
+  beforeEach(async () => {
+    signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    publicKey = await privateKey.publicKey();
+    didDocument = await resolver.resolve(signer.kid);
+    relation = VerificationRelation.authentication;
+  });
+
   test("extract by kid", async () => {
-    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const publicKey = await privateKey.publicKey();
-    const didDocument = await resolver.resolve(signer.kid);
-    const relation = VerificationRelation.authentication;
     const publicKeys = extractPublicKeys(
       didDocument,
       relation,
@@ -40,10 +51,6 @@ describe("extractPublicKeys", () => {
   });
 
   test("extract by did", async () => {
-    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const publicKey = await privateKey.publicKey();
-    const didDocument = await resolver.resolve(signer.kid);
-    const relation = VerificationRelation.authentication;
     const didUrl = decodeThrow(DidUrl.asString, signer.kid);
     const publicKeys = extractPublicKeys(
       didDocument,
@@ -56,9 +63,6 @@ describe("extractPublicKeys", () => {
   });
 
   test("wrong key id", async () => {
-    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const didDocument = await resolver.resolve(signer.kid);
-    const relation = VerificationRelation.authentication;
     const kid = decodeThrow(DidUrl.asString, signer.kid);
     const didUrl = new DidUrl(kid.identifier, undefined, undefined, "foo");
     const publicKeys = extractPublicKeys(
