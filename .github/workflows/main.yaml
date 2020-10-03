@@ -4,15 +4,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.8.6"
-          architecture: "x64"
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
       - name: Setup PNPM
         uses: pnpm/action-setup@v1.2.0
         with:
           version: 5.8.0
-          run_install: |
-            - recursive: true
-              args: [--frozen-lockfile]
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
