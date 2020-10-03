@@ -1,10 +1,10 @@
 name: Test
 on:
-  push:
-    branches:
-      - $default-branch
-    pull_request:
-      types: [opened, synchronize, reopened]
+  - push:
+      branches:
+        - $default-branch
+      pull_request:
+        types: [opened, synchronize, reopened]
 jobs:
   build-and-test:
     name: Build and Test
