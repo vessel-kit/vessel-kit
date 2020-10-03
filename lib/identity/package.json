@@ -25,7 +25,6 @@
     "build": "tsc -p .",
     "dev": "tsc -p . --watch",
     "test": "jest",
-    "coverage": "jest --coverage",
     "doc": "../../node_modules/.bin/typedoc tsconfig.json src/",
     "doc:watch": "onchange 'src/**/*.ts' -- typedoc tsconfig.json src/",
     "prepublishOnly": "../../node_modules/.bin/microbundle"
