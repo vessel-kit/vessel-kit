@@ -43,21 +43,15 @@ export class RequestController {
         const anchor = await this.anchorStorage.byRequestId(r.id);
         if (anchor) {
           const proofDag = await ipfs.dag.get(new CID(anchor.proofCid));
-          const merkleRootMultihash = proofDag.value.root.multihash;
-          const digest = multihash.decode(merkleRootMultihash).digest;
-
-          const txHashCid = proofDag.value.txHash;
-          const txHashDigest = multihash.decode(txHashCid.multihash);
-          const ethereumTxHash =
-            "0x" + multihash.toHexString(txHashDigest.digest);
-          const chainId = proofDag.value.chainId;
-
           return new RequestPresentation(
             r,
             anchor,
-            digest,
-            ethereumTxHash,
-            chainId
+            multihash.decode(proofDag.value.root.multihash).digest,
+            "0x" +
+              multihash.toHexString(
+                multihash.decode(proofDag.value.txHash.multihash).digest
+              ),
+            proofDag.value.chainId
           );
         } else {
           return new RequestPresentation(r);
