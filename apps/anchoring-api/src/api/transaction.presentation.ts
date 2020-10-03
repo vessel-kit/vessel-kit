@@ -1,4 +1,4 @@
-import { TransactionRecord } from '../storage/transaction.record';
+import { TransactionRecord } from "../storage/transaction.record";
 
 export class TransactionPresentation {
   constructor(private readonly transactionRecord: TransactionRecord) {}

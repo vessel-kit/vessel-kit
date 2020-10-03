@@ -1,21 +1,21 @@
-import { ILogger } from './util/logger.interface';
-import { Ipfs } from 'ipfs';
-import { ConsoleLogger } from './util/console-logger';
-import { DocumentRepository } from './document.repository';
-import { Cloud } from './cloud/cloud';
-import { DocumentService } from './document.service';
-import { AnchoringService } from './anchoring.service';
-import { DocumentUpdateService } from './document-update.service';
-import { DocId } from '@vessel-kit/codec';
-import { AnchoringHttpClient } from '@vessel-kit/anchoring';
-import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
-import { Context } from './context';
-import { DoctypesContainer } from './doctypes-container';
-import { TileDoctype } from './doctypes/tile/tile-doctype';
-import { VesselRulesetAlphaDoctype } from './doctypes/vessel-ruleset-alpha-doctype';
-import { VesselDocumentAlphaDoctype } from './doctypes/vessel-document-alpha-doctype';
-import { IDocument } from './document/document.interface';
-import { IIdentitySigning } from '@vessel-kit/identity';
+import { ILogger } from "./util/logger.interface";
+import { Ipfs } from "ipfs";
+import { ConsoleLogger } from "./util/console-logger";
+import { DocumentRepository } from "./document.repository";
+import { Cloud } from "./cloud/cloud";
+import { DocumentService } from "./document.service";
+import { AnchoringService } from "./anchoring.service";
+import { DocumentUpdateService } from "./document-update.service";
+import { DocId } from "@vessel-kit/codec";
+import { AnchoringHttpClient } from "@vessel-kit/anchoring";
+import { ConnectionString } from "@vessel-kit/blockchain-connection-string";
+import { Context } from "./context";
+import { DoctypesContainer } from "./doctypes-container";
+import { TileDoctype } from "./doctypes/tile/tile-doctype";
+import { VesselRulesetAlphaDoctype } from "./doctypes/vessel-ruleset-alpha-doctype";
+import { VesselDocumentAlphaDoctype } from "./doctypes/vessel-document-alpha-doctype";
+import { IDocument } from "./document/document.interface";
+import { IIdentitySigning } from "@vessel-kit/identity";
 
 export interface Options {
   logger: ILogger;
@@ -32,7 +32,11 @@ export class Vessel {
     const cloud = new Cloud(logger, ipfs);
     const anchoring = new AnchoringHttpClient(options.anchoringEndpoint);
     const blockchainEndpoints = options.blockchainEndpoints || [];
-    const anchoringService = new AnchoringService(blockchainEndpoints, anchoring, cloud);
+    const anchoringService = new AnchoringService(
+      blockchainEndpoints,
+      anchoring,
+      cloud
+    );
     const context = new Context(
       () => {
         if (this.#signor) {
@@ -42,15 +46,26 @@ export class Vessel {
         }
       },
       cloud.retrieve.bind(cloud),
-      anchoringService,
+      anchoringService
     );
     const doctypes = new DoctypesContainer(
       [TileDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
-      context,
+      context
     );
     const documentUpdateService = new DocumentUpdateService(logger, cloud);
-    const documentService = new DocumentService(logger, anchoringService, cloud, documentUpdateService, context);
-    this.#documentRepository = new DocumentRepository(logger, doctypes, cloud, documentService);
+    const documentService = new DocumentService(
+      logger,
+      anchoringService,
+      cloud,
+      documentUpdateService,
+      context
+    );
+    this.#documentRepository = new DocumentRepository(
+      logger,
+      doctypes,
+      cloud,
+      documentService
+    );
     logger.log(`Constructed Vessel instance`, options);
   }
 
@@ -59,12 +74,12 @@ export class Vessel {
   static build(ipfs: Ipfs, options?: Partial<Options>): Vessel {
     const appliedOptions = Object.assign(
       {
-        logger: new ConsoleLogger('vessel'),
-        anchoringEndpoint: 'http://localhost:3000',
-        ethereumEndpoint: 'http://localhost:8545',
+        logger: new ConsoleLogger("vessel"),
+        anchoringEndpoint: "http://localhost:3000",
+        ethereumEndpoint: "http://localhost:8545",
         blockchainEndpoints: [],
       },
-      options,
+      options
     );
     return new Vessel(ipfs, appliedOptions);
   }

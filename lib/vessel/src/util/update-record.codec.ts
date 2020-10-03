@@ -1,5 +1,9 @@
-import * as t from 'io-ts';
-import { DocIdCidCodec, CidObjectCodec, FastPatchOperationJsonCodec } from '@vessel-kit/codec';
+import * as t from "io-ts";
+import {
+  DocIdCidCodec,
+  CidObjectCodec,
+  FastPatchOperationJsonCodec,
+} from "@vessel-kit/codec";
 
 export const UpdateRecordWaiting = t.type({
   patch: t.array(FastPatchOperationJsonCodec),

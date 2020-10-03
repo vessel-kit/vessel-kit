@@ -1,16 +1,16 @@
-import * as t from 'io-ts';
-import { AnchoringStatus } from '@vessel-kit/anchoring';
-import { CidStringCodec, DateISO8601Codec } from '@vessel-kit/codec';
+import * as t from "io-ts";
+import { AnchoringStatus } from "@vessel-kit/anchoring";
+import { CidStringCodec, DateISO8601Codec } from "@vessel-kit/codec";
 
 export interface AnchorDone {
-  status: AnchoringStatus.ANCHORED,
+  status: AnchoringStatus.ANCHORED;
   proof: {
-    chainId: string,
-    blockNumber: number,
-    timestamp: string,
-    txHash: string,
-    root: string
-  }
+    chainId: string;
+    blockNumber: number;
+    timestamp: string;
+    txHash: string;
+    root: string;
+  };
 }
 
 const AnchorDone = t.type(
@@ -24,12 +24,12 @@ const AnchorDone = t.type(
       root: t.string.pipe(CidStringCodec),
     }),
   },
-  'AnchorDone',
+  "AnchorDone"
 );
 
 export interface AnchorPending {
-  status: AnchoringStatus.PENDING,
-  scheduledAt: string
+  status: AnchoringStatus.PENDING;
+  scheduledAt: string;
 }
 
 const AnchorPending = t.type(
@@ -37,11 +37,14 @@ const AnchorPending = t.type(
     status: t.literal(AnchoringStatus.PENDING),
     scheduledAt: t.string.pipe(DateISO8601Codec),
   },
-  'AnchorPending',
+  "AnchorPending"
 );
 
 export interface AnchorProcessing {
-  status: AnchoringStatus.PROCESSING | AnchoringStatus.NOT_REQUESTED | AnchoringStatus.FAILED
+  status:
+    | AnchoringStatus.PROCESSING
+    | AnchoringStatus.NOT_REQUESTED
+    | AnchoringStatus.FAILED;
 }
 
 const AnchorProcessing = t.type(
@@ -52,9 +55,12 @@ const AnchorProcessing = t.type(
       t.literal(AnchoringStatus.FAILED),
     ]),
   },
-  'AnchorProcessing',
+  "AnchorProcessing"
 );
 
-export type AnchorState = AnchorProcessing | AnchorPending | AnchorDone
+export type AnchorState = AnchorProcessing | AnchorPending | AnchorDone;
 
-export const AnchorState = t.union([AnchorProcessing, AnchorPending, AnchorDone], 'AnchorState');
+export const AnchorState = t.union(
+  [AnchorProcessing, AnchorPending, AnchorDone],
+  "AnchorState"
+);

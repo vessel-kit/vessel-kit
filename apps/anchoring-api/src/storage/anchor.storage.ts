@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { AnchorRecord } from './anchor.record';
-import { UuidValue } from '@vessel-kit/anchoring';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { AnchorRecord } from "./anchor.record";
+import { UuidValue } from "@vessel-kit/anchoring";
 
 @Injectable()
 export class AnchorStorage {
-  constructor(@InjectRepository(AnchorRecord) private repository: Repository<AnchorRecord>) {}
+  constructor(
+    @InjectRepository(AnchorRecord) private repository: Repository<AnchorRecord>
+  ) {}
 
   page(index: number, size = 25) {
     return this.repository.find({

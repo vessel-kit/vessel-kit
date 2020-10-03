@@ -1,5 +1,7 @@
-const SCHEME_PART = '([a-z][a-z\\d\\-\\.]+)';
-const SCHEME_REGEXP = new RegExp(`^${SCHEME_PART}\\+${SCHEME_PART}\\+${SCHEME_PART}$`);
+const SCHEME_PART = "([a-z][a-z\\d\\-\\.]+)";
+const SCHEME_REGEXP = new RegExp(
+  `^${SCHEME_PART}\\+${SCHEME_PART}\\+${SCHEME_PART}$`
+);
 const KNOWN_TRANSPORT_REGEXP = new RegExp(/^(https|wss|ws|http|grpc)$/);
 
 export class InvalidSchemeError extends Error {}
@@ -53,7 +55,7 @@ export class Scheme {
   }
 
   static fromURL(url: URL, defaults?: SchemeDefaults): Scheme {
-    const protocol = url.protocol.replace(/:$/, '');
+    const protocol = url.protocol.replace(/:$/, "");
     return Scheme.fromString(protocol, defaults);
   }
 
@@ -68,7 +70,9 @@ export class Scheme {
           if (defaults) {
             return new Scheme(defaults.chain, defaults.messaging, match[1]);
           } else {
-            throw new MissedDefaultsError(`Known transport ${input} requires defaults, got none`);
+            throw new MissedDefaultsError(
+              `Known transport ${input} requires defaults, got none`
+            );
           }
         /* istanbul ignore next */
         default:

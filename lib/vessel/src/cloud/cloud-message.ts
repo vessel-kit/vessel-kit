@@ -1,5 +1,5 @@
-import { MessageTyp } from './message-typ';
-import CID from 'cids';
+import { MessageTyp } from "./message-typ";
+import CID from "cids";
 
 export interface UpdateMessage {
   typ: MessageTyp.UPDATE;
@@ -15,7 +15,7 @@ export interface RequestMessage {
 export interface ResponseMessage {
   typ: MessageTyp.RESPONSE;
   id: string;
-  cid: CID
+  cid: CID;
 }
 
 export type CloudMessage = UpdateMessage | RequestMessage | ResponseMessage;

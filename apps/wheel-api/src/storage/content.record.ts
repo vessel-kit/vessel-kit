@@ -4,11 +4,11 @@ import {
   Column,
   Entity,
   PrimaryColumn,
-} from 'typeorm';
+} from "typeorm";
 
-@Entity('contents')
+@Entity("contents")
 export class ContentRecord {
-  @PrimaryColumn('varchar')
+  @PrimaryColumn("varchar")
   // @ts-ignore
   cid: string;
 

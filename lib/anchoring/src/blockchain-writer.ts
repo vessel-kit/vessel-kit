@@ -1,6 +1,6 @@
-import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
-import { EthereumWriter } from './ethereum/ethereum-writer';
-import { IBlockchainWriter } from './blockchain-writer.interface';
+import { ConnectionString } from "@vessel-kit/blockchain-connection-string";
+import { EthereumWriter } from "./ethereum/ethereum-writer";
+import { IBlockchainWriter } from "./blockchain-writer.interface";
 
 export class UnknownBlockchainWriterChainError extends Error {
   constructor(chain: string) {
@@ -9,9 +9,11 @@ export class UnknownBlockchainWriterChainError extends Error {
 }
 
 export class BlockchainWriter {
-  static fromConnectionString(connectionString: ConnectionString): IBlockchainWriter {
+  static fromConnectionString(
+    connectionString: ConnectionString
+  ): IBlockchainWriter {
     switch (connectionString.chain) {
-      case 'eip155':
+      case "eip155":
         return EthereumWriter.fromConnectionString(connectionString);
       default:
         throw new UnknownBlockchainWriterChainError(connectionString.chain);

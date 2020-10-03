@@ -1,16 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { RequestStorage } from '../storage/request.storage';
-import { RequestRecord } from '../storage/request.record';
-import { IpfsService } from './ipfs.service';
-import { Ipfs } from 'ipfs';
-import { AnchorRecord } from '../storage/anchor.record';
-import { AnchorStorage } from '../storage/anchor.storage';
-import { TransactionStorage } from '../storage/transaction.storage';
-import { TransactionRecord } from '../storage/transaction.record';
-import { AnchoringStatus } from '@vessel-kit/anchoring';
-import { ConfigService } from '../commons/config.service';
-import { Anchoring, MerklePathStringCodec } from '@vessel-kit/anchoring';
-import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
+import { Injectable, Logger } from "@nestjs/common";
+import { RequestStorage } from "../storage/request.storage";
+import { RequestRecord } from "../storage/request.record";
+import { IpfsService } from "./ipfs.service";
+import { Ipfs } from "ipfs";
+import { AnchorRecord } from "../storage/anchor.record";
+import { AnchorStorage } from "../storage/anchor.storage";
+import { TransactionStorage } from "../storage/transaction.storage";
+import { TransactionRecord } from "../storage/transaction.record";
+import { AnchoringStatus } from "@vessel-kit/anchoring";
+import { ConfigService } from "../commons/config.service";
+import { Anchoring, MerklePathStringCodec } from "@vessel-kit/anchoring";
+import { ConnectionString } from "@vessel-kit/blockchain-connection-string";
 
 @Injectable()
 export class AnchoringService {
@@ -23,16 +23,24 @@ export class AnchoringService {
     private readonly requestStorage: RequestStorage,
     private readonly anchorStorage: AnchorStorage,
     ipfsService: IpfsService,
-    private readonly transactionStorage: TransactionStorage,
+    private readonly transactionStorage: TransactionStorage
   ) {
     this.ipfs = ipfsService.client;
-    const connectionString = ConnectionString.fromString(configService.current.BLOCKCHAIN_URL);
+    const connectionString = ConnectionString.fromString(
+      configService.current.BLOCKCHAIN_URL
+    );
     this.anchoring = new Anchoring(this.ipfs, connectionString);
   }
 
   async anchorRequests() {
-    const pending = await this.requestStorage.allByStatus(AnchoringStatus.PENDING, AnchoringStatus.PROCESSING);
-    const processing = await this.requestStorage.updateStatus(pending, AnchoringStatus.PROCESSING);
+    const pending = await this.requestStorage.allByStatus(
+      AnchoringStatus.PENDING,
+      AnchoringStatus.PROCESSING
+    );
+    const processing = await this.requestStorage.updateStatus(
+      pending,
+      AnchoringStatus.PROCESSING
+    );
     const [stale, latest] = this.separateRecordsByTime(processing);
     await this.markRecordsOutdated(stale);
 
@@ -49,8 +57,12 @@ export class AnchoringService {
     transactionRecord.blockNumber = creation.transaction.blockNumber;
     transactionRecord.chainId = creation.transaction.chainId.toString();
     transactionRecord.txHash = creation.transaction.txHash;
-    transactionRecord.createdAt = new Date(creation.transaction.blockTimestamp * 1000);
-    const savedTransactionRecord = await this.transactionStorage.save(transactionRecord);
+    transactionRecord.createdAt = new Date(
+      creation.transaction.blockTimestamp * 1000
+    );
+    const savedTransactionRecord = await this.transactionStorage.save(
+      transactionRecord
+    );
 
     for (const response of creation.responses) {
       const anchorRecord = new AnchorRecord();

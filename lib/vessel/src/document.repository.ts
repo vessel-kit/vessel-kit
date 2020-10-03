@@ -1,13 +1,13 @@
-import { ILogger } from './util/logger.interface';
-import { Cloud } from './cloud/cloud';
-import { DocId } from '@vessel-kit/codec';
-import { Document } from './document/document';
-import { DocumentService } from './document.service';
-import { MessageTyp } from './cloud/message-typ';
-import { DoctypesContainer } from './doctypes-container';
-import { IDocument } from './document/document.interface';
-import { IWithDoctype } from './document/with-doctype.interface';
-import { History } from './util/history';
+import { ILogger } from "./util/logger.interface";
+import { Cloud } from "./cloud/cloud";
+import { DocId } from "@vessel-kit/codec";
+import { Document } from "./document/document";
+import { DocumentService } from "./document.service";
+import { MessageTyp } from "./cloud/message-typ";
+import { DoctypesContainer } from "./doctypes-container";
+import { IDocument } from "./document/document.interface";
+import { IWithDoctype } from "./document/with-doctype.interface";
+import { History } from "./util/history";
 
 export class DocumentRepository {
   #logger: ILogger;
@@ -16,7 +16,12 @@ export class DocumentRepository {
   #documentService: DocumentService;
   #documentCache: Map<string, IDocument<unknown, unknown>>;
 
-  constructor(logger: ILogger, doctypes: DoctypesContainer, cloud: Cloud, documentService: DocumentService) {
+  constructor(
+    logger: ILogger,
+    doctypes: DoctypesContainer,
+    cloud: Cloud,
+    documentService: DocumentService
+  ) {
     this.#logger = logger.withContext(DocumentRepository.name);
     this.#doctypes = doctypes;
     this.#cloud = cloud;
@@ -69,7 +74,9 @@ export class DocumentRepository {
         this.#documentCache.set(documentId.toString(), document);
         return document;
       } else {
-        throw new Error(`Expected genesis record, got garbage on ${documentId}`);
+        throw new Error(
+          `Expected genesis record, got garbage on ${documentId}`
+        );
       }
     }
   }

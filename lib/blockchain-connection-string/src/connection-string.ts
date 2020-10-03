@@ -1,37 +1,42 @@
-import { Scheme, SchemeDefaults } from './scheme';
+import { Scheme, SchemeDefaults } from "./scheme";
 
 export class ConnectionString {
   #options: Map<string, string>;
-  #scheme: Scheme
-  #original: URL
+  #scheme: Scheme;
+  #original: URL;
 
   constructor(scheme: Scheme, original: URL, options: Map<string, string>) {
     this.#options = options;
-    this.#scheme = scheme
-    this.#original = original
+    this.#scheme = scheme;
+    this.#original = original;
   }
 
   get chain(): string {
-    return this.#scheme.chain
+    return this.#scheme.chain;
   }
 
   get messagingProtocol(): string {
-    return this.#scheme.messaging
+    return this.#scheme.messaging;
   }
 
   get options(): Map<string, string> {
-    return this.#options
+    return this.#options;
   }
 
-  get transportProtocol (): string {
-    return this.#scheme.transport
+  get transportProtocol(): string {
+    return this.#scheme.transport;
   }
 
   get transport(): string {
-    return `${this.#scheme.transport}://${this.#original.host}${this.#original.pathname}`
+    return `${this.#scheme.transport}://${this.#original.host}${
+      this.#original.pathname
+    }`;
   }
 
-  static fromString(input: string, defaults?: SchemeDefaults): ConnectionString {
+  static fromString(
+    input: string,
+    defaults?: SchemeDefaults
+  ): ConnectionString {
     const url = new URL(input);
     const scheme = Scheme.fromURL(url, defaults);
     return new ConnectionString(scheme, url, new Map(url.searchParams));
@@ -39,14 +44,14 @@ export class ConnectionString {
 
   static isValid(input: string): boolean {
     try {
-      const url = new URL(input)
-      return Scheme.isValid(url.protocol.replace(/:$/, ''))
+      const url = new URL(input);
+      return Scheme.isValid(url.protocol.replace(/:$/, ""));
     } catch (e) {
-      return false
+      return false;
     }
   }
 
   toString(): string {
-    return this.#original.toString()
+    return this.#original.toString();
   }
 }

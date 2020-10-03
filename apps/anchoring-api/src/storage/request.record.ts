@@ -1,10 +1,20 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from 'typeorm';
-import { uuidTransformer } from './uuid.transformer';
-import { AnchoringStatus, UuidValue, IAnchoringRequest } from '@vessel-kit/anchoring';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryColumn,
+} from "typeorm";
+import { uuidTransformer } from "./uuid.transformer";
+import {
+  AnchoringStatus,
+  UuidValue,
+  IAnchoringRequest,
+} from "@vessel-kit/anchoring";
 
-@Entity('requests')
+@Entity("requests")
 export class RequestRecord implements IAnchoringRequest {
-  @PrimaryColumn({ generated: 'uuid', transformer: uuidTransformer })
+  @PrimaryColumn({ generated: "uuid", transformer: uuidTransformer })
   // @ts-ignore
   id: UuidValue;
 
@@ -12,7 +22,7 @@ export class RequestRecord implements IAnchoringRequest {
   // @ts-ignore
   status: AnchoringStatus;
 
-  @Column('varchar')
+  @Column("varchar")
   // @ts-ignore
   cid: string;
 

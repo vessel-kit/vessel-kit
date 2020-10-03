@@ -1,4 +1,4 @@
-import * as uuid from 'uuid';
+import * as uuid from "uuid";
 
 export class UuidValue {
   private readonly v: string;

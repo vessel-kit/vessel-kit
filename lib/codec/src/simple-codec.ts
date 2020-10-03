@@ -1,5 +1,5 @@
-import * as t from 'io-ts';
-import { decodeThrow } from './decode-throw';
+import * as t from "io-ts";
+import { decodeThrow } from "./decode-throw";
 
 export interface ISimpleCodec<A> {
   encode(a: A): any;

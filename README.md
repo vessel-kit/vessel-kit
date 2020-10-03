@@ -30,7 +30,7 @@ and a resolver. The latter applies changes, and resolves conflicts in a determin
 and CRDT depends on constraints of the applications. Using CRDTs means either restricting application domain, or putting a heavy burden
 on application developer so that she could choose or construct a proper data structure. In addition to that CRDT, by academic definition,
 does not represent a lifecycle of data. For example, in a contract (paper, not smart one) signing scenario, the text of a contract could not be changed after it is signed by both parties.
-DID document is expected not to be updated after revocation. You have to add business logic on top of it for data lifecycle. All in all, we can not build dynamic decentralized applications _purely_ relying on CRDT. 
+DID document is expected not to be updated after revocation. You have to add business logic on top of it for data lifecycle. All in all, we can not build dynamic decentralized applications _purely_ relying on CRDT.
 
 We assume a piece of data is structured in a form of _document_, we call it Vessel document below. It consists of genesis record and update records, that are stored on IPFS.
 Update records link to each other to form [Merkle DAG](https://docs.ipfs.io/concepts/merkle-dag/).
@@ -45,7 +45,7 @@ The ruleset encodes rules of state transition, which might include checking sign
 as well observing (and triggering) external resources, which are deemed necessary for the document
 and are permitted by the node on which the ruleset is executed.
 It is similar to Operation-based CRDTs `apply(state, operation) => state` function. So, at any update record in the line of changes
-we could compute a corresponding version of the state. 
+we could compute a corresponding version of the state.
 
 What the ruleset also does it provides what we call a _canonical_ form of a document. That is, it gets a current `state` and presents it in a way
 that is suitable for a reader regardless of what is inside the state or how it evolves. One example of it is signing a contract. We consider
@@ -62,6 +62,7 @@ with state transitions, document lifecycle or semantics of document state to ret
 
 Consider this a research project. To have a peek on full Vessel document lifecycle go to [post-vessel-tile-remote.ts](lib/vessel/src/integration/post-vessel-tile-remote.ts).
 To run it:
+
 1. start necessary infra (two IPFS nodes) by docker-compose: `docker-compose up`,
 2. install dependencies: `pnpm install`
 3. make the code executable: `pnpm run build`
@@ -75,6 +76,7 @@ For the document to be considered an agreement (stage = 'agreement') it has to c
 The document can not be changed after it is in agreement stage. All of this is demonstrated there in the script.
 
 When run, you should see this on console:
+
 ```
 Vessel document id DocId(bafyreibkktz2hm2kgwfqxsm3haxtvikclvx2fqm4inf7scgudqbxuv7bni)
 sleeping...
@@ -93,7 +95,7 @@ Siblings-resolution relies on anchoring, which should itself be moved fully to t
 Only JavaScript is supported in Ruleset. It should support WebAssembly. And, this in turns requires some sort of authoring support.
 
 As for security, we use [SES by Agoric](https://github.com/Agoric/ses-shim) to isolate potentially unsafe code, so consider it pretty secure.
-Yet, there are no limits on how many CPU/memory/network resources a ruleset consumes. 
+Yet, there are no limits on how many CPU/memory/network resources a ruleset consumes.
 
 As for the authoring, this should include generation of JSON (LD) Schema for the document state.
 
@@ -104,10 +106,13 @@ So, lots of stuff that could be done better.
 The suite uses [pnpm](https://pnpm.js.org) package manager. You have to install it first.
 
 For package, install dependencies:
+
 ```shell script
 pnpm i
 ```
+
 then run in `dev` mode which recompiles TypeScript on file changes.
+
 ```shell script
 pnpm run dev
 ```

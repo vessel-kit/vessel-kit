@@ -1,19 +1,19 @@
-import axios from 'axios';
-import { decodeThrow } from '@vessel-kit/codec';
-import { DocId } from '@vessel-kit/codec';
-import { RemoteDocumentService } from './remote-document-service';
-import { Context, IContext } from '../context';
-import { Document } from '../document/document';
-import { IWithDoctype } from '../document/with-doctype.interface';
-import { IDocument, SnapshotCodec } from '../document/document.interface';
-import { DoctypesContainer } from '../doctypes-container';
-import { TileDoctype } from '../doctypes/tile/tile-doctype';
-import CID from 'cids';
-import * as t from 'io-ts';
-import { bind } from 'decko';
-import { VesselRulesetAlphaDoctype } from '../doctypes/vessel-ruleset-alpha-doctype';
-import { VesselDocumentAlphaDoctype } from '../doctypes/vessel-document-alpha-doctype';
-import { IIdentitySigning } from '@vessel-kit/identity';
+import axios from "axios";
+import { decodeThrow } from "@vessel-kit/codec";
+import { DocId } from "@vessel-kit/codec";
+import { RemoteDocumentService } from "./remote-document-service";
+import { Context, IContext } from "../context";
+import { Document } from "../document/document";
+import { IWithDoctype } from "../document/with-doctype.interface";
+import { IDocument, SnapshotCodec } from "../document/document.interface";
+import { DoctypesContainer } from "../doctypes-container";
+import { TileDoctype } from "../doctypes/tile/tile-doctype";
+import CID from "cids";
+import * as t from "io-ts";
+import { bind } from "decko";
+import { VesselRulesetAlphaDoctype } from "../doctypes/vessel-ruleset-alpha-doctype";
+import { VesselDocumentAlphaDoctype } from "../doctypes/vessel-document-alpha-doctype";
+import { IIdentitySigning } from "@vessel-kit/identity";
 
 export class Client {
   #signor?: IIdentitySigning;
@@ -26,7 +26,7 @@ export class Client {
     const retrieve = async (cid: CID, path?: string) => {
       const url = new URL(`${this.host}/api/v0/cloud/${cid}`);
       if (path) {
-        url.searchParams.append('path', path);
+        url.searchParams.append("path", path);
       }
       const response = await axios.get(url.toString());
       return response.data;
@@ -40,7 +40,7 @@ export class Client {
     }, retrieve);
     this.#doctypes = new DoctypesContainer(
       [TileDoctype, VesselRulesetAlphaDoctype, VesselDocumentAlphaDoctype],
-      this.#context,
+      this.#context
     );
     this.#service = new RemoteDocumentService(host, this.#context);
   }
@@ -59,7 +59,10 @@ export class Client {
     const doctype = this.#doctypes.get(payload.doctype);
     const knead = await doctype.knead(payload);
     const canonical = await doctype.canonical(knead);
-    const response = await axios.post(`${this.host}/api/v0/document`, canonical);
+    const response = await axios.post(
+      `${this.host}/api/v0/document`,
+      canonical
+    );
     const snapshot = decodeThrow(SnapshotCodec(t.unknown), response.data);
     const document = new Document(snapshot, doctype, this.#service);
     this.#tracked.set(document.id.valueOf(), document);
@@ -72,8 +75,13 @@ export class Client {
     if (present) {
       return present;
     } else {
-      const genesisResponse = await axios.get(`${this.host}/api/v0/document/${docId.valueOf()}`);
-      const snapshot = decodeThrow(SnapshotCodec(t.unknown), genesisResponse.data);
+      const genesisResponse = await axios.get(
+        `${this.host}/api/v0/document/${docId.valueOf()}`
+      );
+      const snapshot = decodeThrow(
+        SnapshotCodec(t.unknown),
+        genesisResponse.data
+      );
       const handler = this.#doctypes.get(snapshot.doctype);
       const document = new Document(snapshot, handler, this.#service);
       this.#tracked.set(document.id.valueOf(), document);

@@ -1,13 +1,20 @@
-import { sleep } from './sleep.util';
-import { Client } from '../remote/client';
-import { Tile } from '../doctypes/tile/tile';
-import { AlgorithmKind, KeyIdentity, PrivateKeyFactory } from '@vessel-kit/identity';
+import { sleep } from "./sleep.util";
+import { Client } from "../remote/client";
+import { Tile } from "../doctypes/tile/tile";
+import {
+  AlgorithmKind,
+  KeyIdentity,
+  PrivateKeyFactory,
+} from "@vessel-kit/identity";
 
-const REMOTE_URL = 'http://localhost:3001';
+const REMOTE_URL = "http://localhost:3001";
 const client = new Client(REMOTE_URL);
 
 async function main() {
-  const privateKey = new PrivateKeyFactory().fromSeed(AlgorithmKind.ES256K, 'seed');
+  const privateKey = new PrivateKeyFactory().fromSeed(
+    AlgorithmKind.ES256K,
+    "seed"
+  );
   const identity = new KeyIdentity(privateKey);
   await client.addSignor(identity);
   const did = await identity.did();

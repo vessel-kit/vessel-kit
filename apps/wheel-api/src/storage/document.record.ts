@@ -4,11 +4,11 @@ import {
   Column,
   Entity,
   PrimaryColumn,
-} from 'typeorm';
+} from "typeorm";
 
-@Entity('documents')
+@Entity("documents")
 export class DocumentRecord {
-  @PrimaryColumn('varchar' )
+  @PrimaryColumn("varchar")
   // @ts-ignore
   cid: string;
 
@@ -16,7 +16,7 @@ export class DocumentRecord {
   // @ts-ignore
   doctype: string;
 
-  @Column('simple-json')
+  @Column("simple-json")
   payload: any;
 
   @Column()

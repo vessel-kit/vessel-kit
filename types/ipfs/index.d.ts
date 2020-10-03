@@ -56,7 +56,7 @@ declare module "ipfs" {
       options?: PinAddAllOptions
     ): AsyncIterable<CID>;
     ls(options?: PinLsOptions): AsyncIterable<{ cid: CID; type: string }>;
-    rm(ipfsPath: CID | string, options?: PinAddRmOptions): Promise<CID>
+    rm(ipfsPath: CID | string, options?: PinAddRmOptions): Promise<CID>;
   }
 
   export class Ipfs {

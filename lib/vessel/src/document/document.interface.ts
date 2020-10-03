@@ -1,8 +1,8 @@
-import { FrozenSubject } from '../util/frozen-subject';
-import { DocId } from '@vessel-kit/codec';
-import { History, HistoryCodec } from '../util/history';
-import * as t from 'io-ts'
-import { IContext } from '../context';
+import { FrozenSubject } from "../util/frozen-subject";
+import { DocId } from "@vessel-kit/codec";
+import { History, HistoryCodec } from "../util/history";
+import * as t from "io-ts";
+import { IContext } from "../context";
 
 export interface Snapshot<A> {
   doctype: string;
@@ -14,8 +14,8 @@ export function SnapshotCodec<A>(codec: t.Type<A, unknown, any>) {
   return t.type({
     doctype: t.string,
     view: codec,
-    log: HistoryCodec
-  })
+    log: HistoryCodec,
+  });
 }
 
 export interface IDocument<State, Shape> {
@@ -24,10 +24,10 @@ export interface IDocument<State, Shape> {
   state: Snapshot<State>;
   state$: FrozenSubject<Snapshot<State>>;
   view: State;
-  context: IContext
+  context: IContext;
   update(record: any): Promise<void>;
   requestAnchor(): void;
   close(): void;
   toJSON(): any;
-  canonical(): Promise<Shape>
+  canonical(): Promise<Shape>;
 }

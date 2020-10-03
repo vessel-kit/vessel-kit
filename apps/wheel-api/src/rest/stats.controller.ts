@@ -1,11 +1,11 @@
-import { Controller, Get } from '@nestjs/common';
-import { Vessel } from '@vessel-kit/vessel';
+import { Controller, Get } from "@nestjs/common";
+import { Vessel } from "@vessel-kit/vessel";
 
-@Controller('/api/v0/stats')
+@Controller("/api/v0/stats")
 export class StatsController {
   constructor(private readonly vessel: Vessel) {}
 
-  @Get('/')
+  @Get("/")
   async index() {
     const stats = await this.vessel.list();
     return {

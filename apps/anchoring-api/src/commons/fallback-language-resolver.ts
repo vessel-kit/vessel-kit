@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { I18nResolver } from 'nestjs-i18n';
+import { Injectable } from "@nestjs/common";
+import { I18nResolver } from "nestjs-i18n";
 
 @Injectable()
 export class FallbackLanguageResolver implements I18nResolver {

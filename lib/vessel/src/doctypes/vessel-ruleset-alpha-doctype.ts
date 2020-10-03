@@ -1,18 +1,18 @@
-import * as t from 'io-ts';
-import { DoctypeHandler } from '../document/doctype';
-import { decodeThrow } from '@vessel-kit/codec';
-import './ses';
-import { IContext } from '../context';
+import * as t from "io-ts";
+import { DoctypeHandler } from "../document/doctype";
+import { decodeThrow } from "@vessel-kit/codec";
+import "./ses";
+import { IContext } from "../context";
 
-import * as fs from 'fs';
-import terser from 'terser';
-import * as ts from 'typescript';
-import { AnchoringStatus, AnchorProof } from '@vessel-kit/anchoring';
-import { Ordering } from '../document/ordering';
-import { AnchorState } from '../document/anchor-state';
-import { isRight } from 'fp-ts/lib/Either';
+import * as fs from "fs";
+import terser from "terser";
+import * as ts from "typescript";
+import { AnchoringStatus, AnchorProof } from "@vessel-kit/anchoring";
+import { Ordering } from "../document/ordering";
+import { AnchorState } from "../document/anchor-state";
+import { isRight } from "fp-ts/lib/Either";
 
-const DOCTYPE = 'vessel/ruleset/1.0.0';
+const DOCTYPE = "vessel/ruleset/1.0.0";
 
 const json = t.type({
   doctype: t.literal(DOCTYPE),
@@ -25,7 +25,7 @@ const json = t.type({
 class Freight implements t.TypeOf<typeof json> {
   doctype: typeof DOCTYPE = DOCTYPE;
   content: {
-    type: 'application/javascript';
+    type: "application/javascript";
     main: string;
   };
   #ruleset: any;
@@ -68,7 +68,7 @@ const Shape = t.type(
     }),
     signature: t.string,
   },
-  'RulesetShape',
+  "RulesetShape"
 );
 
 const State = t.type(
@@ -76,7 +76,7 @@ const State = t.type(
     current: Shape,
     anchor: AnchorState,
   },
-  'RulesetState',
+  "RulesetState"
 );
 
 type State = t.TypeOf<typeof State>;
@@ -97,16 +97,21 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
   };
 
   async genesisFromRulesetFile(filename: string) {
-    const source = await fs.promises.readFile(filename).then((s) => s.toString());
+    const source = await fs.promises
+      .readFile(filename)
+      .then((s) => s.toString());
     const outputText = ts.transpileModule(source, {
-      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017 },
+      compilerOptions: {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2017,
+      },
     }).outputText;
     const minified = await terser.minify(outputText, { mangle: false });
     const main = minified.code;
     return {
       doctype: DOCTYPE,
       content: {
-        type: 'application/javascript' as 'application/javascript',
+        type: "application/javascript" as "application/javascript",
         main: main,
       },
     };
@@ -121,7 +126,7 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
         },
       };
     } else {
-      throw new Error('Invalid Vessel Ruleset Shape');
+      throw new Error("Invalid Vessel Ruleset Shape");
     }
   }
 

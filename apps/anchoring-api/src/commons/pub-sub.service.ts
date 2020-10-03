@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PubSub } from 'graphql-subscriptions';
-import { PubSubEngine } from 'graphql-subscriptions/dist/pubsub-engine';
+import { Injectable } from "@nestjs/common";
+import { PubSub } from "graphql-subscriptions";
+import { PubSubEngine } from "graphql-subscriptions/dist/pubsub-engine";
 
 @Injectable()
 export class PubSubService {
@@ -12,8 +12,9 @@ export class PubSubService {
 
   get didAnchor() {
     return {
-      publish: (payload: any) => this.publish('didAnchor', { didAnchor: payload }),
-      asyncIterator: this.asyncIterator('didAnchor'),
+      publish: (payload: any) =>
+        this.publish("didAnchor", { didAnchor: payload }),
+      asyncIterator: this.asyncIterator("didAnchor"),
     };
   }
 

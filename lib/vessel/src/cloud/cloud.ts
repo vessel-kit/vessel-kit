@@ -1,7 +1,7 @@
-import { Ipfs } from 'ipfs';
-import CID from 'cids';
-import { ILogger } from '../util/logger.interface';
-import { CloudBus } from './cloud-bus';
+import { Ipfs } from "ipfs";
+import CID from "cids";
+import { ILogger } from "../util/logger.interface";
+import { CloudBus } from "./cloud-bus";
 
 export class UnknownMessageError extends Error {
   constructor(message: any) {

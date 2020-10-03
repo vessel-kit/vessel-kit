@@ -1,4 +1,4 @@
-import CID from 'cids';
+import CID from "cids";
 
 const PATTERN = new RegExp(/(vessel:\/\/|\/vessel\/)(\w+)/);
 
@@ -33,7 +33,7 @@ export class DocId {
     return `vessel://${this.cid.toString()}`;
   }
 
-  [Symbol.for('nodejs.util.inspect.custom')]() {
-    return 'DocId(' + this.cid.toString() + ')';
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return "DocId(" + this.cid.toString() + ")";
   }
 }

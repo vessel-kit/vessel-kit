@@ -1,18 +1,24 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from 'typeorm';
-import { UuidValue } from '@vessel-kit/anchoring';
-import { uuidTransformer } from './uuid.transformer';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryColumn,
+} from "typeorm";
+import { UuidValue } from "@vessel-kit/anchoring";
+import { uuidTransformer } from "./uuid.transformer";
 
-@Entity('anchors')
+@Entity("anchors")
 export class AnchorRecord {
-  @PrimaryColumn({ generated: 'uuid', transformer: uuidTransformer })
+  @PrimaryColumn({ generated: "uuid", transformer: uuidTransformer })
   // @ts-ignore
   id: UuidValue;
 
-  @Column('uuid', { transformer: uuidTransformer })
+  @Column("uuid", { transformer: uuidTransformer })
   // @ts-ignore
   requestId: UuidValue;
 
-  @Column('varchar')
+  @Column("varchar")
   // @ts-ignore
   cid: string;
 
@@ -20,7 +26,7 @@ export class AnchorRecord {
   // @ts-ignore
   path: string;
 
-  @Column('varchar')
+  @Column("varchar")
   // @ts-ignore
   proofCid: string;
 
@@ -32,7 +38,7 @@ export class AnchorRecord {
   // @ts-ignore
   updatedAt: Date;
 
-  @Column('uuid', { transformer: uuidTransformer })
+  @Column("uuid", { transformer: uuidTransformer })
   // @ts-ignore
   transactionId: UuidValue;
 

@@ -1,4 +1,4 @@
-import { Identifier } from './identifier';
+import { Identifier } from "./identifier";
 
 /**
  * Dummy identity. Could only tell its DID identifier.

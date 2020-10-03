@@ -1,28 +1,30 @@
-import { PrivateKeyFactory } from '../../private-key.factory';
-import { AlgorithmKind } from '../../algorithm-kind';
-import * as jws from '../jws';
-import * as keyMethod from '../../key.method';
-import { InvalidJWSError } from '../jws';
-import { Resolver } from 'did-resolver';
-import CID from 'cids';
+import { PrivateKeyFactory } from "../../private-key.factory";
+import { AlgorithmKind } from "../../algorithm-kind";
+import * as jws from "../jws";
+import * as keyMethod from "../../key.method";
+import { InvalidJWSError } from "../jws";
+import { Resolver } from "did-resolver";
+import CID from "cids";
 
 const privateKeyFactory = new PrivateKeyFactory();
-const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, 'seed');
+const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, "seed");
 
-describe('create', () => {
-  test('plain', async () => {
+describe("create", () => {
+  test("plain", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const signature = await jws.create(signer, { hello: 'world' });
+    const signature = await jws.create(signer, { hello: "world" });
     expect(signature).toMatchSnapshot();
   });
-  test('with CID', async () => {
+  test("with CID", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
     const signature = await jws.create(signer, {
-      hello: new CID('bafyreie2a2sbirpdklnsi6uxlwng5istoztktj7lrsyfqv3wonovazy354'),
+      hello: new CID(
+        "bafyreie2a2sbirpdklnsi6uxlwng5istoztktj7lrsyfqv3wonovazy354"
+      ),
     });
     expect(signature).toMatchSnapshot();
   });
-  test('with bytes', async () => {
+  test("with bytes", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
     const signature = await jws.create(signer, {
       hello: {
@@ -33,65 +35,75 @@ describe('create', () => {
   });
 });
 
-describe('splitParts', () => {
-  test('ok', async () => {
+describe("splitParts", () => {
+  test("ok", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const payload = { hello: 'world' };
+    const payload = { hello: "world" };
     const signature = await jws.create(signer, payload);
     const decoded = jws.splitParts(signature);
     expect(decoded).toMatchSnapshot();
   });
 
-  test('malformed jws', async () => {
-    expect(() => jws.splitParts('malformed jws')).toThrow(new InvalidJWSError('Wrong format'));
+  test("malformed jws", async () => {
+    expect(() => jws.splitParts("malformed jws")).toThrow(
+      new InvalidJWSError("Wrong format")
+    );
   });
 });
 
-describe('decode', () => {
-  test('ok', async () => {
+describe("decode", () => {
+  test("ok", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const payload = { hello: 'world' };
+    const payload = { hello: "world" };
     const signature = await jws.create(signer, payload);
     const decoded = jws.decode(signature);
     expect(decoded).toMatchSnapshot();
     expect(decoded.payload).toEqual(payload);
   });
 
-  test('malformed jws', async () => {
-    expect(() => jws.decode('malformed jws')).toThrow(new InvalidJWSError('Wrong format'));
+  test("malformed jws", async () => {
+    expect(() => jws.decode("malformed jws")).toThrow(
+      new InvalidJWSError("Wrong format")
+    );
   });
 
-  test('no kid', async () => {
-    const noKid = 'eyJhbGciOiJub25lIn0.e30.eyJhbGciOiJub25lIn0';
-    expect(() => jws.decode(noKid)).toThrow(new InvalidJWSError('Missing kid header'));
+  test("no kid", async () => {
+    const noKid = "eyJhbGciOiJub25lIn0.e30.eyJhbGciOiJub25lIn0";
+    expect(() => jws.decode(noKid)).toThrow(
+      new InvalidJWSError("Missing kid header")
+    );
   });
 
-  test('no alg', async () => {
-    const noKid = 'eyJraWQiOiAiZm9vIn0.e30.eyJhbGciOiJub25lIn0';
-    expect(() => jws.decode(noKid)).toThrow(new InvalidJWSError('Missing alg header'));
+  test("no alg", async () => {
+    const noKid = "eyJraWQiOiAiZm9vIn0.e30.eyJhbGciOiJub25lIn0";
+    expect(() => jws.decode(noKid)).toThrow(
+      new InvalidJWSError("Missing alg header")
+    );
   });
 });
 
-describe('verify', () => {
-  test('ok', async () => {
+describe("verify", () => {
+  test("ok", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const signature = await jws.create(signer, { hello: 'world' });
+    const signature = await jws.create(signer, { hello: "world" });
     const resolver = new Resolver({
       ...keyMethod.getResolver(),
     });
     await expect(jws.verify(signature, resolver)).resolves.toBeTruthy();
   });
-  test('with CID', async () => {
+  test("with CID", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
     const signature = await jws.create(signer, {
-      hello: new CID('bafyreie2a2sbirpdklnsi6uxlwng5istoztktj7lrsyfqv3wonovazy354'),
+      hello: new CID(
+        "bafyreie2a2sbirpdklnsi6uxlwng5istoztktj7lrsyfqv3wonovazy354"
+      ),
     });
     const resolver = new Resolver({
       ...keyMethod.getResolver(),
     });
     await expect(jws.verify(signature, resolver)).resolves.toBeTruthy();
   });
-  test('with bytes', async () => {
+  test("with bytes", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
     const signature = await jws.create(signer, {
       hello: {
@@ -103,20 +115,20 @@ describe('verify', () => {
     });
     await expect(jws.verify(signature, resolver)).resolves.toBeTruthy();
   });
-  test('no document', async () => {
+  test("no document", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const signature = await jws.create(signer, { hello: 'world' });
+    const signature = await jws.create(signer, { hello: "world" });
     const resolver = new Resolver();
     await expect(jws.verify(signature, resolver)).rejects.toThrow();
   });
-  test('no keys', async () => {
+  test("no keys", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const signature = await jws.create(signer, { hello: 'world' });
+    const signature = await jws.create(signer, { hello: "world" });
     const resolver = new Resolver({
       key: async () => {
         return {
-          id: 'did:key:zQ3shawAiwRa3YbMitAcCyT9PhqPgy4Q4o1va8wzVyz9Lneh7',
-          '@context': 'https://w3id.org/did/v1',
+          id: "did:key:zQ3shawAiwRa3YbMitAcCyT9PhqPgy4Q4o1va8wzVyz9Lneh7",
+          "@context": "https://w3id.org/did/v1",
           publicKey: [],
         };
       },
@@ -125,16 +137,16 @@ describe('verify', () => {
   });
 });
 
-describe('detached', () => {
-  const payload = { hello: 'world' };
+describe("detached", () => {
+  const payload = { hello: "world" };
 
-  test('asDetached', async () => {
+  test("asDetached", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const signature = await jws.create(signer, { hello: 'world' });
+    const signature = await jws.create(signer, { hello: "world" });
     expect(jws.asDetached(signature)).toMatchSnapshot();
   });
 
-  test('asAttached', async () => {
+  test("asAttached", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
     const signature = await jws.create(signer, payload);
     const detached = jws.asDetached(signature);
@@ -142,9 +154,9 @@ describe('detached', () => {
     expect(attached).toEqual(signature);
   });
 
-  test('isDetached and isAttached', async () => {
+  test("isDetached and isAttached", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
-    const signature = await jws.create(signer, { hello: 'world' });
+    const signature = await jws.create(signer, { hello: "world" });
     const detached = jws.asDetached(signature);
     const attached = jws.asAttached(payload, detached);
     expect(jws.isDetached(detached)).toBeTruthy();
