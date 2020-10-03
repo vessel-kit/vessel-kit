@@ -1,10 +1,16 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from 'typeorm';
-import { UuidValue } from '@vessel-kit/anchoring';
-import { uuidTransformer } from './uuid.transformer';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryColumn,
+} from "typeorm";
+import { UuidValue } from "@vessel-kit/anchoring";
+import { uuidTransformer } from "./uuid.transformer";
 
-@Entity('transactions')
+@Entity("transactions")
 export class TransactionRecord {
-  @PrimaryColumn({ generated: 'uuid', transformer: uuidTransformer })
+  @PrimaryColumn({ generated: "uuid", transformer: uuidTransformer })
   // @ts-ignore
   id: UuidValue;
 

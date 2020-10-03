@@ -1,13 +1,13 @@
-import { DocId } from '@vessel-kit/codec';
-import { Subscription } from 'rxjs';
-import { FrozenSubject } from '../util/frozen-subject';
-import { IDocumentService } from './document.service.interface';
-import { IDocument, Snapshot } from './document.interface';
-import { IDoctype } from './doctype';
-import { History } from '../util/history';
-import debug from 'debug';
+import { DocId } from "@vessel-kit/codec";
+import { Subscription } from "rxjs";
+import { FrozenSubject } from "../util/frozen-subject";
+import { IDocumentService } from "./document.service.interface";
+import { IDocument, Snapshot } from "./document.interface";
+import { IDoctype } from "./doctype";
+import { History } from "../util/history";
+import debug from "debug";
 
-const log = debug('vessel:document');
+const log = debug("vessel:document");
 
 export class Document<State, Shape> implements IDocument<State, Shape> {
   #id: DocId;
@@ -17,16 +17,22 @@ export class Document<State, Shape> implements IDocument<State, Shape> {
   #internal$S: Subscription;
   #handler: IDoctype<State, Shape>;
 
-  constructor(snapshot: Snapshot<State>, handler: IDoctype<State, Shape>, service: IDocumentService) {
+  constructor(
+    snapshot: Snapshot<State>,
+    handler: IDoctype<State, Shape>,
+    service: IDocumentService
+  ) {
     this.#id = new DocId(snapshot.log.first);
     this.#state$ = new FrozenSubject(snapshot);
     this.#service = service;
     this.#handler = handler;
 
-    this.#external$S = this.#service.externalUpdates$(this.#id, this.#handler, this.#state$).subscribe({
-      next: (snapshot) => this.state$.next(snapshot),
-      error: (error) => log(error),
-    });
+    this.#external$S = this.#service
+      .externalUpdates$(this.#id, this.#handler, this.#state$)
+      .subscribe({
+        next: (snapshot) => this.state$.next(snapshot),
+        error: (error) => log(error),
+      });
     this.#internal$S = this.state$.subscribe((update) => {
       this.#service.handleUpdate(this.#id, update);
     });
@@ -78,7 +84,7 @@ export class Document<State, Shape> implements IDocument<State, Shape> {
     this.#state$.complete();
   }
 
-  [Symbol.for('nodejs.util.inspect.custom')]() {
+  [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON();
   }
 

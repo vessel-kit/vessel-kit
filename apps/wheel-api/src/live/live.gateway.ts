@@ -4,12 +4,12 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { Logger } from '@nestjs/common';
+} from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
+import { Logger } from "@nestjs/common";
 
 export enum ActionTypes {
-  Room = 'room',
+  Room = "room",
 }
 
 @WebSocketGateway(3010)
@@ -24,16 +24,16 @@ export class LiveGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleConnection(client: Socket) {
     this.connectedClients = [...this.connectedClients, client.id];
     this.logger.log(
-      `Client connected: ${client.id} - ${this.connectedClients.length} connected clients.`,
+      `Client connected: ${client.id} - ${this.connectedClients.length} connected clients.`
     );
   }
 
   handleDisconnect(client: Socket) {
     this.connectedClients = this.connectedClients.filter(
-      (connectedClient) => connectedClient !== client.id,
+      (connectedClient) => connectedClient !== client.id
     );
     this.logger.log(
-      `Client disconnected: ${client.id} - ${this.connectedClients.length} connected clients.`,
+      `Client disconnected: ${client.id} - ${this.connectedClients.length} connected clients.`
     );
   }
 
@@ -43,6 +43,6 @@ export class LiveGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   sendUpdate(cid: string, content: any) {
-    this.server.to(cid).emit('live-update', content);
+    this.server.to(cid).emit("live-update", content);
   }
 }

@@ -1,7 +1,7 @@
-import { MerklePath } from './merkle-path';
-import { MerkleNode } from './merkle-node';
-import { PathDirection } from './path-direction';
-import { Ipfs } from 'ipfs';
+import { MerklePath } from "./merkle-path";
+import { MerkleNode } from "./merkle-node";
+import { PathDirection } from "./path-direction";
+import { Ipfs } from "ipfs";
 
 export interface MergeFn<A> {
   (left: MerkleNode<A>, right: MerkleNode<A>): Promise<MerkleNode<A>>;
@@ -9,7 +9,10 @@ export interface MergeFn<A> {
 
 type Level<A> = MerkleNode<A>[];
 
-async function grow<A>(levels: Level<A>[], mergeFn: MergeFn<A>): Promise<Level<A>[]> {
+async function grow<A>(
+  levels: Level<A>[],
+  mergeFn: MergeFn<A>
+): Promise<Level<A>[]> {
   const currentLevel = levels[levels.length - 1];
   const isRootReached = currentLevel.length === 1;
   if (isRootReached) {
@@ -29,7 +32,10 @@ async function grow<A>(levels: Level<A>[], mergeFn: MergeFn<A>): Promise<Level<A
 }
 
 export function ipfsMerge<A>(ipfs: Ipfs) {
-  return async function (left: MerkleNode<A>, right: MerkleNode<A>): Promise<MerkleNode<A>> {
+  return async function (
+    left: MerkleNode<A>,
+    right: MerkleNode<A>
+  ): Promise<MerkleNode<A>> {
     const cid = await ipfs.dag.put({
       [PathDirection.L]: left.id,
       [PathDirection.R]: right.id,
@@ -64,7 +70,10 @@ export class MerkleTree<A> {
     }
   }
 
-  nodePath(node: MerkleNode<A>, present: MerklePath = new MerklePath()): MerklePath {
+  nodePath(
+    node: MerkleNode<A>,
+    present: MerklePath = new MerklePath()
+  ): MerklePath {
     if (node.uplink) {
       const uplink = node.uplink;
       if (uplink.left === node) {

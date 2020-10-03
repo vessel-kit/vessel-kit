@@ -1,5 +1,5 @@
-import { AlgorithmKind } from './algorithm-kind';
-import { IPublicKey } from './public-key.interface';
+import { AlgorithmKind } from "./algorithm-kind";
+import { IPublicKey } from "./public-key.interface";
 
 /**
  * Dummy private key. Can only report its supported algorithm and expose its public key.

@@ -21,36 +21,42 @@
  * @packageDocumentation
  */
 
-import * as f from 'fp-ts';
-import { ISignerIdentified } from '../private-key.interface';
-import { Base64urlCodec, decodeThrow, BytesMultibaseCodec } from '@vessel-kit/codec';
-import { extractPublicKeys, IResolver, VerificationRelation } from './resolver';
-import { AlgorithmKind } from '../algorithm-kind';
-import * as _ from 'lodash';
-import stringify from 'fast-json-stable-stringify';
-import CID from 'cids';
+import * as f from "fp-ts";
+import { ISignerIdentified } from "../private-key.interface";
+import {
+  Base64urlCodec,
+  decodeThrow,
+  BytesMultibaseCodec,
+} from "@vessel-kit/codec";
+import { extractPublicKeys, IResolver, VerificationRelation } from "./resolver";
+import { AlgorithmKind } from "../algorithm-kind";
+import * as _ from "lodash";
+import stringify from "fast-json-stable-stringify";
+import CID from "cids";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 const isBinary = (input: unknown): input is ArrayBuffer | ArrayBufferView =>
   input instanceof ArrayBuffer || ArrayBuffer.isView(input);
 const coerceBinary = (o: ArrayBufferView | ArrayBuffer) => {
-  if (o instanceof Uint8Array && o.constructor.name === 'Uint8Array') return o;
+  if (o instanceof Uint8Array && o.constructor.name === "Uint8Array") return o;
   if (o instanceof ArrayBuffer) return new Uint8Array(o);
   if (ArrayBuffer.isView(o)) {
     return new Uint8Array(o.buffer, o.byteOffset, o.byteLength);
   }
-  throw new Error('Unknown type, must be binary type');
+  throw new Error("Unknown type, must be binary type");
 };
 const linkify = (obj: Record<string, any>) =>
   _.transform(obj, (result: any, value, key) => {
     const cid = CID.isCID(value);
     if (cid) {
-      result[key] = { '/': value.toString() };
+      result[key] = { "/": value.toString() };
     } else if (isBinary(value)) {
       value = coerceBinary(value);
-      result[key] = { '/': { bytes: BytesMultibaseCodec('base64').encode(value) } };
-    } else if (typeof value === 'object' && value !== null) {
+      result[key] = {
+        "/": { bytes: BytesMultibaseCodec("base64").encode(value) },
+      };
+    } else if (typeof value === "object" && value !== null) {
       result[key] = linkify(value);
     } else {
       result[key] = value;
@@ -58,12 +64,15 @@ const linkify = (obj: Record<string, any>) =>
   });
 const unlinkify = (obj: Record<string, any>) =>
   _.transform(obj, (result: any, value, key) => {
-    if (typeof value === 'object' && value !== null) {
-      if (value['/']) {
-        if (typeof value['/'] === 'string') {
-          result[key] = new CID(value['/']);
-        } else if (typeof value['/'] === 'object' && value['/'].bytes) {
-          result[key] = decodeThrow(BytesMultibaseCodec('base64'), value['/'].bytes);
+    if (typeof value === "object" && value !== null) {
+      if (value["/"]) {
+        if (typeof value["/"] === "string") {
+          result[key] = new CID(value["/"]);
+        } else if (typeof value["/"] === "object" && value["/"].bytes) {
+          result[key] = decodeThrow(
+            BytesMultibaseCodec("base64"),
+            value["/"].bytes
+          );
         } else {
           result[key] = unlinkify(value);
         }
@@ -74,8 +83,17 @@ const unlinkify = (obj: Record<string, any>) =>
       result[key] = value;
     }
   });
-const asBase64Url = f.function.flow(linkify, stringify, textEncoder.encode.bind(textEncoder), Base64urlCodec.encode);
-const bytesToJSON = f.function.flow(textDecoder.decode.bind(textDecoder), JSON.parse, unlinkify);
+const asBase64Url = f.function.flow(
+  linkify,
+  stringify,
+  textEncoder.encode.bind(textEncoder),
+  Base64urlCodec.encode
+);
+const bytesToJSON = f.function.flow(
+  textDecoder.decode.bind(textDecoder),
+  JSON.parse,
+  unlinkify
+);
 
 /**
  * Create JSON Web signature, in compact form, that is "<header>.<payload>.<signature>" string.
@@ -86,14 +104,17 @@ const bytesToJSON = f.function.flow(textDecoder.decode.bind(textDecoder), JSON.p
  * @param signer Signer that could report its DID key id.
  * @param payload JSON payload to sign.
  */
-export async function create(signer: ISignerIdentified, payload: object): Promise<string> {
+export async function create(
+  signer: ISignerIdentified,
+  payload: object
+): Promise<string> {
   const toSign = signingInput(payload, {
     alg: signer.alg,
     kid: signer.kid,
   });
   const signature = await signer.sign(textEncoder.encode(toSign));
   const signatureEncoded = Base64urlCodec.encode(signature);
-  return toSign + '.' + signatureEncoded;
+  return toSign + "." + signatureEncoded;
 }
 
 /**
@@ -111,7 +132,7 @@ export function signingInput(payload: object, header: JWSDecodedHeader) {
     alg: header.alg,
     kid: header.kid,
   });
-  return appliedHeader + '.' + appliedPayload;
+  return appliedHeader + "." + appliedPayload;
 }
 
 const JWS_PATTERN = /^([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_-]*)\.([a-zA-Z0-9_-]+)$/;
@@ -213,14 +234,24 @@ export function decode(jws: string): JWSDecoded {
  * @param jws JSON Web Signature in compact form.
  * @param resolver DID Resolver.
  */
-export async function verify(jws: string, resolver: IResolver): Promise<boolean> {
+export async function verify(
+  jws: string,
+  resolver: IResolver
+): Promise<boolean> {
   const decoded = decode(jws);
   const kid = decoded.header.kid;
   const didDocument = await resolver.resolve(kid);
-  const publicKeys = extractPublicKeys(didDocument, VerificationRelation.authentication, kid, decoded.header.alg);
+  const publicKeys = extractPublicKeys(
+    didDocument,
+    VerificationRelation.authentication,
+    kid,
+    decoded.header.alg
+  );
   const input = signingInput(decoded.payload, decoded.header);
   const message = textEncoder.encode(input);
-  const verifications = await Promise.all(publicKeys.map((p) => p.verify(message, decoded.signature)));
+  const verifications = await Promise.all(
+    publicKeys.map((p) => p.verify(message, decoded.signature))
+  );
   return verifications.some(f.function.identity);
 }
 
@@ -234,7 +265,7 @@ export async function verify(jws: string, resolver: IResolver): Promise<boolean>
  */
 export function asDetached(jws: string): string {
   const parts = splitParts(jws);
-  return parts[1] + '..' + parts[3];
+  return parts[1] + ".." + parts[3];
 }
 
 /**
@@ -249,7 +280,7 @@ export function asDetached(jws: string): string {
 export function asAttached(payload: object, detached: string): string {
   const parts = splitParts(detached);
   const appliedPayload = asBase64Url(payload);
-  return parts[1] + '.' + appliedPayload + '.' + parts[3];
+  return parts[1] + "." + appliedPayload + "." + parts[3];
 }
 
 /**
@@ -260,7 +291,7 @@ export function asAttached(payload: object, detached: string): string {
  */
 export function isDetached(jws: string) {
   const parts = splitParts(jws);
-  return parts[2] === '';
+  return parts[2] === "";
 }
 
 /**

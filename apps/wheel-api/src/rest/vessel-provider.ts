@@ -1,7 +1,7 @@
-import { ConfigService } from '../commons/config.service';
-import { Vessel } from '@vessel-kit/vessel';
-import ipfsClient from 'ipfs-http-client';
-import { ConnectionString } from '@vessel-kit/blockchain-connection-string';
+import { ConfigService } from "../commons/config.service";
+import { Vessel } from "@vessel-kit/vessel";
+import ipfsClient from "ipfs-http-client";
+import { ConnectionString } from "@vessel-kit/blockchain-connection-string";
 
 export const vesselProvider = {
   provide: Vessel,
@@ -10,7 +10,7 @@ export const vesselProvider = {
     const anchoringEndpoint = config.current.ANCHORING_URL;
     const ipfs = ipfsClient(ipfsUrl);
     const blockchainUrl = ConnectionString.fromString(
-      config.current.BLOCKCHAIN_URL,
+      config.current.BLOCKCHAIN_URL
     );
     return Vessel.build(ipfs, {
       anchoringEndpoint: anchoringEndpoint,

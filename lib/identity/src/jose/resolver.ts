@@ -1,10 +1,10 @@
-import * as didResolver from 'did-resolver';
-import { BytesUnbaseCodec, decodeThrow } from '@vessel-kit/codec';
-import * as ES256K from '../algorithms/ES256K';
-import * as Ed25519 from '../algorithms/EdDSA';
-import { DidUrl } from '../did-url';
-import { AlgorithmKind } from '../algorithm-kind';
-import { IPublicKey } from '../public-key.interface';
+import * as didResolver from "did-resolver";
+import { BytesUnbaseCodec, decodeThrow } from "@vessel-kit/codec";
+import * as ES256K from "../algorithms/ES256K";
+import * as Ed25519 from "../algorithms/EdDSA";
+import { DidUrl } from "../did-url";
+import { AlgorithmKind } from "../algorithm-kind";
+import { IPublicKey } from "../public-key.interface";
 
 /**
  * Aspect of [DIDResolver](https://github.com/decentralized-identity/did-resolver). Resolve DID document by DID.
@@ -17,8 +17,8 @@ export interface IResolver {
   resolve(did: string): Promise<didResolver.DIDDocument>;
 }
 
-const base16 = BytesUnbaseCodec('base16');
-const base58btc = BytesUnbaseCodec('base58btc');
+const base16 = BytesUnbaseCodec("base16");
+const base58btc = BytesUnbaseCodec("base58btc");
 
 export class UnsupportedKeyEncodingError extends Error {}
 
@@ -28,7 +28,9 @@ export function keyMaterialFromDID(entry: didResolver.PublicKey) {
   } else if (entry.publicKeyHex) {
     return decodeThrow(base16, entry.publicKeyHex);
   } else {
-    throw new UnsupportedKeyEncodingError(`Unsupported key encoding for ${entry.id}`);
+    throw new UnsupportedKeyEncodingError(
+      `Unsupported key encoding for ${entry.id}`
+    );
   }
 }
 
@@ -36,15 +38,17 @@ export class UnknownKeyTypeError extends Error {}
 
 export type SupportedPublicKey = ES256K.PublicKey | Ed25519.PublicKey;
 
-export function publicKeyFromDID(entry: didResolver.PublicKey): SupportedPublicKey {
+export function publicKeyFromDID(
+  entry: didResolver.PublicKey
+): SupportedPublicKey {
   const material = keyMaterialFromDID(entry);
   switch (entry.type) {
-    case 'Secp256k1VerificationKey2018':
-    case 'EcdsaPublicKeySecp256k1':
-    case 'Secp256k1SignatureVerificationKey2018':
+    case "Secp256k1VerificationKey2018":
+    case "EcdsaPublicKeySecp256k1":
+    case "Secp256k1SignatureVerificationKey2018":
       return new ES256K.PublicKey(material);
-    case 'ED25519SignatureVerification':
-    case 'Ed25519VerificationKey2018':
+    case "ED25519SignatureVerification":
+    case "Ed25519VerificationKey2018":
       return new Ed25519.PublicKey(material);
     default:
       throw new UnknownKeyTypeError(`Unknown key type ${entry.type}`);
@@ -52,15 +56,18 @@ export function publicKeyFromDID(entry: didResolver.PublicKey): SupportedPublicK
 }
 
 export enum VerificationRelation {
-  authentication = 'authentication',
-  keyAgreement = 'keyAgreement',
+  authentication = "authentication",
+  keyAgreement = "keyAgreement",
 }
 
-const isRelationProper = (didDocument: didResolver.DIDDocument, relation: VerificationRelation) => (
-  publicKey: didResolver.PublicKey,
-) => {
+const isRelationProper = (
+  didDocument: didResolver.DIDDocument,
+  relation: VerificationRelation
+) => (publicKey: didResolver.PublicKey) => {
   const relationEntries = ((didDocument[relation] || []) as unknown) as any[];
-  const links = relationEntries.filter<string>((value): value is string => typeof value === 'string');
+  const links = relationEntries.filter<string>(
+    (value): value is string => typeof value === "string"
+  );
   return links.includes(publicKey.id);
 };
 
@@ -81,13 +88,15 @@ export function extractPublicKeys(
   didDocument: didResolver.DIDDocument,
   relation: VerificationRelation,
   kid: string,
-  alg: AlgorithmKind,
+  alg: AlgorithmKind
 ): SupportedPublicKey[] {
   const allPublicKeys = didDocument.publicKey;
 
   const byRelation = isRelationProper(didDocument, relation);
   const byKid = isKidProper(kid);
 
-  const relationPublicKeysRaw = allPublicKeys.filter((p) => byRelation(p) && byKid(p));
+  const relationPublicKeysRaw = allPublicKeys.filter(
+    (p) => byRelation(p) && byKid(p)
+  );
   return relationPublicKeysRaw.map(publicKeyFromDID).filter(isAlgProper(alg));
 }

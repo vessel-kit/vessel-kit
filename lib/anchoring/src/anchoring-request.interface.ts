@@ -1,5 +1,5 @@
-import { UuidValue } from './uuid-value';
-import { AnchoringStatus } from './anchoring-status';
+import { UuidValue } from "./uuid-value";
+import { AnchoringStatus } from "./anchoring-status";
 
 export interface IAnchoringRequest {
   id: UuidValue;

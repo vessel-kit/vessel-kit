@@ -1,5 +1,5 @@
-import CID from 'cids';
-import { normalizeRecord } from './normalize-record';
+import CID from "cids";
+import { normalizeRecord } from "./normalize-record";
 
 export class RecordWrap<A = any> {
   #load: A;

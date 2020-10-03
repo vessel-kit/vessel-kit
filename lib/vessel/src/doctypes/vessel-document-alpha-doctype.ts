@@ -1,14 +1,14 @@
-import { DoctypeHandler } from '../document/doctype';
-import { VesselRulesetAlphaDoctype } from './vessel-ruleset-alpha-doctype';
-import jsonPatch from 'fast-json-patch';
-import { AnchoringStatus, AnchorProof } from '@vessel-kit/anchoring';
-import produce from 'immer';
-import { DocId, RecordWrap } from '@vessel-kit/codec';
-import { Ordering } from '../document/ordering';
-import { IDocument } from '..';
-import { UpdateRecordWaiting } from '../util/update-record.codec';
+import { DoctypeHandler } from "../document/doctype";
+import { VesselRulesetAlphaDoctype } from "./vessel-ruleset-alpha-doctype";
+import jsonPatch from "fast-json-patch";
+import { AnchoringStatus, AnchorProof } from "@vessel-kit/anchoring";
+import produce from "immer";
+import { DocId, RecordWrap } from "@vessel-kit/codec";
+import { Ordering } from "../document/ordering";
+import { IDocument } from "..";
+import { UpdateRecordWaiting } from "../util/update-record.codec";
 
-const DOCTYPE = 'vessel/document/1.0.0';
+const DOCTYPE = "vessel/document/1.0.0";
 
 export type VesselDocumentShape<A> = {
   doctype: string;
@@ -24,23 +24,38 @@ export type VesselDocumentState<A> = {
 
 function isShape<A>(input: unknown): input is VesselDocumentShape<A> {
   // TODO UNKNOWN
-  return input && typeof input === 'object' && 'doctype' in input && (input as any).doctype == DOCTYPE;
+  return (
+    input &&
+    typeof input === "object" &&
+    "doctype" in input &&
+    (input as any).doctype == DOCTYPE
+  );
 }
 
 function isVesselDocument<State, Shape>(
-  document: unknown,
-): document is IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>> {
+  document: unknown
+): document is IDocument<
+  VesselDocumentState<State>,
+  VesselDocumentShape<Shape>
+> {
   // TODO UNKNOWN
-  return document && typeof document === 'object' && (document as any)?.state?.doctype === DOCTYPE;
+  return (
+    document &&
+    typeof document === "object" &&
+    (document as any)?.state?.doctype === DOCTYPE
+  );
 }
 
 export class VesselDocument<State, Shape> {
-  readonly #document: IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>>;
+  readonly #document: IDocument<
+    VesselDocumentState<State>,
+    VesselDocumentShape<Shape>
+  >;
   #canonical: VesselDocumentShape<Shape>;
 
   constructor(
     document: IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>>,
-    canonical: VesselDocumentShape<Shape>,
+    canonical: VesselDocumentShape<Shape>
   ) {
     this.#document = document;
     this.#canonical = canonical;
@@ -49,17 +64,27 @@ export class VesselDocument<State, Shape> {
     });
   }
 
-  static async fromDocument<State, Shape>(document: IDocument<unknown, unknown>) {
+  static async fromDocument<State, Shape>(
+    document: IDocument<unknown, unknown>
+  ) {
     if (isVesselDocument<State, Shape>(document)) {
-      const d: IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>> = document;
+      const d: IDocument<
+        VesselDocumentState<State>,
+        VesselDocumentShape<Shape>
+      > = document;
       const canonical = await d.canonical();
       return new VesselDocument(d, canonical);
     } else {
-      throw new Error(`Invalid doctype: expected tile, got ${document.state.doctype}`);
+      throw new Error(
+        `Invalid doctype: expected tile, got ${document.state.doctype}`
+      );
     }
   }
 
-  get document(): IDocument<VesselDocumentState<State>, VesselDocumentShape<Shape>> {
+  get document(): IDocument<
+    VesselDocumentState<State>,
+    VesselDocumentShape<Shape>
+  > {
     return this.#document;
   }
 
@@ -81,17 +106,22 @@ export class VesselDocument<State, Shape> {
   }
 }
 
-class Handler<State, Shape> extends DoctypeHandler<VesselDocumentState<State>, VesselDocumentShape<Shape>> {
+class Handler<State, Shape> extends DoctypeHandler<
+  VesselDocumentState<State>,
+  VesselDocumentShape<Shape>
+> {
   readonly name = DOCTYPE;
 
   async knead(genesisRecord: unknown): Promise<VesselDocumentState<State>> {
     if (isShape<unknown>(genesisRecord)) {
       const effectiveRulesetCid = DocId.fromString(genesisRecord.ruleset);
       const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
-      const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
+      const ruleset = VesselRulesetAlphaDoctype.withContext(
+        this.context
+      ).json.decode(rulesetJSON);
       return ruleset.knead(genesisRecord);
     } else {
-      console.error('Invalid shape for VesselDocumentAlpha', genesisRecord);
+      console.error("Invalid shape for VesselDocumentAlpha", genesisRecord);
       throw new Error(`Invalid shape for VesselDocumentAlpha`);
     }
   }
@@ -99,14 +129,20 @@ class Handler<State, Shape> extends DoctypeHandler<VesselDocumentState<State>, V
   async canApply(
     state: VesselDocumentState<State>,
     next: Shape,
-    rulesetAddress?: DocId,
+    rulesetAddress?: DocId
   ): Promise<VesselDocumentState<State>> {
-    const effectiveRulesetCid = rulesetAddress || DocId.fromString(state.ruleset);
+    const effectiveRulesetCid =
+      rulesetAddress || DocId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
-    const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
-    const nextState = await ruleset.canApply<VesselDocumentState<State>>(state, next);
+    const ruleset = VesselRulesetAlphaDoctype.withContext(
+      this.context
+    ).json.decode(rulesetJSON);
+    const nextState = await ruleset.canApply<VesselDocumentState<State>>(
+      state,
+      next
+    );
     if (!nextState) {
-      console.error('Can not apply', state, next);
+      console.error("Can not apply", state, next);
       throw new Error(`Can not apply`);
     }
     return nextState;
@@ -124,21 +160,33 @@ class Handler<State, Shape> extends DoctypeHandler<VesselDocumentState<State>, V
     }
   }
 
-  async canonical(state: VesselDocumentState<State>): Promise<VesselDocumentShape<Shape>> {
+  async canonical(
+    state: VesselDocumentState<State>
+  ): Promise<VesselDocumentShape<Shape>> {
     const effectiveRulesetCid = DocId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
-    const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
+    const ruleset = VesselRulesetAlphaDoctype.withContext(
+      this.context
+    ).json.decode(rulesetJSON);
     return ruleset.canonical(state);
   }
 
-  async applyAnchor(proof: AnchorProof, state: VesselDocumentState<State>): Promise<State> {
+  async applyAnchor(
+    proof: AnchorProof,
+    state: VesselDocumentState<State>
+  ): Promise<State> {
     const effectiveRulesetCid = DocId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
-    const ruleset = VesselRulesetAlphaDoctype.withContext(this.context).json.decode(rulesetJSON);
+    const ruleset = VesselRulesetAlphaDoctype.withContext(
+      this.context
+    ).json.decode(rulesetJSON);
     return ruleset.applyAnchor(proof, state.data);
   }
 
-  async apply(recordWrap: RecordWrap, state: VesselDocumentState<State>): Promise<VesselDocumentState<State>> {
+  async apply(
+    recordWrap: RecordWrap,
+    state: VesselDocumentState<State>
+  ): Promise<VesselDocumentState<State>> {
     const record = recordWrap.load;
     if (record.prev) {
       if (record.proof) {
@@ -151,7 +199,8 @@ class Handler<State, Shape> extends DoctypeHandler<VesselDocumentState<State>, V
       } else {
         await this.context.assertSignature(record);
         const canonical = await this.canonical(state);
-        const next = jsonPatch.applyPatch(canonical, record.patch, false, false).newDocument;
+        const next = jsonPatch.applyPatch(canonical, record.patch, false, false)
+          .newDocument;
         return this.canApply(state, next.content);
       }
     } else {

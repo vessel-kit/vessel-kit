@@ -1,4 +1,4 @@
-import { AnchorState } from '../../document/anchor-state';
+import { AnchorState } from "../../document/anchor-state";
 
 export type TwoPartyShape = {
   payload: {
@@ -6,7 +6,7 @@ export type TwoPartyShape = {
   };
   partyA?: string;
   partyB?: string;
-  stage: 'draft' | 'agreement';
+  stage: "draft" | "agreement";
 };
 
 export type TwoPartyState = {

@@ -1,4 +1,4 @@
-import { PathDirection } from './path-direction';
+import { PathDirection } from "./path-direction";
 
 export class MerklePath {
   #steps: PathDirection[];

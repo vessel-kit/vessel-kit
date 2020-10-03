@@ -1,27 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { RequestStorage } from '../storage/request.storage';
-import CID from 'cids';
-import { RequestRecord } from '../storage/request.record';
-import { AnchorStorage } from '../storage/anchor.storage';
-import { UnreachableCaseError } from '../unreachable-case.error';
-import { AnchorRecord } from '../storage/anchor.record';
-import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
-import { AnchoringStatus, AnchorResponsePayload } from '@vessel-kit/anchoring';
-import { DocId } from '@vessel-kit/codec';
+import { Injectable } from "@nestjs/common";
+import { RequestStorage } from "../storage/request.storage";
+import CID from "cids";
+import { RequestRecord } from "../storage/request.record";
+import { AnchorStorage } from "../storage/anchor.storage";
+import { UnreachableCaseError } from "../unreachable-case.error";
+import { AnchorRecord } from "../storage/anchor.record";
+import { AnchoringScheduleService } from "../anchoring/anchoring-schedule.service";
+import { AnchoringStatus, AnchorResponsePayload } from "@vessel-kit/anchoring";
+import { DocId } from "@vessel-kit/codec";
 
 export class RequestPresentation {
   readonly docId = DocId.fromString(this.request.docId);
   constructor(
     private readonly request: RequestRecord,
     private readonly anchor: AnchorRecord | undefined,
-    private readonly nextAnchoring: Date,
+    private readonly nextAnchoring: Date
   ) {}
 
   toJSON() {
     switch (this.request.status) {
       case AnchoringStatus.ANCHORED:
         if (!this.anchor) {
-          throw new Error(`Can not find anchor`)
+          throw new Error(`Can not find anchor`);
         }
         return AnchorResponsePayload.encode({
           id: this.request.id.toString(),
@@ -65,15 +65,19 @@ export class RequestGetScenario {
   constructor(
     private readonly requestStorage: RequestStorage,
     private readonly anchoringSchedule: AnchoringScheduleService,
-    private readonly anchorStorage: AnchorStorage,
+    private readonly anchorStorage: AnchorStorage
   ) {}
 
   async execute(cid: CID) {
     const request = await this.requestStorage.byCidOrFail(cid);
     const anchor = await this.anchorStorage.byRequestId(request.id);
-    const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
+    const cronJob = this.anchoringSchedule.get(
+      this.anchoringSchedule.triggerAnchoring
+    );
     if (!cronJob) {
-      throw new Error(`Can not find ${this.anchoringSchedule.triggerAnchoring.name} cron job`)
+      throw new Error(
+        `Can not find ${this.anchoringSchedule.triggerAnchoring.name} cron job`
+      );
     }
     const nextAnchoring = cronJob.nextDate().toDate();
     return new RequestPresentation(request, anchor, nextAnchoring);

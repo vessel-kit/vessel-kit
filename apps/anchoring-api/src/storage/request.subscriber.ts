@@ -1,17 +1,23 @@
-import { Connection, EntitySubscriberInterface, EventSubscriber, UpdateEvent } from 'typeorm';
-import { RequestRecord } from './request.record';
-import { Injectable } from '@nestjs/common';
-import { PubSubService } from '../commons/pub-sub.service';
-import { AnchorStorage } from './anchor.storage';
-import { AnchoringStatus } from '@vessel-kit/anchoring';
+import {
+  Connection,
+  EntitySubscriberInterface,
+  EventSubscriber,
+  UpdateEvent,
+} from "typeorm";
+import { RequestRecord } from "./request.record";
+import { Injectable } from "@nestjs/common";
+import { PubSubService } from "../commons/pub-sub.service";
+import { AnchorStorage } from "./anchor.storage";
+import { AnchoringStatus } from "@vessel-kit/anchoring";
 
 @EventSubscriber()
 @Injectable()
-export class RequestSubscriber implements EntitySubscriberInterface<RequestRecord> {
+export class RequestSubscriber
+  implements EntitySubscriberInterface<RequestRecord> {
   constructor(
     connection: Connection,
     private readonly pubSubService: PubSubService,
-    private readonly anchorStorage: AnchorStorage,
+    private readonly anchorStorage: AnchorStorage
   ) {
     connection.subscribers.push(this);
   }

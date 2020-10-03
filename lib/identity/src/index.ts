@@ -30,35 +30,35 @@
  * @packageDocumentation
  */
 
-export * from './did-url';
-export * from './identifier';
+export * from "./did-url";
+export * from "./identifier";
 
-export * from './algorithm-kind';
+export * from "./algorithm-kind";
 
-export * from './key-identity';
-export * from './identity.interface';
-export * from './private-key.interface';
-export * from './private-key.factory';
-export * from './public-key.interface';
-export * from './invalid-algorithm-kind.error';
+export * from "./key-identity";
+export * from "./identity.interface";
+export * from "./private-key.interface";
+export * from "./private-key.factory";
+export * from "./public-key.interface";
+export * from "./invalid-algorithm-kind.error";
 
-import * as JWSImport from './jose/jws';
+import * as JWSImport from "./jose/jws";
 /**
  * Sign and verify JWS against DID rather than individual keys.
  */
 export const jws = JWSImport;
 
-import * as KeyMethodImport from './key.method';
+import * as KeyMethodImport from "./key.method";
 /**
  * Resolver for [did:key](https://w3c-ccg.github.io/did-method-key/) method.
  */
 export const KeyMethod = KeyMethodImport;
 
-import * as ES256K from './algorithms/ES256K';
-import * as EdDSA from './algorithms/EdDSA';
+import * as ES256K from "./algorithms/ES256K";
+import * as EdDSA from "./algorithms/EdDSA";
 /**
  * Get access to supported algorithms.
  */
 export const algorithms = { ES256K, EdDSA };
 
-export { IResolver } from './jose/resolver';
+export { IResolver } from "./jose/resolver";

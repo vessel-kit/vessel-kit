@@ -1,5 +1,5 @@
-import * as t from 'io-ts';
-import { decodeThrow } from './decode-throw';
+import * as t from "io-ts";
+import { decodeThrow } from "./decode-throw";
 
 export class DecodePipe<A, O> {
   constructor(readonly codec: t.Type<A, O>) {}

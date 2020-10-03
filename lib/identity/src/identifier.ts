@@ -1,4 +1,4 @@
-import * as t from 'io-ts';
+import * as t from "io-ts";
 
 /**
  * Programmatic representation of [decentralized identifier](https://www.w3.org/TR/did-core/#dfn-decentralized-identifiers).
@@ -25,8 +25,8 @@ export class Identifier {
   /**
    * @internal
    */
-  [Symbol.for('nodejs.util.inspect.custom')]() {
-    return 'Identifier(' + this.toString() + ')';
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return "Identifier(" + this.toString() + ")";
   }
 }
 
@@ -34,11 +34,11 @@ export namespace Identifier {
   /**
    * @ignore
    */
-  const ID_CHAR = '[a-zA-Z0-9_.-]';
+  const ID_CHAR = "[a-zA-Z0-9_.-]";
   /**
    * @ignore
    */
-  const METHOD = '([a-zA-Z0-9_]+)';
+  const METHOD = "([a-zA-Z0-9_]+)";
   /**
    * @ignore
    */
@@ -52,7 +52,7 @@ export namespace Identifier {
    * Codec for Identifier ↔ string.
    */
   export const asString = new t.Type<Identifier, string, string>(
-    'Identifier-string',
+    "Identifier-string",
     (u: unknown): u is Identifier => u instanceof Identifier,
     (s, context) => {
       const match = DID_MATCHER.exec(s);
@@ -61,9 +61,9 @@ export namespace Identifier {
         const id = match[2];
         return t.success(new Identifier(method, id));
       } else {
-        return t.failure(s, context, 'Invalid DID identifier');
+        return t.failure(s, context, "Invalid DID identifier");
       }
     },
-    (identifier) => `did:${identifier.method}:${identifier.id}`,
+    (identifier) => `did:${identifier.method}:${identifier.id}`
   );
 }

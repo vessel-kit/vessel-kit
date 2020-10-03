@@ -20,7 +20,10 @@
     "preinstall": "npx only-allow pnpm",
     "dev": "pnpm run --parallel dev",
     "build": "pnpm run --recursive build",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "format": "prettier --check ./**/*.ts",
+    "format:fix": "prettier --write ./**/*.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",

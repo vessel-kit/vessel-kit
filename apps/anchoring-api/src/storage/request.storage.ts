@@ -1,19 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { RequestRecord } from './request.record';
-import { Repository, In } from 'typeorm';
-import CID from 'cids';
-import { AnchoringStatus } from '@vessel-kit/anchoring';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { RequestRecord } from "./request.record";
+import { Repository, In } from "typeorm";
+import CID from "cids";
+import { AnchoringStatus } from "@vessel-kit/anchoring";
 
 @Injectable()
 export class RequestStorage {
-  constructor(@InjectRepository(RequestRecord) private repository: Repository<RequestRecord>) {}
+  constructor(
+    @InjectRepository(RequestRecord)
+    private repository: Repository<RequestRecord>
+  ) {}
 
   page(index: number, size = 25) {
     return this.repository.find({
       skip: (index - 1) * size,
       take: size,
-      order: { updatedAt: 'DESC', createdAt: 'DESC' },
+      order: { updatedAt: "DESC", createdAt: "DESC" },
     });
   }
 
@@ -45,7 +48,10 @@ export class RequestStorage {
     });
   }
 
-  updateStatus(records: RequestRecord[], status: AnchoringStatus): Promise<RequestRecord[]> {
+  updateStatus(
+    records: RequestRecord[],
+    status: AnchoringStatus
+  ): Promise<RequestRecord[]> {
     const next = records.map((r) => {
       r.status = status;
       return r;

@@ -1,20 +1,24 @@
-import { AlgorithmKind } from './algorithm-kind';
-import { InvalidAlgorithmKindError } from './invalid-algorithm-kind.error';
-import { Identifier } from './identifier';
-import { BytesMultibaseCodec, BytesUnbaseCodec } from '@vessel-kit/codec';
-import { DIDDocument, DIDResolver, ParsedDID } from 'did-resolver';
-import * as f from 'fp-ts';
-import { IPublicKey } from './public-key.interface';
-import { IPrivateKey, ISigner, ISignerIdentified } from './private-key.interface';
-import * as t from 'io-ts';
-import multicodec from 'multicodec';
-import * as ES256K from './algorithms/ES256K';
-import * as Ed25519 from './algorithms/EdDSA';
+import { AlgorithmKind } from "./algorithm-kind";
+import { InvalidAlgorithmKindError } from "./invalid-algorithm-kind.error";
+import { Identifier } from "./identifier";
+import { BytesMultibaseCodec, BytesUnbaseCodec } from "@vessel-kit/codec";
+import { DIDDocument, DIDResolver, ParsedDID } from "did-resolver";
+import * as f from "fp-ts";
+import { IPublicKey } from "./public-key.interface";
+import {
+  IPrivateKey,
+  ISigner,
+  ISignerIdentified,
+} from "./private-key.interface";
+import * as t from "io-ts";
+import multicodec from "multicodec";
+import * as ES256K from "./algorithms/ES256K";
+import * as Ed25519 from "./algorithms/EdDSA";
 
-const METHOD = 'key';
+const METHOD = "key";
 
-const hexCodec = BytesUnbaseCodec('base16');
-const base58btcCodec = BytesUnbaseCodec('base58btc');
+const hexCodec = BytesUnbaseCodec("base16");
+const base58btcCodec = BytesUnbaseCodec("base58btc");
 
 enum KEY_PREFIX {
   secp256k1 = 0xe7,
@@ -25,10 +29,10 @@ enum KEY_PREFIX {
  * Codec for IPublicKey ↔ Uint8Array that encodes public key via multicodec.
  */
 const PublicKeyMulticodecCodec = new t.Type<IPublicKey, Uint8Array, Uint8Array>(
-  'PublicKey-multicodec',
+  "PublicKey-multicodec",
   (p: unknown): p is IPublicKey => {
-    if (p && typeof p === 'object') {
-      return 'alg' in p && 'material' in p;
+    if (p && typeof p === "object") {
+      return "alg" in p && "material" in p;
     } else {
       return false;
     }
@@ -47,14 +51,20 @@ const PublicKeyMulticodecCodec = new t.Type<IPublicKey, Uint8Array, Uint8Array>(
   (publicKey) => {
     switch (publicKey.alg) {
       case AlgorithmKind.ES256K:
-        return multicodec.addPrefix(Uint8Array.from([KEY_PREFIX.secp256k1]), publicKey.material);
+        return multicodec.addPrefix(
+          Uint8Array.from([KEY_PREFIX.secp256k1]),
+          publicKey.material
+        );
       case AlgorithmKind.EdDSA:
-        return multicodec.addPrefix(Uint8Array.from([KEY_PREFIX.ed25519]), publicKey.material);
+        return multicodec.addPrefix(
+          Uint8Array.from([KEY_PREFIX.ed25519]),
+          publicKey.material
+        );
       /* istanbul ignore next */
       default:
         throw new InvalidAlgorithmKindError(publicKey.alg);
     }
-  },
+  }
 );
 
 /**
@@ -68,7 +78,9 @@ const PublicKeyMulticodecCodec = new t.Type<IPublicKey, Uint8Array, Uint8Array>(
  *
  * @internal
  */
-export const PublicKeyStringCodec = BytesMultibaseCodec('base58btc').pipe(PublicKeyMulticodecCodec);
+export const PublicKeyStringCodec = BytesMultibaseCodec("base58btc").pipe(
+  PublicKeyMulticodecCodec
+);
 
 /**
  * Represent [[IPublicKey]] as `did:key` identifier.
@@ -129,7 +141,7 @@ export class SignerIdentified implements ISignerIdentified {
      * did:key:z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U#z6LSbk6TfcGsgm1yEUdGxwqscTzF6JkKNfrySPPLYqh8Ti6U
      * ```
      */
-    readonly kid: string,
+    readonly kid: string
   ) {}
 }
 
@@ -140,11 +152,11 @@ function didDocument(publicKey: IPublicKey): any {
     case AlgorithmKind.ES256K:
       return {
         id: id,
-        '@context': 'https://w3id.org/did/v1',
+        "@context": "https://w3id.org/did/v1",
         publicKey: [
           {
             id: keyId,
-            type: 'Secp256k1VerificationKey2018',
+            type: "Secp256k1VerificationKey2018",
             controller: id,
             publicKeyHex: hexCodec.encode(publicKey.material),
           },
@@ -157,11 +169,11 @@ function didDocument(publicKey: IPublicKey): any {
     case AlgorithmKind.EdDSA:
       return {
         id: id,
-        '@context': 'https://w3id.org/did/v1',
+        "@context": "https://w3id.org/did/v1",
         publicKey: [
           {
             id: keyId,
-            type: 'Ed25519VerificationKey2018',
+            type: "Ed25519VerificationKey2018",
             controller: id,
             publicKeyBase58: base58btcCodec.encode(publicKey.material),
           },
@@ -185,9 +197,12 @@ export function getResolver(): Record<string, DIDResolver> {
   const asDocument = f.function.flow(
     PublicKeyStringCodec.decode,
     f.either.map(didDocument),
-    f.either.fold(f.task.of(null), f.function.identity),
+    f.either.fold(f.task.of(null), f.function.identity)
   );
-  const resolve = async (did: string, parsed: ParsedDID): Promise<DIDDocument | null> => asDocument(parsed.id);
+  const resolve = async (
+    did: string,
+    parsed: ParsedDID
+  ): Promise<DIDDocument | null> => asDocument(parsed.id);
 
   return { key: resolve };
 }

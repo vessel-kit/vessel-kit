@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import CID from 'cids';
-import { DocumentRecord } from './document.record';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import CID from "cids";
+import { DocumentRecord } from "./document.record";
 
 @Injectable()
 export class DocumentStorage {
   constructor(
     @InjectRepository(DocumentRecord)
-    private repository: Repository<DocumentRecord>,
+    private repository: Repository<DocumentRecord>
   ) {}
 
   page(index: number, size = 25) {

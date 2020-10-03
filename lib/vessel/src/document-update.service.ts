@@ -1,12 +1,12 @@
-import { Cloud } from './cloud/cloud';
-import { History } from './util/history';
-import CID from 'cids';
-import { ILogger } from './util/logger.interface';
-import { RecordWrap } from '@vessel-kit/codec';
-import { Snapshot } from './document/document.interface';
-import { IDoctype } from './document/doctype';
-import { DocId } from '@vessel-kit/codec';
-import { Ordering } from './document/ordering';
+import { Cloud } from "./cloud/cloud";
+import { History } from "./util/history";
+import CID from "cids";
+import { ILogger } from "./util/logger.interface";
+import { RecordWrap } from "@vessel-kit/codec";
+import { Snapshot } from "./document/document.interface";
+import { IDoctype } from "./document/doctype";
+import { DocId } from "@vessel-kit/codec";
+import { Ordering } from "./document/ordering";
 
 export class InvalidOrdering extends Error {
   constructor(ordering: never) {
@@ -38,7 +38,11 @@ export class DocumentUpdateService {
     }
   }
 
-  async applyHead<State, Shape>(recordCid: CID, handler: IDoctype<State, Shape>, state: Snapshot<State>): Promise<Snapshot<State>> {
+  async applyHead<State, Shape>(
+    recordCid: CID,
+    handler: IDoctype<State, Shape>,
+    state: Snapshot<State>
+  ): Promise<Snapshot<State>> {
     this.#logger.debug(`Applying head ${recordCid.toString()}`);
     const localLog = state.log;
     const remoteLog = await this.tail(localLog, recordCid);
@@ -59,9 +63,21 @@ export class DocumentUpdateService {
     const record = await this.#cloud.retrieve(remoteLog.first);
     const conflictIdx = localLog.findIndex((x) => x.equals(record.prev));
     const nonConflictingLog = localLog.slice(conflictIdx + 1);
-    const nonConflictingState = await this.applyLog(nonConflictingLog, handler, state);
-    const localState = await this.applyLog(localLog, handler, nonConflictingState);
-    const remoteState = await this.applyLog(remoteLog, handler, nonConflictingState);
+    const nonConflictingState = await this.applyLog(
+      nonConflictingLog,
+      handler,
+      state
+    );
+    const localState = await this.applyLog(
+      localLog,
+      handler,
+      nonConflictingState
+    );
+    const remoteState = await this.applyLog(
+      remoteLog,
+      handler,
+      nonConflictingState
+    );
     const ordering = await handler.order(localState.view, remoteState.view);
     switch (ordering) {
       case Ordering.LT:
@@ -73,22 +89,30 @@ export class DocumentUpdateService {
     }
   }
 
-  async applyLog<State, Shape>(log: History, handler: IDoctype<State, Shape>, state: Snapshot<State>): Promise<Snapshot<State>> {
+  async applyLog<State, Shape>(
+    log: History,
+    handler: IDoctype<State, Shape>,
+    state: Snapshot<State>
+  ): Promise<Snapshot<State>> {
     return log.reduce(async (state, entry) => {
       const content = await this.#cloud.retrieve(entry);
       const record = new RecordWrap(content, entry);
       const docId = new DocId(state.log.first);
-      const next = await handler.apply(record, state.view, docId)
+      const next = await handler.apply(record, state.view, docId);
       return {
         ...state,
         view: next,
-        log: state.log.concat(entry)
-      }
+        log: state.log.concat(entry),
+      };
     }, state);
   }
 
-  async applyUpdate<State, Shape>(updateRecord: RecordWrap, handler: IDoctype<State, Shape>, state: Snapshot<State>): Promise<Snapshot<State>> {
-    console.log('apply-update', state.log, updateRecord.load)
+  async applyUpdate<State, Shape>(
+    updateRecord: RecordWrap,
+    handler: IDoctype<State, Shape>,
+    state: Snapshot<State>
+  ): Promise<Snapshot<State>> {
+    console.log("apply-update", state.log, updateRecord.load);
     if (state.log.last.equals(updateRecord.load.prev)) {
       const docId = new DocId(state.log.first);
       const next = await handler.apply(updateRecord, state.view, docId);
@@ -98,7 +122,9 @@ export class DocumentUpdateService {
         view: next,
       };
     } else {
-      throw new Error(`Update should reference last log entry ${state.log.last}, got ${updateRecord.load.prev}`);
+      throw new Error(
+        `Update should reference last log entry ${state.log.last}, got ${updateRecord.load.prev}`
+      );
     }
   }
 }

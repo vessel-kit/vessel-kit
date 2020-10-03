@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '../commons/config.service';
-import ipfsClient from 'ipfs-http-client';
-import { Ipfs } from 'ipfs';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "../commons/config.service";
+import ipfsClient from "ipfs-http-client";
+import { Ipfs } from "ipfs";
 
 @Injectable()
 export class IpfsService {

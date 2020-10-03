@@ -1,20 +1,24 @@
-import { ILogger } from './util/logger.interface';
-import { DocId } from '@vessel-kit/codec';
-import CID from 'cids';
-import { AnchoringStatus } from '@vessel-kit/anchoring';
-import { Cloud } from './cloud/cloud';
-import { AnchoringService } from './anchoring.service';
-import { DocumentUpdateService } from './document-update.service';
-import { FrozenSubject, FrozenSubjectRead } from './util/frozen-subject';
-import { RecordWrap, normalizeRecord } from '@vessel-kit/codec';
-import { MessageTyp } from './cloud/message-typ';
-import { filter, mergeMap } from 'rxjs/operators';
-import { IDocumentService } from './document/document.service.interface';
+import { ILogger } from "./util/logger.interface";
+import { DocId } from "@vessel-kit/codec";
+import CID from "cids";
+import { AnchoringStatus } from "@vessel-kit/anchoring";
+import { Cloud } from "./cloud/cloud";
+import { AnchoringService } from "./anchoring.service";
+import { DocumentUpdateService } from "./document-update.service";
+import { FrozenSubject, FrozenSubjectRead } from "./util/frozen-subject";
+import { RecordWrap, normalizeRecord } from "@vessel-kit/codec";
+import { MessageTyp } from "./cloud/message-typ";
+import { filter, mergeMap } from "rxjs/operators";
+import { IDocumentService } from "./document/document.service.interface";
 import { merge, Observable } from "rxjs";
-import { IContext } from './context';
-import { Snapshot } from './document/document.interface';
-import { IDoctype } from './document/doctype';
-import { CloudMessage, ResponseMessage, UpdateMessage } from "./cloud/cloud-message";
+import { IContext } from "./context";
+import { Snapshot } from "./document/document.interface";
+import { IDoctype } from "./document/doctype";
+import {
+  CloudMessage,
+  ResponseMessage,
+  UpdateMessage,
+} from "./cloud/cloud-message";
 
 export class UnhandledAnchoringStatus extends Error {
   constructor(status: never) {
@@ -34,7 +38,7 @@ export class DocumentService implements IDocumentService {
     anchoring: AnchoringService,
     cloud: Cloud,
     updateService: DocumentUpdateService,
-    context: IContext,
+    context: IContext
   ) {
     this.#logger = logger.withContext(DocumentService.name);
     this.#anchoring = anchoring;
@@ -56,54 +60,73 @@ export class DocumentService implements IDocumentService {
   async update<State, Shape>(
     record: any,
     handler: IDoctype<State, Shape>,
-    state$: FrozenSubject<Snapshot<State>>,
+    state$: FrozenSubject<Snapshot<State>>
   ): Promise<void> {
     const cid = await this.#cloud.store(normalizeRecord(record));
     const recordWrap = new RecordWrap(record, cid);
-    const next = await this.#updateService.applyUpdate(recordWrap, handler, state$.value);
+    const next = await this.#updateService.applyUpdate(
+      recordWrap,
+      handler,
+      state$.value
+    );
     const documentId = new DocId(state$.value.log.first);
     this.#anchoring.requestAnchor(documentId, cid);
     state$.next(next);
   }
 
   requestAnchor(docId: DocId, cid: CID): void {
-    this.#logger.debug(`Requesting anchor for ${docId.toString()}?version=${cid.toString()}`);
+    this.#logger.debug(
+      `Requesting anchor for ${docId.toString()}?version=${cid.toString()}`
+    );
     this.#anchoring.requestAnchor(docId, cid);
   }
 
   externalUpdates$<State, Shape>(
     docId: DocId,
     handler: IDoctype<State, Shape>,
-    state$: FrozenSubjectRead<Snapshot<State>>,
+    state$: FrozenSubjectRead<Snapshot<State>>
   ): Observable<Snapshot<State>> {
     this.#cloud.bus.request(docId.toString());
-    return merge(this.cloudUpdates$(docId, handler, state$), this.anchorUpdates$(docId, handler, state$));
+    return merge(
+      this.cloudUpdates$(docId, handler, state$),
+      this.anchorUpdates$(docId, handler, state$)
+    );
   }
 
   private cloudUpdates$<State, Shape>(
     docId: DocId,
     handler: IDoctype<State, Shape>,
-    state$: FrozenSubjectRead<Snapshot<State>>,
+    state$: FrozenSubjectRead<Snapshot<State>>
   ): Observable<Snapshot<State>> {
-    const filterOwn = filter((message: CloudMessage) => message.id === docId.toString());
-    const filterResponseOrUpdate = filter((message: CloudMessage): message is UpdateMessage | ResponseMessage => {
-      return message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE
-    })
+    const filterOwn = filter(
+      (message: CloudMessage) => message.id === docId.toString()
+    );
+    const filterResponseOrUpdate = filter((message: CloudMessage): message is
+      | UpdateMessage
+      | ResponseMessage => {
+      return (
+        message.typ === MessageTyp.RESPONSE || message.typ === MessageTyp.UPDATE
+      );
+    });
     return this.#cloud.bus.message$.pipe(
       filterOwn,
       filterResponseOrUpdate,
-      mergeMap(async message => {
+      mergeMap(async (message) => {
         return this.applyHead(message.cid, handler, state$);
-      }),
+      })
     );
   }
 
   private async applyHead<State, Shape>(
     recordCid: CID,
     handler: IDoctype<State, Shape>,
-    state$: FrozenSubjectRead<Snapshot<State>>,
+    state$: FrozenSubjectRead<Snapshot<State>>
   ): Promise<Snapshot<State>> {
-    const nextState = await this.#updateService.applyHead(recordCid, handler, state$.value);
+    const nextState = await this.#updateService.applyHead(
+      recordCid,
+      handler,
+      state$.value
+    );
     if (nextState) {
       return nextState;
     } else {
@@ -117,11 +140,14 @@ export class DocumentService implements IDocumentService {
   private anchorUpdates$<State, Shape>(
     docId: DocId,
     handler: IDoctype<State, Shape>,
-    state$: FrozenSubjectRead<Snapshot<State>>,
+    state$: FrozenSubjectRead<Snapshot<State>>
   ): Observable<Snapshot<State>> {
     return this.#anchoring.anchorStatus$(docId).pipe(
       mergeMap(async (observation) => {
-        this.#logger.debug(`Received anchoring update for ${docId.toString()}`, observation);
+        this.#logger.debug(
+          `Received anchoring update for ${docId.toString()}`,
+          observation
+        );
         switch (observation.status) {
           case AnchoringStatus.NOT_REQUESTED:
             return state$.value;
@@ -155,7 +181,7 @@ export class DocumentService implements IDocumentService {
           default:
             throw new UnhandledAnchoringStatus(observation);
         }
-      }),
+      })
     );
   }
 }

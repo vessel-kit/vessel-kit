@@ -1,7 +1,11 @@
-declare module 'multiformats' {
+declare module "multiformats" {
   export namespace varint {
     export function decode(data: Uint8Array): [number, number];
-    export function encodeTo(int: number, target: Uint8Array, offset?: number): Uint8Array;
+    export function encodeTo(
+      int: number,
+      target: Uint8Array,
+      offset?: number
+    ): Uint8Array;
     export function encodingLength(int: number): number;
   }
 
@@ -18,7 +22,12 @@ declare module 'multiformats' {
 
   export namespace digest {
     export class Digest {
-      constructor(code: number, size: number, digest: Uint8Array, bytes: Uint8Array) {}
+      constructor(
+        code: number,
+        size: number,
+        digest: Uint8Array,
+        bytes: Uint8Array
+      ) {}
       code: number;
       size: number;
       digest: Uint8Array;
@@ -34,7 +43,11 @@ declare module 'multiformats' {
       name: string;
       code: number;
       encode: (input: Uint8Array) => PromiseLike<Uint8Array>;
-      constructor(name: string, code: number, encode: (input: Uint8Array) => PromiseLike<Uint8Array>) {}
+      constructor(
+        name: string,
+        code: number,
+        encode: (input: Uint8Array) => PromiseLike<Uint8Array>
+      ) {}
       digest(input: Uint8Array): Promise<digest.Digest>;
     }
     export function from(options: {
@@ -49,14 +62,22 @@ declare module 'multiformats' {
       name: string;
       code: number;
       encode: (data: T) => Uint8Array;
-      constructor(name: string, code: number, encode: (data: T) => Uint8Array) {}
+      constructor(
+        name: string,
+        code: number,
+        encode: (data: T) => Uint8Array
+      ) {}
     }
 
     export class Decoder<T> {
       name: string;
       code: number;
       decode: (bytes: Uint8Array) => T;
-      constructor(name: string, code: number, decode: (bytes: Uint8Array) => T) {}
+      constructor(
+        name: string,
+        code: number,
+        decode: (bytes: Uint8Array) => T
+      ) {}
     }
 
     export class Codec<T> {
@@ -66,7 +87,12 @@ declare module 'multiformats' {
       decode: (bytes: Uint8Array) => T;
       decoder: Decoder<T>;
       encoder: Encoder<T>;
-      constructor(name: string, code: number, encode: (data: T) => Uint8Array, decode: (bytes: Uint8Array) => T) {}
+      constructor(
+        name: string,
+        code: number,
+        encode: (data: T) => Uint8Array,
+        decode: (bytes: Uint8Array) => T
+      ) {}
     }
 
     export function codec<T>(options: {

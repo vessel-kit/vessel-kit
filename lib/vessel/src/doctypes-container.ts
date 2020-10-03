@@ -1,5 +1,5 @@
-import { IDoctype } from './document/doctype';
-import { IContext } from './context';
+import { IDoctype } from "./document/doctype";
+import { IContext } from "./context";
 
 export class UnknownDoctypeError extends Error {
   constructor(doctype: string) {

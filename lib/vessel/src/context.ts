@@ -1,10 +1,15 @@
-import { DIDResolver } from './did-resolver';
-import { assertSignature } from './assert-signature';
-import CID from 'cids';
-import { RecordWrap } from '@vessel-kit/codec';
-import { AnchorProof } from '@vessel-kit/anchoring';
-import { AnchoringService } from './anchoring.service';
-import { Identifier, IIdentitySigning, IResolver, jws } from '@vessel-kit/identity';
+import { DIDResolver } from "./did-resolver";
+import { assertSignature } from "./assert-signature";
+import CID from "cids";
+import { RecordWrap } from "@vessel-kit/codec";
+import { AnchorProof } from "@vessel-kit/anchoring";
+import { AnchoringService } from "./anchoring.service";
+import {
+  Identifier,
+  IIdentitySigning,
+  IResolver,
+  jws,
+} from "@vessel-kit/identity";
 
 export interface IRetrieve {
   (cid: CID, path?: string): Promise<any>;
@@ -24,7 +29,11 @@ export class Context implements IContext {
   readonly #retrieve: IRetrieve;
   readonly #anchoring?: AnchoringService;
 
-  constructor(signorP: () => IIdentitySigning, retrieve: IRetrieve, anchoring?: AnchoringService) {
+  constructor(
+    signorP: () => IIdentitySigning,
+    retrieve: IRetrieve,
+    anchoring?: AnchoringService
+  ) {
     this.#signorP = signorP;
     this.#resolver = new DIDResolver();
     this.#retrieve = retrieve;
@@ -52,7 +61,7 @@ export class Context implements IContext {
     if (threeDid) {
       const parts = threeDid.toString().match(/did:3:(\w+)/);
       if (parts) {
-        return new Identifier('3', parts[1]);
+        return new Identifier("3", parts[1]);
       } else {
         return undefined;
       }
@@ -83,16 +92,16 @@ export class EmptyContextError extends Error {
 
 export const EMPTY_CONTEXT: IContext = {
   did: () => {
-    throw new EmptyContextError('did');
+    throw new EmptyContextError("did");
   },
   sign: () => {
-    throw new EmptyContextError('sign');
+    throw new EmptyContextError("sign");
   },
   retrieve: () => {
-    throw new EmptyContextError('retrieve');
+    throw new EmptyContextError("retrieve");
   },
   assertSignature: () => {
-    throw new EmptyContextError('assertSignature');
+    throw new EmptyContextError("assertSignature");
   },
   verifyAnchor: () => {
     throw new EmptyContextError(`verifyAnchor`);

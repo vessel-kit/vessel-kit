@@ -1,5 +1,5 @@
-import { DIDDocument, Resolver } from 'did-resolver';
-import { IResolver, KeyMethod } from '@vessel-kit/identity';
+import { DIDDocument, Resolver } from "did-resolver";
+import { IResolver, KeyMethod } from "@vessel-kit/identity";
 
 export class DIDResolver implements IResolver {
   #resolver: Resolver;

@@ -1,7 +1,10 @@
-import type { IContext } from '../../context';
-import { VesselDocumentShape, VesselDocumentState } from '../../doctypes/vessel-document-alpha-doctype';
-import type { AnchoringStatus, AnchorProof } from '@vessel-kit/anchoring';
-import type { TwoPartyShape, TwoPartyState } from './shape-and-state';
+import type { IContext } from "../../context";
+import {
+  VesselDocumentShape,
+  VesselDocumentState,
+} from "../../doctypes/vessel-document-alpha-doctype";
+import type { AnchoringStatus, AnchorProof } from "@vessel-kit/anchoring";
+import type { TwoPartyShape, TwoPartyState } from "./shape-and-state";
 
 async function checkSignature(context: IContext, payload: any) {
   if (payload) {
@@ -16,12 +19,17 @@ async function checkSignature(context: IContext, payload: any) {
   }
 }
 
-const DOCTYPE = 'vessel/document/1.0.0';
+const DOCTYPE = "vessel/document/1.0.0";
 
 function isShape<A>(input: unknown): input is VesselDocumentShape<A> {
   // TODO UNKNOWN
   // TODO Must be specific to ruleset
-  return input && typeof input === 'object' && 'doctype' in input && (input as any).doctype == DOCTYPE;
+  return (
+    input &&
+    typeof input === "object" &&
+    "doctype" in input &&
+    (input as any).doctype == DOCTYPE
+  );
 }
 
 export default class Ruleset {
@@ -35,14 +43,17 @@ export default class Ruleset {
     };
   }
 
-  async applyAnchor(proof: AnchorProof, state: TwoPartyState): Promise<TwoPartyState> {
+  async applyAnchor(
+    proof: AnchorProof,
+    state: TwoPartyState
+  ): Promise<TwoPartyState> {
     const next = state;
     if (next.current) {
       next.freight = next.current;
       next.current = null;
     }
     next.anchor = {
-      status: 'ANCHORED' as AnchoringStatus.ANCHORED,
+      status: "ANCHORED" as AnchoringStatus.ANCHORED,
       proof: {
         chainId: proof.chainId.toString(),
         blockNumber: proof.blockNumber,
@@ -54,7 +65,9 @@ export default class Ruleset {
     return next;
   }
 
-  async knead(genesisRecord: unknown): Promise<VesselDocumentState<TwoPartyState>> {
+  async knead(
+    genesisRecord: unknown
+  ): Promise<VesselDocumentState<TwoPartyState>> {
     if (isShape<TwoPartyShape>(genesisRecord)) {
       return {
         doctype: genesisRecord.doctype,
@@ -63,10 +76,10 @@ export default class Ruleset {
           current: null,
           freight: {
             ...genesisRecord.content,
-            stage: 'draft' as 'draft',
+            stage: "draft" as "draft",
           },
           anchor: {
-            status: 'NOT_REQUESTED' as AnchoringStatus.NOT_REQUESTED,
+            status: "NOT_REQUESTED" as AnchoringStatus.NOT_REQUESTED,
           },
         },
       };
@@ -77,11 +90,11 @@ export default class Ruleset {
 
   async canApply(
     current: VesselDocumentState<TwoPartyState>,
-    next: TwoPartyShape,
+    next: TwoPartyShape
   ): Promise<VesselDocumentState<TwoPartyState>> {
     if (current && next) {
       const currentContent = current.data.current || current.data.freight;
-      if (currentContent.stage === 'agreement') {
+      if (currentContent.stage === "agreement") {
         throw new Error(`Can not update after agreement is reached`);
       }
       const toCheckA = next.partyA
@@ -101,7 +114,10 @@ export default class Ruleset {
       if (checkA || checkB) {
         if (currentContent && next) {
           if (currentContent.payload.num <= next.payload.num) {
-            const stage = checkA && checkB ? ('agreement' as 'agreement') : ('draft' as 'draft');
+            const stage =
+              checkA && checkB
+                ? ("agreement" as "agreement")
+                : ("draft" as "draft");
             return {
               ...current,
               data: {

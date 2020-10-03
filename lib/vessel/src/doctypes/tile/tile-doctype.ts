@@ -1,13 +1,13 @@
-import { DoctypeHandler } from '../../document/doctype';
-import { TileShapeBase, TileShape } from './tile-shape';
-import { AnchorState } from '../../document/anchor-state';
-import Ajv from 'ajv';
-import * as TileShapeSchema from './tile-shape.schema.json';
-import { AnchoringStatus } from '@vessel-kit/anchoring';
-import produce from 'immer';
-import { RecordWrap } from '@vessel-kit/codec';
-import jsonPatch from 'fast-json-patch';
-import { Ordering } from '../../document/ordering';
+import { DoctypeHandler } from "../../document/doctype";
+import { TileShapeBase, TileShape } from "./tile-shape";
+import { AnchorState } from "../../document/anchor-state";
+import Ajv from "ajv";
+import * as TileShapeSchema from "./tile-shape.schema.json";
+import { AnchoringStatus } from "@vessel-kit/anchoring";
+import produce from "immer";
+import { RecordWrap } from "@vessel-kit/codec";
+import jsonPatch from "fast-json-patch";
+import { Ordering } from "../../document/ordering";
 
 export type TileState = {
   current: TileShapeBase | null;
@@ -21,7 +21,7 @@ function isShape(genesis: any): genesis is TileShapeBase {
 }
 
 export class TileHandler extends DoctypeHandler<TileState, TileShapeBase> {
-  readonly name = 'tile';
+  readonly name = "tile";
 
   async knead(genesisRecord: unknown): Promise<TileState> {
     if (isShape(genesisRecord)) {
@@ -78,7 +78,12 @@ export class TileHandler extends DoctypeHandler<TileState, TileShapeBase> {
         });
       } else {
         await this.context.assertSignature(record);
-        const next = jsonPatch.applyPatch(state.current || state.freight, record.patch, false, false).newDocument;
+        const next = jsonPatch.applyPatch(
+          state.current || state.freight,
+          record.patch,
+          false,
+          false
+        ).newDocument;
         return {
           ...state,
           current: next,

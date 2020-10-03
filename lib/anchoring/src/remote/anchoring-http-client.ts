@@ -1,12 +1,12 @@
-import { Observable, queueScheduler, Subject } from 'rxjs';
-import CID from 'cids';
-import { filter } from 'rxjs/operators';
-import axios from 'axios';
-import { DocId, decodeThrow } from '@vessel-kit/codec';
-import * as t from 'io-ts';
-import { AnchorResponsePayload } from './anchor-response-payload';
-import { AnchorRequestPayload } from './anchor-request-payload';
-import { AnchoringStatus } from '../anchoring-status';
+import { Observable, queueScheduler, Subject } from "rxjs";
+import CID from "cids";
+import { filter } from "rxjs/operators";
+import axios from "axios";
+import { DocId, decodeThrow } from "@vessel-kit/codec";
+import * as t from "io-ts";
+import { AnchorResponsePayload } from "./anchor-response-payload";
+import { AnchorRequestPayload } from "./anchor-request-payload";
+import { AnchoringStatus } from "../anchoring-status";
 
 export type AnchorResponsePayloadType = t.TypeOf<typeof AnchorResponsePayload>;
 
@@ -37,7 +37,9 @@ export class AnchoringHttpClient {
 
   anchorStatus$(docId: DocId): Observable<AnchorResponsePayloadType> {
     const subject = new Subject<AnchorResponsePayloadType>();
-    this.#observation$.pipe(filter((o) => o.docId.toString() === docId.toString())).subscribe(subject);
+    this.#observation$
+      .pipe(filter((o) => o.docId.toString() === docId.toString()))
+      .subscribe(subject);
     return subject.asObservable();
   }
 
@@ -78,7 +80,9 @@ export class AnchoringHttpClient {
 
   async requestAnchorStatus(cid: CID): Promise<AnchoringStatus | null> {
     try {
-      const endpoint = `${this.#anchoringEndpoint}/api/v0/requests/${cid.toString()}`;
+      const endpoint = `${
+        this.#anchoringEndpoint
+      }/api/v0/requests/${cid.toString()}`;
       const response = await axios.get(endpoint);
       const decoded = decodeThrow(AnchorResponsePayload, response.data);
       const status = response.data.status as AnchoringStatus;

@@ -1,4 +1,4 @@
-import { AlgorithmKind } from './algorithm-kind';
+import { AlgorithmKind } from "./algorithm-kind";
 
 /**
  * Dummy public key. Can only tell its bytes representation, and what algorithm it belongs to.

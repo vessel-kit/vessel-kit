@@ -5,13 +5,16 @@
 // TypeScript Version: 2.9
 /// <reference types="node" />
 
-declare module 'multicodec' {
+declare module "multicodec" {
   export as namespace Multicodec;
 
   /**
    * Prefix a Uint8Array with a multicodec_packed.
    */
-  export function addPrefix(multicodecStrOrCode: string | number | Uint8Array, data: Uint8Array): Uint8Array;
+  export function addPrefix(
+    multicodecStrOrCode: string | number | Uint8Array,
+    data: Uint8Array
+  ): Uint8Array;
 
   /**
    * Decapsulate the multicodec_packed prefix from the data.
@@ -56,7 +59,7 @@ declare module 'multicodec' {
   /**
    * Map of codecConstant to code
    */
-    // Derived from https://github.com/multiformats/js-multicodec/blob/master/src/constants.js
+  // Derived from https://github.com/multiformats/js-multicodec/blob/master/src/constants.js
   export const IDENTITY = 0;
   export const IP4 = 4;
   export const TCP = 6;

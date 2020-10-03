@@ -1,35 +1,41 @@
-import { Controller, Get } from '@nestjs/common';
-import { RequestStorage } from '../storage/request.storage';
-import { AnchorStorage } from '../storage/anchor.storage';
-import { AnchoringScheduleService } from '../anchoring/anchoring-schedule.service';
-import { AnchoringStatus } from '@vessel-kit/anchoring';
-import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get } from "@nestjs/common";
+import { RequestStorage } from "../storage/request.storage";
+import { AnchorStorage } from "../storage/anchor.storage";
+import { AnchoringScheduleService } from "../anchoring/anchoring-schedule.service";
+import { AnchoringStatus } from "@vessel-kit/anchoring";
+import { ApiOperation, ApiTags, ApiResponse } from "@nestjs/swagger";
 
-@Controller('/v0/stats')
+@Controller("/v0/stats")
 export class StatsController {
   constructor(
     private readonly requestStorage: RequestStorage,
     private readonly anchorStorage: AnchorStorage,
-    private readonly anchoringSchedule: AnchoringScheduleService,
+    private readonly anchoringSchedule: AnchoringScheduleService
   ) {}
 
-  @Get('/')
-  @ApiTags('stats')
+  @Get("/")
+  @ApiTags("stats")
   @ApiOperation({
-    summary: 'Get stats',
+    summary: "Get stats",
     description:
-      'Gather statistics about total amount of requests, ' +
-      'total amount of anchors, pending requests, next anchoring time',
+      "Gather statistics about total amount of requests, " +
+      "total amount of anchors, pending requests, next anchoring time",
   })
-  @ApiResponse({ status: 200, description: 'Success' })
-  @ApiResponse({ status: 500, description: 'Error' })
+  @ApiResponse({ status: 200, description: "Success" })
+  @ApiResponse({ status: 500, description: "Error" })
   async index() {
     const requestsTotalCount = await this.requestStorage.count();
     const anchorsTotalCount = await this.anchorStorage.count();
-    const pendingRequests = await this.requestStorage.countByStatus(AnchoringStatus.PENDING);
-    const cronJob = this.anchoringSchedule.get(this.anchoringSchedule.triggerAnchoring);
+    const pendingRequests = await this.requestStorage.countByStatus(
+      AnchoringStatus.PENDING
+    );
+    const cronJob = this.anchoringSchedule.get(
+      this.anchoringSchedule.triggerAnchoring
+    );
     if (!cronJob) {
-      throw new Error(`No job for ${this.anchoringSchedule.triggerAnchoring.name} is found`)
+      throw new Error(
+        `No job for ${this.anchoringSchedule.triggerAnchoring.name} is found`
+      );
     }
     const nextAnchoring = cronJob.nextDate().toDate();
     return {

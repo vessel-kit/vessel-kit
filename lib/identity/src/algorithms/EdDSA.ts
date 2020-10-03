@@ -1,7 +1,7 @@
-import { IPrivateKey, ISigner } from '../private-key.interface';
-import { AlgorithmKind } from '../algorithm-kind';
-import { IPublicKey, ISignatureVerification } from '../public-key.interface';
-import * as ed25519 from '@stablelib/ed25519';
+import { IPrivateKey, ISigner } from "../private-key.interface";
+import { AlgorithmKind } from "../algorithm-kind";
+import { IPublicKey, ISignatureVerification } from "../public-key.interface";
+import * as ed25519 from "@stablelib/ed25519";
 
 export class PublicKey implements IPublicKey, ISignatureVerification {
   readonly alg = AlgorithmKind.EdDSA;

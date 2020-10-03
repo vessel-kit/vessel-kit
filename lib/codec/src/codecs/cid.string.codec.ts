@@ -1,8 +1,8 @@
-import * as t from 'io-ts';
-import CID from 'cids';
+import * as t from "io-ts";
+import CID from "cids";
 
 export const CidStringCodec = new t.Type<CID, string, string>(
-  'CID-string',
+  "CID-string",
   (input: unknown): input is CID => CID.isCID(input),
   (input, context) => {
     try {
@@ -11,5 +11,5 @@ export const CidStringCodec = new t.Type<CID, string, string>(
       return t.failure(input, context, e.message);
     }
   },
-  (cid) => cid.toString(),
+  (cid) => cid.toString()
 );

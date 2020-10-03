@@ -1,7 +1,11 @@
 export class MerkleNode<A> {
   private _uplink?: MerkleNode<A>;
 
-  constructor(readonly id: A, readonly left?: MerkleNode<A>, readonly right?: MerkleNode<A>) {
+  constructor(
+    readonly id: A,
+    readonly left?: MerkleNode<A>,
+    readonly right?: MerkleNode<A>
+  ) {
     if (left) {
       left.link(this);
     }

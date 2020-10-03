@@ -1,6 +1,6 @@
-import { EMPTY_CONTEXT, IContext } from '../context';
-import { DocId, RecordWrap } from '@vessel-kit/codec';
-import { Ordering } from './ordering';
+import { EMPTY_CONTEXT, IContext } from "../context";
+import { DocId, RecordWrap } from "@vessel-kit/codec";
+import { Ordering } from "./ordering";
 
 abstract class GenericHandler {
   abstract readonly name: string;
@@ -21,9 +21,15 @@ export interface IDoctype<State, Shape> {
   apply(recordWrap: RecordWrap, state: State, docId: DocId): Promise<State>;
 }
 
-export abstract class DoctypeHandler<State, Shape> extends GenericHandler implements IDoctype<State, Shape> {
+export abstract class DoctypeHandler<State, Shape>
+  extends GenericHandler
+  implements IDoctype<State, Shape> {
   abstract knead(genesisRecord: unknown): Promise<State>;
   abstract canonical(state: State): Promise<Shape>;
   abstract order(a: State, b: State): Promise<Ordering>;
-  abstract apply(recordWrap: RecordWrap, state: State, docId: DocId): Promise<State>;
+  abstract apply(
+    recordWrap: RecordWrap,
+    state: State,
+    docId: DocId
+  ): Promise<State>;
 }

@@ -1,20 +1,20 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ConfigService } from './commons/config.service';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { ConfigService } from "./commons/config.service";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.enableCors();
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix("api");
 
   const options = new DocumentBuilder()
-    .setTitle('Vessel Anchoring')
-    .setDescription('Implementation of anchoring service')
-    .setVersion('0.0.1')
+    .setTitle("Vessel Anchoring")
+    .setDescription("Implementation of anchoring service")
+    .setVersion("0.0.1")
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('/swagger', app, document);
+  SwaggerModule.setup("/swagger", app, document);
 
   const config = app.get(ConfigService);
   const port = config.current.PORT;

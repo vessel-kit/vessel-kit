@@ -1,7 +1,7 @@
-import { AnchorProof } from './anchor-proof';
-import { ChainID } from 'caip';
+import { AnchorProof } from "./anchor-proof";
+import { ChainID } from "caip";
 
 export interface IBlockchainReaderHandler {
-  canAccept(chainID: ChainID): Boolean
+  canAccept(chainID: ChainID): Boolean;
   validateProof(chainID: ChainID, proofRecord: AnchorProof): Promise<void>;
 }

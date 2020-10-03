@@ -1,4 +1,4 @@
 export enum PathDirection {
-  L = 'L',
-  R = 'R',
+  L = "L",
+  R = "R",
 }

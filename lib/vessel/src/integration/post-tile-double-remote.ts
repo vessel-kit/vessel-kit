@@ -1,9 +1,13 @@
-import { sleep } from './sleep.util';
-import { Client } from '../remote/client';
-import { Tile } from '../doctypes/tile/tile';
-import { AlgorithmKind, KeyIdentity, PrivateKeyFactory } from '@vessel-kit/identity';
+import { sleep } from "./sleep.util";
+import { Client } from "../remote/client";
+import { Tile } from "../doctypes/tile/tile";
+import {
+  AlgorithmKind,
+  KeyIdentity,
+  PrivateKeyFactory,
+} from "@vessel-kit/identity";
 
-const REMOTE_URL = 'http://localhost:3001';
+const REMOTE_URL = "http://localhost:3001";
 const clientA = new Client(REMOTE_URL);
 const clientB = new Client(REMOTE_URL);
 
@@ -15,9 +19,13 @@ async function createUser(seed: string) {
 }
 
 async function main() {
-  const userA = await createUser('0x1110000000000000000000000000000000000000000000000000000000000000');
+  const userA = await createUser(
+    "0x1110000000000000000000000000000000000000000000000000000000000000"
+  );
   await clientA.addSignor(userA);
-  const userB = await createUser('0x2220000000000000000000000000000000000000000000000000000000000000');
+  const userB = await createUser(
+    "0x2220000000000000000000000000000000000000000000000000000000000000"
+  );
   await clientB.addSignor(userB);
   const didA = await userA.did();
   const didB = await userB.did();

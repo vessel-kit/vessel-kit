@@ -1,6 +1,11 @@
-import * as t from 'io-ts';
-import { AnchoringStatus } from '../anchoring-status';
-import { DateISO8601Codec, CidStringCodec, DocIdStringCodec, DateNumberCodec } from '@vessel-kit/codec';
+import * as t from "io-ts";
+import { AnchoringStatus } from "../anchoring-status";
+import {
+  DateISO8601Codec,
+  CidStringCodec,
+  DocIdStringCodec,
+  DateNumberCodec,
+} from "@vessel-kit/codec";
 
 const NotAnchored = t.type({
   status: t.union([
@@ -16,7 +21,10 @@ const NotAnchored = t.type({
 });
 
 const Pending = t.type({
-  status: t.union([t.literal(AnchoringStatus.PENDING), t.literal(AnchoringStatus.PROCESSING)]),
+  status: t.union([
+    t.literal(AnchoringStatus.PENDING),
+    t.literal(AnchoringStatus.PROCESSING),
+  ]),
   id: t.string,
   cid: t.string.pipe(CidStringCodec),
   docId: t.string.pipe(DocIdStringCodec),
