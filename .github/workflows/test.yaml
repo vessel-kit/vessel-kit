@@ -1,4 +1,4 @@
-name: Autotest
+name: Test
 on: push
 jobs:
   build-and-test:
