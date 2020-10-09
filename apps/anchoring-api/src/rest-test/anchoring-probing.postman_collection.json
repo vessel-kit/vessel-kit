@@ -1,0 +1,265 @@
+{
+	"info": {
+		"_postman_id": "27bf77d8-eec0-41f6-8c2f-333838e2ee07",
+		"name": "anchoring-probing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Anchor_document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bd8e1b4-8b7c-4a64-8fc4-d2dfc2f09fd3",
+						"exec": [
+							"function sendPostReq(body, cb) {",
+							"    pm.sendRequest({url: 'http://localhost:3000/api/v0/requests',",
+							"        method: 'POST',",
+							"        header: {",
+							"        \"Content-Type\": \"application/json\"",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(body)",
+							"        }}, cb)",
+							"}",
+							"",
+							"pm.test(\"response is OK\", () => {",
+							"    pm.response.to.have.status(201)",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.status).to.equal(\"PENDING\")",
+							"})",
+							"",
+							"const firstReqBody = {  ",
+							"    docId: \"vessel://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm\",",
+							"    cid: \"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm\"",
+							"     }",
+							"",
+							"setTimeout(() => sendPostReq(firstReqBody, (err, response) => {",
+							"            pm.expect(response.status, 201)",
+							"            const responseJson = response.json()",
+							"            pm.expect(responseJson.status).to.equal(\"ANCHORED\")",
+							"    }), 40000);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"docId\": \"vessel://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm\",\n    \"cid\": \"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v0/requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v0",
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Anchor_two_documents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a9c55190-e2a6-4ab0-9828-4da76126e467",
+						"exec": [
+							"function sendPostReq(body, cb) {",
+							"    pm.sendRequest({url: 'http://localhost:3000/api/v0/requests',",
+							"        method: 'POST',",
+							"        header: {",
+							"        \"Content-Type\": \"application/json\"",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(body)",
+							"        }}, cb)",
+							"}",
+							"",
+							"",
+							"pm.test(\"response is OK\", () => {",
+							"    pm.response.to.have.status(201)",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.status).to.equal(\"PENDING\")",
+							"})",
+							"",
+							"",
+							"const firstReqBody = {  ",
+							"    docId: \"vessel://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm\",",
+							"    cid: \"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k543cecjuxm\"",
+							"     }",
+							"",
+							"setTimeout(() => sendPostReq(firstReqBody, (err, response) => {",
+							"                    pm.expect(response.status, 201)",
+							"                    const responseJson = response.json()",
+							"                    pm.expect(responseJson.status).to.equal(\"PENDING\")",
+							"                    setTimeout(() => sendPostReq(firstReqBody, (err, response) => {",
+							"                        pm.expect(response.status, 201)",
+							"                        const responseJson = response.json()",
+							"                        pm.expect(responseJson.status).to.equal(\"ANCHORED\")",
+							"                    }), 40000)",
+							"                }), 40000)",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"docId\": \"vessel://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm\",\n    \"cid\": \"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k533cecjuxm\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v0/requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v0",
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Anchor_two_documents_immediately",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "011cdff3-c4fa-4545-babf-e26749cb4247",
+						"exec": [
+							"function sendPostReq(body, cb) {",
+							"    pm.sendRequest({url: 'http://localhost:3000/api/v0/requests',",
+							"        method: 'POST',",
+							"        header: {",
+							"        \"Content-Type\": \"application/json\"",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(body)",
+							"        }}, cb)",
+							"}",
+							"",
+							"",
+							"pm.test(\"response is OK\", () => {",
+							"    pm.response.to.have.status(201)",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.status).to.equal(\"PENDING\")",
+							"})",
+							"",
+							"",
+							"const firstReqBody = {  ",
+							"    docId: \"vessel://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm\",",
+							"    cid: \"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k553cecjuxm\"",
+							"     }",
+							"const secondReqBody = {  ",
+							"    docId: \"vessel://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm\",",
+							"    cid: \"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k563cecjuxm\"",
+							"     }",
+							"",
+							"setTimeout(() => sendPostReq(secondReqBody, (err, response) => {",
+							"                    pm.expect(response.status, 201)",
+							"                    const responseJson = response.json()",
+							"                    pm.expect(responseJson.status).to.equal(\"PENDING\")",
+							"                    setTimeout(() => sendPostReq(secondReqBody, (err, response) => {",
+							"                        pm.expect(response.status, 201)",
+							"                        const responseJson = response.json()",
+							"                        pm.expect(responseJson.status).to.equal(\"ANCHORED\")",
+							"",
+							"                        sendPostReq(firstReqBody, (err, response) => {",
+							"                            pm.expect(response.status, 201)",
+							"                            const responseJson = response.json()",
+							"                            pm.expect(responseJson.status).to.equal(\"OUTDATED\")",
+							"                        })",
+							"                    }), 40000)",
+							"                }), 1000)",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"docId\": \"vessel://bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm\",\n    \"cid\": \"bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k553cecjuxm\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v0/requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v0",
+						"requests"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
