@@ -33,7 +33,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:rest": "newman run src/rest-test/anchoring-probing.postman_collection.json"
+    "test:rest": "newman run src/rest-test/anchoring-probing.postman_collection.json -e src/rest-test/env.postman_environment.json"
   },
   "dependencies": {
     "@nestjs/common": "^7.4.4",
