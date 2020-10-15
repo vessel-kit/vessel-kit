@@ -69,6 +69,17 @@ Let `hash('0x1' + '0x2')` will `'0x5'` and `hash('0x3' + '0x4')` will `'0x6'` th
 
 we've found Merkle tree root: `'0x7'` 
 
+#### Structure of Anchoring Merkle node
+
+Merkle node implemented as class template (A is a template variable):
+```
+{
+    id: A,
+    left?: MerkleNode<A>,
+    right?: MerkleNode<A>,
+    _uplink?: MerkleNode<A>
+}
+```
 
 #### Lifecycle of the anchoring request
 
