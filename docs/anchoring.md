@@ -3,16 +3,19 @@
 
 #### Rationale
 
-Anchoring module services incoming requests from wheel-api.
-Wheel-api module is a middleware for handling documents and querying Anchoring API module. 
+Anchoring module serves incoming requests from Wheel API.  
+Wheel API module is a middleware for handling documents and querying Anchoring API module.  
+Anchoring service works with Ethereum blockchain and [IPFS](https://en.wikipedia.org/wiki/InterPlanetary_File_System) -
+protocol and P2P-based distributed file system.  
+Anchoring mechanism is applied for making blockchain stamps of arbitrary documents and them states.
 
 Talking in common duties of anchoring module are:
-- putting data requests on blockchain
+- putting (anchoring) data requests on blockchain
 - responding with request data status
-- responding with anchored content 
+- responding with anchor info
 
-
-Anchoring request is the entity consists of canonical `docId` and `cid` of new document state.
+Anchoring service operates with Anchoring requests.  
+Anchoring request is the entity consists of canonical `docId` (aka Genesis record) and `cid` of new document state.
 
 For example:
 
@@ -24,27 +27,89 @@ For example:
  ```
 
 The purpose of anchoring is to make a stamp to blockchain about
-current document state via its CID.
-CID (Content IDentifier) is self-describing content-addressed identifiers for distributed systems.
+current document state via its CID.  
+CID (Content IDentifier) is self-describing content-addressed identifiers for distributed systems.  
+In the same time, CID denote content-dependent address of IPFS block. 
 Example:
 `bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm`
 
-See more at https://github.com/multiformats/cid
+While Anchoring API use machine-readable CID format (e.g. `bafyreibw43tmfkw4az3ezb2dkiid6abwx2criw4te2jhti6k523cecjuxm`)
+it's good to understand what this string encodes.  
+By CIDv1 format defined at https://github.com/multiformats/cid scheme of CID is:
+```
+<hr-cid> ::= <hr-mbc> "-" <hr-cid-mc> "-" <hr-mc> "-" <hr-mh>
+```
+- `<hr-mbc>` is a human-readable multibase code (eg `base58btc`)
+- `<hr-cid-mc>` is the string `cidv#` (eg `cidv1` or `cidv2`)
+- `<hr-mc>` is a human-readable multicodec code (eg `cbor`)
+- `<hr-mh>` is a human-readable multihash (eg `sha2-256-256-abcdef0123456789...`)
+
+For example:
+
+```
+# example CID
+zb2rhe5P4gXftAwvA4eXQ5HJwsER2owDyS9sKaQRRVQPn93bA
+# corresponding human readable CID
+base58btc - cidv1 - raw - sha2-256-256-6e6ff7950a36187a801613426e858dce686cd7d7e3c0fc42ee0330072d245c95
+```
+
+Be more straightforward the CID is standard presentation of different types of hash values (calculated by various hash functions).
+And this hash calculates from initial document content (for `docId` in request body, it's immutable for this document lifetime) and
+changes (diffs) were made to this initial document (for `cid` in request body).
+
 
 If anchoring service received multiple requests for the same
-docId in anchoring interval then only last request will be anchored, others get 
-status OUTDATED.
+`docId` in anchoring interval then only last request will be anchored, others get 
+status `OUTDATED`.
 
-## Merkle tree
+For more complete understanding of Anchoring working principle, it require to consider
+Merkle trees and Merkle DAGs.
 
-Merkle tree (https://en.wikipedia.org/wiki/Merkle_tree) is an abstraction and data structure
+[Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree) is an abstraction and data structure
  that's commonly using in blockchain industry. This structure allow us to compress
- big hash sequence to more compact one with possibility to check whether some hash was in initial 
+ big hash sequence into more compact one with possibility to check whether some hash was in initial 
  sequence or not.
  
-![Merkle tree example schema](merkle_tree.png "Merkle tree example schema") 
-<small>Image source: https://en.wikipedia.org/wiki/Merkle_tree</small>
+![Merkle tree example schema](assets/banana_tree.png "Merkle tree example schema") 
+
+<small>Image derived from: https://media.consensys.net/ever-wonder-how-merkle-trees-work-c2f8b7100ed3</small>
  
+ There are several ways to hash data for Merkle tree at all. 
+ In this particular Ethereum-based case `keccak256` (modified version of SHA-3 final release) hash function is used.
+ 
+ DAGs stand for "Directed Acyclic Graphs", in other words - directed graph with no directed cycles, 
+ there is no way to return in some vertex once we start from it.
+ 
+ IPFS use Merkle DAGs instead of pure Merkle trees, the differences between them are:
+ * DAGs does not requires to be balanced
+ * Each DAG node can contain a value (payload)
+ * Each DAG node can have multiple parent nodes
+ 
+ When anchoring service handles new anchoring request the next actions occurs:
+ - Merkle tree from incoming requests is created, taking `cid` field of requests as Merkle leaves values.
+ - Merkle Root from Merkle tree is taken.
+ - put Merkle root on blockchain using hdwallet configured from mnemonic in `.env` file
+ - put anchor proof to IPFS using next [IPDL](https://ipld.io) structure and getting `proofCid` as a result:
+ ```
+{
+  transaction.blockNumber,
+  transaction.blockTimestamp,
+  merkleRoot,
+  transaction.chainId,
+  transaction.cid,
+}
+```
+ - extract from each request leaf data in the next format and put it on IPFS: 
+ 
+```
+{
+  prev: new CID(request.cid),
+  proof: proofCid,
+  path: ipfsPath,
+}
+```
+ 
+ - add information about blockchain transaction, IPFS anchor info, request info to database.
  
  Merkle tree operates with 3 basic terms:
  - Merkle root
@@ -83,7 +148,7 @@ Merkle node implemented as class template (A is a template variable):
 
 #### Lifecycle of the anchoring request
 
-![Request Lifecycle](lifecycle.png "Request Lifecycle") 
+![Request Lifecycle](assets/lifecycle.png "Request Lifecycle") 
 
 Lifecycle of request:
 1. Request just sent to anchoring api: `PENDING`
@@ -94,12 +159,12 @@ Lifecycle of request:
 
 
 Possible anchoring request statuses:
-- NOT_REQUESTED: unknown request.
-- PENDING: request was accepted, waiting for processing/anchoring.
-- PROCESSING: currently processing request.
-- ANCHORED: request data has successfully anchored (put on blockchain).
-- FAILED: failed to put state to blockchain
-- OUTDATED: request was superseded by more recent for the same vessel document in anchoring time interval.
+- `NOT_REQUESTED`: unknown request.
+- `PENDING`: request was accepted, waiting for processing/anchoring.
+- `PROCESSING`: currently processing request.
+- `ANCHORED`: request data has successfully anchored (put on blockchain).
+- `FAILED`: failed to put state to blockchain
+- `OUTDATED`: request was superseded by more recent for the same vessel document in anchoring time interval.
 The more recent one become `ANCHORED`.
 
 

@@ -1,0 +1,7 @@
+@startuml
+NOT_REQUESTED -> PENDING: request just sent to anchoring api
+PENDING -> PROCESSING: Doing some operations with request (e.g. putting on blockchain)
+PROCESSING -> ANCHORED: if request was successfully put on blockchain
+PROCESSING -> FAILED: if something going wrong and request failed to persist to blockchain
+PROCESSING -> OUTDATED: if between two anchoring events came two or more request for the same docId
+@enduml
