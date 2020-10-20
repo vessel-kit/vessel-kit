@@ -88,15 +88,15 @@ Merkle trees and Merkle DAGs.
  When anchoring service handles new anchoring request the next actions occurs:
  - Merkle tree from incoming requests is created, taking `cid` field of requests as Merkle leaves values.
  - Merkle Root from Merkle tree is taken.
- - put Merkle root on blockchain using hdwallet configured from mnemonic in `.env` file
+ - put Merkle root on blockchain.
  - put anchor proof to IPFS using next [IPDL](https://ipld.io) structure and getting `proofCid` as a result:
  ```
 {
-  transaction.blockNumber,
-  transaction.blockTimestamp,
-  merkleRoot,
-  transaction.chainId,
-  transaction.cid,
+  blockNumber: t.number,
+  blockTimestamp: t.number,
+  root: CidIpldCodec,
+  chainId: t.string.pipe(ChainIdStringCodec),
+  txHash: CidIpldCodec,
 }
 ```
  - extract from each request leaf data in the next format and put it on IPFS: 
