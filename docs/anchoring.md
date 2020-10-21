@@ -168,6 +168,28 @@ Possible anchoring request statuses:
 The more recent one become `ANCHORED`.
 
 
+### How to prove record anchoring
+
+- once you send request for anchoring via `POST /api/v0/requests`, the request goes to 
+anchoring queue. After anchoring interval (about 30sec) it's required to send `POST /api/v0/requests` again -
+when the response will contain field `status` with value `ANCHORED`, the field
+`anchorRecord` will be available.
+- get the value of response `anchorRecord` field and inspect IPFS with.
+- you will be given with values:
+  - `prev` is docId of initial document
+  - `proof` is blockchain-based proof of anchoring:
+    - `root` is a Merkle root 
+    - `txHash` is a transaction that contains Merkle root for tree with current anchor update
+    - `chainId` is a chain identifier as of EIP155
+    - `blockNumber` is a number of block with transaction
+    - `blockTimestamp` is a timestamp of block with transaction
+- you need to ensure that Merkle root on blockchain is the same as in IPFS. 
+    
+![IPFS View 1](assets/ipfs_view1.png "IPFS View 1") 
+
+![IPFS View 2](assets/ipfs_view2.png "IPFS View 2") 
+
+
 ### Running REST anchoring self-testing
 
 In order to ensure the anchoring-api server/implementation is functioning according to vessel spec you may run
@@ -191,7 +213,7 @@ Then run the test suite via ```yarn test:rest```
 
 `GET /api/v0/requests/list/:cid` - get all anchor requests by `:cid`
 
-`POST /api/v0/requests` - the record has been successfully created
+`POST /api/v0/requests` - create a new anchor request.
 
 `GET /api/v0/stats` - gather statistics about total amount of requests, total amount of anchors, pending requests, next anchoring time
 
