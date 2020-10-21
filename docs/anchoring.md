@@ -185,8 +185,8 @@ when the response will contain field `status` with value `ANCHORED`, the field
     - `blockTimestamp` is a timestamp of block with transaction
 - you need to ensure that Merkle root on blockchain is the same as in IPFS. 
     
-<img src="assets/ipfs_view1.png" alt="IPFS View 1" width="400" />
-<img src="assets/ipfs_view2.png" alt="IPFS View 2" width="400" />
+<img src="assets/ipfs_view1.png" alt="IPFS View 1" width="500" />
+<img src="assets/ipfs_view2.png" alt="IPFS View 2" width="500" />
 
 
 ### Running REST anchoring self-testing
