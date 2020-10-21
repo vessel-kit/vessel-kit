@@ -17,3 +17,7 @@ lib/*/docs/
 
 # Globals
 coverage/
+*.log
+*.d.ts
+*.js
+*.js.map
