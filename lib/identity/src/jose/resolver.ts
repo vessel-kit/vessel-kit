@@ -84,6 +84,14 @@ const isAlgProper = (alg: AlgorithmKind) => (publicKey: IPublicKey) => {
   return publicKey.alg === alg;
 };
 
+/**
+ * Extract public keys from DID Document
+ *
+ * @param didDocument DID Document as per [DID Core](https://w3c.github.io/did-core/) specification.
+ * @param relation verification relation section of the DID Document.
+ * @param kid DID URL of the key. Could be just DID identifier.
+ * @param alg Algorithm used.
+ */
 export function extractPublicKeys(
   didDocument: didResolver.DIDDocument,
   relation: VerificationRelation,

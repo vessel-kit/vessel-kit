@@ -118,6 +118,22 @@ export async function create(
 }
 
 /**
+ * Create JSON Web signature embedded into the payload, similar to Enveloped XML Signature.
+ *
+ * @category Signing
+ * @param signer Signer that could report its DID key id.
+ * @param payload JSON payload to sign.
+ */
+export async function createEnveloped<A extends object>(
+  signer: ISignerIdentified,
+  payload: A
+): Promise<A & { signature: string }> {
+  const signature = await create(signer, payload);
+  const detached = asDetached(signature);
+  return Object.assign({}, payload, { signature: detached });
+}
+
+/**
  * Prepare signing input: `base64url(header).base64url(payload)`. Called by [[create]] and [[verify]] internally.
  *
  * @param payload Any json object.

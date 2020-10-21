@@ -9,6 +9,18 @@ import CID from "cids";
 const privateKeyFactory = new PrivateKeyFactory();
 const privateKey = privateKeyFactory.fromSeed(AlgorithmKind.ES256K, "seed");
 
+describe("createEnveloped", () => {
+  test("plain", async () => {
+    const payload = { hello: "world" };
+    const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
+    const envelope = await jws.createEnveloped(signer, payload);
+    expect(envelope).toMatchSnapshot();
+    const signature = await jws.create(signer, payload);
+    const detached = jws.asDetached(signature);
+    expect(envelope.signature).toEqual(detached);
+  });
+});
+
 describe("create", () => {
   test("plain", async () => {
     const signer = await keyMethod.SignerIdentified.fromPrivateKey(privateKey);
