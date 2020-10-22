@@ -178,7 +178,9 @@ when the response will contain field `status` with value `ANCHORED`, the field
 - you will be given with values:
   - `prev` is docId of initial document
   - `proof` is blockchain-based proof of anchoring:
-    - `root` is a Merkle root 
+    - `root` is a Merkle root. If anchoring api service got multiple different `docId` in multiple requests in anchoring time interval 
+         that `root` field will contains links to Merkle tree leaves (in fields `L` and `R`).  
+         The only CID value in `root` field is for case of receiving just one request with certain `docId` in anchoring time interval
     - `txHash` is a transaction that contains Merkle root for tree with current anchor update
     - `chainId` is a chain identifier as of EIP155
     - `blockNumber` is a number of block with transaction
@@ -186,6 +188,7 @@ when the response will contain field `status` with value `ANCHORED`, the field
 - you need to ensure that Merkle root on blockchain is the same as in IPFS. 
     
 <img src="assets/ipfs_view1.png" alt="IPFS View 1" width="500" /> <img src="assets/ipfs_view2.png" alt="IPFS View 2" width="500" />
+<img src="assets/ipfs_view3.png" alt="IPFS View 3" width="500" />
 
 
 ### Running REST anchoring self-testing
