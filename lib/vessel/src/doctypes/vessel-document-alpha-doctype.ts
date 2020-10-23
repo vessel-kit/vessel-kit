@@ -127,6 +127,7 @@ class Handler<State, Shape> extends DoctypeHandler<
   }
 
   async canApply(
+    docId: DocId,
     state: VesselDocumentState<State>,
     recordWrap: RecordWrap
   ): Promise<VesselDocumentState<State>> {
@@ -136,6 +137,7 @@ class Handler<State, Shape> extends DoctypeHandler<
       this.context
     ).json.decode(rulesetJSON);
     const nextState = await ruleset.canApply<VesselDocumentState<State>>(
+      docId,
       state,
       recordWrap
     );
@@ -183,7 +185,8 @@ class Handler<State, Shape> extends DoctypeHandler<
 
   async apply(
     recordWrap: RecordWrap,
-    state: VesselDocumentState<State>
+    state: VesselDocumentState<State>,
+    docId: DocId,
   ): Promise<VesselDocumentState<State>> {
     const record = recordWrap.load;
     if (record.prev) {
@@ -195,7 +198,7 @@ class Handler<State, Shape> extends DoctypeHandler<
           data: next,
         };
       } else {
-        return this.canApply(state, recordWrap);
+        return this.canApply(docId, state, recordWrap);
       }
     } else {
       throw new Error(`Can not apply genesis`);

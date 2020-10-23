@@ -1,6 +1,6 @@
 import * as t from "io-ts";
 import { DoctypeHandler } from "../document/doctype";
-import { decodeThrow, RecordWrap } from "@vessel-kit/codec";
+import { decodeThrow, DocId, RecordWrap } from "@vessel-kit/codec";
 import "./ses";
 import { IContext } from "../context";
 
@@ -52,8 +52,8 @@ class Freight implements t.TypeOf<typeof json> {
     return this.#ruleset.knead(genesisRecord);
   }
 
-  async canApply<A>(state: A, recordWrap: RecordWrap): Promise<A> {
-    return this.#ruleset.canApply(state, recordWrap);
+  async canApply<A>(docId: DocId, state: A, recordWrap: RecordWrap): Promise<A> {
+    return this.#ruleset.canApply(docId, state, recordWrap);
   }
 
   // TODO Special anchoring

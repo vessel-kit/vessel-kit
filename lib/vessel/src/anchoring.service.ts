@@ -34,7 +34,7 @@ export class AnchoringService {
     return this.#anchoring.anchorStatus$(docId);
   }
 
-  requestAnchor(docId: DocId, cid: CID) {
-    return this.#anchoring.requestAnchor(docId, cid);
+  requestAnchor(docId: DocId, cid: CID): void {
+    this.#anchoring.requestAnchor(docId, cid);
   }
 }
