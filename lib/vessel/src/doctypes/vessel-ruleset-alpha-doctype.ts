@@ -1,6 +1,6 @@
 import * as t from "io-ts";
 import { DoctypeHandler } from "../document/doctype";
-import { decodeThrow } from "@vessel-kit/codec";
+import { decodeThrow, RecordWrap } from "@vessel-kit/codec";
 import "./ses";
 import { IContext } from "../context";
 
@@ -35,6 +35,14 @@ class Freight implements t.TypeOf<typeof json> {
     const compartment = new Compartment({
       exports: {},
       console: console,
+      require: (moduleName: string) => {
+        // TODO Remove when authoring properly bundles code
+        if (moduleName === "fast-json-patch") {
+          return require("fast-json-patch");
+        } else {
+          throw new Error(`Can not require ${moduleName}: prohibited`);
+        }
+      },
     });
     const Ruleset = compartment.evaluate(this.content.main);
     this.#ruleset = new Ruleset(this.context);
@@ -44,9 +52,8 @@ class Freight implements t.TypeOf<typeof json> {
     return this.#ruleset.knead(genesisRecord);
   }
 
-  // FIXME Any
-  async canApply<A>(prev: any, next: any): Promise<A> {
-    return this.#ruleset.canApply(prev, next);
+  async canApply<A>(state: A, recordWrap: RecordWrap): Promise<A> {
+    return this.#ruleset.canApply(state, recordWrap);
   }
 
   // TODO Special anchoring

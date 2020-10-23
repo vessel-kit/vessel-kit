@@ -128,21 +128,19 @@ class Handler<State, Shape> extends DoctypeHandler<
 
   async canApply(
     state: VesselDocumentState<State>,
-    next: Shape,
-    rulesetAddress?: DocId
+    recordWrap: RecordWrap
   ): Promise<VesselDocumentState<State>> {
-    const effectiveRulesetCid =
-      rulesetAddress || DocId.fromString(state.ruleset);
+    const effectiveRulesetCid = DocId.fromString(state.ruleset);
     const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
     const ruleset = VesselRulesetAlphaDoctype.withContext(
       this.context
     ).json.decode(rulesetJSON);
     const nextState = await ruleset.canApply<VesselDocumentState<State>>(
       state,
-      next
+      recordWrap
     );
     if (!nextState) {
-      console.error("Can not apply", state, next);
+      console.error("Can not apply", state, recordWrap);
       throw new Error(`Can not apply`);
     }
     return nextState;
@@ -197,11 +195,7 @@ class Handler<State, Shape> extends DoctypeHandler<
           data: next,
         };
       } else {
-        await this.context.assertSignature(record);
-        const canonical = await this.canonical(state);
-        const next = jsonPatch.applyPatch(canonical, record.patch, false, false)
-          .newDocument;
-        return this.canApply(state, next.content);
+        return this.canApply(state, recordWrap);
       }
     } else {
       throw new Error(`Can not apply genesis`);

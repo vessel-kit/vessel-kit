@@ -5,6 +5,8 @@ import {
 } from "../../doctypes/vessel-document-alpha-doctype";
 import type { AnchoringStatus, AnchorProof } from "@vessel-kit/anchoring";
 import type { TwoPartyShape, TwoPartyState } from "./shape-and-state";
+import * as jsonPatch from "fast-json-patch";
+import type { RecordWrap } from "@vessel-kit/codec";
 
 async function checkSignature(context: IContext, payload: any) {
   if (payload) {
@@ -90,8 +92,19 @@ export default class Ruleset {
 
   async canApply(
     current: VesselDocumentState<TwoPartyState>,
-    next: TwoPartyShape
+    recordWrap: RecordWrap
   ): Promise<VesselDocumentState<TwoPartyState>> {
+    await this.context.assertSignature(recordWrap.load);
+    const canonical = await this.canonical(current);
+    const nextState = jsonPatch.applyPatch(
+      canonical,
+      recordWrap.load.patch,
+      false,
+      false
+    ).newDocument;
+    const next = nextState.content
+
+
     if (current && next) {
       const currentContent = current.data.current || current.data.freight;
       if (currentContent.stage === "agreement") {
