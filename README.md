@@ -128,5 +128,5 @@ pnpm run dev
 - Wheel B UI: 8002
 
 
-[Detailed view at Anchoring](docs/anchoring.md)
+[Detailed view at Anchoring](docs/anchoring.md) 
 
