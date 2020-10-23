@@ -1,7 +1,7 @@
 import { DIDResolver } from "./did-resolver";
 import { assertSignature } from "./assert-signature";
 import CID from "cids";
-import { RecordWrap } from "@vessel-kit/codec";
+import { DocId, RecordWrap } from "@vessel-kit/codec";
 import { AnchorProof } from "@vessel-kit/anchoring";
 import { AnchoringService } from "./anchoring.service";
 import {
@@ -20,6 +20,7 @@ export interface IContext {
   did(): Promise<Identifier | undefined>;
   assertSignature(payload: any): Promise<void>;
   verifyAnchor(anchorRecord: RecordWrap): Promise<AnchorProof>;
+  requestAnchor(docId: DocId, cid: CID): void;
   retrieve: IRetrieve;
 }
 
@@ -82,6 +83,10 @@ export class Context implements IContext {
       throw new Error(`Context.verifyAnchor: not implemented`);
     }
   }
+
+  requestAnchor(docId: DocId, cid: CID): void {
+    this.#anchoring?.requestAnchor(docId, cid);
+  }
 }
 
 export class EmptyContextError extends Error {
@@ -105,5 +110,8 @@ export const EMPTY_CONTEXT: IContext = {
   },
   verifyAnchor: () => {
     throw new EmptyContextError(`verifyAnchor`);
+  },
+  requestAnchor() {
+    throw new EmptyContextError(`requestAnchor`);
   },
 };

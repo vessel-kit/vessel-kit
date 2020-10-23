@@ -49,9 +49,7 @@ export class DocumentRepository {
     const cid = await this.#cloud.store(canonical);
     this.#logger.debug(`Stored record to IPFS as ${cid.toString()}`);
     const documentId = new DocId(cid);
-    const document = await this.load(documentId);
-    document.requestAnchor();
-    return document;
+    return this.load(documentId);
   }
 
   async load(documentId: DocId): Promise<IDocument<unknown, unknown>> {
