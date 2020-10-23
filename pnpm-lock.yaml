@@ -253,6 +253,8 @@ importers:
       multihashes: ^3.0.1
       rxjs: ^6.6.3
       uuid: ^8.3.0
+  lib/authoring:
+    specifiers: {}
   lib/blockchain-connection-string:
     specifiers: {}
   lib/codec:
@@ -319,6 +321,20 @@ importers:
       multicodec: ^2.0.1
       query-string: ^6.13.2
       tslib: ^2.0.1
+  lib/two-party-agreement:
+    dependencies:
+      '@vessel-kit/anchoring': 'link:../anchoring'
+      '@vessel-kit/codec': 'link:../codec'
+      '@vessel-kit/vessel': 'link:../vessel'
+      fast-json-patch: 3.0.0-1
+    devDependencies:
+      '@vessel-kit/authoring': 'link:../authoring'
+    specifiers:
+      '@vessel-kit/anchoring': 'workspace:*'
+      '@vessel-kit/authoring': 'workspace:*'
+      '@vessel-kit/codec': 'workspace:*'
+      '@vessel-kit/vessel': 'workspace:*'
+      fast-json-patch: ^3.0.0-1
   lib/ui-shared:
     dependencies:
       '@carbon/icons-react': 10.19.0

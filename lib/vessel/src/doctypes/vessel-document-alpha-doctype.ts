@@ -1,5 +1,8 @@
 import { DoctypeHandler } from "../document/doctype";
-import { VesselRulesetAlphaDoctype } from "./vessel-ruleset-alpha-doctype";
+import {
+  Freight,
+  VesselRulesetAlphaDoctype,
+} from "./vessel-ruleset-alpha-doctype";
 import jsonPatch from "fast-json-patch";
 import { AnchoringStatus, AnchorProof } from "@vessel-kit/anchoring";
 import produce from "immer";
@@ -112,13 +115,17 @@ class Handler<State, Shape> extends DoctypeHandler<
 > {
   readonly name = DOCTYPE;
 
+  async findRuleset(rulesetIdentifier: string): Promise<Freight<State, Shape>> {
+    const effectiveRulesetCid = DocId.fromString(rulesetIdentifier);
+    const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
+    return VesselRulesetAlphaDoctype.withContext(this.context).json.decode(
+      rulesetJSON
+    ) as Freight<State, Shape>;
+  }
+
   async knead(genesisRecord: unknown): Promise<VesselDocumentState<State>> {
     if (isShape<unknown>(genesisRecord)) {
-      const effectiveRulesetCid = DocId.fromString(genesisRecord.ruleset);
-      const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
-      const ruleset = VesselRulesetAlphaDoctype.withContext(
-        this.context
-      ).json.decode(rulesetJSON);
+      const ruleset = await this.findRuleset(genesisRecord.ruleset);
       return ruleset.knead(genesisRecord);
     } else {
       console.error("Invalid shape for VesselDocumentAlpha", genesisRecord);
@@ -131,16 +138,8 @@ class Handler<State, Shape> extends DoctypeHandler<
     state: VesselDocumentState<State>,
     recordWrap: RecordWrap
   ): Promise<VesselDocumentState<State>> {
-    const effectiveRulesetCid = DocId.fromString(state.ruleset);
-    const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
-    const ruleset = VesselRulesetAlphaDoctype.withContext(
-      this.context
-    ).json.decode(rulesetJSON);
-    const nextState = await ruleset.canApply<VesselDocumentState<State>>(
-      docId,
-      state,
-      recordWrap
-    );
+    const ruleset = await this.findRuleset(state.ruleset);
+    const nextState = await ruleset.canApply(docId, state, recordWrap);
     if (!nextState) {
       console.error("Can not apply", state, recordWrap);
       throw new Error(`Can not apply`);
@@ -163,11 +162,7 @@ class Handler<State, Shape> extends DoctypeHandler<
   async canonical(
     state: VesselDocumentState<State>
   ): Promise<VesselDocumentShape<Shape>> {
-    const effectiveRulesetCid = DocId.fromString(state.ruleset);
-    const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
-    const ruleset = VesselRulesetAlphaDoctype.withContext(
-      this.context
-    ).json.decode(rulesetJSON);
+    const ruleset = await this.findRuleset(state.ruleset);
     return ruleset.canonical(state);
   }
 
@@ -175,11 +170,7 @@ class Handler<State, Shape> extends DoctypeHandler<
     proof: AnchorProof,
     state: VesselDocumentState<State>
   ): Promise<State> {
-    const effectiveRulesetCid = DocId.fromString(state.ruleset);
-    const rulesetJSON = await this.context.retrieve(effectiveRulesetCid.cid);
-    const ruleset = VesselRulesetAlphaDoctype.withContext(
-      this.context
-    ).json.decode(rulesetJSON);
+    const ruleset = await this.findRuleset(state.ruleset);
     return ruleset.applyAnchor(proof, state.data);
   }
 

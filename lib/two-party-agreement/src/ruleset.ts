@@ -1,13 +1,14 @@
-import type { IContext } from "../../context";
-import {
+import type {
+  IContext,
   VesselDocumentShape,
   VesselDocumentState,
-} from "../../doctypes/vessel-document-alpha-doctype";
+  IRuleset,
+} from "@vessel-kit/vessel";
+import type { TwoPartyState } from "./two-party-state";
+import type { TwoPartyShape } from "./two-party-shape";
 import type { AnchoringStatus, AnchorProof } from "@vessel-kit/anchoring";
-import type { TwoPartyShape, TwoPartyState } from "./shape-and-state";
-import * as jsonPatch from "fast-json-patch";
 import type { RecordWrap, DocId } from "@vessel-kit/codec";
-import { IRuleset } from "../../ruleset.interface";
+import * as jsonPatch from "fast-json-patch";
 
 async function checkSignature(context: IContext, payload: any) {
   if (payload) {

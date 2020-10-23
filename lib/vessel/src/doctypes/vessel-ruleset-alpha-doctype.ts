@@ -11,6 +11,8 @@ import { AnchoringStatus, AnchorProof } from "@vessel-kit/anchoring";
 import { Ordering } from "../document/ordering";
 import { AnchorState } from "../document/anchor-state";
 import { isRight } from "fp-ts/lib/Either";
+import { IRuleset } from "../ruleset.interface";
+import { VesselDocumentState } from "./vessel-document-alpha-doctype";
 
 const DOCTYPE = "vessel/ruleset/1.0.0";
 
@@ -22,13 +24,13 @@ const json = t.type({
   }),
 });
 
-class Freight implements t.TypeOf<typeof json> {
+export class Freight<State, Shape> implements t.TypeOf<typeof json> {
   doctype: typeof DOCTYPE = DOCTYPE;
   content: {
     type: "application/javascript";
     main: string;
   };
-  #ruleset: any;
+  #ruleset: IRuleset<State, Shape>;
 
   constructor(params: t.TypeOf<typeof json>, readonly context: IContext) {
     this.content = params.content;
@@ -52,20 +54,20 @@ class Freight implements t.TypeOf<typeof json> {
     return this.#ruleset.knead(genesisRecord);
   }
 
-  async canApply<A>(
+  async canApply(
     docId: DocId,
-    state: A,
+    state: VesselDocumentState<State>,
     recordWrap: RecordWrap
-  ): Promise<A> {
+  ): Promise<VesselDocumentState<State>> {
     return this.#ruleset.canApply(docId, state, recordWrap);
   }
 
   // TODO Special anchoring
-  async applyAnchor<A>(proof: AnchorProof, state: A): Promise<A> {
+  async applyAnchor(proof: AnchorProof, state: State): Promise<State> {
     return this.#ruleset.applyAnchor(proof, state);
   }
 
-  async canonical<A>(state: A) {
+  async canonical(state: VesselDocumentState<State>) {
     return this.#ruleset.canonical(state);
   }
 }
