@@ -90,12 +90,10 @@ export default class Ruleset {
     }
   }
 
-  async canApply(
-    docId: DocId,
+  async nextFromPatch(
     current: VesselDocumentState<TwoPartyState>,
     recordWrap: RecordWrap
-  ): Promise<VesselDocumentState<TwoPartyState>> {
-    await this.context.assertSignature(recordWrap.load);
+  ): Promise<TwoPartyShape> {
     const canonical = await this.canonical(current);
     const nextState = jsonPatch.applyPatch(
       canonical,
@@ -103,58 +101,63 @@ export default class Ruleset {
       false,
       false
     ).newDocument;
-    const next = nextState.content;
+    return nextState.content;
+  }
 
-    if (current && next) {
-      const currentContent = current.data.current || current.data.freight;
-      if (currentContent.stage === "agreement") {
-        throw new Error(`Can not update after agreement is reached`);
-      }
-      const toCheckA = next.partyA
-        ? {
-            ...next.payload,
-            signature: next.partyA,
-          }
-        : null;
-      const toCheckB = next.partyB
-        ? {
-            ...next.payload,
-            signature: next.partyB,
-          }
-        : null;
-      const checkA = await checkSignature(this.context, toCheckA);
-      const checkB = await checkSignature(this.context, toCheckB);
-      if (checkA || checkB) {
-        if (currentContent && next) {
-          if (currentContent.payload.num <= next.payload.num) {
-            const stage =
-              checkA && checkB
-                ? ("agreement" as "agreement")
-                : ("draft" as "draft");
-            if (stage === "agreement") {
-              this.context.requestAnchor(docId, recordWrap.cid);
-            }
-            return {
-              ...current,
-              data: {
-                ...current.data,
-                current: {
-                  ...next,
-                  stage: stage,
-                },
-              },
-            };
-          } else {
-            throw new Error(`Can not decrease`);
-          }
-        } else {
-          throw new Error(`No currentContent && nextContent`);
-        }
-      } else {
-        throw new Error(`Neither signature fits`);
-      }
-    } else {
+  async canApply(
+    docId: DocId,
+    current: VesselDocumentState<TwoPartyState>,
+    recordWrap: RecordWrap
+  ): Promise<VesselDocumentState<TwoPartyState>> {
+    await this.context.assertSignature(recordWrap.load);
+    const next = await this.nextFromPatch(current, recordWrap);
+
+    if (!(current && next)) {
       throw new Error(`No current && next`);
     }
+
+    const currentContent = current.data.current || current.data.freight;
+    if (currentContent.stage === "agreement") {
+      throw new Error(`Can not update after agreement is reached`);
+    }
+    const toCheckA = next.partyA
+      ? {
+          ...next.payload,
+          signature: next.partyA,
+        }
+      : null;
+    const toCheckB = next.partyB
+      ? {
+          ...next.payload,
+          signature: next.partyB,
+        }
+      : null;
+    const checkA = await checkSignature(this.context, toCheckA);
+    const checkB = await checkSignature(this.context, toCheckB);
+    if (!(checkA || checkB)) {
+      throw new Error(`Neither signature fits`);
+    }
+    if (!(currentContent && next)) {
+      throw new Error(`No currentContent && nextContent`);
+    }
+    if (next.payload.num < currentContent.payload.num) {
+      throw new Error(`Can not decrease`);
+    }
+
+    const stage =
+      checkA && checkB ? ("agreement" as "agreement") : ("draft" as "draft");
+    if (stage === "agreement") {
+      this.context.requestAnchor(docId, recordWrap.cid);
+    }
+    return {
+      ...current,
+      data: {
+        ...current.data,
+        current: {
+          ...next,
+          stage: stage,
+        },
+      },
+    };
   }
 }
