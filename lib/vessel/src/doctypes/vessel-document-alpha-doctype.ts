@@ -186,7 +186,7 @@ class Handler<State, Shape> extends DoctypeHandler<
   async apply(
     recordWrap: RecordWrap,
     state: VesselDocumentState<State>,
-    docId: DocId,
+    docId: DocId
   ): Promise<VesselDocumentState<State>> {
     const record = recordWrap.load;
     if (record.prev) {

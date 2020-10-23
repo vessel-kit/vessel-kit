@@ -20,7 +20,7 @@ export interface IContext {
   did(): Promise<Identifier | undefined>;
   assertSignature(payload: any): Promise<void>;
   verifyAnchor(anchorRecord: RecordWrap): Promise<AnchorProof>;
-  requestAnchor(docId: DocId, cid: CID): void
+  requestAnchor(docId: DocId, cid: CID): void;
   retrieve: IRetrieve;
 }
 
@@ -85,7 +85,7 @@ export class Context implements IContext {
   }
 
   requestAnchor(docId: DocId, cid: CID): void {
-    this.#anchoring?.requestAnchor(docId, cid)
+    this.#anchoring?.requestAnchor(docId, cid);
   }
 }
 
@@ -113,5 +113,5 @@ export const EMPTY_CONTEXT: IContext = {
   },
   requestAnchor() {
     throw new EmptyContextError(`requestAnchor`);
-  }
+  },
 };

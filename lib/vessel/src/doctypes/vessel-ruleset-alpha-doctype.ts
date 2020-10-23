@@ -52,7 +52,11 @@ class Freight implements t.TypeOf<typeof json> {
     return this.#ruleset.knead(genesisRecord);
   }
 
-  async canApply<A>(docId: DocId, state: A, recordWrap: RecordWrap): Promise<A> {
+  async canApply<A>(
+    docId: DocId,
+    state: A,
+    recordWrap: RecordWrap
+  ): Promise<A> {
     return this.#ruleset.canApply(docId, state, recordWrap);
   }
 
