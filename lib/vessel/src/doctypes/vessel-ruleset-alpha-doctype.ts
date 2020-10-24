@@ -109,6 +109,13 @@ class VesselRulesetAlphaHandler extends DoctypeHandler<State, Shape> {
     },
   };
 
+  genesisFromProps(props: { type: string; main: string }) {
+    return {
+      doctype: DOCTYPE,
+      content: props,
+    };
+  }
+
   async genesisFromRulesetFile(filename: string) {
     const source = await fs.promises
       .readFile(filename)

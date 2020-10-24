@@ -2,6 +2,9 @@
   "name": "@vessel-kit/authoring",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "vessel-kit-authoring": "dist/bin/authoring.js"
+  },
   "version": "0.0.1",
   "scripts": {
     "build": "tsc -p .",
@@ -9,7 +12,16 @@
     "test": "jest"
   },
   "dependencies": {
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-typescript": "^6.0.0",
+    "commander": "^6.1.0",
+    "rollup": "^2.32.1",
+    "rollup-plugin-dts": "^1.4.13",
+    "terser": "^5.3.8",
+    "tmp": "^0.2.1"
   },
   "devDependencies": {
+    "@types/osenv": "^0.1.0",
+    "@types/tmp": "^0.2.0"
   }
 }

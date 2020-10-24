@@ -36,7 +36,7 @@ function isShape<A>(input: unknown): input is VesselDocumentShape<A> {
   );
 }
 
-export default class Ruleset implements IRuleset<TwoPartyState, TwoPartyShape> {
+export class Ruleset implements IRuleset<TwoPartyState, TwoPartyShape> {
   constructor(readonly context: IContext) {}
 
   async canonical(

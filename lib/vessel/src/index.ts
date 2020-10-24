@@ -6,4 +6,6 @@ export * from "./util/history";
 export * from "./context";
 export * from "./doctypes/vessel-document-alpha-doctype";
 export * from "./doctypes/vessel-ruleset-alpha-doctype";
-export * from './ruleset.interface'
+export * from "./ruleset.interface";
+export * from "./remote/client";
+export * from "./remote/remote-document-service";

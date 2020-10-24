@@ -1,0 +1,17 @@
+{
+  "name": "test-two-party-agreement",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "tsc -p . --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "two-party-agreement": "workspace:*",
+    "@vessel-kit/vessel": "workspace:*",
+    "@vessel-kit/identity": "workspace:*"
+  },
+  "devDependencies": {}
+}
