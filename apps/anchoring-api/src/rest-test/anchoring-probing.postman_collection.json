@@ -14,7 +14,7 @@
 						"id": "1bd8e1b4-8b7c-4a64-8fc4-d2dfc2f09fd3",
 						"exec": [
 							"function sendPostReq(body, cb) {",
-							"    pm.sendRequest({url: 'http://localhost:3000/api/v0/requests',",
+							"    pm.sendRequest({url: `${pm.environment.get('base_protocol')}://${pm.environment.get('base_host')}:${pm.environment.get('base_port')}/api/v0/requests`,",
 							"        method: 'POST',",
 							"        header: {",
 							"        \"Content-Type\": \"application/json\"",
@@ -67,12 +67,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v0/requests",
-					"protocol": "http",
+					"raw": "{{base_protocol}}://{{base_host}}:{{base_port}}/api/v0/requests",
+					"protocol": "{{base_protocol}}",
 					"host": [
-						"localhost"
+						"{{base_host}}"
 					],
-					"port": "3000",
+					"port": "{{base_port}}",
 					"path": [
 						"api",
 						"v0",
@@ -91,7 +91,7 @@
 						"id": "a9c55190-e2a6-4ab0-9828-4da76126e467",
 						"exec": [
 							"function sendPostReq(body, cb) {",
-							"    pm.sendRequest({url: 'http://localhost:3000/api/v0/requests',",
+							"    pm.sendRequest({url: `${pm.environment.get('base_protocol')}://${pm.environment.get('base_host')}:${pm.environment.get('base_port')}/api/v0/requests`,",
 							"        method: 'POST',",
 							"        header: {",
 							"        \"Content-Type\": \"application/json\"",
@@ -151,12 +151,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v0/requests",
-					"protocol": "http",
+					"raw": "{{base_url}}/api/v0/requests",
+					"protocol": "{{base_protocol}}",
 					"host": [
-						"localhost"
+						"{{base_host}}"
 					],
-					"port": "3000",
+					"port": "{{base_port}}",
 					"path": [
 						"api",
 						"v0",
@@ -175,7 +175,7 @@
 						"id": "011cdff3-c4fa-4545-babf-e26749cb4247",
 						"exec": [
 							"function sendPostReq(body, cb) {",
-							"    pm.sendRequest({url: 'http://localhost:3000/api/v0/requests',",
+							"    pm.sendRequest({url: `${pm.environment.get('base_protocol')}://${pm.environment.get('base_host')}:${pm.environment.get('base_port')}/api/v0/requests`,",
 							"        method: 'POST',",
 							"        header: {",
 							"        \"Content-Type\": \"application/json\"",
@@ -245,12 +245,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v0/requests",
-					"protocol": "http",
+					"raw": "{{base_protocol}}://{{base_host}}:{{base_port}}/api/v0/requests",
+					"protocol": "{{base_protocol}}",
 					"host": [
-						"localhost"
+						"{{base_host}}"
 					],
-					"port": "3000",
+					"port": "{{base_port}}",
 					"path": [
 						"api",
 						"v0",

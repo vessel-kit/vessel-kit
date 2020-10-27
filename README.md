@@ -126,3 +126,7 @@ pnpm run dev
 - Anchoring UI: 8000
 - Wheel A UI: 8001
 - Wheel B UI: 8002
+
+
+[Detailed view at Anchoring](docs/anchoring.md) 
+
