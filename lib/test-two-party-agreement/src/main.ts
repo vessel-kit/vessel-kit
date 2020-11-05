@@ -1,5 +1,9 @@
 import { sleep } from "./sleep.util";
-import { Client, VesselDocument,  VesselDocumentShape} from "@vessel-kit/vessel";
+import {
+  Client,
+  VesselDocument,
+  VesselDocumentShape,
+} from "@vessel-kit/vessel";
 import * as _ from "lodash";
 import { TwoPartyShape, TwoPartyState } from "two-party-agreement";
 import {
@@ -29,7 +33,9 @@ async function main() {
     "0x2220000000000000000000000000000000000000000000000000000000000000"
   );
   await clientB.addSignor(userB);
-  const genesis = VesselRulesetAlphaDoctype.genesisFromProps(require('two-party-agreement/__vessel.json'))
+  const genesis = VesselRulesetAlphaDoctype.genesisFromProps(
+    require("two-party-agreement/__vessel.json")
+  );
 
   // const rulesetFile = path.join(__dirname, "./tmp-ruleset/tmp-ruleset.ts");
   // const props = await VesselRulesetAlphaDoctype.genesisFromRulesetFile(
@@ -66,7 +72,7 @@ async function main() {
   const vesselDocument = await VesselDocument.fromDocument<
     TwoPartyState,
     TwoPartyShape
-    >(vesselDocumentRaw);
+  >(vesselDocumentRaw);
   console.log("sleeping...");
   await sleep(2000);
 
@@ -83,7 +89,7 @@ async function main() {
   const vesselDocumentB = await VesselDocument.fromDocument<
     TwoPartyState,
     TwoPartyShape
-    >(vesselDocumentRawB);
+  >(vesselDocumentRawB);
   await vesselDocumentB.change(async (shape) => {
     shape.payload.num = shape.payload.num + 100;
     shape.partyB = await clientB.context.sign(shape.payload);
