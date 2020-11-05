@@ -23,6 +23,6 @@
     "fast-json-patch": "^3.0.0-1"
   },
   "devDependencies": {
-    "@vessel-kit/authoring": "workspace:*"
+    "@vessel-kit/authoring": "^0.0.1"
   }
 }
