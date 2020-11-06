@@ -2,7 +2,7 @@
   "name": "@vessel-kit/codec",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "version": "1.0.0-a.0",
+  "version": "1.0.0",
   "license": "(MIT OR Apache-2.0)",
   "scripts": {
     "build": "tsc -p .",
