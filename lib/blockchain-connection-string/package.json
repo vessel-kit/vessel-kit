@@ -1,9 +1,8 @@
 {
   "name": "@vessel-kit/blockchain-connection-string",
-  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "version": "1.0.0-a.0",
+  "version": "1.0.0",
   "scripts": {
     "build": "tsc -p .",
     "dev": "tsc -p . --watch",
