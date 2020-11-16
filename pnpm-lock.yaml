@@ -308,7 +308,6 @@ importers:
       bn.js: 4.11.9
       cids: 1.0.1
       dag-jose: 0.3.0
-      did-jwt: 4.6.3
       did-resolver: 2.1.1
       dids: 0.8.0
       elliptic: 6.5.3
@@ -342,7 +341,6 @@ importers:
       bn.js: ^4.4.0
       cids: ^1.0.1
       dag-jose: ^0.3.0
-      did-jwt: ^4.6.3
       did-resolver: ^2.1.1
       dids: ^0.8.0
       elliptic: ^6.5.3

@@ -92,7 +92,6 @@ const isKidProper = (kid: string) => (publicKey: didResolver.PublicKey) => {
   }
 };
 
-// @ts-ignore
 const isAlgProper = (alg: AlgorithmKind) => (publicKey: IPublicKey) => {
   return publicKey.alg === alg;
 };
@@ -110,7 +109,7 @@ export function extractPublicKeys(
   relation: VerificationRelation,
   kid: string,
   alg: AlgorithmKind
-): didResolver.PublicKey[] {
+): SupportedPublicKey[] {
   const allPublicKeys = didDocument.publicKey;
 
   const byRelation = isRelationProper(didDocument, relation);
@@ -119,5 +118,5 @@ export function extractPublicKeys(
   const relationPublicKeysRaw = allPublicKeys.filter(
     (p) => byRelation(p) && byKid(p)
   );
-  return relationPublicKeysRaw;
+  return relationPublicKeysRaw.map(publicKeyFromDID).filter(isAlgProper(alg));
 }

@@ -33,7 +33,6 @@ import { AlgorithmKind } from "../algorithm-kind";
 import * as _ from "lodash";
 import stringify from "fast-json-stable-stringify";
 import CID from "cids";
-import * as didJWT from "did-jwt";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -264,10 +263,12 @@ export async function verify(
     kid,
     decoded.header.alg
   );
-  const recovered = await Promise.all(
-    publicKeys.map((p) => didJWT.verifyJWS(jws, p).id)
+  const input = signingInput(decoded.payload, decoded.header);
+  const message = textEncoder.encode(input);
+  const verifications = await Promise.all(
+    publicKeys.map((p) => p.verify(message, decoded.signature))
   );
-  return publicKeys.some(e => recovered.includes(e.id));
+  return verifications.some(f.function.identity);
 }
 
 /**
