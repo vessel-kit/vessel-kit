@@ -416,7 +416,6 @@ importers:
       theme-ui: ^0.3.1
   lib/vessel:
     dependencies:
-      3id-resolver: 1.0.1
       '@ceramicnetwork/3id-did-resolver': 0.4.8
       '@ceramicnetwork/ceramic-http-client': 0.7.1
       '@ethersproject/hdnode': 5.0.5
@@ -450,7 +449,6 @@ importers:
       ipfs-http-client: 47.0.1
       json-schema-to-typescript: 9.1.1
     specifiers:
-      3id-resolver: ^1.0.1
       '@ceramicnetwork/3id-did-resolver': ^0.4.8
       '@ceramicnetwork/ceramic-http-client': ^0.7.1
       '@ethersproject/hdnode': ^5.0.4
@@ -495,16 +493,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+6128bRssiaPGY08cxdQpYdKacB82X2S5ydTm06qiV+ERWH4ywrmNXypc2/U6+EyBd9HM4Qf/Z5E95I01CGSHA==
-  /3id-resolver/1.0.1:
-    dependencies:
-      '@babel/runtime': 7.11.2
-      base64url: 3.0.1
-      did-jwt: 4.6.3
-      did-resolver: 1.1.0
-      ipfs-did-document: 1.2.3
-    dev: false
-    resolution:
-      integrity: sha512-eVB8Fpe91ihozHBevFeI7qTZXyJTykVOyJZHUtFmfX+JNQ4gCuQWCzP14VPmb2DYGcw8pjQ+reGyNL+z23euIA==
   /@agoric/babel-standalone/7.9.5:
     dev: false
     resolution:
@@ -8418,10 +8406,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-j968WPm/hSulBnov/XvqXCoQxyr1t2678X8ZXTVtgpWArgnLqms/KA3CJ3Vumykuz9PaWCg7DdPYbqlTAIYRyw==
-  /did-resolver/1.1.0:
-    dev: false
-    resolution:
-      integrity: sha512-Q02Sc5VuQnJzzR8fQ/DzyCHiYb31WpQdocOsxppI66wwT4XalYRDeCr3a48mL6sYPQo76AkBh0mxte9ZBuQzxA==
   /did-resolver/2.1.1:
     dev: false
     resolution:
@@ -10686,10 +10670,6 @@ packages:
       uint8arrays: 1.1.0
     resolution:
       integrity: sha512-IBPFvYjWPfVFpCeYUL/0gCUOabdBhh7aO5i4tU//UlF2gVCXPH4PRYlbBH9WM83zE2+o4vDi+dBXsdAI6nLPAg==
-  /ipfs-did-document/1.2.3:
-    dev: false
-    resolution:
-      integrity: sha512-LLcmDbj9m+kBS8srL1Mq3oOgSOuqTe9lyj70DhjQkd+T+4xj1plkiYanbB6w600e/XOHnGxbbOkKYOpRs0vpgw==
   /ipfs-http-client/47.0.1:
     dependencies:
       abort-controller: 3.0.0
