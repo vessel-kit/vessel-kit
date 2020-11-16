@@ -46,7 +46,9 @@ export function publicKeyFromDID(
     case "Secp256k1VerificationKey2018":
     case "EcdsaPublicKeySecp256k1":
     case "Secp256k1SignatureVerificationKey2018":
+    case "Secp256k1SignatureAuthentication2018":
       return new ES256K.PublicKey(material);
+    case "Curve25519EncryptionPublicKey":
     case "ED25519SignatureVerification":
     case "Ed25519VerificationKey2018":
       return new Ed25519.PublicKey(material);
@@ -65,16 +67,26 @@ const isRelationProper = (
   relation: VerificationRelation
 ) => (publicKey: didResolver.PublicKey) => {
   const relationEntries = ((didDocument[relation] || []) as unknown) as any[];
-  const links = relationEntries.filter<string>(
+  const linksFromStrings = relationEntries.filter<string>(
     (value): value is string => typeof value === "string"
   );
-  return links.includes(publicKey.id);
+  const linksFromAuthentication = relationEntries.map((value: any) => {
+    return value.publicKey;
+  });
+  return (
+    linksFromStrings.includes(publicKey.id) ||
+    linksFromAuthentication.includes(publicKey.id)
+  );
 };
 
 const isKidProper = (kid: string) => (publicKey: didResolver.PublicKey) => {
   const didUrl = decodeThrow(DidUrl.asString, kid);
   if (didUrl.fragment) {
-    return publicKey.id === kid;
+    return (
+      publicKey.id === kid ||
+      publicKey.id.substring(0, publicKey.id.indexOf("#")) ===
+        kid.substring(0, kid.indexOf("?"))
+    );
   } else {
     return true;
   }
