@@ -12,7 +12,7 @@ const fun = async () => {
   const ceramic = new CeramicClient("https://ceramic.3boxlabs.com");
   const threeIdResolver = ThreeIdResolver.getResolver(ceramic);
   const resolver = new Resolver({...threeIdResolver});
-  const idWallet = await IdentityWallet.create({ seed, ceramic, getPermission});
+  const idWallet = await IdentityWallet.create({ seed, ceramic: ceramic as any, getPermission});
   await ceramic.setDIDProvider(idWallet.getDidProvider());
   const did = new DID({ provider: idWallet.getDidProvider(), resolver });
   await did.authenticate();
