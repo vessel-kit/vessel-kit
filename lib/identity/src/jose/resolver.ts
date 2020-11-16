@@ -46,7 +46,9 @@ export function publicKeyFromDID(
     case "Secp256k1VerificationKey2018":
     case "EcdsaPublicKeySecp256k1":
     case "Secp256k1SignatureVerificationKey2018":
+    case "Secp256k1SignatureAuthentication2018":
       return new ES256K.PublicKey(material);
+    case "Curve25519EncryptionPublicKey":
     case "ED25519SignatureVerification":
     case "Ed25519VerificationKey2018":
       return new Ed25519.PublicKey(material);
@@ -65,21 +67,19 @@ const isRelationProper = (
   relation: VerificationRelation
 ) => (publicKey: didResolver.PublicKey) => {
   const relationEntries = ((didDocument[relation] || []) as unknown) as any[];
-  const links = relationEntries.filter<string>(
-    (value): value is string => typeof value === "string"
-  );
-  return links.includes(publicKey.id);
+  return relationEntries.map(e => e.publicKey).includes(publicKey.id);
 };
 
 const isKidProper = (kid: string) => (publicKey: didResolver.PublicKey) => {
   const didUrl = decodeThrow(DidUrl.asString, kid);
   if (didUrl.fragment) {
-    return publicKey.id === kid;
+    return publicKey.id.substring(0, publicKey.id.indexOf('#')) === kid.substring(0, kid.indexOf('?'));
   } else {
     return true;
   }
 };
 
+// @ts-ignore
 const isAlgProper = (alg: AlgorithmKind) => (publicKey: IPublicKey) => {
   return publicKey.alg === alg;
 };
@@ -97,7 +97,7 @@ export function extractPublicKeys(
   relation: VerificationRelation,
   kid: string,
   alg: AlgorithmKind
-): SupportedPublicKey[] {
+): didResolver.PublicKey[] {
   const allPublicKeys = didDocument.publicKey;
 
   const byRelation = isRelationProper(didDocument, relation);
@@ -106,5 +106,5 @@ export function extractPublicKeys(
   const relationPublicKeysRaw = allPublicKeys.filter(
     (p) => byRelation(p) && byKid(p)
   );
-  return relationPublicKeysRaw.map(publicKeyFromDID).filter(isAlgProper(alg));
+  return relationPublicKeysRaw;
 }

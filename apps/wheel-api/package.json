@@ -47,6 +47,7 @@
     "@vessel-kit/blockchain-connection-string": "workspace:*",
     "@vessel-kit/codec": "workspace:*",
     "@vessel-kit/vessel": "workspace:*",
+    "body-parser": "^1.19.0",
     "cids": "^1.0.0",
     "dotenv": "^8.2.0",
     "ipfs-http-client": "^47.0.1",

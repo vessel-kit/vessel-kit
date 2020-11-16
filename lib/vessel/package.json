@@ -11,6 +11,8 @@
     "build:schema": "./build-schema.sh"
   },
   "dependencies": {
+    "@ceramicnetwork/3id-did-resolver": "^0.4.8",
+    "@ceramicnetwork/ceramic-http-client": "^0.7.1",
     "@ethersproject/hdnode": "^5.0.4",
     "@ethersproject/providers": "^5.0.8",
     "@stablelib/bytes": "^1.0.0",
