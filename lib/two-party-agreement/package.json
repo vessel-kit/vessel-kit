@@ -11,8 +11,6 @@
     "dist"
   ],
   "scripts": {
-    "rollup": "vessel-kit-authoring rollup src/index.ts dist/",
-    "build": "tsc -p . && pnpm run rollup",
     "dev": "tsc -p . --watch",
     "test": "jest"
   },
@@ -21,8 +19,5 @@
     "@vessel-kit/anchoring": "workspace:*",
     "@vessel-kit/codec": "workspace:*",
     "fast-json-patch": "^3.0.0-1"
-  },
-  "devDependencies": {
-    "@vessel-kit/authoring": "^0.0.1"
   }
 }

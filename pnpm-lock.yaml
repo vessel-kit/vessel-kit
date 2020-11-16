@@ -374,11 +374,8 @@ importers:
       '@vessel-kit/codec': 'link:../codec'
       '@vessel-kit/vessel': 'link:../vessel'
       fast-json-patch: 3.0.0-1
-    devDependencies:
-      '@vessel-kit/authoring': 'link:../authoring'
     specifiers:
       '@vessel-kit/anchoring': 'workspace:*'
-      '@vessel-kit/authoring': ^0.0.1
       '@vessel-kit/codec': 'workspace:*'
       '@vessel-kit/vessel': 'workspace:*'
       fast-json-patch: ^3.0.0-1
