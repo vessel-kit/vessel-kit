@@ -67,13 +67,26 @@ const isRelationProper = (
   relation: VerificationRelation
 ) => (publicKey: didResolver.PublicKey) => {
   const relationEntries = ((didDocument[relation] || []) as unknown) as any[];
-  return relationEntries.map(e => e.publicKey).includes(publicKey.id);
+  const linksFromStrings = relationEntries.filter<string>(
+    (value): value is string => typeof value === "string"
+  );
+  const linksFromAuthentication = relationEntries.map((value: any) => {
+    return value.publicKey;
+  });
+  return (
+    linksFromStrings.includes(publicKey.id) ||
+    linksFromAuthentication.includes(publicKey.id)
+  );
 };
 
 const isKidProper = (kid: string) => (publicKey: didResolver.PublicKey) => {
   const didUrl = decodeThrow(DidUrl.asString, kid);
   if (didUrl.fragment) {
-    return publicKey.id.substring(0, publicKey.id.indexOf('#')) === kid.substring(0, kid.indexOf('?'));
+    return (
+      publicKey.id === kid ||
+      publicKey.id.substring(0, publicKey.id.indexOf("#")) ===
+        kid.substring(0, kid.indexOf("?"))
+    );
   } else {
     return true;
   }

@@ -4,9 +4,11 @@ import * as sha256 from "@stablelib/sha256";
 import { IPrivateKey, ISigner } from "../private-key.interface";
 import { AlgorithmKind } from "../algorithm-kind";
 import { IPublicKey, ISignatureVerification } from "../public-key.interface";
-import BN from "bn.js";
+import { BytesUnbaseCodec } from "@vessel-kit/codec";
 
 const secp256k1Context = new elliptic.ec("secp256k1");
+
+const hexCodec = BytesUnbaseCodec("base16");
 
 export class PublicKey implements IPublicKey, ISignatureVerification {
   readonly alg = AlgorithmKind.ES256K;
@@ -15,8 +17,8 @@ export class PublicKey implements IPublicKey, ISignatureVerification {
   async verify(message: Uint8Array, signature: Uint8Array): Promise<boolean> {
     try {
       const keyPair = secp256k1Context.keyFromPublic(this.material);
-      const r = new BN(signature.slice(0, 32));
-      const s = new BN(signature.slice(32, 64));
+      const r = hexCodec.encode(signature.slice(0, 32));
+      const s = hexCodec.encode(signature.slice(32, 64));
       const digest = sha256.hash(message);
       return keyPair.verify(digest, { r, s });
     } catch {
