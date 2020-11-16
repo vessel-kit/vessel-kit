@@ -362,12 +362,12 @@ importers:
   lib/test-two-party-agreement:
     dependencies:
       '@vessel-kit/identity': 'link:../identity'
+      '@vessel-kit/two-party-agreement': 'link:../two-party-agreement'
       '@vessel-kit/vessel': 'link:../vessel'
-      two-party-agreement: 'link:../two-party-agreement'
     specifiers:
       '@vessel-kit/identity': 'workspace:*'
+      '@vessel-kit/two-party-agreement': 'workspace:*'
       '@vessel-kit/vessel': 'workspace:*'
-      two-party-agreement: 'workspace:*'
   lib/two-party-agreement:
     dependencies:
       '@vessel-kit/anchoring': 'link:../anchoring'

@@ -1,5 +1,5 @@
 {
-  "name": "two-party-agreement",
+  "name": "@vessel-kit/two-party-agreement",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

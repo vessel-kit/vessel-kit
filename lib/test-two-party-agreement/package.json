@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "two-party-agreement": "workspace:*",
+    "@vessel-kit/two-party-agreement": "workspace:*",
     "@vessel-kit/vessel": "workspace:*",
     "@vessel-kit/identity": "workspace:*"
   },
