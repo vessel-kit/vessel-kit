@@ -289,7 +289,6 @@ importers:
       multicodec: 2.0.1
       query-string: 6.13.5
       tslib: 2.0.2
-      uint8arrays: 1.1.0
     devDependencies:
       '@relmify/jest-fp-ts': 1.1.1_fp-ts@2.8.3+io-ts@2.2.11
       '@types/elliptic': 6.4.12
@@ -316,7 +315,6 @@ importers:
       multicodec: ^2.0.1
       query-string: ^6.13.2
       tslib: ^2.0.1
-      uint8arrays: ^1.1.0
   lib/test-two-party-agreement:
     dependencies:
       '@vessel-kit/identity': 'link:../identity'
