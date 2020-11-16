@@ -36,7 +36,7 @@
     "@stablelib/bytes": "^1.0.0",
     "@stablelib/ed25519": "^1.0.1",
     "@stablelib/sha256": "^1.0.0",
-    "@vessel-kit/codec": "workspace:*",
+    "@vessel-kit/codec": "1.0.0",
     "cids": "^1.0.1",
     "did-resolver": "^2.1.1",
     "elliptic": "^6.5.3",
@@ -46,7 +46,8 @@
     "lodash": "^4.17.20",
     "multicodec": "^2.0.1",
     "query-string": "^6.13.2",
-    "tslib": "^2.0.1"
+    "tslib": "^2.0.1",
+    "uint8arrays": "^1.1.0"
   },
   "devDependencies": {
     "@relmify/jest-fp-ts": "^1.1.1",
