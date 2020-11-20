@@ -11,7 +11,7 @@ export class DIDResolver implements IResolver {
     const threeIdResolver = ThreeIdResolver.getResolver(ceramic as any);
     this.#resolver = new Resolver({
       ...KeyMethod.getResolver(),
-      ...threeIdResolver
+      ...threeIdResolver,
     });
   }
 

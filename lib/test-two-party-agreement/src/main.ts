@@ -1,5 +1,9 @@
 import { sleep } from "./sleep.util";
-import { Client, VesselDocument,  VesselDocumentShape} from "@vessel-kit/vessel";
+import {
+  Client,
+  VesselDocument,
+  VesselDocumentShape,
+} from "@vessel-kit/vessel";
 import * as _ from "lodash";
 import { TwoPartyShape, TwoPartyState } from "@vessel-kit/two-party-agreement";
 import {
