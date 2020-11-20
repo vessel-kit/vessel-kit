@@ -134,7 +134,7 @@ export async function createEnveloped<A extends object>(
 }
 
 /**
- * Prepare signing input: `base64url(header).base64url(payload)`. Called by [[create]] and [[verify]] internally.
+ * Prepare signing input: `base64url(header).base64url(payload)`. Called by [[create]] internally.
  *
  * @param payload Any json object.
  * @param header
@@ -149,6 +149,18 @@ export function signingInput(payload: object, header: JWSDecodedHeader) {
     kid: header.kid,
   });
   return appliedHeader + "." + appliedPayload;
+}
+
+/**
+ * Prepare verification input. Called by and [[verify]] internally.
+ *
+ * @param jws JWS Compact serialization.
+ * @internal
+ * @ignore
+ * @category Ancillary
+ */
+export function verificationInput(jws: string) {
+  return jws.replace(/\.[a-zA-Z0-9_-]+$/, "");
 }
 
 const JWS_PATTERN = /^([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_-]*)\.([a-zA-Z0-9_-]+)$/;
@@ -263,7 +275,7 @@ export async function verify(
     kid,
     decoded.header.alg
   );
-  const input = signingInput(decoded.payload, decoded.header);
+  const input = verificationInput(jws);
   const message = textEncoder.encode(input);
   const verifications = await Promise.all(
     publicKeys.map((p) => p.verify(message, decoded.signature))
