@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "dev": "tsc -p . --watch",
+    "build": "tsc --project .",
     "test": "jest"
   },
   "dependencies": {
