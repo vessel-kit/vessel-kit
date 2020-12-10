@@ -7,8 +7,7 @@ import { AnchoringService } from "./anchoring.service";
 import {
   Identifier,
   IIdentitySigning,
-  IResolver,
-  jws,
+  IResolver
 } from "@vessel-kit/identity";
 
 export interface IRetrieve {
@@ -52,8 +51,8 @@ export class Context implements IContext {
    */
   async sign(payload: object): Promise<string> {
     const signor = await this.#signorP();
-    const signature = await signor.sign(payload);
-    return jws.asDetached(signature);
+    const jwt: any = await signor.sign(payload);
+    return jwt.signatures[0].protected + '..' + jwt.signatures[0].signature;
   }
 
   async did(): Promise<Identifier | undefined> {

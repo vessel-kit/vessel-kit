@@ -19,5 +19,5 @@ export interface IIdentitySigning extends IIdentity {
    *
    * @param message JSON payload to sign.
    */
-  sign(message: object): Promise<string>;
+  sign(message: object): Promise<any>;
 }

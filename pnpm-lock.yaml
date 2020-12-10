@@ -277,8 +277,9 @@ importers:
       multicodec: ^2.0.1
   lib/identity:
     dependencies:
-      '@ceramicnetwork/3id-did-resolver': 0.4.8
-      '@ceramicnetwork/ceramic-http-client': 0.7.2
+      3id-did-provider: 0.1.2
+      '@ceramicnetwork/3id-did-resolver': 0.5.4
+      '@ceramicnetwork/http-client': 0.8.7
       '@stablelib/bytes': 1.0.0
       '@stablelib/ed25519': 1.0.1
       '@stablelib/sha256': 1.0.0
@@ -287,11 +288,11 @@ importers:
       cids: 1.0.1
       dag-jose: 0.3.0
       did-resolver: 2.1.1
-      dids: 0.8.0
+      dids: 1.1.0
       elliptic: 6.5.3
       fast-json-stable-stringify: 2.1.0
       fp-ts: 2.8.3
-      identity-wallet: 2.0.0-alpha.19
+      identity-wallet: 2.0.0-alpha.20
       io-ts: 2.2.11_fp-ts@2.8.3
       lodash: 4.17.20
       multicodec: 2.0.1
@@ -306,8 +307,9 @@ importers:
       '@types/lodash': 4.14.161
       faker: 5.1.0
     specifiers:
-      '@ceramicnetwork/3id-did-resolver': ^0.4.8
-      '@ceramicnetwork/ceramic-http-client': ^0.7.2
+      3id-did-provider: ^0.1.2
+      '@ceramicnetwork/3id-did-resolver': ^0.5.4
+      '@ceramicnetwork/http-client': ^0.8.7
       '@relmify/jest-fp-ts': ^1.1.1
       '@stablelib/bytes': ^1.0.0
       '@stablelib/ed25519': ^1.0.1
@@ -320,12 +322,12 @@ importers:
       cids: ^1.0.1
       dag-jose: ^0.3.0
       did-resolver: ^2.1.1
-      dids: ^0.8.0
+      dids: ^1.1.0
       elliptic: ^6.5.3
       faker: ^5.1.0
       fast-json-stable-stringify: ^2.1.0
       fp-ts: ^2.8.2
-      identity-wallet: ^2.0.0-alpha.19
+      identity-wallet: ^2.0.0-alpha.20
       io-ts: ^2.2.10
       lodash: ^4.17.20
       multicodec: ^2.0.1
@@ -387,8 +389,8 @@ importers:
       theme-ui: ^0.3.1
   lib/vessel:
     dependencies:
-      '@ceramicnetwork/3id-did-resolver': 0.4.8
-      '@ceramicnetwork/ceramic-http-client': 0.7.1
+      '@ceramicnetwork/3id-did-resolver': 0.5.4
+      '@ceramicnetwork/http-client': 0.8.7
       '@ethersproject/hdnode': 5.0.5
       '@ethersproject/providers': 5.0.12
       '@stablelib/bytes': 1.0.0
@@ -412,6 +414,7 @@ importers:
       io-ts: 2.2.11_fp-ts@2.8.3
       ipfs: 0.50.2
       lodash: 4.17.20
+      multihashes: 3.0.1
       rxjs: 6.6.3
       ses: /@ukstv/ses/0.10.3
       terser: 5.3.4
@@ -420,8 +423,8 @@ importers:
       ipfs-http-client: 47.0.1
       json-schema-to-typescript: 9.1.1
     specifiers:
-      '@ceramicnetwork/3id-did-resolver': ^0.4.8
-      '@ceramicnetwork/ceramic-http-client': ^0.7.1
+      '@ceramicnetwork/3id-did-resolver': ^0.5.4
+      '@ceramicnetwork/http-client': ^0.8.7
       '@ethersproject/hdnode': ^5.0.4
       '@ethersproject/providers': ^5.0.8
       '@stablelib/bytes': ^1.0.0
@@ -448,6 +451,7 @@ importers:
       ipfs-http-client: ^47.0.1
       json-schema-to-typescript: ^9.1.1
       lodash: ^4.17.20
+      multihashes: ^3.0.1
       rxjs: ^6.6.3
       ses: 'npm:@ukstv/ses@^0.10.3'
       terser: ^5.3.1
@@ -464,6 +468,42 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+6128bRssiaPGY08cxdQpYdKacB82X2S5ydTm06qiV+ERWH4ywrmNXypc2/U6+EyBd9HM4Qf/Z5E95I01CGSHA==
+  /3id-blockchain-utils/1.2.0:
+    dependencies:
+      '@babel/runtime': 7.12.5
+      '@ethersproject/contracts': 5.0.5
+      '@ethersproject/providers': 5.0.12
+      '@ethersproject/wallet': 5.0.7
+      caip: 0.9.2
+      js-sha256: 0.9.0
+      uint8arrays: 1.1.0
+    dev: false
+    optionalDependencies:
+      '@polkadot/util-crypto': 3.7.1
+      '@zondax/filecoin-signing-tools': 0.12.0
+    resolution:
+      integrity: sha512-Uq7gJm7LvIIGy3QB6mL05jpdyioUY93KR58pC2KPyiCaIAJCcyPR7PPP0/qhFD1EHTc7FIDWGJbFmCvdrDSUqg==
+  /3id-did-provider/0.1.2:
+    dependencies:
+      3id-blockchain-utils: 1.0.0
+      '@babel/runtime': 7.12.5
+      '@ceramicnetwork/http-client': 0.8.7
+      '@ceramicstudio/idx-constants': 0.4.0
+      '@ethersproject/hdnode': 5.0.5
+      '@ethersproject/wallet': 5.0.7
+      '@stablelib/random': 1.0.0
+      '@stablelib/x25519': 1.0.0
+      caip: 0.9.2
+      cids: 1.0.2
+      dag-jose-utils: 0.1.0
+      did-jwt: 4.6.3
+      fast-json-stable-stringify: 2.1.0
+      rpc-utils: 0.1.3
+      store: 2.0.12
+      uint8arrays: 1.1.0
+    dev: false
+    resolution:
+      integrity: sha512-GfBH3fNc1FpCyOhhR6zrmK89X6VZkoqwKG3BQYOCojAa01/eBlBLCeFSQ/PRf6KQhn8zAiomtyk66WkI7gNTtw==
   /@agoric/babel-standalone/7.9.5:
     dev: false
     resolution:
@@ -2552,26 +2592,16 @@ packages:
     dev: false
     resolution:
       integrity: sha512-pbAegbVe5geqmz36W//y99W4DV+WRyBvL/3733AgZ4vPuXKLrK9exOUp7C1O/NPWrxIhOppMc3QZRWuicMU31g==
-  /@ceramicnetwork/3id-did-resolver/0.4.8:
+  /@ceramicnetwork/3id-did-resolver/0.5.4:
     dependencies:
-      '@ceramicnetwork/ceramic-common': 0.12.1
-      bs58: 4.0.1
-    dev: false
-    resolution:
-      integrity: sha512-7SCWhf4WU6us4Ulcn6JUKVgPNzchRkSA5puzvhF52lRU0UEsM09OtmdCsm+M497Cp0vKuX2kt11yh3EF9NjgKQ==
-  /@ceramicnetwork/ceramic-common/0.12.0:
-    dependencies:
-      '@ceramicnetwork/docid': 0.2.0
+      '@ceramicnetwork/common': 0.14.1
+      '@ceramicnetwork/docid': 0.3.0
       cids: 1.0.2
-      dag-jose: 0.3.0
-      did-resolver: 2.1.1
-      lodash.clonedeep: 4.5.0
-      loglevel: 1.7.0
-      loglevel-plugin-prefix: 0.8.4
+      cross-fetch: 3.0.6
       uint8arrays: 1.1.0
     dev: false
     resolution:
-      integrity: sha512-C43IMV2N4J3LOyF9Tvu3xI2oEFv8Fv7o5tca7bEklay8wUo4oeA47j7JBD7rO9bzbx3vQbH7FEk4NsQHVUAryQ==
+      integrity: sha512-/GuyiBYW9msBDEPLT7TLeM5ehsdrHN3yFfYGjB+Or3CITWxyO4Dr5gDGgDsEjg+tYsin1Ebdt94R4IWT6hUI5w==
   /@ceramicnetwork/ceramic-common/0.12.1:
     dependencies:
       '@ceramicnetwork/docid': 0.2.0
@@ -2585,19 +2615,9 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+jPFAwBy9w95MChZtZHzEGD5uoRkCbDBjPua+UVJRdY8GYqgrRASw169HouvhdNaGEcZoK6TeGfPe0UbMKjwPg==
-  /@ceramicnetwork/ceramic-doctype-account-link/0.10.0:
-    dependencies:
-      3id-blockchain-utils: 1.0.0
-      '@ceramicnetwork/ceramic-common': 0.12.0
-      '@types/lodash.clonedeep': 4.5.6
-      cids: 1.0.2
-      did-resolver: 2.1.1
-    dev: false
-    resolution:
-      integrity: sha512-pud0g5pJL3zQ4FMYPo9RxMQAJ1DqBqEKYI9QVA8XnIv9n3XDem7T+67JZt9qOGxu4juP3z/Se6OOplVzpJTc0Q==
   /@ceramicnetwork/ceramic-doctype-account-link/0.10.1:
     dependencies:
-      3id-blockchain-utils: 1.0.0
+      3id-blockchain-utils: 1.2.0
       '@ceramicnetwork/ceramic-common': 0.12.1
       '@types/lodash.clonedeep': 4.5.6
       cids: 1.0.2
@@ -2605,27 +2625,9 @@ packages:
     dev: false
     resolution:
       integrity: sha512-UZDK28fiui/qTfnLApljNc+KCHZnOK1UVAWHVzxmZH75fpAxNg8rzK3qN0lhluDRyFVN7IgTvvY7GNmJ7XBDhw==
-  /@ceramicnetwork/ceramic-doctype-tile/0.10.0:
-    dependencies:
-      3id-blockchain-utils: 1.0.0
-      '@ceramicnetwork/ceramic-common': 0.12.0
-      '@ceramicnetwork/key-did-resolver': 0.1.2
-      '@ethersproject/base64': 5.0.4
-      '@ethersproject/random': 5.0.4
-      '@types/lodash.clonedeep': 4.5.6
-      base64url: 3.0.1
-      cids: 1.0.2
-      did-jwt: 4.6.3
-      did-resolver: 2.1.1
-      dids: 0.7.0
-      fast-json-patch: 2.2.1
-      fast-json-stable-stringify: 2.1.0
-    dev: false
-    resolution:
-      integrity: sha512-IvKpRYCN0Q20PIub2r2ZjFlwy6sQgKGC7VBVj1HEQEttd+VxyapioHzwMEBzSmosiW/7k6SgBsB7XlKU2TdEAA==
   /@ceramicnetwork/ceramic-doctype-tile/0.10.1:
     dependencies:
-      3id-blockchain-utils: 1.0.0
+      3id-blockchain-utils: 1.2.0
       '@ceramicnetwork/ceramic-common': 0.12.1
       '@ceramicnetwork/key-did-resolver': 0.1.2
       '@ethersproject/base64': 5.0.4
@@ -2641,19 +2643,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-eT2L5wFzI3TUyrOmgmSLeY4ew8mhFC+MFHkLL5kV0G6gAPf7bDyhSx6FRhCgtlDNDmP9Ftmjlu+WHRs2Vsfaug==
-  /@ceramicnetwork/ceramic-http-client/0.7.1:
-    dependencies:
-      '@ceramicnetwork/ceramic-common': 0.12.0
-      '@ceramicnetwork/ceramic-doctype-account-link': 0.10.0
-      '@ceramicnetwork/ceramic-doctype-tile': 0.10.0
-      '@ceramicnetwork/docid': 0.2.0
-      cids: 1.0.2
-      cross-fetch: 3.0.6
-      dids: 0.7.0
-      lodash.clonedeep: 4.5.0
-    dev: false
-    resolution:
-      integrity: sha512-Ef8bxHxJiZZJ87PPH2mRIGjkxhNczALX98pUq3qzKEuaPBEWyM1f5a6hkRu1cJFi954oky3VCkBi6+weh6u1Iw==
   /@ceramicnetwork/ceramic-http-client/0.7.2:
     dependencies:
       '@ceramicnetwork/ceramic-common': 0.12.1
@@ -2667,6 +2656,19 @@ packages:
     dev: false
     resolution:
       integrity: sha512-OitYQ7dONEV01grIe1tWqV2emWKSnDiIU/KNyT+MYwa1al4taODxw/DXAj5LPI8LIiByah3Cvabe55WZ4yS1+g==
+  /@ceramicnetwork/common/0.14.1:
+    dependencies:
+      '@ceramicnetwork/docid': 0.3.0
+      cids: 1.0.2
+      dag-jose: 0.3.0
+      did-resolver: 2.1.1
+      lodash.clonedeep: 4.5.0
+      loglevel: 1.7.0
+      loglevel-plugin-prefix: 0.8.4
+      uint8arrays: 1.1.0
+    dev: false
+    resolution:
+      integrity: sha512-x6x/jbybiUu3bTawdgida0Dq8eiS+xtjmyZGMwdlUa3WbVAIKTPjT7ycTqwQPTQi49TZznADpvP4UCdeZdfGvA==
   /@ceramicnetwork/docid/0.2.0:
     dependencies:
       cids: 1.0.2
@@ -2675,6 +2677,56 @@ packages:
     dev: false
     resolution:
       integrity: sha512-s4YXOFM7CNSYGkfnts9XB6EOmp37uPnc7Q2hF3M5SZDNQhtDzYpuCdY30CFNJ291JOfMlfLQovQv4+k7ytkE6A==
+  /@ceramicnetwork/docid/0.3.0:
+    dependencies:
+      cids: 1.0.2
+      multibase: 3.0.1
+      varint: 6.0.0
+    dev: false
+    resolution:
+      integrity: sha512-o9sDp0u44H+UyGONDQwEbvR0FL9AdDJmTyoJTr9DpMJVAbgEtDZ7LR4C5iDN2zfLUzaw4S7k9d7JuvZBbn2FUQ==
+  /@ceramicnetwork/doctype-caip10-link/0.12.1:
+    dependencies:
+      3id-blockchain-utils: 1.2.0
+      '@ceramicnetwork/common': 0.14.1
+      '@types/lodash.clonedeep': 4.5.6
+      cids: 1.0.2
+    dev: false
+    resolution:
+      integrity: sha512-+fIGe+B3uoAQPjrS+zg8J0Y1MsmfqoSQbZVUFa6yFVWhZUZS7CdYL5WmEDzv6YO0tVBTYx5tvPielsPOElyV9A==
+  /@ceramicnetwork/doctype-tile/0.12.3:
+    dependencies:
+      '@ceramicnetwork/common': 0.14.1
+      '@ceramicnetwork/key-did-resolver': 0.2.1
+      '@ethersproject/base64': 5.0.4
+      '@ethersproject/random': 5.0.4
+      '@types/lodash.clonedeep': 4.5.6
+      base64url: 3.0.1
+      cids: 1.0.2
+      did-jwt: 4.6.3
+      did-resolver: 2.1.1
+      dids: 1.1.0
+      fast-json-patch: 2.2.1
+      fast-json-stable-stringify: 2.1.0
+    dev: false
+    resolution:
+      integrity: sha512-dWlKSN4WGKfAwcE/bXe3ssRXyxNkwapYaI2EN2uarTplt4OXiUWiz8sMY1yhL/U3DRZKwaYiABO4V92AujthNQ==
+  /@ceramicnetwork/http-client/0.8.7:
+    dependencies:
+      '@ceramicnetwork/3id-did-resolver': 0.5.4
+      '@ceramicnetwork/common': 0.14.1
+      '@ceramicnetwork/docid': 0.3.0
+      '@ceramicnetwork/doctype-caip10-link': 0.12.1
+      '@ceramicnetwork/doctype-tile': 0.12.3
+      '@ceramicnetwork/key-did-resolver': 0.2.1
+      cids: 1.0.2
+      cross-fetch: 3.0.6
+      did-resolver: 2.1.1
+      dids: 1.1.0
+      lodash.clonedeep: 4.5.0
+    dev: false
+    resolution:
+      integrity: sha512-Jgx/kAa44VUmrLBM8hwhFrKCdJtqnhmRKcvmGXEVVspZKyr7NZ6X+R21WYWjVKvWdimTNBUPGcA5DhlWp+qQVw==
   /@ceramicnetwork/key-did-resolver/0.1.2:
     dependencies:
       multibase: 3.0.1
@@ -2683,12 +2735,27 @@ packages:
     dev: false
     resolution:
       integrity: sha512-FUPiJTQ4mSnieqoafL0Bt0gT+wMBscW198zCAz/AX9UEejgfvfQNdKYEph9vclsJ+obAvwJQfq4aZq40oH/b0w==
+  /@ceramicnetwork/key-did-resolver/0.2.1:
+    dependencies:
+      '@stablelib/ed25519': 1.0.1
+      multibase: 3.0.1
+      uint8arrays: 1.1.0
+      varint: 6.0.0
+    dev: false
+    resolution:
+      integrity: sha512-FAxBLJ+m/nb0TrtxxeWxQdqQQMgsn9svWekA02ZiDU0tZanJ//a1lJeqMfJ7ORyXvQU2DJ+FYv1bOlo/1RxhtQ==
   /@ceramicstudio/idx-constants/0.3.0:
     dev: false
     engines:
       node: '>=12'
     resolution:
       integrity: sha512-cu/bqvrr0CIzUXWDs7qY1rFWYZWdRDm7/EPMwfWmaa6y9ASdR4/A1OhIptlZ3XKKcE9JZovmMdOegVvbWmj/sw==
+  /@ceramicstudio/idx-constants/0.4.0:
+    dev: false
+    engines:
+      node: '>=12'
+    resolution:
+      integrity: sha512-H8OeZNCyR88Vc1YQR35bZzUkGsKQUwf4v1oZQY7mJO2gOB3d6f8pMNBjvL08Q9H+zAzUtOKAIHZy8eebJXaG6A==
   /@cnakazawa/watch/1.0.4:
     dependencies:
       exec-sh: 0.3.4
@@ -4142,6 +4209,69 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-69gFVDs7mJfNjv9Zs5DFVD+pvBW+k1TaHSOqUWqAyTTfLcKI/EMYQgvEvziRd+zAFtUOoye6MfWh0qvinGISPw==
+  /@polkadot/networks/3.7.1:
+    dependencies:
+      '@babel/runtime': 7.12.5
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-kBPUxt3d1xXeJaFilyVI717TKOZJko/3pvFIDqbSc0i2qdXv8bmRR5r7KMnEB7MvTeMPKHVhcesWksAIdsYRew==
+  /@polkadot/util-crypto/3.7.1:
+    dependencies:
+      '@babel/runtime': 7.12.5
+      '@polkadot/networks': 3.7.1
+      '@polkadot/util': 3.7.1
+      '@polkadot/wasm-crypto': 1.4.1_@polkadot+util@3.7.1
+      base-x: 3.0.8
+      blakejs: 1.1.0
+      bn.js: 5.1.3
+      create-hash: 1.2.0
+      elliptic: 6.5.3
+      js-sha3: 0.8.0
+      pbkdf2: 3.1.1
+      scryptsy: 2.1.0
+      tweetnacl: 1.0.3
+      xxhashjs: 0.2.2
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-ZxQa10bo85YlxfS8ieDUzmFZMkKWwOp2dGQ0Xy94e4VBkWVPq9JjAfm8RnLy6D7k5KvMhzKuzJk7IcBDDdXGSw==
+  /@polkadot/util/3.7.1:
+    dependencies:
+      '@babel/runtime': 7.12.5
+      '@polkadot/x-textdecoder': 3.7.1
+      '@polkadot/x-textencoder': 3.7.1
+      '@types/bn.js': 4.11.6
+      bn.js: 5.1.3
+      camelcase: 5.3.1
+      ip-regex: 4.2.0
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-nvgzAbT/a213mpUd56YwK/zgbGKcQoMNLTmqcBHn1IP9u5J9XJcb1zPzqmCTg6mqnjrsgzJsWml9OpQftrcB6g==
+  /@polkadot/wasm-crypto/1.4.1_@polkadot+util@3.7.1:
+    dependencies:
+      '@polkadot/util': 3.7.1
+    dev: false
+    optional: true
+    peerDependencies:
+      '@polkadot/util': '*'
+    resolution:
+      integrity: sha512-GPBCh8YvQmA5bobI4rqRkUhrEHkEWU1+lcJVPbZYsa7jiHFaZpzCLrGQfiqW/vtbU1aBS2wmJ0x1nlt33B9QqQ==
+  /@polkadot/x-textdecoder/3.7.1:
+    dependencies:
+      '@babel/runtime': 7.12.5
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-GztrO7O880GR7C64PK30J7oLm+88OMxAUVW35njE+9qFUH6MGEKbtaLGUSn0JLCCtSme2f1i7DZ+1Pdbqowtnw==
+  /@polkadot/x-textencoder/3.7.1:
+    dependencies:
+      '@babel/runtime': 7.12.5
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-39jwEu+gok8hFl/UqBr6WDhSeSr4qblriwM++2Vwrw/298hd5uQ7xtJNZKdrbrPCkExPZhrxwVg/mJTHBpwSng==
   /@postman/form-data/3.1.1:
     dependencies:
       asynckit: 0.4.0
@@ -4943,6 +5073,11 @@ packages:
     dev: false
     resolution:
       integrity: sha512-pIQORpqlV+QwNix8K1lMmyS7fp80MkQruXp3eMCYAliS3Z1RMYkd4Wf22+iaKLffkngtlIkhiuXOdwLq1zrclg==
+  /@types/node/11.11.6:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-Exw4yUWMBXM3X+8oqzJNRqZSwUAaS4+7NdvHqQuFi/d+synz++xmX3QIf+BFqneW8N31R8Ky+sikfZUXq07ggQ==
   /@types/node/13.13.24:
     dev: false
     resolution:
@@ -5246,6 +5381,20 @@ packages:
   /@xtuc/long/4.2.2:
     resolution:
       integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
+  /@zondax/filecoin-signing-tools/0.12.0:
+    dependencies:
+      base32-decode: 1.0.0
+      base32-encode: 1.1.1
+      bip32: 2.0.6
+      bip39: 3.0.3
+      blakejs: 1.1.0
+      ipld-dag-cbor: 0.15.3
+      leb128: 0.0.5
+      secp256k1: 4.0.2
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-f/HTnXBRNiUQgpfYwMncMqh0+pcAr9jeOKgMcbxyFAv5MBdE6UkRjFNaMkmosmh7JZcDET/dfVTN/RovvFy9aA==
   /JSONStream/1.3.5:
     dependencies:
       jsonparse: 1.3.1
@@ -6254,6 +6403,16 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-5T6P4xPgpp0YDFvSWwEZ4NoE3aM4QBQXDzmVbraCkFj8zHM+mba8SyqB5DbZWyR7mYHo6Y7BdQo3MoA4m0TeQg==
+  /base32-decode/1.0.0:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-KNWUX/R7wKenwE/G/qFMzGScOgVntOmbE27vvc6GrniDGYb6a5+qWcuoXl8WIOQL7q0TpK7nZDm1Y04Yi3Yn5g==
+  /base32-encode/1.1.1:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-eqa0BeGghj3guezlasdHJhr3+J5ZbbQvxeprkcDMbRQrjlqOT832IUDT4Al4ofAwekFYMqkkM9KMUHs9Cu0HKA==
   /base32.js/0.1.0:
     dev: false
     engines:
@@ -6357,6 +6516,16 @@ packages:
       node: '>=6.0.0'
     resolution:
       integrity: sha512-HpV5OMLLGTjSVblmrtYRfFFKuQB+GArM0+XP8HGWfJ5vxYBqo+DesvJwOdC2WJ3bCkZShGf0QIfoIpeomVzVdA==
+  /bip39/3.0.3:
+    dependencies:
+      '@types/node': 11.11.6
+      create-hash: 1.2.0
+      pbkdf2: 3.1.1
+      randombytes: 2.1.0
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-P0dKrz4g0V0BjXfx7d9QNkJ/Txcz/k+hM9TnjqjUaXtuOfAvxXSw2rJw8DX0e3ZPwnK/IgDxoRqf0bvoVCqbMg==
   /bip66/1.1.5:
     dependencies:
       safe-buffer: 5.2.1
@@ -6627,6 +6796,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-4/rOEg86jivtPTeOUUT61jJO1Ya1TrR/OkqCSZDyq84WJh3LuuiphBYJN+fm5xufIk4XAFcEwte/8WzC8If/1g==
+  /buffer-pipe/0.0.3:
+    dependencies:
+      safe-buffer: 5.2.1
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-GlxfuD/NrKvCNs0Ut+7b1IHjylfdegMBxQIlZHj7bObKVQBxB5S84gtm2yu1mQ8/sSggceWBDPY0cPXgvX2MuA==
   /buffer-writer/2.0.0:
     dev: true
     engines:
@@ -7097,6 +7273,20 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-K7NGZBo1P6N2ogUmBtJWwMNfqXxU3ROiCHs+YKDDwBecsZ46J+9vJ6pOEJzds1JzqRnYRxxZBPfgBEYQebMXJg==
+  /cids/0.8.3:
+    dependencies:
+      buffer: 5.7.1
+      class-is: 1.1.0
+      multibase: 1.0.1
+      multicodec: 1.0.4
+      multihashes: 1.0.1
+    dev: false
+    engines:
+      node: '>=4.0.0'
+      npm: '>=3.0.0'
+    optional: true
+    resolution:
+      integrity: sha512-yoXTbV3llpm+EBGWKeL9xKtksPE/s6DPoDSY4fn8I8TEW1zehWXPSB0pwAXVDlLaOlrw+sNynj995uD9abmPhA==
   /cids/1.0.1:
     dependencies:
       class-is: 1.1.0
@@ -7938,6 +8128,11 @@ packages:
     dev: false
     resolution:
       integrity: sha512-wPQl3H79vWLPI8cgKFcQXl0NBgYYEqVnT1i6/So7OjMpsI540oD7p93r3w6fDSyPvwkTepG05F69/7AViX2lXg==
+  /cuint/0.2.2:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha1-QICG1AlVDCYxFVYZ6fp7ytw7mRs=
   /cyclist/1.0.1:
     resolution:
       integrity: sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
@@ -8337,8 +8532,9 @@ packages:
     dev: false
     resolution:
       integrity: sha512-v0KQBE0UoB15n8cDZ5uxdTpadm3LnICP7RkpHIZ79zoDfB8/yPneeu7Xnvzd3PSfkHRnoOWkuJtQ8IoVC37OMA==
-  /dids/0.8.0:
+  /dids/1.1.0:
     dependencies:
+      '@stablelib/random': 1.0.0
       cids: 1.0.2
       dag-jose-utils: 0.1.0
       did-jwt: 4.6.3
@@ -8347,7 +8543,7 @@ packages:
       uint8arrays: 1.1.0
     dev: false
     resolution:
-      integrity: sha512-DSV7SbfxH8MxlOt3sfnBoe3QUmjQzTzsn4H+VRVB8Xth+T3rgP7ZooWAKH4su695PnmkBTjEin/ftXlago8MRg==
+      integrity: sha512-676f+0ZX1bGcxNlZqozKXO1aa5NjSkOWzjeRJGcfssyKahCH754CTqpb9W1iO/VHIRsiKwFKMwSgkKVbI/vEzA==
   /diff-match-patch/1.0.5:
     dev: false
     resolution:
@@ -10267,11 +10463,11 @@ packages:
       node: '>= 6'
     resolution:
       integrity: sha512-4aFq7wvWyMHKgxsH8QQtGpvbASCf+eM3wPRLI6R+MgAnTCZ6STYsRvttLvRWK0Nfif5piF394St3HeJDaljGPA==
-  /identity-wallet/2.0.0-alpha.19:
+  /identity-wallet/2.0.0-alpha.20:
     dependencies:
       3id-blockchain-utils: 1.0.0
       '@babel/runtime': 7.12.5
-      '@ceramicnetwork/ceramic-http-client': 0.7.1
+      '@ceramicnetwork/ceramic-http-client': 0.7.2
       '@ceramicstudio/idx-constants': 0.3.0
       '@ethersproject/hdnode': 5.0.5
       '@ethersproject/wallet': 5.0.7
@@ -10286,7 +10482,7 @@ packages:
       uint8arrays: 1.1.0
     dev: false
     resolution:
-      integrity: sha512-WOh8JhyxfM79hLsFH5c1J+YFyQx0T7/hCavFYcLUERwchEF+ilB6CHuN48Dvo56YK/j00NqIvWVCjbzZUNCOAw==
+      integrity: sha512-JLOYY6GJMHIozC86aypYCBpKJ4QMhEPvyEtEFnuHRZvpLHS9LxsTVwF4D5OACPfbYGo+X9NiIUpTWqBZ60jaHQ==
   /ieee754/1.1.13:
     resolution:
       integrity: sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==
@@ -10912,6 +11108,21 @@ packages:
       npm: '>=3.0.0'
     resolution:
       integrity: sha512-lPMfW9tA2hVZw9hdO/YSppTxFmA0+5zxcefBOlCTOn+12RLyy+pdepKMbQw8u0KESFu3pYVmabNRWuFGcgHLLw==
+  /ipld-dag-cbor/0.15.3:
+    dependencies:
+      borc: 2.1.2
+      buffer: 5.7.1
+      cids: 0.8.3
+      is-circular: 1.0.2
+      multicodec: 1.0.4
+      multihashing-async: 0.8.2
+    dev: false
+    engines:
+      node: '>=6.0.0'
+      npm: '>=3.0.0'
+    optional: true
+    resolution:
+      integrity: sha512-m23nG7ZyoVFnkK55/bLAErc7EfiMgaEQlqHWDTGzPI+O5r6bPfp+qbL5zTVSIT8tpbHmu174dwerVtLoVgeVyA==
   /ipld-dag-cbor/0.17.0:
     dependencies:
       borc: 2.1.2
@@ -12450,6 +12661,14 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-weT+r0kTkRQdCdYCNtkMwWXQTMEswKrFBkm4ckQOMVhhqhIMI1UT2hMj+1iigIhgSZm5gTmrRXBNoGUgaTY1xA==
+  /leb128/0.0.5:
+    dependencies:
+      bn.js: 5.1.3
+      buffer-pipe: 0.0.3
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-elbNtfmu3GndZbesVF6+iQAfVjOXW9bM/aax9WwMlABZW+oK9sbAZEXoewaPHmL34sxa8kVwWsru8cNE/yn2gg==
   /level-codec/7.0.1:
     dev: false
     resolution:
@@ -13991,6 +14210,17 @@ packages:
     dev: false
     resolution:
       integrity: sha512-TW8q03O0f6PNFTQDvh3xxH03c8CjGaaYrjkl9UQPG6rz53TQzzxJVCIWVjzcbN/Q5Y53Zd0IBQBMVktVgNx4Fg==
+  /multibase/1.0.1:
+    dependencies:
+      base-x: 3.0.8
+      buffer: 5.7.1
+    dev: false
+    engines:
+      node: '>=10.0.0'
+      npm: '>=6.0.0'
+    optional: true
+    resolution:
+      integrity: sha512-KcCxpBVY8fdVKu4dJMAahq4F/2Z/9xqEjIiR7PiMe7LRGeorFn2NLmicN6nLBCqQvft6MG2Lc9X5P0IdyvnxEw==
   /multibase/3.0.1:
     dependencies:
       '@multiformats/base-x': 4.0.1
@@ -14008,6 +14238,14 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-XqSMeO8EWV/nOXOpPV8ztIpNweVfE1dSpz6SQvDPp71HD74lMXjt4m/mWB1YBMG0kHtOodxRWc5WOb/UNN1A5g==
+  /multicodec/1.0.4:
+    dependencies:
+      buffer: 5.7.1
+      varint: 5.0.2
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-NDd7FeS3QamVtbgfvu5h7fd1IlbaC4EQ0/pgU4zqE2vdHCmBGsUa0TiM8/TdSeG6BMPC92OOCf8F1ocE/Wkrrg==
   /multicodec/2.0.1:
     dependencies:
       uint8arrays: 1.0.0
@@ -14030,6 +14268,18 @@ packages:
     dev: false
     resolution:
       integrity: sha512-uVSvmeCWf36pU2nB4/1kzYZjsXD9vofZKpgudqkceYY5g2aZZXJ5r9lxuzoRLl1OAp28XljXsEJ/X/85ZsKmKw==
+  /multihashes/1.0.1:
+    dependencies:
+      buffer: 5.7.1
+      multibase: 1.0.1
+      varint: 5.0.2
+    dev: false
+    engines:
+      node: '>=10.0.0'
+      npm: '>=6.0.0'
+    optional: true
+    resolution:
+      integrity: sha512-S27Tepg4i8atNiFaU5ZOm3+gl3KQlUanLs/jWcBxQHFttgq+5x1OgbQmf2d8axJ/48zYGBd/wT9d723USMFduw==
   /multihashes/3.0.1:
     dependencies:
       multibase: 3.0.1
@@ -14040,6 +14290,21 @@ packages:
       npm: '>=6.0.0'
     resolution:
       integrity: sha512-fFY67WOtb0359IjDZxaCU3gJILlkwkFbxbwrK9Bej5+NqNaYztzLOj8/NgMNMg/InxmhK+Uu8S/U4EcqsHzB7Q==
+  /multihashing-async/0.8.2:
+    dependencies:
+      blakejs: 1.1.0
+      buffer: 5.7.1
+      err-code: 2.0.3
+      js-sha3: 0.8.0
+      multihashes: 1.0.1
+      murmurhash3js-revisited: 3.0.0
+    dev: false
+    engines:
+      node: '>=10.0.0'
+      npm: '>=6.0.0'
+    optional: true
+    resolution:
+      integrity: sha512-2lKa1autuCy8x7KIEj9aVNbAb3aIMRFYIwN7mq/zD4pxgNIVgGlm+f6GKY4880EOF2Y3GktHYssRy7TAJQ2DyQ==
   /multihashing-async/2.0.1:
     dependencies:
       blakejs: 1.1.0
@@ -17038,6 +17303,11 @@ packages:
     dev: false
     resolution:
       integrity: sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA==
+  /scryptsy/2.1.0:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-1CdSqHQowJBnMAFyPEBRfqag/YP9OF394FV+4YREIJX4ljD7OxvQRDayyoyyCk+senRjSkP6VnUNQmVQqB6g7w==
   /secp256k1/4.0.2:
     dependencies:
       elliptic: 6.5.3
@@ -18562,6 +18832,11 @@ packages:
   /tweetnacl/0.14.5:
     resolution:
       integrity: sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
+  /tweetnacl/1.0.3:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
   /type-check/0.3.2:
     dependencies:
       prelude-ls: 1.1.2
@@ -19463,6 +19738,13 @@ packages:
       node: '>=0.4'
     resolution:
       integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
+  /xxhashjs/0.2.2:
+    dependencies:
+      cuint: 0.2.2
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-AkTuIuVTET12tpsVIQo+ZU6f/qDmKuRUcjaqR+OIvm+aCBsZ95i7UVY5WJ9TMsSaZ0DA2WxoZ4acu0sPH+OKAw==
   /y18n/4.0.0:
     resolution:
       integrity: sha512-r9S/ZyXu/Xu9q1tYlpsLIsa3EeLXXk0VwlxqTcFRfg9EhMW+17kbt9G0NrgCmhGb5vT2hyhJZLfDGx+7+5Uj/w==
