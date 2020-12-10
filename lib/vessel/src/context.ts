@@ -4,12 +4,7 @@ import CID from "cids";
 import { DocId, RecordWrap } from "@vessel-kit/codec";
 import { AnchorProof } from "@vessel-kit/anchoring";
 import { AnchoringService } from "./anchoring.service";
-import {
-  Identifier,
-  IIdentitySigning,
-  IResolver,
-  jws,
-} from "@vessel-kit/identity";
+import { Identifier, IIdentitySigning, IResolver } from "@vessel-kit/identity";
 
 export interface IRetrieve {
   (cid: CID, path?: string): Promise<any>;
@@ -52,8 +47,8 @@ export class Context implements IContext {
    */
   async sign(payload: object): Promise<string> {
     const signor = await this.#signorP();
-    const signature = await signor.sign(payload);
-    return jws.asDetached(signature);
+    const jwt: any = await signor.sign(payload);
+    return jwt.signatures[0].protected + ".." + jwt.signatures[0].signature;
   }
 
   async did(): Promise<Identifier | undefined> {

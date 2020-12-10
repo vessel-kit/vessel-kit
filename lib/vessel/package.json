@@ -10,8 +10,8 @@
     "build:schema": "./build-schema.sh"
   },
   "dependencies": {
-    "@ceramicnetwork/3id-did-resolver": "^0.4.8",
-    "@ceramicnetwork/ceramic-http-client": "^0.7.1",
+    "@ceramicnetwork/3id-did-resolver": "^0.5.4",
+    "@ceramicnetwork/http-client": "^0.8.7",
     "@ethersproject/hdnode": "^5.0.4",
     "@ethersproject/providers": "^5.0.8",
     "@stablelib/bytes": "^1.0.0",
@@ -35,6 +35,7 @@
     "io-ts": "^2.2.10",
     "ipfs": "^0.50.2",
     "lodash": "^4.17.20",
+    "multihashes": "^3.0.1",
     "rxjs": "^6.6.3",
     "ses": "^0.10.3",
     "terser": "^5.3.1"
