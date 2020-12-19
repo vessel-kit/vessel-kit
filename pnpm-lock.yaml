@@ -350,11 +350,13 @@ importers:
       '@vessel-kit/codec': 'link:../codec'
       '@vessel-kit/vessel': 'link:../vessel'
       fast-json-patch: 3.0.0-1
+      uglify-es: 3.3.9
     specifiers:
       '@vessel-kit/anchoring': 'workspace:*'
       '@vessel-kit/codec': 'workspace:*'
       '@vessel-kit/vessel': 'workspace:*'
       fast-json-patch: ^3.0.0-1
+      uglify-es: 3.3.9
   lib/ui-shared:
     dependencies:
       '@carbon/icons-react': 10.19.0
@@ -3992,8 +3994,8 @@ packages:
       integrity: sha512-FfQsZK5K1OvvGqjPHCJtrNTLlKLg7bLuphtCRTFb5K2P98JTfslauMbT7bS8huOoK/86HMNmNoHR/EVLAd4FzA==
   /@nestjs/platform-express/7.4.4_a073563eda6e2cb33ae79215800d4b16:
     dependencies:
-      '@nestjs/common': 7.4.4
-      '@nestjs/core': 7.4.4_@nestjs+common@7.4.4
+      '@nestjs/common': 7.4.4_0c773f197e7bb0df0bedc332ad8bc35d
+      '@nestjs/core': 7.4.4_efc34def801f29a4094d370628537f54
       body-parser: 1.19.0
       cors: 2.8.5
       express: 4.17.1
@@ -7563,6 +7565,10 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
+  /commander/2.13.0:
+    dev: false
+    resolution:
+      integrity: sha512-MVuS359B+YzaWqjCL/c+22gfryv+mCBPHAv3zyVI2GN8EY6IRP8VwtasXn8jyyhvvq84R4ImN1OKRtcbIasjYA==
   /commander/2.20.3:
     resolution:
       integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
@@ -18979,6 +18985,16 @@ packages:
       node: '>=10'
     resolution:
       integrity: sha512-+g3NEp7fJLe9DPa1TArHm9QAA7YciZmWnfAqEaFrBihQ7epOv9i99rjtgb6Iz0wh3WuQDjsCTDfgRoGnmHN81A==
+  /uglify-es/3.3.9:
+    dependencies:
+      commander: 2.13.0
+      source-map: 0.6.1
+    dev: false
+    engines:
+      node: '>=0.8.0'
+    hasBin: true
+    resolution:
+      integrity: sha512-r+MU0rfv4L/0eeW3xZrd16t4NZfK8Ld4SWVglYBb7ez5uXFWHuVRs6xCTrf1yirs9a4j4Y27nn7SRfO6v67XsQ==
   /uglify-js/3.11.1:
     engines:
       node: '>=0.8.0'
