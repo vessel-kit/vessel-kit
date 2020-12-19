@@ -12,13 +12,14 @@
   ],
   "scripts": {
     "dev": "tsc -p . --watch",
-    "build": "tsc --project .",
+    "build": "tsc --project . && npx uglify-es --compress -o dist/ruleset_compact.js -- dist/ruleset.js",
     "test": "jest"
   },
   "dependencies": {
     "@vessel-kit/vessel": "workspace:*",
     "@vessel-kit/anchoring": "workspace:*",
     "@vessel-kit/codec": "workspace:*",
-    "fast-json-patch": "^3.0.0-1"
+    "fast-json-patch": "^3.0.0-1",
+    "uglify-es": "3.3.9"
   }
 }
