@@ -18,7 +18,7 @@
     "carbon-components-react": "^7.19.0",
     "carbon-icons": "^7.0.7",
     "emotion-theming": "^10.0.27",
-    "luxon": "^1.25.0",
+    "luxon": "^1.28.1",
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
